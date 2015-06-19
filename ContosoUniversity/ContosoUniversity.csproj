@@ -130,11 +130,16 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
+    <Compile Include="DataAccess\SchoolConfiguration.cs" />
     <Compile Include="DataAccess\SchoolContext.cs" />
     <Compile Include="DataAccess\SchoolInitializer.cs" />
+    <Compile Include="DataAccess\SchoolInterceptorLogging.cs" />
+    <Compile Include="DataAccess\SchoolInterceptorTransientErrors.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="Logging\Logger.cs" />
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\Enrollment.cs" />
     <Compile Include="Models\Student.cs" />
