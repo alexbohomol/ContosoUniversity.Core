@@ -16,6 +16,7 @@
         <th>First Name</th>
         <th>Hire Date</th>
         <th>Office</th>
+        <th>Courses</th>
         <th>Actions</th>
     </tr>
 
@@ -36,6 +37,14 @@
             @if (instructor.OfficeAssignment != null)
             {
                 @instructor.OfficeAssignment.Location
+            }
+        </td>
+        <td>
+            @{
+                foreach (var course in instructor.Courses)
+                {
+                    @course.Id @:  @course.Title <br />
+                }
             }
         </td>
         <td>

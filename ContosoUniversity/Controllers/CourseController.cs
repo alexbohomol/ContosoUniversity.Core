@@ -1,6 +1,7 @@
 ﻿using ContosoUniversity.DataAccess;
 using ContosoUniversity.Models;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -15,6 +16,7 @@ namespace ContosoUniversity.Controllers
         public ActionResult Index()
         {
             var courses = db.Courses.Include(c => c.Department);
+
             return View(courses.ToList());
         }
 
@@ -36,8 +38,22 @@ namespace ContosoUniversity.Controllers
         // GET: Course/Create
         public ActionResult Create()
         {
-            ViewBag.DepartmentId = new SelectList(db.Departments, "Id", "Name");
+            PopulateDepartmentsDropDownList();
+
             return View();
+        }
+
+        private void PopulateDepartmentsDropDownList(object selectedDepartment = null)
+        {
+            var departmentsQuery = from d in db.Departments
+                                   orderby d.Name
+                                   select d;
+
+            ViewBag.DepartmentId = new SelectList(
+                items: departmentsQuery, 
+                dataValueField: "Id",
+                dataTextField: "Name",
+                selectedValue: selectedDepartment);
         }
 
         // POST: Course/Create
@@ -47,14 +63,23 @@ namespace ContosoUniversity.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Title,Credits,DepartmentId")] Course course)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Courses.Add(course);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    db.Courses.Add(course);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (RetryLimitExceededException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.)
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
             }
 
-            ViewBag.DepartmentId = new SelectList(db.Departments, "Id", "Name", course.DepartmentId);
+            PopulateDepartmentsDropDownList(course.DepartmentId);
+
             return View(course);
         }
 
@@ -65,30 +90,58 @@ namespace ContosoUniversity.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Course course = db.Courses.Find(id);
+
             if (course == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.DepartmentId = new SelectList(db.Departments, "Id", "Name", course.DepartmentId);
+
+            PopulateDepartmentsDropDownList(course.DepartmentId);
+
             return View(course);
         }
 
         // POST: Course/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Title,Credits,DepartmentId")] Course course)
+        public ActionResult EditPost(int? id)
         {
-            if (ModelState.IsValid)
+            if (id == null)
             {
-                db.Entry(course).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ViewBag.DepartmentId = new SelectList(db.Departments, "Id", "Name", course.DepartmentId);
-            return View(course);
+
+            var courseToUpdate = db.Courses.Find(id);
+
+            var updated = TryUpdateModel(courseToUpdate, "", new string[] 
+            {
+                "Title",
+                "Credits",
+                "DepartmentId"
+            });
+
+            if (updated)
+            {
+                try
+                {
+                    db.SaveChanges();
+
+                    return RedirectToAction("Index");
+                }
+                catch (RetryLimitExceededException /* dex */)
+                {
+                    //Log the error (uncomment dex variable name and add a line here to write a log.
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                }
+            }
+
+            PopulateDepartmentsDropDownList(courseToUpdate.DepartmentId);
+
+            return View(courseToUpdate);
         }
 
         // GET: Course/Delete/5

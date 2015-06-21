@@ -142,10 +142,14 @@ namespace ContosoUniversity.Controllers
 
             var studentToUpdate = db.Students.Find(id);
 
-            if (TryUpdateModel(studentToUpdate, "", new string[] {
+            var updated = TryUpdateModel(studentToUpdate, "", new string[] 
+            {
                 "LastName",
                 "FirstMidName",
-                "EnrollmentDate" }))
+                "EnrollmentDate"
+            });
+
+            if (updated)
             {
                 try
                 {
