@@ -28,6 +28,8 @@ namespace ContosoUniversity.DataAccess
                         .Map(tbl => tbl.MapLeftKey("CourseId")
                                        .MapRightKey("InstructorId")
                                        .ToTable("CourseInstructor"));
+
+            modelBuilder.Entity<Department>().MapToStoredProcedures();
         }
     }
 }
