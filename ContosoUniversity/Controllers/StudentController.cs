@@ -1,7 +1,6 @@
 ﻿using ContosoUniversity.DataAccess;
 using ContosoUniversity.Models;
 using PagedList;
-using System;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -19,7 +18,7 @@ namespace ContosoUniversity.Controllers
         public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.NameSortParm = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
 
             if (searchString != null)
@@ -36,7 +35,7 @@ namespace ContosoUniversity.Controllers
             var students = from s in db.Students
                            select s;
 
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 students = students.Where(s => s.LastName.Contains(searchString)
                                             || s.FirstMidName.Contains(searchString));

@@ -13,9 +13,18 @@ namespace ContosoUniversity.Controllers
         private SchoolContext db = new SchoolContext();
 
         // GET: Course
-        public ActionResult Index()
+        public ActionResult Index(int? selectedDepartment)
         {
-            var courses = db.Courses.Include(c => c.Department);
+            var departments = db.Departments.OrderBy(q => q.Name).ToList();
+
+            ViewBag.SelectedDepartment = new SelectList(departments, "Id", "Name", selectedDepartment);
+
+            int departmentID = selectedDepartment.GetValueOrDefault();
+
+            var courses = db.Courses
+                            .Where(c => !selectedDepartment.HasValue || c.DepartmentId == departmentID)
+                            .OrderBy(course => course.Id)
+                            .Include(course => course.Department);
 
             return View(courses.ToList());
         }
@@ -168,6 +177,25 @@ namespace ContosoUniversity.Controllers
             db.Courses.Remove(course);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult UpdateCourseCredits()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult UpdateCourseCredits(int? multiplier)
+        {
+            if (multiplier != null)
+            {
+                ViewBag.RowsAffected = 
+                    db.Database.ExecuteSqlCommand(
+                        "UPDATE Course SET Credits = Credits * {0}", 
+                        multiplier);
+            }
+
+            return View();
         }
 
         protected override void Dispose(bool disposing)
