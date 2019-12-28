@@ -8,6 +8,10 @@ Walkthrough the canonical [tutorial](https://docs.microsoft.com/en-us/aspnet/mvc
 
 There was a problem when try to copy and use the connection string (versioned) from original samples. Issue caused by the new way we should treat (version-independent) connection strings as of Visual Studio 2015 (RC).
 
+Connection string updated to switch from LocalDb to SQL Server.
+
+Before starting the first time run **`PM> Update-Database`** in Package Manager Console.
+
 **Solution**:
 
 just replace **`Data Source=(LocalDb)\v11.0;...`**
