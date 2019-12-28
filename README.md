@@ -1,6 +1,6 @@
 ### Contoso University
 
-Walkthrough the canonical [tutorial](http://www.asp.net/mvc/overview/getting-started/getting-started-with-ef-using-mvc)
+Walkthrough the canonical [tutorial](https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/getting-started-with-ef-using-mvc)
 
 #### Notes on Module-1
 
