@@ -22,7 +22,7 @@
 
 @foreach (var instructor in Model.Instructors)
 {
-    selectedRow = (instructor.Id == ViewBag.InstructorID) ? "success" : "";
+    selectedRow = (instructor.Id == ViewBag.InstructorID) ? "table-success" : "";
     <tr class="@selectedRow">
         <td>
             @Html.DisplayFor(model => instructor.LastName)
@@ -71,7 +71,7 @@
 
         @foreach (var course in Model.Courses)
         {
-            selectedRow = (course.Id == ViewBag.CourseID) ? "success" : "";
+            selectedRow = (course.Id == ViewBag.CourseID) ? "table-success" : "";
             <tr class="@selectedRow">
                 <td>
                     @Html.ActionLink("Select", "Index", new { courseID = course.Id })
