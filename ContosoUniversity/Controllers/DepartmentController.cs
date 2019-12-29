@@ -177,7 +177,9 @@ namespace ContosoUniversity.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Department department = await db.Departments.FindAsync(id);
+            Department department = await db.Departments
+                                            .Include(d => d.Administrator)
+                                            .SingleOrDefaultAsync(d => d.Id == id);
 
             if (department == null)
             {

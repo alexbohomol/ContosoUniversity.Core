@@ -20,12 +20,6 @@ namespace ContosoUniversity.Models
         public string FirstMidName { get; set; }
 
         [Display(Name = "Full Name")]
-        public string FullName
-        {
-            get
-            {
-                return string.Format("{0}, {1}", LastName, FirstMidName);
-            }
-        }
+        public string FullName => $"{LastName}, {FirstMidName}";
     }
 }

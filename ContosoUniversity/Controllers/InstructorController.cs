@@ -73,11 +73,16 @@ namespace ContosoUniversity.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Instructor instructor = db.Instructors.Find(id);
+
+            Instructor instructor = db.Instructors
+                                      .Include(i => i.OfficeAssignment)
+                                      .SingleOrDefault(i => i.Id == id);
+            
             if (instructor == null)
             {
                 return HttpNotFound();
             }
+            
             return View(instructor);
         }
 
@@ -256,11 +261,16 @@ namespace ContosoUniversity.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Instructor instructor = db.Instructors.Find(id);
+
+            Instructor instructor = db.Instructors
+                                      .Include(i => i.OfficeAssignment)
+                                      .SingleOrDefault(i => i.Id == id);
+
             if (instructor == null)
             {
                 return HttpNotFound();
             }
+
             return View(instructor);
         }
 

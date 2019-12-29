@@ -71,7 +71,9 @@ namespace ContosoUniversity.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Student student = db.Students.Find(id);
+            Student student = db.Students
+                                .Include(s => s.Enrollments.Select(e => e.Course))
+                                .SingleOrDefault(s => s.Id == id);
 
             if (student == null)
             {
