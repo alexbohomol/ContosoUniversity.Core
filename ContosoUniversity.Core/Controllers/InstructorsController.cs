@@ -1,6 +1,6 @@
 ﻿using ContosoUniversity.Core.Data;
 using ContosoUniversity.Core.Models;
-using ContosoUniversity.Core.Models.SchoolViewModels;
+using ContosoUniversity.Core.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
