@@ -5,14 +5,12 @@ namespace ContosoUniversity.Models
 {
     public abstract class Person
     {
-        public int Id { get; set; }
+        public int ID { get; set; }
 
-        //[Required]
-        [StringLength(50, MinimumLength = 1)]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$", ErrorMessage = "The first character must upper case and the remaining characters must be alphabetical")]
+        [Required]
+        [StringLength(50)]
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
-
         [Required]
         [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
         [Column("FirstName")]
@@ -20,6 +18,12 @@ namespace ContosoUniversity.Models
         public string FirstMidName { get; set; }
 
         [Display(Name = "Full Name")]
-        public string FullName => $"{LastName}, {FirstMidName}";
+        public string FullName
+        {
+            get
+            {
+                return LastName + ", " + FirstMidName;
+            }
+        }
     }
 }

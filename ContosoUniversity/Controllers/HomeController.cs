@@ -1,58 +1,72 @@
-﻿using ContosoUniversity.DataAccess;
+﻿using System.Collections.Generic;
+using System.Data.Common;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using ContosoUniversity.Data;
+using ContosoUniversity.Models;
 using ContosoUniversity.ViewModels;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ContosoUniversity.Controllers
 {
     public class HomeController : Controller
     {
-        private SchoolContext db = new SchoolContext();
+        private readonly SchoolContext _context;
 
-        public ActionResult Index()
+        public HomeController(SchoolContext context)
+        {
+            _context = context;
+        }
+
+        public IActionResult Index()
         {
             return View();
         }
 
-        public ActionResult About()
+        public async Task<ActionResult> About()
         {
-            /*
-            var data = from student in db.Students
-                       group student by student.EnrollmentDate into dateGroup
-                       select new EnrollmentDateGroup
-                       {
-                           EnrollmentDate = dateGroup.Key,
-                           StudentCount = dateGroup.Count()
-                       };
-            */
-
-            // SQL version of the above LINQ code.
-            string query = @"SELECT EnrollmentDate, COUNT(*) AS StudentCount 
-                             FROM Person 
-                             WHERE Discriminator = 'Student' 
-                             GROUP BY EnrollmentDate";
-
-            IEnumerable<EnrollmentDateGroup> data = 
-                db.Database.SqlQuery<EnrollmentDateGroup>(query);
-
-            return View(data.ToList());
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
+            List<EnrollmentDateGroup> groups = new List<EnrollmentDateGroup>();
+            var conn = _context.Database.GetDbConnection();
+            try
             {
-                db.Dispose();
+                await conn.OpenAsync();
+                using (var command = conn.CreateCommand())
+                {
+                    string query = "SELECT EnrollmentDate, COUNT(*) AS StudentCount "
+                        + "FROM Person "
+                        + "WHERE Discriminator = 'Student' "
+                        + "GROUP BY EnrollmentDate";
+                    command.CommandText = query;
+                    DbDataReader reader = await command.ExecuteReaderAsync();
+
+                    if (reader.HasRows)
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var row = new EnrollmentDateGroup { EnrollmentDate = reader.GetDateTime(0), StudentCount = reader.GetInt32(1) };
+                            groups.Add(row);
+                        }
+                    }
+                    reader.Dispose();
+                }
             }
-            base.Dispose(disposing);
+            finally
+            {
+                conn.Close();
+            }
+            return View(groups);
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
