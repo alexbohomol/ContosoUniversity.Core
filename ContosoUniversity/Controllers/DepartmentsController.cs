@@ -155,7 +155,7 @@ namespace ContosoUniversity.Controllers
                         }
                         if (databaseValues.InstructorID != clientValues.InstructorID)
                         {
-                            Instructor databaseInstructor = await _context.Instructors.FirstOrDefaultAsync(i => i.ID == databaseValues.InstructorID);
+                            Instructor databaseInstructor = await _context.Instructors.FirstOrDefaultAsync(i => i.Id == databaseValues.InstructorID);
                             ModelState.AddModelError("InstructorID", $"Current value: {databaseInstructor?.FullName}");
                         }
 

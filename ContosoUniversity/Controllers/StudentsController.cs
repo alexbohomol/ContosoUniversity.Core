@@ -77,7 +77,7 @@ namespace ContosoUniversity.Controllers
                  .Include(s => s.Enrollments)
                      .ThenInclude(e => e.Course)
                  .AsNoTracking()
-                 .FirstOrDefaultAsync(m => m.ID == id);
+                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (student == null)
             {
@@ -147,7 +147,7 @@ namespace ContosoUniversity.Controllers
             {
                 return NotFound();
             }
-            var studentToUpdate = await _context.Students.FirstOrDefaultAsync(s => s.ID == id);
+            var studentToUpdate = await _context.Students.FirstOrDefaultAsync(s => s.Id == id);
             if (await TryUpdateModelAsync<Student>(
                 studentToUpdate,
                 "",
@@ -179,7 +179,7 @@ namespace ContosoUniversity.Controllers
 
             var student = await _context.Students
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (student == null)
             {
                 return NotFound();
@@ -220,7 +220,7 @@ namespace ContosoUniversity.Controllers
 
         private bool StudentExists(int id)
         {
-            return _context.Students.Any(e => e.ID == id);
+            return _context.Students.Any(e => e.Id == id);
         }
     }
 }
