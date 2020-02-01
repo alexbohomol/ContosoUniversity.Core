@@ -30,7 +30,7 @@ namespace ContosoUniversity
             });
 
             services.AddDbContext<SchoolContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("SqlServerContainer")));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
