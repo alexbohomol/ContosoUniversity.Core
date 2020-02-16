@@ -8,7 +8,11 @@ namespace ContosoUniversity.Data
     {
         public static void Initialize(SchoolContext context)
         {
-            //context.Database.EnsureCreated();
+            /*
+             * should be reverted after applying migration
+             * on container building step
+             */
+            context.Database.EnsureCreated();
 
             // Look for any students.
             if (context.Students.Any())

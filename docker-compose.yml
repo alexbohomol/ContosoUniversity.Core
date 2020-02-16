@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  contosouniversity:
+    image: ${DOCKER_REGISTRY-}contosouniversity
+    depends_on:
+      - "db"
+    build:
+      context: .
+      dockerfile: ContosoUniversity/Dockerfile
+  db:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: <YourStrong!Passw0rd>
+    ports:
+      - "1433:1433"
