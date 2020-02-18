@@ -10,9 +10,18 @@ services:
       context: .
       dockerfile: ContosoUniversity/Dockerfile
     volumes:
+      - ~/.aspnet/https:/root/.aspnet/https:ro
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
       - webvolume
     networks:
       - cunetwork
+    ports:
+      - "59075:80"
+      - "44367:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=44367
   db:
     image: mcr.microsoft.com/mssql/server
     container_name: cudb
