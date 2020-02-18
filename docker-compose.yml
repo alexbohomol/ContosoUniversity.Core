@@ -1,17 +1,37 @@
-version: '3.4'
+version: '3.7'
 
 services:
-  contosouniversity:
-    image: ${DOCKER_REGISTRY-}contosouniversity
+  web:
+    image: ${DOCKER_REGISTRY-}cuweb
+    container_name: cuweb
     depends_on:
       - "db"
     build:
       context: .
       dockerfile: ContosoUniversity/Dockerfile
+    volumes:
+      - webvolume
+    networks:
+      - cunetwork
   db:
     image: mcr.microsoft.com/mssql/server
+    container_name: cudb
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: <YourStrong!Passw0rd>
     ports:
       - "1433:1433"
+    volumes:
+      - sqlvolume
+    networks:
+      - cunetwork
+
+networks:
+  cunetwork:
+    name: cunetwork
+
+volumes:
+  sqlvolume:
+    name: sqlvolume
+  webvolume:
+    name: webvolume
