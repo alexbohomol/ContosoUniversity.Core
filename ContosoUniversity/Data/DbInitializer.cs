@@ -6,14 +6,8 @@ namespace ContosoUniversity.Data
 {
     public static class DbInitializer
     {
-        public static void Initialize(SchoolContext context)
+        public static void EnsureInitialized(SchoolContext context)
         {
-            /*
-             * should be reverted after applying migration
-             * on container building step
-             */
-            context.Database.EnsureCreated();
-
             // Look for any students.
             if (context.Students.Any())
             {
