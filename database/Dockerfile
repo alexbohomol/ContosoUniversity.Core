@@ -6,6 +6,7 @@ COPY . /
 # https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-configure-docker?view=sql-server-ver15#buildnonrootcontainer
 USER root
 RUN chmod +x db-init.sh
-USER mssql
 
 CMD /bin/bash ./entrypoint.sh
+
+USER mssql
