@@ -49,7 +49,7 @@ namespace ContosoUniversity.Controllers
         // GET: Departments/Create
         public IActionResult Create()
         {
-            ViewData["InstructorID"] = new SelectList(_context.Instructors, "ID", "FullName");
+            ViewData["InstructorID"] = GetInstructorSelectList();
             return View();
         }
 
@@ -66,7 +66,7 @@ namespace ContosoUniversity.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["InstructorID"] = new SelectList(_context.Instructors, "ID", "FullName", department.InstructorID);
+            ViewData["InstructorID"] = GetInstructorSelectList(department.InstructorID);
             return View(department);
         }
 
@@ -87,7 +87,7 @@ namespace ContosoUniversity.Controllers
             {
                 return NotFound();
             }
-            ViewData["InstructorID"] = new SelectList(_context.Instructors, "ID", "FullName", department.InstructorID);
+            ViewData["InstructorID"] = GetInstructorSelectList(department.InstructorID);
             return View(department);
         }
 
@@ -111,7 +111,7 @@ namespace ContosoUniversity.Controllers
                 await TryUpdateModelAsync(deletedDepartment);
                 ModelState.AddModelError(string.Empty,
                     "Unable to save changes. The department was deleted by another user.");
-                ViewData["InstructorID"] = new SelectList(_context.Instructors, "ID", "FullName", deletedDepartment.InstructorID);
+                ViewData["InstructorID"] = GetInstructorSelectList(deletedDepartment.InstructorID);
                 return View(deletedDepartment);
             }
 
@@ -169,7 +169,7 @@ namespace ContosoUniversity.Controllers
                     }
                 }
             }
-            ViewData["InstructorID"] = new SelectList(_context.Instructors, "ID", "FullName", departmentToUpdate.InstructorID);
+            ViewData["InstructorID"] = GetInstructorSelectList(departmentToUpdate.InstructorID);
             return View(departmentToUpdate);
         }
 
@@ -227,9 +227,11 @@ namespace ContosoUniversity.Controllers
             }
         }
 
-        private bool DepartmentExists(int id)
-        {
-            return _context.Departments.Any(e => e.DepartmentID == id);
-        }
+        private SelectList GetInstructorSelectList(int? departmentInstructorId = null) => 
+            new SelectList(
+                _context.Instructors, 
+                nameof(Instructor.Id), 
+                nameof(Instructor.FullName), 
+                departmentInstructorId);
     }
 }
