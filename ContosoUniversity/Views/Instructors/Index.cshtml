@@ -46,9 +46,9 @@
                 </td>
                 <td>
                     @{
-                        foreach (var course in item.CourseAssignments)
+                        foreach (var assignment in item.CourseAssignments)
                         {
-                            @course.Course.CourseID @:  @course.Course.Title <br />
+                            @Model.CoursesReference[assignment.CourseUid].CourseCode @: @Model.CoursesReference[assignment.CourseUid].Title <br />
                         }
                     }
                 </td>
@@ -63,7 +63,7 @@
     </tbody>
 </table>
 
-@if (Model.Courses != null)
+@if (Model.SelectedInstructorCourses != null)
 {
     <h3>Courses Taught by Selected Instructor</h3>
     <table class="table">
@@ -74,19 +74,19 @@
             <th>Department</th>
         </tr>
 
-        @foreach (var item in Model.Courses)
+        @foreach (var item in Model.SelectedInstructorCourses)
         {
             string selectedRow = "";
-            if (item.CourseID == (int?)ViewData["CourseID"])
+            if (item.UniqueId == (Guid?)ViewData["selectedCourseUid"])
             {
                 selectedRow = "table-success";
             }
             <tr class="@selectedRow">
                 <td>
-                    @Html.ActionLink("Select", "Index", new { courseID = item.CourseID })
+                    @Html.ActionLink("Select", "Index", new { courseUid = item.UniqueId })
                 </td>
                 <td>
-                    @item.CourseID
+                    @item.CourseCode
                 </td>
                 <td>
                     @item.Title
@@ -100,7 +100,7 @@
     </table>
 }
 
-@if (Model.Enrollments != null)
+@if (Model.SelectedCourseEnrollments != null)
 {
     <h3>
         Students Enrolled in Selected Course
@@ -110,7 +110,7 @@
             <th>Name</th>
             <th>Grade</th>
         </tr>
-        @foreach (var item in Model.Enrollments)
+        @foreach (var item in Model.SelectedCourseEnrollments)
         {
             <tr>
                 <td>

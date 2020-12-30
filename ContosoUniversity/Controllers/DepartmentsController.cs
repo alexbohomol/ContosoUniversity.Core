@@ -20,8 +20,11 @@ namespace ContosoUniversity.Controllers
         // GET: Departments
         public async Task<IActionResult> Index()
         {
-            var schoolContext = _context.Departments.Include(d => d.Administrator);
-            return View(await schoolContext.ToListAsync());
+            var departments = await _context.Departments
+                .Include(d => d.Administrator)
+                .ToListAsync();
+            
+            return View(departments);
         }
 
         // GET: Departments/Details/5
@@ -33,7 +36,7 @@ namespace ContosoUniversity.Controllers
             }
 
             var department = await _context.Departments
-                .FromSqlInterpolated($"SELECT * FROM Department WHERE DepartmentID = {id}")
+                .FromSqlInterpolated($"SELECT * FROM [dpt].Department WHERE DepartmentID = {id}")
                 .Include(d => d.Administrator)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
@@ -103,7 +106,9 @@ namespace ContosoUniversity.Controllers
                 return NotFound();
             }
 
-            var departmentToUpdate = await _context.Departments.Include(i => i.Administrator).FirstOrDefaultAsync(m => m.DepartmentID == id);
+            var departmentToUpdate = await _context.Departments
+                .Include(i => i.Administrator)
+                .FirstOrDefaultAsync(m => m.DepartmentID == id);
 
             if (departmentToUpdate == null)
             {

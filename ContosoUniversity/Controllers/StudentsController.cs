@@ -75,7 +75,6 @@ namespace ContosoUniversity.Controllers
 
             var student = await _context.Students
                  .Include(s => s.Enrollments)
-                     .ThenInclude(e => e.Course)
                  .AsNoTracking()
                  .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -83,6 +82,11 @@ namespace ContosoUniversity.Controllers
             {
                 return NotFound();
             }
+
+            var courseIds = student.Enrollments.Select(x => x.CourseUid).ToArray();
+            ViewData["EnrolledCourses"] = await _context.Courses
+                .Where(x => courseIds.Contains(x.UniqueId))
+                .ToDictionaryAsync(x => x.UniqueId);
 
             return View(student);
         }
