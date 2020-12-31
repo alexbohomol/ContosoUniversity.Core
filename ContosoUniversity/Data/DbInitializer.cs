@@ -116,28 +116,32 @@
                     Name = "English", 
                     Budget = 350000,
                     StartDate = DateTime.Parse("2007-09-01"),
-                    InstructorID = instructors.Single(i => i.LastName == "Abercrombie").Id
+                    InstructorID = instructors.Single(i => i.LastName == "Abercrombie").Id,
+                    UniqueId = Guid.NewGuid()
                 },
                 new Department
                 {
                     Name = "Mathematics", 
                     Budget = 100000,
                     StartDate = DateTime.Parse("2007-09-01"),
-                    InstructorID = instructors.Single(i => i.LastName == "Fakhouri").Id
+                    InstructorID = instructors.Single(i => i.LastName == "Fakhouri").Id,
+                    UniqueId = Guid.NewGuid()
                 },
                 new Department
                 {
                     Name = "Engineering", 
                     Budget = 350000,
                     StartDate = DateTime.Parse("2007-09-01"),
-                    InstructorID = instructors.Single(i => i.LastName == "Harui").Id
+                    InstructorID = instructors.Single(i => i.LastName == "Harui").Id,
+                    UniqueId = Guid.NewGuid()
                 },
                 new Department
                 {
                     Name = "Economics", 
                     Budget = 100000,
                     StartDate = DateTime.Parse("2007-09-01"),
-                    InstructorID = instructors.Single(i => i.LastName == "Kapoor").Id
+                    InstructorID = instructors.Single(i => i.LastName == "Kapoor").Id,
+                    UniqueId = Guid.NewGuid()
                 }
             };
 
@@ -152,7 +156,7 @@
                     CourseCode = 1050, 
                     Title = "Chemistry", 
                     Credits = 3,
-                    DepartmentID = departments.Single(s => s.Name == "Engineering").DepartmentID,
+                    DepartmentUid = departments.Single(s => s.Name == "Engineering").UniqueId,
                     UniqueId = Guid.NewGuid()
                 },
                 new Course
@@ -160,7 +164,7 @@
                     CourseCode = 4022, 
                     Title = "Microeconomics", 
                     Credits = 3,
-                    DepartmentID = departments.Single(s => s.Name == "Economics").DepartmentID,
+                    DepartmentUid = departments.Single(s => s.Name == "Economics").UniqueId,
                     UniqueId = Guid.NewGuid()
                 },
                 new Course
@@ -168,7 +172,7 @@
                     CourseCode = 4041, 
                     Title = "Macroeconomics", 
                     Credits = 3,
-                    DepartmentID = departments.Single(s => s.Name == "Economics").DepartmentID,
+                    DepartmentUid = departments.Single(s => s.Name == "Economics").UniqueId,
                     UniqueId = Guid.NewGuid()
                 },
                 new Course
@@ -176,7 +180,7 @@
                     CourseCode = 1045, 
                     Title = "Calculus", 
                     Credits = 4,
-                    DepartmentID = departments.Single(s => s.Name == "Mathematics").DepartmentID,
+                    DepartmentUid = departments.Single(s => s.Name == "Mathematics").UniqueId,
                     UniqueId = Guid.NewGuid()
                 },
                 new Course
@@ -184,7 +188,7 @@
                     CourseCode = 3141, 
                     Title = "Trigonometry", 
                     Credits = 4,
-                    DepartmentID = departments.Single(s => s.Name == "Mathematics").DepartmentID,
+                    DepartmentUid = departments.Single(s => s.Name == "Mathematics").UniqueId,
                     UniqueId = Guid.NewGuid()
                 },
                 new Course
@@ -192,7 +196,7 @@
                     CourseCode = 2021, 
                     Title = "Composition", 
                     Credits = 3,
-                    DepartmentID = departments.Single(s => s.Name == "English").DepartmentID,
+                    DepartmentUid = departments.Single(s => s.Name == "English").UniqueId,
                     UniqueId = Guid.NewGuid()
                 },
                 new Course
@@ -200,7 +204,7 @@
                     CourseCode = 2042, 
                     Title = "Literature", 
                     Credits = 4,
-                    DepartmentID = departments.Single(s => s.Name == "English").DepartmentID,
+                    DepartmentUid = departments.Single(s => s.Name == "English").UniqueId,
                     UniqueId = Guid.NewGuid()
                 },
             };

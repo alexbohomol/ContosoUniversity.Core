@@ -4,9 +4,9 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    public class Department
+    public class Department : IUniqueEntity
     {
-        public int DepartmentID { get; set; }
+        public int Id { get; set; }
 
         [StringLength(50, MinimumLength = 3)]
         public string Name { get; set; }
@@ -26,5 +26,6 @@
         public byte[] RowVersion { get; set; }
 
         public Instructor Administrator { get; set; }
+        public Guid UniqueId { get; set; }
     }
 }

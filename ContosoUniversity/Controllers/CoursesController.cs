@@ -24,10 +24,14 @@
         // GET: Courses
         public async Task<IActionResult> Index()
         {
-            var courses = _context.Courses
-                .Include(c => c.Department)
-                .AsNoTracking();
-            return View(await courses.ToListAsync());
+            var courses = await _context.Courses.AsNoTracking().ToListAsync();
+
+            ViewData["DepartmentsNames"] = await _context.Departments
+                .Where(x => courses.Select(_ => _.DepartmentUid).Contains(x.UniqueId))
+                .AsNoTracking()
+                .ToDictionaryAsync(x => x.UniqueId, x => x.Name);
+
+            return View(courses);
         }
 
         // GET: Courses/Details/5
@@ -39,13 +43,18 @@
             }
 
             var course = await _context.Courses
-                .Include(c => c.Department)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.UniqueId == id);
             if (course == null)
             {
                 return NotFound();
             }
+
+            var department = await _context.Departments
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.UniqueId == course.DepartmentUid);
+
+            ViewData["DepartmentName"] = department.Name;
 
             return View(course);
         }
@@ -62,7 +71,7 @@
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseCode,Credits,DepartmentID,Title")] Course course)
+        public async Task<IActionResult> Create([Bind("CourseCode,Credits,DepartmentUid,Title")] Course course)
         {
             if (ModelState.IsValid)
             {
@@ -72,7 +81,7 @@
                 return RedirectToAction(nameof(Index));
             }
 
-            PopulateDepartmentsDropDownList(course.DepartmentID);
+            PopulateDepartmentsDropDownList(course.DepartmentUid);
             return View(course);
         }
 
@@ -92,7 +101,7 @@
                 return NotFound();
             }
 
-            PopulateDepartmentsDropDownList(course.DepartmentID);
+            PopulateDepartmentsDropDownList(course.DepartmentUid);
             return View(course);
         }
 
@@ -113,7 +122,7 @@
 
             if (await TryUpdateModelAsync(courseToUpdate,
                 "",
-                c => c.Credits, c => c.DepartmentID, c => c.Title))
+                c => c.Credits, c => c.DepartmentUid, c => c.Title))
             {
                 try
                 {
@@ -130,7 +139,7 @@
                 return RedirectToAction(nameof(Index));
             }
 
-            PopulateDepartmentsDropDownList(courseToUpdate.DepartmentID);
+            PopulateDepartmentsDropDownList(courseToUpdate.DepartmentUid);
             return View(courseToUpdate);
         }
 
@@ -139,8 +148,12 @@
             var departmentsQuery = from d in _context.Departments
                 orderby d.Name
                 select d;
-            ViewBag.DepartmentID =
-                new SelectList(departmentsQuery.AsNoTracking(), "DepartmentID", "Name", selectedDepartment);
+            
+            ViewBag.DepartmentUid = new SelectList(
+                departmentsQuery.AsNoTracking(), 
+                nameof(Department.UniqueId), 
+                nameof(Department.Name), 
+                selectedDepartment);
         }
 
         // GET: Courses/Delete/5
@@ -152,7 +165,6 @@
             }
 
             var course = await _context.Courses
-                .Include(c => c.Department)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.UniqueId == id);
             if (course == null)
@@ -160,6 +172,12 @@
                 return NotFound();
             }
 
+            var department = await _context.Departments
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.UniqueId == course.DepartmentUid);
+
+            ViewData["DepartmentName"] = department.Name;
+            
             return View(course);
         }
 

@@ -16,9 +16,7 @@
         [Range(0, 5)]
         public int Credits { get; set; }
 
-        public int DepartmentID { get; set; }
-
-        public Department Department { get; set; }
+        public Guid DepartmentUid { get; set; }
         public Guid UniqueId { get; set; }
     }
 }

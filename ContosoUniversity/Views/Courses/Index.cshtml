@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Courses";
+    var departmentsNames = ViewBag.DepartmentsNames as IDictionary<Guid, string>;
 }
 
 <h2>Courses</h2>
@@ -22,7 +23,7 @@
                 @Html.DisplayNameFor(model => model.Credits)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Department)
+                Department
             </th>
             <th></th>
         </tr>
@@ -41,7 +42,7 @@
                     @Html.DisplayFor(modelItem => item.Credits)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Department.Name)
+                    @departmentsNames[item.DepartmentUid]
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.UniqueId">Edit</a> |

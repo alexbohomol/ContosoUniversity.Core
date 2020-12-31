@@ -1,13 +1,17 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using ContosoUniversity.Data;
-using ContosoUniversity.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-
-namespace ContosoUniversity.Controllers
+﻿namespace ContosoUniversity.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using Data;
+
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Rendering;
+    using Microsoft.EntityFrameworkCore;
+
+    using Models;
+
     public class DepartmentsController : Controller
     {
         private readonly SchoolContext _context;
@@ -61,10 +65,11 @@ namespace ContosoUniversity.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DepartmentID,Name,Budget,StartDate,InstructorID,RowVersion")] Department department)
+        public async Task<IActionResult> Create([Bind("Name,Budget,StartDate,InstructorID,RowVersion")] Department department)
         {
             if (ModelState.IsValid)
             {
+                department.UniqueId = Guid.NewGuid();
                 _context.Add(department);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -74,7 +79,7 @@ namespace ContosoUniversity.Controllers
         }
 
         // GET: Departments/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
@@ -84,7 +89,7 @@ namespace ContosoUniversity.Controllers
             var department = await _context.Departments
                 .Include(i => i.Administrator)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.DepartmentID == id);
+                .FirstOrDefaultAsync(m => m.UniqueId == id);
 
             if (department == null)
             {
@@ -99,7 +104,7 @@ namespace ContosoUniversity.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, byte[] rowVersion)
+        public async Task<IActionResult> Edit(Guid? id, byte[] rowVersion)
         {
             if (id == null)
             {
@@ -108,11 +113,11 @@ namespace ContosoUniversity.Controllers
 
             var departmentToUpdate = await _context.Departments
                 .Include(i => i.Administrator)
-                .FirstOrDefaultAsync(m => m.DepartmentID == id);
+                .FirstOrDefaultAsync(m => m.UniqueId == id);
 
             if (departmentToUpdate == null)
             {
-                Department deletedDepartment = new Department();
+                var deletedDepartment = new Department();
                 await TryUpdateModelAsync(deletedDepartment);
                 ModelState.AddModelError(string.Empty,
                     "Unable to save changes. The department was deleted by another user.");
@@ -122,7 +127,7 @@ namespace ContosoUniversity.Controllers
 
             _context.Entry(departmentToUpdate).Property("RowVersion").OriginalValue = rowVersion;
 
-            if (await TryUpdateModelAsync<Department>(
+            if (await TryUpdateModelAsync(
                 departmentToUpdate,
                 "",
                 s => s.Name, s => s.StartDate, s => s.Budget, s => s.InstructorID))
@@ -179,7 +184,7 @@ namespace ContosoUniversity.Controllers
         }
 
         // GET: Departments/Delete/5
-        public async Task<IActionResult> Delete(int? id, bool? concurrencyError)
+        public async Task<IActionResult> Delete(Guid? id, bool? concurrencyError)
         {
             if (id == null)
             {
@@ -189,7 +194,7 @@ namespace ContosoUniversity.Controllers
             var department = await _context.Departments
                 .Include(d => d.Administrator)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.DepartmentID == id);
+                .FirstOrDefaultAsync(m => m.UniqueId == id);
             if (department == null)
             {
                 if (concurrencyError.GetValueOrDefault())
@@ -211,32 +216,33 @@ namespace ContosoUniversity.Controllers
 
             return View(department);
         }
+        
         // POST: Departments/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Department department)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            try
+            var department = await _context.Departments.FirstOrDefaultAsync(x => x.UniqueId == id);
+            if (department != null)
             {
-                if (await _context.Departments.AnyAsync(m => m.DepartmentID == department.DepartmentID))
+                try
                 {
                     _context.Departments.Remove(department);
                     await _context.SaveChangesAsync();
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateConcurrencyException /* ex */)
+                {
+                    //Log the error (uncomment ex variable name and write a log.)
+                    return RedirectToAction(nameof(Delete), new { concurrencyError = true, id = department.UniqueId });
+                }
             }
-            catch (DbUpdateConcurrencyException /* ex */)
-            {
-                //Log the error (uncomment ex variable name and write a log.)
-                return RedirectToAction(nameof(Delete), new { concurrencyError = true, id = department.DepartmentID });
-            }
+            return RedirectToAction(nameof(Index));
         }
 
-        private SelectList GetInstructorSelectList(int? departmentInstructorId = null) => 
-            new SelectList(
-                _context.Instructors, 
-                nameof(Instructor.Id), 
-                nameof(Instructor.FullName), 
-                departmentInstructorId);
+        private SelectList GetInstructorSelectList(int? departmentInstructorId = null) => new(
+            _context.Instructors, 
+            nameof(Instructor.Id), 
+            nameof(Instructor.FullName), 
+            departmentInstructorId);
     }
 }

@@ -44,9 +44,13 @@
                 ViewData["InstructorID"] = id.Value;
                 var instructor = viewModel.Instructors.Single(i => i.Id == id.Value);
                 var instructorCourses = instructor.CourseAssignments.Select(x => x.CourseUid);
-                viewModel.SelectedInstructorCourses = _context.Courses
-                    .Include(x => x.Department)
+                var courses = _context.Courses
                     .Where(x => instructorCourses.Contains(x.UniqueId));
+                viewModel.SelectedInstructorCourses = courses;
+                viewModel.DepartmentNamesReference = await _context.Departments
+                    .Where(x => courses.Select(_ => _.DepartmentUid).Contains(x.UniqueId))
+                    .AsNoTracking()
+                    .ToDictionaryAsync(x => x.UniqueId, x => x.Name);
             }
 
             if (courseUid is not null)
