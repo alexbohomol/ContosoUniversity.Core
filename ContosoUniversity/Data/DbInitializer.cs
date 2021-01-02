@@ -77,31 +77,36 @@
                 {
                     FirstMidName = "Kim",
                     LastName = "Abercrombie",
-                    HireDate = DateTime.Parse("1995-03-11")
+                    HireDate = DateTime.Parse("1995-03-11"),
+                    ExternalId = Guid.NewGuid()
                 },
                 new Instructor
                 {
                     FirstMidName = "Fadi",
                     LastName = "Fakhouri",
-                    HireDate = DateTime.Parse("2002-07-06")
+                    HireDate = DateTime.Parse("2002-07-06"),
+                    ExternalId = Guid.NewGuid()
                 },
                 new Instructor
                 {
                     FirstMidName = "Roger",
                     LastName = "Harui",
-                    HireDate = DateTime.Parse("1998-07-01")
+                    HireDate = DateTime.Parse("1998-07-01"),
+                    ExternalId = Guid.NewGuid()
                 },
                 new Instructor
                 {
                     FirstMidName = "Candace",
                     LastName = "Kapoor",
-                    HireDate = DateTime.Parse("2001-01-15")
+                    HireDate = DateTime.Parse("2001-01-15"),
+                    ExternalId = Guid.NewGuid()
                 },
                 new Instructor
                 {
                     FirstMidName = "Roger",
                     LastName = "Zheng",
-                    HireDate = DateTime.Parse("2004-02-12")
+                    HireDate = DateTime.Parse("2004-02-12"),
+                    ExternalId = Guid.NewGuid()
                 }
             };
 

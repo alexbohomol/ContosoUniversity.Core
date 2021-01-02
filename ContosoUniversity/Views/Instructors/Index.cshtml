@@ -24,7 +24,7 @@
     @foreach (var item in Model.Instructors)
     {
         var selectedRow = "";
-        if (item.Id == (int?) ViewData["InstructorID"])
+        if (item.ExternalId == (Guid?) ViewData["selectedInstructorExternalId"])
         {
             selectedRow = "table-success";
         }
@@ -54,10 +54,10 @@
                 }
             </td>
             <td>
-                <a asp-action="Index" asp-route-id="@item.Id">Select</a> |
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Index" asp-route-id="@item.ExternalId">Select</a> |
+                <a asp-action="Edit" asp-route-id="@item.ExternalId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ExternalId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ExternalId">Delete</a>
             </td>
         </tr>
     }
@@ -78,13 +78,13 @@
         @foreach (var item in Model.SelectedInstructorCourses)
         {
             var selectedRow = "";
-            if (item.ExternalId == (Guid?) ViewData["selectedCourseUid"])
+            if (item.ExternalId == (Guid?) ViewData["selectedCourseExternalId"])
             {
                 selectedRow = "table-success";
             }
             <tr class="@selectedRow">
                 <td>
-                    @Html.ActionLink("Select", "Index", new {courseUid = item.ExternalId})
+                    @Html.ActionLink("Select", "Index", new {courseExternalId = item.ExternalId})
                 </td>
                 <td>
                     @item.CourseCode
