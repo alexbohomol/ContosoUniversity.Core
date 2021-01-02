@@ -56,7 +56,7 @@
         // GET: Departments/Create
         public IActionResult Create()
         {
-            ViewData["InstructorID"] = GetInstructorSelectList();
+            ViewData["InstructorsDropDown"] = GetInstructorSelectList();
             return View();
         }
 
@@ -65,7 +65,7 @@
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Budget,StartDate,InstructorID,RowVersion")] Department department)
+        public async Task<IActionResult> Create([Bind("Name,Budget,StartDate,InstructorId,RowVersion")] Department department)
         {
             if (ModelState.IsValid)
             {
@@ -74,7 +74,7 @@
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["InstructorID"] = GetInstructorSelectList(department.InstructorID);
+            ViewData["InstructorsDropDown"] = GetInstructorSelectList(department.InstructorId);
             return View(department);
         }
 
@@ -95,7 +95,7 @@
             {
                 return NotFound();
             }
-            ViewData["InstructorID"] = GetInstructorSelectList(department.InstructorID);
+            ViewData["InstructorsDropDown"] = GetInstructorSelectList(department.InstructorId);
             return View(department);
         }
 
@@ -121,7 +121,7 @@
                 await TryUpdateModelAsync(deletedDepartment);
                 ModelState.AddModelError(string.Empty,
                     "Unable to save changes. The department was deleted by another user.");
-                ViewData["InstructorID"] = GetInstructorSelectList(deletedDepartment.InstructorID);
+                ViewData["InstructorsDropDown"] = GetInstructorSelectList(deletedDepartment.InstructorId);
                 return View(deletedDepartment);
             }
 
@@ -130,7 +130,7 @@
             if (await TryUpdateModelAsync(
                 departmentToUpdate,
                 "",
-                s => s.Name, s => s.StartDate, s => s.Budget, s => s.InstructorID))
+                s => s.Name, s => s.StartDate, s => s.Budget, s => s.InstructorId))
             {
                 try
                 {
@@ -163,10 +163,10 @@
                         {
                             ModelState.AddModelError("StartDate", $"Current value: {databaseValues.StartDate:d}");
                         }
-                        if (databaseValues.InstructorID != clientValues.InstructorID)
+                        if (databaseValues.InstructorId != clientValues.InstructorId)
                         {
-                            Instructor databaseInstructor = await _context.Instructors.FirstOrDefaultAsync(i => i.Id == databaseValues.InstructorID);
-                            ModelState.AddModelError("InstructorID", $"Current value: {databaseInstructor?.FullName}");
+                            var databaseInstructor = await _context.Instructors.FirstOrDefaultAsync(i => i.Id == databaseValues.InstructorId);
+                            ModelState.AddModelError("InstructorId", $"Current value: {databaseInstructor?.FullName}");
                         }
 
                         ModelState.AddModelError(string.Empty, "The record you attempted to edit "
@@ -179,7 +179,7 @@
                     }
                 }
             }
-            ViewData["InstructorID"] = GetInstructorSelectList(departmentToUpdate.InstructorID);
+            ViewData["InstructorsDropDown"] = GetInstructorSelectList(departmentToUpdate.InstructorId);
             return View(departmentToUpdate);
         }
 

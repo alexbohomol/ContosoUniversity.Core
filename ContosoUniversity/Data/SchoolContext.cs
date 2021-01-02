@@ -28,7 +28,7 @@ namespace ContosoUniversity.Data
             modelBuilder.Entity<Instructor>().ToTable("Instructor", DbSchemas.Department);
             modelBuilder.Entity<OfficeAssignment>().ToTable("OfficeAssignment", DbSchemas.Department);
             modelBuilder.Entity<CourseAssignment>().ToTable("CourseAssignment", DbSchemas.Department)
-                .HasKey(c => new { c.CourseUid, c.InstructorID });
+                .HasKey(c => new { c.CourseUid, c.InstructorId });
         }
 
         private static class DbSchemas

@@ -4,8 +4,7 @@
 
     public class CourseAssignment
     {
-        public int InstructorID { get; set; }
-        public Instructor Instructor { get; set; }
+        public int InstructorId { get; set; }
         public Guid CourseUid { get; set; }
     }
 }

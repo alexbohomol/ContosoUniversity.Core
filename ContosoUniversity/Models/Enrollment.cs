@@ -10,8 +10,8 @@
 
     public class Enrollment
     {
-        public int EnrollmentID { get; set; }
-        public int StudentID { get; set; }
+        public int Id { get; set; }
+        public int StudentId { get; set; }
         [DisplayFormat(NullDisplayText = "No grade")]
         public Grade? Grade { get; set; }
         public Guid CourseUid { get; set; }

@@ -116,7 +116,7 @@
                     Name = "English", 
                     Budget = 350000,
                     StartDate = DateTime.Parse("2007-09-01"),
-                    InstructorID = instructors.Single(i => i.LastName == "Abercrombie").Id,
+                    InstructorId = instructors.Single(i => i.LastName == "Abercrombie").Id,
                     UniqueId = Guid.NewGuid()
                 },
                 new Department
@@ -124,7 +124,7 @@
                     Name = "Mathematics", 
                     Budget = 100000,
                     StartDate = DateTime.Parse("2007-09-01"),
-                    InstructorID = instructors.Single(i => i.LastName == "Fakhouri").Id,
+                    InstructorId = instructors.Single(i => i.LastName == "Fakhouri").Id,
                     UniqueId = Guid.NewGuid()
                 },
                 new Department
@@ -132,7 +132,7 @@
                     Name = "Engineering", 
                     Budget = 350000,
                     StartDate = DateTime.Parse("2007-09-01"),
-                    InstructorID = instructors.Single(i => i.LastName == "Harui").Id,
+                    InstructorId = instructors.Single(i => i.LastName == "Harui").Id,
                     UniqueId = Guid.NewGuid()
                 },
                 new Department
@@ -140,7 +140,7 @@
                     Name = "Economics", 
                     Budget = 100000,
                     StartDate = DateTime.Parse("2007-09-01"),
-                    InstructorID = instructors.Single(i => i.LastName == "Kapoor").Id,
+                    InstructorId = instructors.Single(i => i.LastName == "Kapoor").Id,
                     UniqueId = Guid.NewGuid()
                 }
             };
@@ -206,7 +206,7 @@
                     Credits = 4,
                     DepartmentUid = departments.Single(s => s.Name == "English").UniqueId,
                     UniqueId = Guid.NewGuid()
-                },
+                }
             };
 
             context.Courses.AddRange(courses);
@@ -227,9 +227,9 @@
                 },
                 new OfficeAssignment
                 {
-                    InstructorID = instructors.Single(i => i.LastName == "Kapoor").Id,
+                    InstructorID= instructors.Single(i => i.LastName == "Kapoor").Id,
                     Location = "Thompson 304"
-                },
+                }
             };
 
             context.OfficeAssignments.AddRange(officeAssignments);
@@ -241,43 +241,43 @@
                 new CourseAssignment
                 {
                     CourseUid = courses.Single(c => c.Title == "Chemistry").UniqueId,
-                    InstructorID = instructors.Single(i => i.LastName == "Kapoor").Id
+                    InstructorId = instructors.Single(i => i.LastName == "Kapoor").Id
                 },
                 new CourseAssignment
                 {
                     CourseUid = courses.Single(c => c.Title == "Chemistry").UniqueId,
-                    InstructorID = instructors.Single(i => i.LastName == "Harui").Id
+                    InstructorId = instructors.Single(i => i.LastName == "Harui").Id
                 },
                 new CourseAssignment
                 {
                     CourseUid = courses.Single(c => c.Title == "Microeconomics").UniqueId,
-                    InstructorID = instructors.Single(i => i.LastName == "Zheng").Id
+                    InstructorId = instructors.Single(i => i.LastName == "Zheng").Id
                 },
                 new CourseAssignment
                 {
                     CourseUid = courses.Single(c => c.Title == "Macroeconomics").UniqueId,
-                    InstructorID = instructors.Single(i => i.LastName == "Zheng").Id
+                    InstructorId = instructors.Single(i => i.LastName == "Zheng").Id
                 },
                 new CourseAssignment
                 {
                     CourseUid = courses.Single(c => c.Title == "Calculus").UniqueId,
-                    InstructorID = instructors.Single(i => i.LastName == "Fakhouri").Id
+                    InstructorId = instructors.Single(i => i.LastName == "Fakhouri").Id
                 },
                 new CourseAssignment
                 {
                     CourseUid = courses.Single(c => c.Title == "Trigonometry").UniqueId,
-                    InstructorID = instructors.Single(i => i.LastName == "Harui").Id
+                    InstructorId = instructors.Single(i => i.LastName == "Harui").Id
                 },
                 new CourseAssignment
                 {
                     CourseUid = courses.Single(c => c.Title == "Composition").UniqueId,
-                    InstructorID = instructors.Single(i => i.LastName == "Abercrombie").Id
+                    InstructorId = instructors.Single(i => i.LastName == "Abercrombie").Id
                 },
                 new CourseAssignment
                 {
                     CourseUid = courses.Single(c => c.Title == "Literature").UniqueId,
-                    InstructorID = instructors.Single(i => i.LastName == "Abercrombie").Id
-                },
+                    InstructorId = instructors.Single(i => i.LastName == "Abercrombie").Id
+                }
             };
 
             context.CourseAssignments.AddRange(courseInstructors);
@@ -288,66 +288,66 @@
             {
                 new Enrollment
                 {
-                    StudentID = students.Single(s => s.LastName == "Alexander").Id,
+                    StudentId = students.Single(s => s.LastName == "Alexander").Id,
                     CourseUid = courses.Single(c => c.Title == "Chemistry").UniqueId,
                     Grade = Grade.A
                 },
                 new Enrollment
                 {
-                    StudentID = students.Single(s => s.LastName == "Alexander").Id,
+                    StudentId = students.Single(s => s.LastName == "Alexander").Id,
                     CourseUid = courses.Single(c => c.Title == "Microeconomics").UniqueId,
                     Grade = Grade.C
                 },
                 new Enrollment
                 {
-                    StudentID = students.Single(s => s.LastName == "Alexander").Id,
+                    StudentId = students.Single(s => s.LastName == "Alexander").Id,
                     CourseUid = courses.Single(c => c.Title == "Macroeconomics").UniqueId,
                     Grade = Grade.B
                 },
                 new Enrollment
                 {
-                    StudentID = students.Single(s => s.LastName == "Alonso").Id,
+                    StudentId = students.Single(s => s.LastName == "Alonso").Id,
                     CourseUid = courses.Single(c => c.Title == "Calculus").UniqueId,
                     Grade = Grade.B
                 },
                 new Enrollment
                 {
-                    StudentID = students.Single(s => s.LastName == "Alonso").Id,
+                    StudentId = students.Single(s => s.LastName == "Alonso").Id,
                     CourseUid = courses.Single(c => c.Title == "Trigonometry").UniqueId,
                     Grade = Grade.B
                 },
                 new Enrollment
                 {
-                    StudentID = students.Single(s => s.LastName == "Alonso").Id,
+                    StudentId = students.Single(s => s.LastName == "Alonso").Id,
                     CourseUid = courses.Single(c => c.Title == "Composition").UniqueId,
                     Grade = Grade.B
                 },
                 new Enrollment
                 {
-                    StudentID = students.Single(s => s.LastName == "Anand").Id,
+                    StudentId = students.Single(s => s.LastName == "Anand").Id,
                     CourseUid = courses.Single(c => c.Title == "Chemistry").UniqueId
                 },
                 new Enrollment
                 {
-                    StudentID = students.Single(s => s.LastName == "Anand").Id,
+                    StudentId = students.Single(s => s.LastName == "Anand").Id,
                     CourseUid = courses.Single(c => c.Title == "Microeconomics").UniqueId,
                     Grade = Grade.B
                 },
                 new Enrollment
                 {
-                    StudentID = students.Single(s => s.LastName == "Barzdukas").Id,
+                    StudentId = students.Single(s => s.LastName == "Barzdukas").Id,
                     CourseUid = courses.Single(c => c.Title == "Chemistry").UniqueId,
                     Grade = Grade.B
                 },
                 new Enrollment
                 {
-                    StudentID = students.Single(s => s.LastName == "Li").Id,
+                    StudentId = students.Single(s => s.LastName == "Li").Id,
                     CourseUid = courses.Single(c => c.Title == "Composition").UniqueId,
                     Grade = Grade.B
                 },
                 new Enrollment
                 {
-                    StudentID = students.Single(s => s.LastName == "Justice").Id,
+                    StudentId = students.Single(s => s.LastName == "Justice").Id,
                     CourseUid = courses.Single(c => c.Title == "Literature").UniqueId,
                     Grade = Grade.B
                 }
@@ -357,7 +357,7 @@
             {
                 var enrollmentInDataBase = context.Enrollments
                     .SingleOrDefault(s => 
-                        s.Student.Id == e.StudentID &&
+                        s.Student.Id == e.StudentId &&
                         s.CourseUid == e.CourseUid);
                 if (enrollmentInDataBase == null)
                 {

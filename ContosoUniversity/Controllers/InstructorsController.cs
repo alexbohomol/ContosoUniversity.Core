@@ -95,9 +95,11 @@
                 instructor.CourseAssignments = new List<CourseAssignment>();
                 foreach (var courseUid in selectedCourses)
                 {
-                    var courseToAdd = new CourseAssignment
-                        {InstructorID = instructor.Id, CourseUid = Guid.Parse(courseUid)};
-                    instructor.CourseAssignments.Add(courseToAdd);
+                    instructor.CourseAssignments.Add(new CourseAssignment
+                    {
+                        InstructorId = instructor.Id, 
+                        CourseUid = Guid.Parse(courseUid)
+                    });
                 }
             }
 
@@ -199,7 +201,10 @@
                 {
                     if (!instructorCourses.Contains(course.UniqueId))
                         instructorToUpdate.CourseAssignments.Add(new CourseAssignment
-                            {InstructorID = instructorToUpdate.Id, CourseUid = course.UniqueId});
+                        {
+                            InstructorId = instructorToUpdate.Id, 
+                            CourseUid = course.UniqueId
+                        });
                 }
                 else
                 {
@@ -236,9 +241,9 @@
                 .SingleAsync(i => i.Id == id);
 
             var departments = await _context.Departments
-                .Where(d => d.InstructorID == id)
+                .Where(d => d.InstructorId == id)
                 .ToListAsync();
-            departments.ForEach(d => d.InstructorID = null);
+            departments.ForEach(d => d.InstructorId = null);
 
             _context.Instructors.Remove(instructor);
 
