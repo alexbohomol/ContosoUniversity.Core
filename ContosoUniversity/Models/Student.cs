@@ -5,7 +5,7 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    public class Student
+    public class Student : IExternalIdentifier
     {
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
@@ -29,5 +29,7 @@
 
         [Display(Name = "Full Name")]
         public string FullName => LastName + ", " + FirstMidName;
+
+        public Guid ExternalId { get; set; }
     }
 }

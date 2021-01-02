@@ -1,5 +1,6 @@
 ﻿namespace ContosoUniversity.Controllers
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -70,7 +71,7 @@
         }
 
         // GET: Students/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
             {
@@ -80,7 +81,7 @@
             var student = await _context.Students
                 .Include(s => s.Enrollments)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.ExternalId == id);
 
             if (student == null)
             {
@@ -88,6 +89,7 @@
             }
 
             var courseIds = student.Enrollments.Select(x => x.CourseExternalId).ToArray();
+            
             ViewData["EnrolledCourses"] = await _context.Courses
                 .Where(x => courseIds.Contains(x.ExternalId))
                 .ToDictionaryAsync(x => x.ExternalId);
@@ -114,6 +116,7 @@
             {
                 if (ModelState.IsValid)
                 {
+                    student.ExternalId = Guid.NewGuid();
                     _context.Add(student);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -131,14 +134,14 @@
         }
 
         // GET: Students/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var student = await _context.Students.FindAsync(id);
+            var student = await _context.Students.SingleAsync(x => x.ExternalId == id);
             if (student == null)
             {
                 return NotFound();
@@ -152,14 +155,14 @@
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPost(int? id)
+        public async Task<IActionResult> EditPost(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var studentToUpdate = await _context.Students.FirstOrDefaultAsync(s => s.Id == id);
+            var studentToUpdate = await _context.Students.SingleAsync(s => s.ExternalId == id);
             if (await TryUpdateModelAsync(
                 studentToUpdate,
                 "",
@@ -183,16 +186,14 @@
         }
 
         // GET: Students/Delete/5
-        public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
+        public async Task<IActionResult> Delete(Guid? id, bool? saveChangesError = false)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var student = await _context.Students
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var student = await _context.Students.AsNoTracking().SingleAsync(m => m.ExternalId == id);
             if (student == null)
             {
                 return NotFound();
@@ -211,9 +212,9 @@
         // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var student = await _context.Students.FindAsync(id);
+            var student = await _context.Students.SingleAsync(x => x.ExternalId == id);
             if (student == null)
             {
                 return RedirectToAction(nameof(Index));
@@ -230,11 +231,6 @@
                 //Log the error (uncomment ex variable name and write a log.)
                 return RedirectToAction(nameof(Delete), new {id, saveChangesError = true});
             }
-        }
-
-        private bool StudentExists(int id)
-        {
-            return _context.Students.Any(e => e.Id == id);
         }
     }
 }
