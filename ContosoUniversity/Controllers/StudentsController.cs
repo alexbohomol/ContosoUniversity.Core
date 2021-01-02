@@ -1,12 +1,15 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using ContosoUniversity.Data;
-using ContosoUniversity.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
-namespace ContosoUniversity.Controllers
+﻿namespace ContosoUniversity.Controllers
 {
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using Data;
+
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+
+    using Models;
+
     public class StudentsController : Controller
     {
         private readonly SchoolContext _context;
@@ -39,12 +42,13 @@ namespace ContosoUniversity.Controllers
             ViewData["CurrentFilter"] = searchString;
 
             var students = from s in _context.Students
-                           select s;
+                select s;
             if (!string.IsNullOrEmpty(searchString))
             {
                 students = students.Where(s => s.LastName.Contains(searchString)
-                                       || s.FirstMidName.Contains(searchString));
+                                               || s.FirstMidName.Contains(searchString));
             }
+
             switch (sortOrder)
             {
                 case "name_desc":
@@ -61,7 +65,7 @@ namespace ContosoUniversity.Controllers
                     break;
             }
 
-            int pageSize = 3;
+            var pageSize = 3;
             return View(await PaginatedList<Student>.CreateAsync(students.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
@@ -74,9 +78,9 @@ namespace ContosoUniversity.Controllers
             }
 
             var student = await _context.Students
-                 .Include(s => s.Enrollments)
-                 .AsNoTracking()
-                 .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(s => s.Enrollments)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (student == null)
             {
@@ -103,7 +107,8 @@ namespace ContosoUniversity.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("EnrollmentDate,FirstMidName,LastName")] Student student)
+            [Bind("EnrollmentDate,FirstMidName,LastName")]
+            Student student)
         {
             try
             {
@@ -118,9 +123,10 @@ namespace ContosoUniversity.Controllers
             {
                 //Log the error (uncomment ex variable name and write a log.
                 ModelState.AddModelError("", "Unable to save changes. " +
-                    "Try again, and if the problem persists " +
-                    "see your system administrator.");
+                                             "Try again, and if the problem persists " +
+                                             "see your system administrator.");
             }
+
             return View(student);
         }
 
@@ -137,6 +143,7 @@ namespace ContosoUniversity.Controllers
             {
                 return NotFound();
             }
+
             return View(student);
         }
 
@@ -151,8 +158,9 @@ namespace ContosoUniversity.Controllers
             {
                 return NotFound();
             }
+
             var studentToUpdate = await _context.Students.FirstOrDefaultAsync(s => s.Id == id);
-            if (await TryUpdateModelAsync<Student>(
+            if (await TryUpdateModelAsync(
                 studentToUpdate,
                 "",
                 s => s.FirstMidName, s => s.LastName, s => s.EnrollmentDate))
@@ -166,10 +174,11 @@ namespace ContosoUniversity.Controllers
                 {
                     //Log the error (uncomment ex variable name and write a log.)
                     ModelState.AddModelError("", "Unable to save changes. " +
-                        "Try again, and if the problem persists, " +
-                        "see your system administrator.");
+                                                 "Try again, and if the problem persists, " +
+                                                 "see your system administrator.");
                 }
             }
+
             return View(studentToUpdate);
         }
 
@@ -198,6 +207,7 @@ namespace ContosoUniversity.Controllers
 
             return View(student);
         }
+
         // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -218,7 +228,7 @@ namespace ContosoUniversity.Controllers
             catch (DbUpdateException /* ex */)
             {
                 //Log the error (uncomment ex variable name and write a log.)
-                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+                return RedirectToAction(nameof(Delete), new {id, saveChangesError = true});
             }
         }
 

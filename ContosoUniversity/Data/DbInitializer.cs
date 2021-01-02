@@ -19,49 +19,49 @@
             {
                 new Student
                 {
-                    FirstMidName = "Carson", 
+                    FirstMidName = "Carson",
                     LastName = "Alexander",
                     EnrollmentDate = DateTime.Parse("2010-09-01")
                 },
                 new Student
                 {
-                    FirstMidName = "Meredith", 
+                    FirstMidName = "Meredith",
                     LastName = "Alonso",
                     EnrollmentDate = DateTime.Parse("2012-09-01")
                 },
                 new Student
                 {
-                    FirstMidName = "Arturo", 
+                    FirstMidName = "Arturo",
                     LastName = "Anand",
                     EnrollmentDate = DateTime.Parse("2013-09-01")
                 },
                 new Student
                 {
-                    FirstMidName = "Gytis", 
+                    FirstMidName = "Gytis",
                     LastName = "Barzdukas",
                     EnrollmentDate = DateTime.Parse("2012-09-01")
                 },
                 new Student
                 {
-                    FirstMidName = "Yan", 
+                    FirstMidName = "Yan",
                     LastName = "Li",
                     EnrollmentDate = DateTime.Parse("2012-09-01")
                 },
                 new Student
                 {
-                    FirstMidName = "Peggy", 
+                    FirstMidName = "Peggy",
                     LastName = "Justice",
                     EnrollmentDate = DateTime.Parse("2011-09-01")
                 },
                 new Student
                 {
-                    FirstMidName = "Laura", 
+                    FirstMidName = "Laura",
                     LastName = "Norman",
                     EnrollmentDate = DateTime.Parse("2013-09-01")
                 },
                 new Student
                 {
-                    FirstMidName = "Nino", 
+                    FirstMidName = "Nino",
                     LastName = "Olivetto",
                     EnrollmentDate = DateTime.Parse("2005-09-01")
                 }
@@ -75,31 +75,31 @@
             {
                 new Instructor
                 {
-                    FirstMidName = "Kim", 
+                    FirstMidName = "Kim",
                     LastName = "Abercrombie",
                     HireDate = DateTime.Parse("1995-03-11")
                 },
                 new Instructor
                 {
-                    FirstMidName = "Fadi", 
+                    FirstMidName = "Fadi",
                     LastName = "Fakhouri",
                     HireDate = DateTime.Parse("2002-07-06")
                 },
                 new Instructor
                 {
-                    FirstMidName = "Roger", 
+                    FirstMidName = "Roger",
                     LastName = "Harui",
                     HireDate = DateTime.Parse("1998-07-01")
                 },
                 new Instructor
                 {
-                    FirstMidName = "Candace", 
+                    FirstMidName = "Candace",
                     LastName = "Kapoor",
                     HireDate = DateTime.Parse("2001-01-15")
                 },
                 new Instructor
                 {
-                    FirstMidName = "Roger", 
+                    FirstMidName = "Roger",
                     LastName = "Zheng",
                     HireDate = DateTime.Parse("2004-02-12")
                 }
@@ -113,7 +113,7 @@
             {
                 new Department
                 {
-                    Name = "English", 
+                    Name = "English",
                     Budget = 350000,
                     StartDate = DateTime.Parse("2007-09-01"),
                     InstructorId = instructors.Single(i => i.LastName == "Abercrombie").Id,
@@ -121,7 +121,7 @@
                 },
                 new Department
                 {
-                    Name = "Mathematics", 
+                    Name = "Mathematics",
                     Budget = 100000,
                     StartDate = DateTime.Parse("2007-09-01"),
                     InstructorId = instructors.Single(i => i.LastName == "Fakhouri").Id,
@@ -129,7 +129,7 @@
                 },
                 new Department
                 {
-                    Name = "Engineering", 
+                    Name = "Engineering",
                     Budget = 350000,
                     StartDate = DateTime.Parse("2007-09-01"),
                     InstructorId = instructors.Single(i => i.LastName == "Harui").Id,
@@ -137,7 +137,7 @@
                 },
                 new Department
                 {
-                    Name = "Economics", 
+                    Name = "Economics",
                     Budget = 100000,
                     StartDate = DateTime.Parse("2007-09-01"),
                     InstructorId = instructors.Single(i => i.LastName == "Kapoor").Id,
@@ -153,56 +153,56 @@
             {
                 new Course
                 {
-                    CourseCode = 1050, 
-                    Title = "Chemistry", 
+                    CourseCode = 1050,
+                    Title = "Chemistry",
                     Credits = 3,
                     DepartmentUid = departments.Single(s => s.Name == "Engineering").UniqueId,
                     UniqueId = Guid.NewGuid()
                 },
                 new Course
                 {
-                    CourseCode = 4022, 
-                    Title = "Microeconomics", 
+                    CourseCode = 4022,
+                    Title = "Microeconomics",
                     Credits = 3,
                     DepartmentUid = departments.Single(s => s.Name == "Economics").UniqueId,
                     UniqueId = Guid.NewGuid()
                 },
                 new Course
                 {
-                    CourseCode = 4041, 
-                    Title = "Macroeconomics", 
+                    CourseCode = 4041,
+                    Title = "Macroeconomics",
                     Credits = 3,
                     DepartmentUid = departments.Single(s => s.Name == "Economics").UniqueId,
                     UniqueId = Guid.NewGuid()
                 },
                 new Course
                 {
-                    CourseCode = 1045, 
-                    Title = "Calculus", 
+                    CourseCode = 1045,
+                    Title = "Calculus",
                     Credits = 4,
                     DepartmentUid = departments.Single(s => s.Name == "Mathematics").UniqueId,
                     UniqueId = Guid.NewGuid()
                 },
                 new Course
                 {
-                    CourseCode = 3141, 
-                    Title = "Trigonometry", 
+                    CourseCode = 3141,
+                    Title = "Trigonometry",
                     Credits = 4,
                     DepartmentUid = departments.Single(s => s.Name == "Mathematics").UniqueId,
                     UniqueId = Guid.NewGuid()
                 },
                 new Course
                 {
-                    CourseCode = 2021, 
-                    Title = "Composition", 
+                    CourseCode = 2021,
+                    Title = "Composition",
                     Credits = 3,
                     DepartmentUid = departments.Single(s => s.Name == "English").UniqueId,
                     UniqueId = Guid.NewGuid()
                 },
                 new Course
                 {
-                    CourseCode = 2042, 
-                    Title = "Literature", 
+                    CourseCode = 2042,
+                    Title = "Literature",
                     Credits = 4,
                     DepartmentUid = departments.Single(s => s.Name == "English").UniqueId,
                     UniqueId = Guid.NewGuid()
@@ -227,7 +227,7 @@
                 },
                 new OfficeAssignment
                 {
-                    InstructorID= instructors.Single(i => i.LastName == "Kapoor").Id,
+                    InstructorID = instructors.Single(i => i.LastName == "Kapoor").Id,
                     Location = "Thompson 304"
                 }
             };
@@ -353,10 +353,10 @@
                 }
             };
 
-            foreach (Enrollment e in enrollments)
+            foreach (var e in enrollments)
             {
                 var enrollmentInDataBase = context.Enrollments
-                    .SingleOrDefault(s => 
+                    .SingleOrDefault(s =>
                         s.Student.Id == e.StudentId &&
                         s.CourseUid == e.CourseUid);
                 if (enrollmentInDataBase == null)

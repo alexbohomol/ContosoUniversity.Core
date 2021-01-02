@@ -71,7 +71,8 @@
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseCode,Credits,DepartmentUid,Title")] Course course)
+        public async Task<IActionResult> Create([Bind("CourseCode,Credits,DepartmentUid,Title")]
+            Course course)
         {
             if (ModelState.IsValid)
             {
@@ -148,11 +149,11 @@
             var departmentsQuery = from d in _context.Departments
                 orderby d.Name
                 select d;
-            
+
             ViewBag.DepartmentUid = new SelectList(
-                departmentsQuery.AsNoTracking(), 
-                nameof(Department.UniqueId), 
-                nameof(Department.Name), 
+                departmentsQuery.AsNoTracking(),
+                nameof(Department.UniqueId),
+                nameof(Department.Name),
                 selectedDepartment);
         }
 
@@ -177,7 +178,7 @@
                 .FirstOrDefaultAsync(x => x.UniqueId == course.DepartmentUid);
 
             ViewData["DepartmentName"] = department.Name;
-            
+
             return View(course);
         }
 

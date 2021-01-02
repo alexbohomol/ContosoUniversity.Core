@@ -27,7 +27,7 @@
             var departments = await _context.Departments
                 .Include(d => d.Administrator)
                 .ToListAsync();
-            
+
             return View(departments);
         }
 
@@ -65,7 +65,8 @@
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Budget,StartDate,InstructorId,RowVersion")] Department department)
+        public async Task<IActionResult> Create([Bind("Name,Budget,StartDate,InstructorId,RowVersion")]
+            Department department)
         {
             if (ModelState.IsValid)
             {
@@ -74,6 +75,7 @@
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["InstructorsDropDown"] = GetInstructorSelectList(department.InstructorId);
             return View(department);
         }
@@ -95,6 +97,7 @@
             {
                 return NotFound();
             }
+
             ViewData["InstructorsDropDown"] = GetInstructorSelectList(department.InstructorId);
             return View(department);
         }
@@ -140,7 +143,7 @@
                 catch (DbUpdateConcurrencyException ex)
                 {
                     var exceptionEntry = ex.Entries.Single();
-                    var clientValues = (Department)exceptionEntry.Entity;
+                    var clientValues = (Department) exceptionEntry.Entity;
                     var databaseEntry = exceptionEntry.GetDatabaseValues();
                     if (databaseEntry == null)
                     {
@@ -149,36 +152,42 @@
                     }
                     else
                     {
-                        var databaseValues = (Department)databaseEntry.ToObject();
+                        var databaseValues = (Department) databaseEntry.ToObject();
 
                         if (databaseValues.Name != clientValues.Name)
                         {
                             ModelState.AddModelError("Name", $"Current value: {databaseValues.Name}");
                         }
+
                         if (databaseValues.Budget != clientValues.Budget)
                         {
                             ModelState.AddModelError("Budget", $"Current value: {databaseValues.Budget:c}");
                         }
+
                         if (databaseValues.StartDate != clientValues.StartDate)
                         {
                             ModelState.AddModelError("StartDate", $"Current value: {databaseValues.StartDate:d}");
                         }
+
                         if (databaseValues.InstructorId != clientValues.InstructorId)
                         {
-                            var databaseInstructor = await _context.Instructors.FirstOrDefaultAsync(i => i.Id == databaseValues.InstructorId);
+                            var databaseInstructor =
+                                await _context.Instructors.FirstOrDefaultAsync(i =>
+                                    i.Id == databaseValues.InstructorId);
                             ModelState.AddModelError("InstructorId", $"Current value: {databaseInstructor?.FullName}");
                         }
 
                         ModelState.AddModelError(string.Empty, "The record you attempted to edit "
-                                + "was modified by another user after you got the original value. The "
-                                + "edit operation was canceled and the current values in the database "
-                                + "have been displayed. If you still want to edit this record, click "
-                                + "the Save button again. Otherwise click the Back to List hyperlink.");
-                        departmentToUpdate.RowVersion = (byte[])databaseValues.RowVersion;
+                                                               + "was modified by another user after you got the original value. The "
+                                                               + "edit operation was canceled and the current values in the database "
+                                                               + "have been displayed. If you still want to edit this record, click "
+                                                               + "the Save button again. Otherwise click the Back to List hyperlink.");
+                        departmentToUpdate.RowVersion = databaseValues.RowVersion;
                         ModelState.Remove("RowVersion");
                     }
                 }
             }
+
             ViewData["InstructorsDropDown"] = GetInstructorSelectList(departmentToUpdate.InstructorId);
             return View(departmentToUpdate);
         }
@@ -201,22 +210,23 @@
                 {
                     return RedirectToAction(nameof(Index));
                 }
+
                 return NotFound();
             }
 
             if (concurrencyError.GetValueOrDefault())
             {
                 ViewData["ConcurrencyErrorMessage"] = "The record you attempted to delete "
-                    + "was modified by another user after you got the original values. "
-                    + "The delete operation was canceled and the current values in the "
-                    + "database have been displayed. If you still want to delete this "
-                    + "record, click the Delete button again. Otherwise "
-                    + "click the Back to List hyperlink.";
+                                                      + "was modified by another user after you got the original values. "
+                                                      + "The delete operation was canceled and the current values in the "
+                                                      + "database have been displayed. If you still want to delete this "
+                                                      + "record, click the Delete button again. Otherwise "
+                                                      + "click the Back to List hyperlink.";
             }
 
             return View(department);
         }
-        
+
         // POST: Departments/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -233,16 +243,20 @@
                 catch (DbUpdateConcurrencyException /* ex */)
                 {
                     //Log the error (uncomment ex variable name and write a log.)
-                    return RedirectToAction(nameof(Delete), new { concurrencyError = true, id = department.UniqueId });
+                    return RedirectToAction(nameof(Delete), new {concurrencyError = true, id = department.UniqueId});
                 }
             }
+
             return RedirectToAction(nameof(Index));
         }
 
-        private SelectList GetInstructorSelectList(int? departmentInstructorId = null) => new(
-            _context.Instructors, 
-            nameof(Instructor.Id), 
-            nameof(Instructor.FullName), 
-            departmentInstructorId);
+        private SelectList GetInstructorSelectList(int? departmentInstructorId = null)
+        {
+            return new(
+                _context.Instructors,
+                nameof(Instructor.Id),
+                nameof(Instructor.FullName),
+                departmentInstructorId);
+        }
     }
 }

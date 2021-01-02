@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ContosoUniversity.Models
+﻿namespace ContosoUniversity.Models
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class OfficeAssignment
     {
         [Key]

@@ -1,15 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Data.Common;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using ContosoUniversity.Data;
-using ContosoUniversity.Models;
-using ContosoUniversity.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
-namespace ContosoUniversity.Controllers
+﻿namespace ContosoUniversity.Controllers
 {
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Threading.Tasks;
+
+    using Data;
+
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+
+    using Models;
+
+    using ViewModels;
+
     public class HomeController : Controller
     {
         private readonly SchoolContext _context;
@@ -26,32 +29,35 @@ namespace ContosoUniversity.Controllers
 
         public async Task<ActionResult> About()
         {
-            List<EnrollmentDateGroup> groups = new List<EnrollmentDateGroup>();
+            var groups = new List<EnrollmentDateGroup>();
             var conn = _context.Database.GetDbConnection();
             try
             {
                 await conn.OpenAsync();
                 await using var command = conn.CreateCommand();
-                command.CommandText = 
+                command.CommandText =
                     @"SELECT EnrollmentDate, COUNT(*) AS StudentCount
                       FROM [std].Student
                       GROUP BY EnrollmentDate";
-                DbDataReader reader = await command.ExecuteReaderAsync();
+                var reader = await command.ExecuteReaderAsync();
 
                 if (reader.HasRows)
                 {
                     while (await reader.ReadAsync())
                     {
-                        var row = new EnrollmentDateGroup { EnrollmentDate = reader.GetDateTime(0), StudentCount = reader.GetInt32(1) };
+                        var row = new EnrollmentDateGroup
+                            {EnrollmentDate = reader.GetDateTime(0), StudentCount = reader.GetInt32(1)};
                         groups.Add(row);
                     }
                 }
+
                 reader.Dispose();
             }
             finally
             {
                 conn.Close();
             }
+
             return View(groups);
         }
 
@@ -63,7 +69,7 @@ namespace ContosoUniversity.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
         }
     }
 }

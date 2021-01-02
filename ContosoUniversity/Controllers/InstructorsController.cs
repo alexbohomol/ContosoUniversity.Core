@@ -33,12 +33,12 @@
                     .Include(i => i.CourseAssignments)
                     .OrderBy(i => i.LastName)
                     .ToListAsync(),
-                
+
                 CoursesReference = await _context.Courses
                     .AsNoTracking()
                     .ToDictionaryAsync(x => x.UniqueId)
             };
-            
+
             if (id is not null)
             {
                 ViewData["InstructorID"] = id.Value;
@@ -97,7 +97,7 @@
                 {
                     instructor.CourseAssignments.Add(new CourseAssignment
                     {
-                        InstructorId = instructor.Id, 
+                        InstructorId = instructor.Id,
                         CourseUid = Guid.Parse(courseUid)
                     });
                 }
@@ -133,12 +133,12 @@
         {
             var allCourses = _context.Courses;
             var instructorCourses = new HashSet<Guid>(instructor.CourseAssignments.Select(c => c.CourseUid));
-            
+
             ViewData["Courses"] = allCourses.Select(course => new AssignedCourseData
             {
                 CourseCode = course.CourseCode,
-                CourseUid = course.UniqueId, 
-                Title = course.Title, 
+                CourseUid = course.UniqueId,
+                Title = course.Title,
                 Assigned = instructorCourses.Contains(course.UniqueId)
             }).ToList();
         }
@@ -202,7 +202,7 @@
                     if (!instructorCourses.Contains(course.UniqueId))
                         instructorToUpdate.CourseAssignments.Add(new CourseAssignment
                         {
-                            InstructorId = instructorToUpdate.Id, 
+                            InstructorId = instructorToUpdate.Id,
                             CourseUid = course.UniqueId
                         });
                 }
@@ -212,7 +212,7 @@
                     {
                         var courseToRemove =
                             instructorToUpdate.CourseAssignments.FirstOrDefault(i => i.CourseUid == course.UniqueId);
-                        if (courseToRemove != null) 
+                        if (courseToRemove != null)
                             _context.Remove(courseToRemove);
                     }
                 }

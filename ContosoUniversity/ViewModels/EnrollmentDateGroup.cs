@@ -1,8 +1,8 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace ContosoUniversity.ViewModels
+﻿namespace ContosoUniversity.ViewModels
 {
+    using System;
+    using System.ComponentModel.DataAnnotations;
+
     public class EnrollmentDateGroup
     {
         [DataType(DataType.Date)]

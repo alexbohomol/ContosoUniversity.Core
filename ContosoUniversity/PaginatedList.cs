@@ -1,23 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-
-namespace ContosoUniversity
+﻿namespace ContosoUniversity
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using Microsoft.EntityFrameworkCore;
+
     public class PaginatedList<T> : List<T>
     {
-        public int PageIndex { get; }
-        public int TotalPages { get; }
-
-        public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
+        private PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
         {
             PageIndex = pageIndex;
-            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+            TotalPages = (int) Math.Ceiling(count / (double) pageSize);
 
             AddRange(items);
         }
+
+        public int PageIndex { get; }
+        public int TotalPages { get; }
 
         public bool HasPreviousPage => PageIndex > 1;
 
