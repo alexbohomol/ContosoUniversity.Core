@@ -34,7 +34,7 @@ namespace ContosoUniversity.Controllers
                 await using var command = conn.CreateCommand();
                 command.CommandText = 
                     @"SELECT EnrollmentDate, COUNT(*) AS StudentCount
-                      FROM Student
+                      FROM [std].Student
                       GROUP BY EnrollmentDate";
                 DbDataReader reader = await command.ExecuteReaderAsync();
 

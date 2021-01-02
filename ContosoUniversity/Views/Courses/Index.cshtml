@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Courses";
+    var departmentsNames = ViewBag.DepartmentsNames as IDictionary<Guid, string>;
 }
 
 <h2>Courses</h2>
@@ -13,7 +14,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CourseID)
+                @Html.DisplayNameFor(model => model.CourseCode)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Title)
@@ -22,7 +23,7 @@
                 @Html.DisplayNameFor(model => model.Credits)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Department)
+                Department
             </th>
             <th></th>
         </tr>
@@ -32,7 +33,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CourseID)
+                    @Html.DisplayFor(modelItem => item.CourseCode)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
@@ -41,12 +42,12 @@
                     @Html.DisplayFor(modelItem => item.Credits)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Department.Name)
+                    @departmentsNames[item.DepartmentUid]
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.CourseID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.CourseID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.CourseID">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.UniqueId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.UniqueId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.UniqueId">Delete</a>
                 </td>
             </tr>
         }

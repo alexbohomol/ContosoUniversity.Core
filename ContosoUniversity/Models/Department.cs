@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace ContosoUniversity.Models
+﻿namespace ContosoUniversity.Models
 {
-    public class Department
+    using System;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
+    public class Department : IUniqueEntity
     {
-        public int DepartmentID { get; set; }
+        public int Id { get; set; }
 
         [StringLength(50, MinimumLength = 3)]
         public string Name { get; set; }
@@ -21,12 +20,12 @@ namespace ContosoUniversity.Models
         [Display(Name = "Start Date")]
         public DateTime StartDate { get; set; }
 
-        public int? InstructorID { get; set; }
+        public int? InstructorId { get; set; }
 
         [Timestamp]
         public byte[] RowVersion { get; set; }
 
         public Instructor Administrator { get; set; }
-        public ICollection<Course> Courses { get; set; }
+        public Guid UniqueId { get; set; }
     }
 }

@@ -1,13 +1,17 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using ContosoUniversity.Data;
-using ContosoUniversity.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-
-namespace ContosoUniversity.Controllers
+﻿namespace ContosoUniversity.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using Data;
+
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Rendering;
+    using Microsoft.EntityFrameworkCore;
+
+    using Models;
+
     public class DepartmentsController : Controller
     {
         private readonly SchoolContext _context;
@@ -20,8 +24,11 @@ namespace ContosoUniversity.Controllers
         // GET: Departments
         public async Task<IActionResult> Index()
         {
-            var schoolContext = _context.Departments.Include(d => d.Administrator);
-            return View(await schoolContext.ToListAsync());
+            var departments = await _context.Departments
+                .Include(d => d.Administrator)
+                .ToListAsync();
+            
+            return View(departments);
         }
 
         // GET: Departments/Details/5
@@ -33,7 +40,7 @@ namespace ContosoUniversity.Controllers
             }
 
             var department = await _context.Departments
-                .FromSqlInterpolated($"SELECT * FROM Department WHERE DepartmentID = {id}")
+                .FromSqlInterpolated($"SELECT * FROM [dpt].Department WHERE DepartmentID = {id}")
                 .Include(d => d.Administrator)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
@@ -49,7 +56,7 @@ namespace ContosoUniversity.Controllers
         // GET: Departments/Create
         public IActionResult Create()
         {
-            ViewData["InstructorID"] = GetInstructorSelectList();
+            ViewData["InstructorsDropDown"] = GetInstructorSelectList();
             return View();
         }
 
@@ -58,20 +65,21 @@ namespace ContosoUniversity.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DepartmentID,Name,Budget,StartDate,InstructorID,RowVersion")] Department department)
+        public async Task<IActionResult> Create([Bind("Name,Budget,StartDate,InstructorId,RowVersion")] Department department)
         {
             if (ModelState.IsValid)
             {
+                department.UniqueId = Guid.NewGuid();
                 _context.Add(department);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["InstructorID"] = GetInstructorSelectList(department.InstructorID);
+            ViewData["InstructorsDropDown"] = GetInstructorSelectList(department.InstructorId);
             return View(department);
         }
 
         // GET: Departments/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
@@ -81,13 +89,13 @@ namespace ContosoUniversity.Controllers
             var department = await _context.Departments
                 .Include(i => i.Administrator)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.DepartmentID == id);
+                .FirstOrDefaultAsync(m => m.UniqueId == id);
 
             if (department == null)
             {
                 return NotFound();
             }
-            ViewData["InstructorID"] = GetInstructorSelectList(department.InstructorID);
+            ViewData["InstructorsDropDown"] = GetInstructorSelectList(department.InstructorId);
             return View(department);
         }
 
@@ -96,31 +104,33 @@ namespace ContosoUniversity.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, byte[] rowVersion)
+        public async Task<IActionResult> Edit(Guid? id, byte[] rowVersion)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var departmentToUpdate = await _context.Departments.Include(i => i.Administrator).FirstOrDefaultAsync(m => m.DepartmentID == id);
+            var departmentToUpdate = await _context.Departments
+                .Include(i => i.Administrator)
+                .FirstOrDefaultAsync(m => m.UniqueId == id);
 
             if (departmentToUpdate == null)
             {
-                Department deletedDepartment = new Department();
+                var deletedDepartment = new Department();
                 await TryUpdateModelAsync(deletedDepartment);
                 ModelState.AddModelError(string.Empty,
                     "Unable to save changes. The department was deleted by another user.");
-                ViewData["InstructorID"] = GetInstructorSelectList(deletedDepartment.InstructorID);
+                ViewData["InstructorsDropDown"] = GetInstructorSelectList(deletedDepartment.InstructorId);
                 return View(deletedDepartment);
             }
 
             _context.Entry(departmentToUpdate).Property("RowVersion").OriginalValue = rowVersion;
 
-            if (await TryUpdateModelAsync<Department>(
+            if (await TryUpdateModelAsync(
                 departmentToUpdate,
                 "",
-                s => s.Name, s => s.StartDate, s => s.Budget, s => s.InstructorID))
+                s => s.Name, s => s.StartDate, s => s.Budget, s => s.InstructorId))
             {
                 try
                 {
@@ -153,10 +163,10 @@ namespace ContosoUniversity.Controllers
                         {
                             ModelState.AddModelError("StartDate", $"Current value: {databaseValues.StartDate:d}");
                         }
-                        if (databaseValues.InstructorID != clientValues.InstructorID)
+                        if (databaseValues.InstructorId != clientValues.InstructorId)
                         {
-                            Instructor databaseInstructor = await _context.Instructors.FirstOrDefaultAsync(i => i.Id == databaseValues.InstructorID);
-                            ModelState.AddModelError("InstructorID", $"Current value: {databaseInstructor?.FullName}");
+                            var databaseInstructor = await _context.Instructors.FirstOrDefaultAsync(i => i.Id == databaseValues.InstructorId);
+                            ModelState.AddModelError("InstructorId", $"Current value: {databaseInstructor?.FullName}");
                         }
 
                         ModelState.AddModelError(string.Empty, "The record you attempted to edit "
@@ -169,12 +179,12 @@ namespace ContosoUniversity.Controllers
                     }
                 }
             }
-            ViewData["InstructorID"] = GetInstructorSelectList(departmentToUpdate.InstructorID);
+            ViewData["InstructorsDropDown"] = GetInstructorSelectList(departmentToUpdate.InstructorId);
             return View(departmentToUpdate);
         }
 
         // GET: Departments/Delete/5
-        public async Task<IActionResult> Delete(int? id, bool? concurrencyError)
+        public async Task<IActionResult> Delete(Guid? id, bool? concurrencyError)
         {
             if (id == null)
             {
@@ -184,7 +194,7 @@ namespace ContosoUniversity.Controllers
             var department = await _context.Departments
                 .Include(d => d.Administrator)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.DepartmentID == id);
+                .FirstOrDefaultAsync(m => m.UniqueId == id);
             if (department == null)
             {
                 if (concurrencyError.GetValueOrDefault())
@@ -206,32 +216,33 @@ namespace ContosoUniversity.Controllers
 
             return View(department);
         }
+        
         // POST: Departments/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Department department)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            try
+            var department = await _context.Departments.FirstOrDefaultAsync(x => x.UniqueId == id);
+            if (department != null)
             {
-                if (await _context.Departments.AnyAsync(m => m.DepartmentID == department.DepartmentID))
+                try
                 {
                     _context.Departments.Remove(department);
                     await _context.SaveChangesAsync();
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateConcurrencyException /* ex */)
+                {
+                    //Log the error (uncomment ex variable name and write a log.)
+                    return RedirectToAction(nameof(Delete), new { concurrencyError = true, id = department.UniqueId });
+                }
             }
-            catch (DbUpdateConcurrencyException /* ex */)
-            {
-                //Log the error (uncomment ex variable name and write a log.)
-                return RedirectToAction(nameof(Delete), new { concurrencyError = true, id = department.DepartmentID });
-            }
+            return RedirectToAction(nameof(Index));
         }
 
-        private SelectList GetInstructorSelectList(int? departmentInstructorId = null) => 
-            new SelectList(
-                _context.Instructors, 
-                nameof(Instructor.Id), 
-                nameof(Instructor.FullName), 
-                departmentInstructorId);
+        private SelectList GetInstructorSelectList(int? departmentInstructorId = null) => new(
+            _context.Instructors, 
+            nameof(Instructor.Id), 
+            nameof(Instructor.FullName), 
+            departmentInstructorId);
     }
 }

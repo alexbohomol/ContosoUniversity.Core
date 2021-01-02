@@ -1,9 +1,10 @@
-﻿using System;
-using System.Linq;
-using ContosoUniversity.Models;
-
-namespace ContosoUniversity.Data
+﻿namespace ContosoUniversity.Data
 {
+    using System;
+    using System.Linq;
+
+    using Models;
+
     public static class DbInitializer
     {
         public static void EnsureInitialized(SchoolContext context)
@@ -11,238 +12,359 @@ namespace ContosoUniversity.Data
             // Look for any students.
             if (context.Students.Any())
             {
-                return;   // DB has been seeded
+                return; // DB has been seeded
             }
 
-            var students = new Student[]
+            var students = new[]
             {
-                new Student { FirstMidName = "Carson",   LastName = "Alexander",
-                    EnrollmentDate = DateTime.Parse("2010-09-01") },
-                new Student { FirstMidName = "Meredith", LastName = "Alonso",
-                    EnrollmentDate = DateTime.Parse("2012-09-01") },
-                new Student { FirstMidName = "Arturo",   LastName = "Anand",
-                    EnrollmentDate = DateTime.Parse("2013-09-01") },
-                new Student { FirstMidName = "Gytis",    LastName = "Barzdukas",
-                    EnrollmentDate = DateTime.Parse("2012-09-01") },
-                new Student { FirstMidName = "Yan",      LastName = "Li",
-                    EnrollmentDate = DateTime.Parse("2012-09-01") },
-                new Student { FirstMidName = "Peggy",    LastName = "Justice",
-                    EnrollmentDate = DateTime.Parse("2011-09-01") },
-                new Student { FirstMidName = "Laura",    LastName = "Norman",
-                    EnrollmentDate = DateTime.Parse("2013-09-01") },
-                new Student { FirstMidName = "Nino",     LastName = "Olivetto",
-                    EnrollmentDate = DateTime.Parse("2005-09-01") }
+                new Student
+                {
+                    FirstMidName = "Carson", 
+                    LastName = "Alexander",
+                    EnrollmentDate = DateTime.Parse("2010-09-01")
+                },
+                new Student
+                {
+                    FirstMidName = "Meredith", 
+                    LastName = "Alonso",
+                    EnrollmentDate = DateTime.Parse("2012-09-01")
+                },
+                new Student
+                {
+                    FirstMidName = "Arturo", 
+                    LastName = "Anand",
+                    EnrollmentDate = DateTime.Parse("2013-09-01")
+                },
+                new Student
+                {
+                    FirstMidName = "Gytis", 
+                    LastName = "Barzdukas",
+                    EnrollmentDate = DateTime.Parse("2012-09-01")
+                },
+                new Student
+                {
+                    FirstMidName = "Yan", 
+                    LastName = "Li",
+                    EnrollmentDate = DateTime.Parse("2012-09-01")
+                },
+                new Student
+                {
+                    FirstMidName = "Peggy", 
+                    LastName = "Justice",
+                    EnrollmentDate = DateTime.Parse("2011-09-01")
+                },
+                new Student
+                {
+                    FirstMidName = "Laura", 
+                    LastName = "Norman",
+                    EnrollmentDate = DateTime.Parse("2013-09-01")
+                },
+                new Student
+                {
+                    FirstMidName = "Nino", 
+                    LastName = "Olivetto",
+                    EnrollmentDate = DateTime.Parse("2005-09-01")
+                }
             };
 
-            foreach (Student s in students)
-            {
-                context.Students.Add(s);
-            }
+            context.Students.AddRange(students);
+
             context.SaveChanges();
 
-            var instructors = new Instructor[]
+            var instructors = new[]
             {
-                new Instructor { FirstMidName = "Kim",     LastName = "Abercrombie",
-                    HireDate = DateTime.Parse("1995-03-11") },
-                new Instructor { FirstMidName = "Fadi",    LastName = "Fakhouri",
-                    HireDate = DateTime.Parse("2002-07-06") },
-                new Instructor { FirstMidName = "Roger",   LastName = "Harui",
-                    HireDate = DateTime.Parse("1998-07-01") },
-                new Instructor { FirstMidName = "Candace", LastName = "Kapoor",
-                    HireDate = DateTime.Parse("2001-01-15") },
-                new Instructor { FirstMidName = "Roger",   LastName = "Zheng",
-                    HireDate = DateTime.Parse("2004-02-12") }
+                new Instructor
+                {
+                    FirstMidName = "Kim", 
+                    LastName = "Abercrombie",
+                    HireDate = DateTime.Parse("1995-03-11")
+                },
+                new Instructor
+                {
+                    FirstMidName = "Fadi", 
+                    LastName = "Fakhouri",
+                    HireDate = DateTime.Parse("2002-07-06")
+                },
+                new Instructor
+                {
+                    FirstMidName = "Roger", 
+                    LastName = "Harui",
+                    HireDate = DateTime.Parse("1998-07-01")
+                },
+                new Instructor
+                {
+                    FirstMidName = "Candace", 
+                    LastName = "Kapoor",
+                    HireDate = DateTime.Parse("2001-01-15")
+                },
+                new Instructor
+                {
+                    FirstMidName = "Roger", 
+                    LastName = "Zheng",
+                    HireDate = DateTime.Parse("2004-02-12")
+                }
             };
 
-            foreach (Instructor i in instructors)
-            {
-                context.Instructors.Add(i);
-            }
+            context.Instructors.AddRange(instructors);
+
             context.SaveChanges();
 
-            var departments = new Department[]
+            var departments = new[]
             {
-                new Department { Name = "English",     Budget = 350000,
+                new Department
+                {
+                    Name = "English", 
+                    Budget = 350000,
                     StartDate = DateTime.Parse("2007-09-01"),
-                    InstructorID  = instructors.Single( i => i.LastName == "Abercrombie").Id },
-                new Department { Name = "Mathematics", Budget = 100000,
+                    InstructorId = instructors.Single(i => i.LastName == "Abercrombie").Id,
+                    UniqueId = Guid.NewGuid()
+                },
+                new Department
+                {
+                    Name = "Mathematics", 
+                    Budget = 100000,
                     StartDate = DateTime.Parse("2007-09-01"),
-                    InstructorID  = instructors.Single( i => i.LastName == "Fakhouri").Id },
-                new Department { Name = "Engineering", Budget = 350000,
+                    InstructorId = instructors.Single(i => i.LastName == "Fakhouri").Id,
+                    UniqueId = Guid.NewGuid()
+                },
+                new Department
+                {
+                    Name = "Engineering", 
+                    Budget = 350000,
                     StartDate = DateTime.Parse("2007-09-01"),
-                    InstructorID  = instructors.Single( i => i.LastName == "Harui").Id },
-                new Department { Name = "Economics",   Budget = 100000,
+                    InstructorId = instructors.Single(i => i.LastName == "Harui").Id,
+                    UniqueId = Guid.NewGuid()
+                },
+                new Department
+                {
+                    Name = "Economics", 
+                    Budget = 100000,
                     StartDate = DateTime.Parse("2007-09-01"),
-                    InstructorID  = instructors.Single( i => i.LastName == "Kapoor").Id }
+                    InstructorId = instructors.Single(i => i.LastName == "Kapoor").Id,
+                    UniqueId = Guid.NewGuid()
+                }
             };
 
-            foreach (Department d in departments)
-            {
-                context.Departments.Add(d);
-            }
+            context.Departments.AddRange(departments);
+
             context.SaveChanges();
 
-            var courses = new Course[]
+            var courses = new[]
             {
-                new Course {CourseID = 1050, Title = "Chemistry",      Credits = 3,
-                    DepartmentID = departments.Single( s => s.Name == "Engineering").DepartmentID
+                new Course
+                {
+                    CourseCode = 1050, 
+                    Title = "Chemistry", 
+                    Credits = 3,
+                    DepartmentUid = departments.Single(s => s.Name == "Engineering").UniqueId,
+                    UniqueId = Guid.NewGuid()
                 },
-                new Course {CourseID = 4022, Title = "Microeconomics", Credits = 3,
-                    DepartmentID = departments.Single( s => s.Name == "Economics").DepartmentID
+                new Course
+                {
+                    CourseCode = 4022, 
+                    Title = "Microeconomics", 
+                    Credits = 3,
+                    DepartmentUid = departments.Single(s => s.Name == "Economics").UniqueId,
+                    UniqueId = Guid.NewGuid()
                 },
-                new Course {CourseID = 4041, Title = "Macroeconomics", Credits = 3,
-                    DepartmentID = departments.Single( s => s.Name == "Economics").DepartmentID
+                new Course
+                {
+                    CourseCode = 4041, 
+                    Title = "Macroeconomics", 
+                    Credits = 3,
+                    DepartmentUid = departments.Single(s => s.Name == "Economics").UniqueId,
+                    UniqueId = Guid.NewGuid()
                 },
-                new Course {CourseID = 1045, Title = "Calculus",       Credits = 4,
-                    DepartmentID = departments.Single( s => s.Name == "Mathematics").DepartmentID
+                new Course
+                {
+                    CourseCode = 1045, 
+                    Title = "Calculus", 
+                    Credits = 4,
+                    DepartmentUid = departments.Single(s => s.Name == "Mathematics").UniqueId,
+                    UniqueId = Guid.NewGuid()
                 },
-                new Course {CourseID = 3141, Title = "Trigonometry",   Credits = 4,
-                    DepartmentID = departments.Single( s => s.Name == "Mathematics").DepartmentID
+                new Course
+                {
+                    CourseCode = 3141, 
+                    Title = "Trigonometry", 
+                    Credits = 4,
+                    DepartmentUid = departments.Single(s => s.Name == "Mathematics").UniqueId,
+                    UniqueId = Guid.NewGuid()
                 },
-                new Course {CourseID = 2021, Title = "Composition",    Credits = 3,
-                    DepartmentID = departments.Single( s => s.Name == "English").DepartmentID
+                new Course
+                {
+                    CourseCode = 2021, 
+                    Title = "Composition", 
+                    Credits = 3,
+                    DepartmentUid = departments.Single(s => s.Name == "English").UniqueId,
+                    UniqueId = Guid.NewGuid()
                 },
-                new Course {CourseID = 2042, Title = "Literature",     Credits = 4,
-                    DepartmentID = departments.Single( s => s.Name == "English").DepartmentID
-                },
+                new Course
+                {
+                    CourseCode = 2042, 
+                    Title = "Literature", 
+                    Credits = 4,
+                    DepartmentUid = departments.Single(s => s.Name == "English").UniqueId,
+                    UniqueId = Guid.NewGuid()
+                }
             };
 
-            foreach (Course c in courses)
-            {
-                context.Courses.Add(c);
-            }
+            context.Courses.AddRange(courses);
+
             context.SaveChanges();
 
-            var officeAssignments = new OfficeAssignment[]
+            var officeAssignments = new[]
             {
-                new OfficeAssignment {
-                    InstructorID = instructors.Single( i => i.LastName == "Fakhouri").Id,
-                    Location = "Smith 17" },
-                new OfficeAssignment {
-                    InstructorID = instructors.Single( i => i.LastName == "Harui").Id,
-                    Location = "Gowan 27" },
-                new OfficeAssignment {
-                    InstructorID = instructors.Single( i => i.LastName == "Kapoor").Id,
-                    Location = "Thompson 304" },
+                new OfficeAssignment
+                {
+                    InstructorID = instructors.Single(i => i.LastName == "Fakhouri").Id,
+                    Location = "Smith 17"
+                },
+                new OfficeAssignment
+                {
+                    InstructorID = instructors.Single(i => i.LastName == "Harui").Id,
+                    Location = "Gowan 27"
+                },
+                new OfficeAssignment
+                {
+                    InstructorID= instructors.Single(i => i.LastName == "Kapoor").Id,
+                    Location = "Thompson 304"
+                }
             };
 
-            foreach (OfficeAssignment o in officeAssignments)
-            {
-                context.OfficeAssignments.Add(o);
-            }
+            context.OfficeAssignments.AddRange(officeAssignments);
+
             context.SaveChanges();
 
-            var courseInstructors = new CourseAssignment[]
+            var courseInstructors = new[]
             {
-                new CourseAssignment {
-                    CourseID = courses.Single(c => c.Title == "Chemistry" ).CourseID,
-                    InstructorID = instructors.Single(i => i.LastName == "Kapoor").Id
-                    },
-                new CourseAssignment {
-                    CourseID = courses.Single(c => c.Title == "Chemistry" ).CourseID,
-                    InstructorID = instructors.Single(i => i.LastName == "Harui").Id
-                    },
-                new CourseAssignment {
-                    CourseID = courses.Single(c => c.Title == "Microeconomics" ).CourseID,
-                    InstructorID = instructors.Single(i => i.LastName == "Zheng").Id
-                    },
-                new CourseAssignment {
-                    CourseID = courses.Single(c => c.Title == "Macroeconomics" ).CourseID,
-                    InstructorID = instructors.Single(i => i.LastName == "Zheng").Id
-                    },
-                new CourseAssignment {
-                    CourseID = courses.Single(c => c.Title == "Calculus" ).CourseID,
-                    InstructorID = instructors.Single(i => i.LastName == "Fakhouri").Id
-                    },
-                new CourseAssignment {
-                    CourseID = courses.Single(c => c.Title == "Trigonometry" ).CourseID,
-                    InstructorID = instructors.Single(i => i.LastName == "Harui").Id
-                    },
-                new CourseAssignment {
-                    CourseID = courses.Single(c => c.Title == "Composition" ).CourseID,
-                    InstructorID = instructors.Single(i => i.LastName == "Abercrombie").Id
-                    },
-                new CourseAssignment {
-                    CourseID = courses.Single(c => c.Title == "Literature" ).CourseID,
-                    InstructorID = instructors.Single(i => i.LastName == "Abercrombie").Id
-                    },
+                new CourseAssignment
+                {
+                    CourseUid = courses.Single(c => c.Title == "Chemistry").UniqueId,
+                    InstructorId = instructors.Single(i => i.LastName == "Kapoor").Id
+                },
+                new CourseAssignment
+                {
+                    CourseUid = courses.Single(c => c.Title == "Chemistry").UniqueId,
+                    InstructorId = instructors.Single(i => i.LastName == "Harui").Id
+                },
+                new CourseAssignment
+                {
+                    CourseUid = courses.Single(c => c.Title == "Microeconomics").UniqueId,
+                    InstructorId = instructors.Single(i => i.LastName == "Zheng").Id
+                },
+                new CourseAssignment
+                {
+                    CourseUid = courses.Single(c => c.Title == "Macroeconomics").UniqueId,
+                    InstructorId = instructors.Single(i => i.LastName == "Zheng").Id
+                },
+                new CourseAssignment
+                {
+                    CourseUid = courses.Single(c => c.Title == "Calculus").UniqueId,
+                    InstructorId = instructors.Single(i => i.LastName == "Fakhouri").Id
+                },
+                new CourseAssignment
+                {
+                    CourseUid = courses.Single(c => c.Title == "Trigonometry").UniqueId,
+                    InstructorId = instructors.Single(i => i.LastName == "Harui").Id
+                },
+                new CourseAssignment
+                {
+                    CourseUid = courses.Single(c => c.Title == "Composition").UniqueId,
+                    InstructorId = instructors.Single(i => i.LastName == "Abercrombie").Id
+                },
+                new CourseAssignment
+                {
+                    CourseUid = courses.Single(c => c.Title == "Literature").UniqueId,
+                    InstructorId = instructors.Single(i => i.LastName == "Abercrombie").Id
+                }
             };
 
-            foreach (CourseAssignment ci in courseInstructors)
-            {
-                context.CourseAssignments.Add(ci);
-            }
+            context.CourseAssignments.AddRange(courseInstructors);
+
             context.SaveChanges();
 
-            var enrollments = new Enrollment[]
+            var enrollments = new[]
             {
-                new Enrollment {
-                    StudentID = students.Single(s => s.LastName == "Alexander").Id,
-                    CourseID = courses.Single(c => c.Title == "Chemistry" ).CourseID,
+                new Enrollment
+                {
+                    StudentId = students.Single(s => s.LastName == "Alexander").Id,
+                    CourseUid = courses.Single(c => c.Title == "Chemistry").UniqueId,
                     Grade = Grade.A
                 },
-                    new Enrollment {
-                    StudentID = students.Single(s => s.LastName == "Alexander").Id,
-                    CourseID = courses.Single(c => c.Title == "Microeconomics" ).CourseID,
+                new Enrollment
+                {
+                    StudentId = students.Single(s => s.LastName == "Alexander").Id,
+                    CourseUid = courses.Single(c => c.Title == "Microeconomics").UniqueId,
                     Grade = Grade.C
-                    },
-                    new Enrollment {
-                    StudentID = students.Single(s => s.LastName == "Alexander").Id,
-                    CourseID = courses.Single(c => c.Title == "Macroeconomics" ).CourseID,
+                },
+                new Enrollment
+                {
+                    StudentId = students.Single(s => s.LastName == "Alexander").Id,
+                    CourseUid = courses.Single(c => c.Title == "Macroeconomics").UniqueId,
                     Grade = Grade.B
-                    },
-                    new Enrollment {
-                        StudentID = students.Single(s => s.LastName == "Alonso").Id,
-                    CourseID = courses.Single(c => c.Title == "Calculus" ).CourseID,
+                },
+                new Enrollment
+                {
+                    StudentId = students.Single(s => s.LastName == "Alonso").Id,
+                    CourseUid = courses.Single(c => c.Title == "Calculus").UniqueId,
                     Grade = Grade.B
-                    },
-                    new Enrollment {
-                        StudentID = students.Single(s => s.LastName == "Alonso").Id,
-                    CourseID = courses.Single(c => c.Title == "Trigonometry" ).CourseID,
+                },
+                new Enrollment
+                {
+                    StudentId = students.Single(s => s.LastName == "Alonso").Id,
+                    CourseUid = courses.Single(c => c.Title == "Trigonometry").UniqueId,
                     Grade = Grade.B
-                    },
-                    new Enrollment {
-                    StudentID = students.Single(s => s.LastName == "Alonso").Id,
-                    CourseID = courses.Single(c => c.Title == "Composition" ).CourseID,
+                },
+                new Enrollment
+                {
+                    StudentId = students.Single(s => s.LastName == "Alonso").Id,
+                    CourseUid = courses.Single(c => c.Title == "Composition").UniqueId,
                     Grade = Grade.B
-                    },
-                    new Enrollment {
-                    StudentID = students.Single(s => s.LastName == "Anand").Id,
-                    CourseID = courses.Single(c => c.Title == "Chemistry" ).CourseID
-                    },
-                    new Enrollment {
-                    StudentID = students.Single(s => s.LastName == "Anand").Id,
-                    CourseID = courses.Single(c => c.Title == "Microeconomics").CourseID,
+                },
+                new Enrollment
+                {
+                    StudentId = students.Single(s => s.LastName == "Anand").Id,
+                    CourseUid = courses.Single(c => c.Title == "Chemistry").UniqueId
+                },
+                new Enrollment
+                {
+                    StudentId = students.Single(s => s.LastName == "Anand").Id,
+                    CourseUid = courses.Single(c => c.Title == "Microeconomics").UniqueId,
                     Grade = Grade.B
-                    },
-                new Enrollment {
-                    StudentID = students.Single(s => s.LastName == "Barzdukas").Id,
-                    CourseID = courses.Single(c => c.Title == "Chemistry").CourseID,
+                },
+                new Enrollment
+                {
+                    StudentId = students.Single(s => s.LastName == "Barzdukas").Id,
+                    CourseUid = courses.Single(c => c.Title == "Chemistry").UniqueId,
                     Grade = Grade.B
-                    },
-                    new Enrollment {
-                    StudentID = students.Single(s => s.LastName == "Li").Id,
-                    CourseID = courses.Single(c => c.Title == "Composition").CourseID,
+                },
+                new Enrollment
+                {
+                    StudentId = students.Single(s => s.LastName == "Li").Id,
+                    CourseUid = courses.Single(c => c.Title == "Composition").UniqueId,
                     Grade = Grade.B
-                    },
-                    new Enrollment {
-                    StudentID = students.Single(s => s.LastName == "Justice").Id,
-                    CourseID = courses.Single(c => c.Title == "Literature").CourseID,
+                },
+                new Enrollment
+                {
+                    StudentId = students.Single(s => s.LastName == "Justice").Id,
+                    CourseUid = courses.Single(c => c.Title == "Literature").UniqueId,
                     Grade = Grade.B
-                    }
+                }
             };
 
             foreach (Enrollment e in enrollments)
             {
-                var enrollmentInDataBase = context.Enrollments.Where(
-                    s =>
-                            s.Student.Id == e.StudentID &&
-                            s.Course.CourseID == e.CourseID).SingleOrDefault();
+                var enrollmentInDataBase = context.Enrollments
+                    .SingleOrDefault(s => 
+                        s.Student.Id == e.StudentId &&
+                        s.CourseUid == e.CourseUid);
                 if (enrollmentInDataBase == null)
                 {
                     context.Enrollments.Add(e);
                 }
             }
+
             context.SaveChanges();
         }
     }
