@@ -87,10 +87,10 @@
                 return NotFound();
             }
 
-            var courseIds = student.Enrollments.Select(x => x.CourseUid).ToArray();
+            var courseIds = student.Enrollments.Select(x => x.CourseExternalId).ToArray();
             ViewData["EnrolledCourses"] = await _context.Courses
-                .Where(x => courseIds.Contains(x.UniqueId))
-                .ToDictionaryAsync(x => x.UniqueId);
+                .Where(x => courseIds.Contains(x.ExternalId))
+                .ToDictionaryAsync(x => x.ExternalId);
 
             return View(student);
         }

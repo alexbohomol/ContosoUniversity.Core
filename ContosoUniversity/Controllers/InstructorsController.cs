@@ -36,21 +36,21 @@
 
                 CoursesReference = await _context.Courses
                     .AsNoTracking()
-                    .ToDictionaryAsync(x => x.UniqueId)
+                    .ToDictionaryAsync(x => x.ExternalId)
             };
 
             if (id is not null)
             {
                 ViewData["InstructorID"] = id.Value;
                 var instructor = viewModel.Instructors.Single(i => i.Id == id.Value);
-                var instructorCourses = instructor.CourseAssignments.Select(x => x.CourseUid);
+                var instructorCourses = instructor.CourseAssignments.Select(x => x.CourseExternalId);
                 var courses = _context.Courses
-                    .Where(x => instructorCourses.Contains(x.UniqueId));
+                    .Where(x => instructorCourses.Contains(x.ExternalId));
                 viewModel.SelectedInstructorCourses = courses;
                 viewModel.DepartmentNamesReference = await _context.Departments
-                    .Where(x => courses.Select(_ => _.DepartmentUid).Contains(x.UniqueId))
+                    .Where(x => courses.Select(_ => _.DepartmentExternalId).Contains(x.ExternalId))
                     .AsNoTracking()
-                    .ToDictionaryAsync(x => x.UniqueId, x => x.Name);
+                    .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
             }
 
             if (courseUid is not null)
@@ -58,7 +58,7 @@
                 ViewData["selectedCourseUid"] = courseUid.Value;
                 viewModel.SelectedCourseEnrollments = _context.Enrollments
                     .Include(x => x.Student)
-                    .Where(x => x.CourseUid == courseUid);
+                    .Where(x => x.CourseExternalId == courseUid);
             }
 
             return View(viewModel);
@@ -98,7 +98,7 @@
                     instructor.CourseAssignments.Add(new CourseAssignment
                     {
                         InstructorId = instructor.Id,
-                        CourseUid = Guid.Parse(courseUid)
+                        CourseExternalId = Guid.Parse(courseUid)
                     });
                 }
             }
@@ -132,14 +132,14 @@
         private void PopulateAssignedCourseData(Instructor instructor)
         {
             var allCourses = _context.Courses;
-            var instructorCourses = new HashSet<Guid>(instructor.CourseAssignments.Select(c => c.CourseUid));
+            var instructorCourses = new HashSet<Guid>(instructor.CourseAssignments.Select(c => c.CourseExternalId));
 
             ViewData["Courses"] = allCourses.Select(course => new AssignedCourseData
             {
                 CourseCode = course.CourseCode,
-                CourseUid = course.UniqueId,
+                CourseExternalId = course.ExternalId,
                 Title = course.Title,
-                Assigned = instructorCourses.Contains(course.UniqueId)
+                Assigned = instructorCourses.Contains(course.ExternalId)
             }).ToList();
         }
 
@@ -195,23 +195,23 @@
 
             var selectedCoursesHs = new HashSet<string>(selectedCourses);
             var instructorCourses = new HashSet<Guid>
-                (instructorToUpdate.CourseAssignments.Select(c => c.CourseUid));
+                (instructorToUpdate.CourseAssignments.Select(c => c.CourseExternalId));
             foreach (var course in _context.Courses)
-                if (selectedCoursesHs.Contains(course.UniqueId.ToString()))
+                if (selectedCoursesHs.Contains(course.ExternalId.ToString()))
                 {
-                    if (!instructorCourses.Contains(course.UniqueId))
+                    if (!instructorCourses.Contains(course.ExternalId))
                         instructorToUpdate.CourseAssignments.Add(new CourseAssignment
                         {
                             InstructorId = instructorToUpdate.Id,
-                            CourseUid = course.UniqueId
+                            CourseExternalId = course.ExternalId
                         });
                 }
                 else
                 {
-                    if (instructorCourses.Contains(course.UniqueId))
+                    if (instructorCourses.Contains(course.ExternalId))
                     {
                         var courseToRemove =
-                            instructorToUpdate.CourseAssignments.FirstOrDefault(i => i.CourseUid == course.UniqueId);
+                            instructorToUpdate.CourseAssignments.FirstOrDefault(i => i.CourseExternalId == course.ExternalId);
                         if (courseToRemove != null)
                             _context.Remove(courseToRemove);
                     }

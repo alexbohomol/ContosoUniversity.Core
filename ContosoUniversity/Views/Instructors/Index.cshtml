@@ -48,8 +48,8 @@
                 @{
                     foreach (var assignment in item.CourseAssignments)
                     {
-                        @Model.CoursesReference[assignment.CourseUid].CourseCode
-                        @: @Model.CoursesReference[assignment.CourseUid].Title <br/>
+                        @Model.CoursesReference[assignment.CourseExternalId].CourseCode
+                        @: @Model.CoursesReference[assignment.CourseExternalId].Title <br/>
                     }
                 }
             </td>
@@ -78,13 +78,13 @@
         @foreach (var item in Model.SelectedInstructorCourses)
         {
             var selectedRow = "";
-            if (item.UniqueId == (Guid?) ViewData["selectedCourseUid"])
+            if (item.ExternalId == (Guid?) ViewData["selectedCourseUid"])
             {
                 selectedRow = "table-success";
             }
             <tr class="@selectedRow">
                 <td>
-                    @Html.ActionLink("Select", "Index", new {courseUid = item.UniqueId})
+                    @Html.ActionLink("Select", "Index", new {courseUid = item.ExternalId})
                 </td>
                 <td>
                     @item.CourseCode
@@ -93,7 +93,7 @@
                     @item.Title
                 </td>
                 <td>
-                    @Model.DepartmentNamesReference[item.DepartmentUid]
+                    @Model.DepartmentNamesReference[item.DepartmentExternalId]
                 </td>
             </tr>
         }

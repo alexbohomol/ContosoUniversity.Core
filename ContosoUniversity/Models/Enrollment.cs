@@ -20,7 +20,7 @@
         [DisplayFormat(NullDisplayText = "No grade")]
         public Grade? Grade { get; set; }
 
-        public Guid CourseUid { get; set; }
+        public Guid CourseExternalId { get; set; }
         public Student Student { get; set; }
     }
 }

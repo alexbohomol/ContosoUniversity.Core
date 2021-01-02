@@ -27,9 +27,9 @@
             var courses = await _context.Courses.AsNoTracking().ToListAsync();
 
             ViewData["DepartmentsNames"] = await _context.Departments
-                .Where(x => courses.Select(_ => _.DepartmentUid).Contains(x.UniqueId))
+                .Where(x => courses.Select(_ => _.DepartmentExternalId).Contains(x.ExternalId))
                 .AsNoTracking()
-                .ToDictionaryAsync(x => x.UniqueId, x => x.Name);
+                .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
 
             return View(courses);
         }
@@ -44,7 +44,7 @@
 
             var course = await _context.Courses
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.UniqueId == id);
+                .FirstOrDefaultAsync(m => m.ExternalId == id);
             if (course == null)
             {
                 return NotFound();
@@ -52,7 +52,7 @@
 
             var department = await _context.Departments
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.UniqueId == course.DepartmentUid);
+                .FirstOrDefaultAsync(x => x.ExternalId == course.DepartmentExternalId);
 
             ViewData["DepartmentName"] = department.Name;
 
@@ -76,13 +76,13 @@
         {
             if (ModelState.IsValid)
             {
-                course.UniqueId = Guid.NewGuid();
+                course.ExternalId = Guid.NewGuid();
                 _context.Add(course);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            PopulateDepartmentsDropDownList(course.DepartmentUid);
+            PopulateDepartmentsDropDownList(course.DepartmentExternalId);
             return View(course);
         }
 
@@ -96,13 +96,13 @@
 
             var course = await _context.Courses
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.UniqueId == id);
+                .FirstOrDefaultAsync(m => m.ExternalId == id);
             if (course == null)
             {
                 return NotFound();
             }
 
-            PopulateDepartmentsDropDownList(course.DepartmentUid);
+            PopulateDepartmentsDropDownList(course.DepartmentExternalId);
             return View(course);
         }
 
@@ -119,11 +119,11 @@
             }
 
             var courseToUpdate = await _context.Courses
-                .FirstOrDefaultAsync(c => c.UniqueId == id);
+                .FirstOrDefaultAsync(c => c.ExternalId == id);
 
             if (await TryUpdateModelAsync(courseToUpdate,
                 "",
-                c => c.Credits, c => c.DepartmentUid, c => c.Title))
+                c => c.Credits, c => c.DepartmentExternalId, c => c.Title))
             {
                 try
                 {
@@ -140,7 +140,7 @@
                 return RedirectToAction(nameof(Index));
             }
 
-            PopulateDepartmentsDropDownList(courseToUpdate.DepartmentUid);
+            PopulateDepartmentsDropDownList(courseToUpdate.DepartmentExternalId);
             return View(courseToUpdate);
         }
 
@@ -152,7 +152,7 @@
 
             ViewBag.DepartmentUid = new SelectList(
                 departmentsQuery.AsNoTracking(),
-                nameof(Department.UniqueId),
+                nameof(Department.ExternalId),
                 nameof(Department.Name),
                 selectedDepartment);
         }
@@ -167,7 +167,7 @@
 
             var course = await _context.Courses
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.UniqueId == id);
+                .FirstOrDefaultAsync(m => m.ExternalId == id);
             if (course == null)
             {
                 return NotFound();
@@ -175,7 +175,7 @@
 
             var department = await _context.Departments
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.UniqueId == course.DepartmentUid);
+                .FirstOrDefaultAsync(x => x.ExternalId == course.DepartmentExternalId);
 
             ViewData["DepartmentName"] = department.Name;
 
@@ -187,7 +187,7 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var course = await _context.Courses.SingleAsync(x => x.UniqueId == id);
+            var course = await _context.Courses.SingleAsync(x => x.ExternalId == id);
             _context.Courses.Remove(course);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

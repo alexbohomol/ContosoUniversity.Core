@@ -29,7 +29,7 @@
             modelBuilder.Entity<Instructor>().ToTable("Instructor", DbSchemas.Department);
             modelBuilder.Entity<OfficeAssignment>().ToTable("OfficeAssignment", DbSchemas.Department);
             modelBuilder.Entity<CourseAssignment>().ToTable("CourseAssignment", DbSchemas.Department)
-                .HasKey(c => new {c.CourseUid, c.InstructorId});
+                .HasKey(c => new {c.CourseExternalId, c.InstructorId});
         }
 
         private static class DbSchemas

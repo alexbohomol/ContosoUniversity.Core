@@ -4,7 +4,7 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    public class Department : IUniqueEntity
+    public class Department : IExternalIdentifier
     {
         public int Id { get; set; }
 
@@ -26,6 +26,6 @@
         public byte[] RowVersion { get; set; }
 
         public Instructor Administrator { get; set; }
-        public Guid UniqueId { get; set; }
+        public Guid ExternalId { get; set; }
     }
 }

@@ -70,7 +70,7 @@
         {
             if (ModelState.IsValid)
             {
-                department.UniqueId = Guid.NewGuid();
+                department.ExternalId = Guid.NewGuid();
                 _context.Add(department);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -91,7 +91,7 @@
             var department = await _context.Departments
                 .Include(i => i.Administrator)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.UniqueId == id);
+                .FirstOrDefaultAsync(m => m.ExternalId == id);
 
             if (department == null)
             {
@@ -116,7 +116,7 @@
 
             var departmentToUpdate = await _context.Departments
                 .Include(i => i.Administrator)
-                .FirstOrDefaultAsync(m => m.UniqueId == id);
+                .FirstOrDefaultAsync(m => m.ExternalId == id);
 
             if (departmentToUpdate == null)
             {
@@ -203,7 +203,7 @@
             var department = await _context.Departments
                 .Include(d => d.Administrator)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.UniqueId == id);
+                .FirstOrDefaultAsync(m => m.ExternalId == id);
             if (department == null)
             {
                 if (concurrencyError.GetValueOrDefault())
@@ -232,7 +232,7 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var department = await _context.Departments.FirstOrDefaultAsync(x => x.UniqueId == id);
+            var department = await _context.Departments.FirstOrDefaultAsync(x => x.ExternalId == id);
             if (department != null)
             {
                 try
@@ -243,7 +243,7 @@
                 catch (DbUpdateConcurrencyException /* ex */)
                 {
                     //Log the error (uncomment ex variable name and write a log.)
-                    return RedirectToAction(nameof(Delete), new {concurrencyError = true, id = department.UniqueId});
+                    return RedirectToAction(nameof(Delete), new {concurrencyError = true, id = department.ExternalId});
                 }
             }
 
