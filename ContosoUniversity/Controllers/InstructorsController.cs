@@ -24,7 +24,7 @@
         }
 
         // GET: Instructors
-        public async Task<IActionResult> Index(int? id, Guid? courseUid)
+        public async Task<IActionResult> Index(Guid? id, Guid? courseExternalId)
         {
             var viewModel = new InstructorIndexData
             {
@@ -36,41 +36,47 @@
 
                 CoursesReference = await _context.Courses
                     .AsNoTracking()
-                    .ToDictionaryAsync(x => x.UniqueId)
+                    .ToDictionaryAsync(x => x.ExternalId)
             };
 
             if (id is not null)
             {
-                ViewData["InstructorID"] = id.Value;
-                var instructor = viewModel.Instructors.Single(i => i.Id == id.Value);
-                var instructorCourses = instructor.CourseAssignments.Select(x => x.CourseUid);
+                ViewData["selectedInstructorExternalId"] = id.Value;
+                var instructor = viewModel.Instructors.Single(i => i.ExternalId == id.Value);
+                var instructorCourses = instructor.CourseAssignments.Select(x => x.CourseExternalId);
                 var courses = _context.Courses
-                    .Where(x => instructorCourses.Contains(x.UniqueId));
+                    .Where(x => instructorCourses.Contains(x.ExternalId));
                 viewModel.SelectedInstructorCourses = courses;
                 viewModel.DepartmentNamesReference = await _context.Departments
-                    .Where(x => courses.Select(_ => _.DepartmentUid).Contains(x.UniqueId))
+                    .Where(x => courses.Select(_ => _.DepartmentExternalId).Contains(x.ExternalId))
                     .AsNoTracking()
-                    .ToDictionaryAsync(x => x.UniqueId, x => x.Name);
+                    .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
             }
 
-            if (courseUid is not null)
+            if (courseExternalId is not null)
             {
-                ViewData["selectedCourseUid"] = courseUid.Value;
+                ViewData["selectedCourseExternalId"] = courseExternalId.Value;
                 viewModel.SelectedCourseEnrollments = _context.Enrollments
                     .Include(x => x.Student)
-                    .Where(x => x.CourseUid == courseUid);
+                    .Where(x => x.CourseExternalId == courseExternalId);
             }
 
             return View(viewModel);
         }
 
         // GET: Instructors/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(Guid? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            var instructor = await _context.Instructors.FirstOrDefaultAsync(m => m.Id == id);
-            if (instructor == null) return NotFound();
+            var instructor = await _context.Instructors.FirstOrDefaultAsync(m => m.ExternalId == id);
+            if (instructor == null)
+            {
+                return NotFound();
+            }
 
             return View(instructor);
         }
@@ -98,13 +104,14 @@
                     instructor.CourseAssignments.Add(new CourseAssignment
                     {
                         InstructorId = instructor.Id,
-                        CourseUid = Guid.Parse(courseUid)
+                        CourseExternalId = Guid.Parse(courseUid)
                     });
                 }
             }
 
             if (ModelState.IsValid)
             {
+                instructor.ExternalId = Guid.NewGuid();
                 _context.Add(instructor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -115,16 +122,23 @@
         }
 
         // GET: Instructors/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+            {
+                return NotFound();
+            }
 
             var instructor = await _context.Instructors
                 .Include(i => i.OfficeAssignment)
                 .Include(i => i.CourseAssignments)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (instructor == null) return NotFound();
+                .FirstOrDefaultAsync(m => m.ExternalId == id);
+            if (instructor == null)
+            {
+                return NotFound();
+            }
+            
             PopulateAssignedCourseData(instructor);
             return View(instructor);
         }
@@ -132,14 +146,14 @@
         private void PopulateAssignedCourseData(Instructor instructor)
         {
             var allCourses = _context.Courses;
-            var instructorCourses = new HashSet<Guid>(instructor.CourseAssignments.Select(c => c.CourseUid));
+            var instructorCourses = new HashSet<Guid>(instructor.CourseAssignments.Select(c => c.CourseExternalId));
 
             ViewData["Courses"] = allCourses.Select(course => new AssignedCourseData
             {
                 CourseCode = course.CourseCode,
-                CourseUid = course.UniqueId,
+                CourseExternalId = course.ExternalId,
                 Title = course.Title,
-                Assigned = instructorCourses.Contains(course.UniqueId)
+                Assigned = instructorCourses.Contains(course.ExternalId)
             }).ToList();
         }
 
@@ -148,14 +162,17 @@
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, string[] selectedCourses)
+        public async Task<IActionResult> Edit(Guid? id, string[] selectedCourses)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+            {
+                return NotFound();
+            }
 
             var instructorToUpdate = await _context.Instructors
                 .Include(i => i.OfficeAssignment)
                 .Include(i => i.CourseAssignments)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.ExternalId == id);
 
             if (await TryUpdateModelAsync(
                 instructorToUpdate,
@@ -195,23 +212,23 @@
 
             var selectedCoursesHs = new HashSet<string>(selectedCourses);
             var instructorCourses = new HashSet<Guid>
-                (instructorToUpdate.CourseAssignments.Select(c => c.CourseUid));
+                (instructorToUpdate.CourseAssignments.Select(c => c.CourseExternalId));
             foreach (var course in _context.Courses)
-                if (selectedCoursesHs.Contains(course.UniqueId.ToString()))
+                if (selectedCoursesHs.Contains(course.ExternalId.ToString()))
                 {
-                    if (!instructorCourses.Contains(course.UniqueId))
+                    if (!instructorCourses.Contains(course.ExternalId))
                         instructorToUpdate.CourseAssignments.Add(new CourseAssignment
                         {
                             InstructorId = instructorToUpdate.Id,
-                            CourseUid = course.UniqueId
+                            CourseExternalId = course.ExternalId
                         });
                 }
                 else
                 {
-                    if (instructorCourses.Contains(course.UniqueId))
+                    if (instructorCourses.Contains(course.ExternalId))
                     {
                         var courseToRemove =
-                            instructorToUpdate.CourseAssignments.FirstOrDefault(i => i.CourseUid == course.UniqueId);
+                            instructorToUpdate.CourseAssignments.FirstOrDefault(i => i.CourseExternalId == course.ExternalId);
                         if (courseToRemove != null)
                             _context.Remove(courseToRemove);
                     }
@@ -219,13 +236,19 @@
         }
 
         // GET: Instructors/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+            {
+                return NotFound();
+            }
 
             var instructor = await _context.Instructors
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (instructor == null) return NotFound();
+                .FirstOrDefaultAsync(m => m.ExternalId == id);
+            if (instructor == null)
+            {
+                return NotFound();
+            }
 
             return View(instructor);
         }
@@ -234,15 +257,16 @@
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var instructor = await _context.Instructors
                 .Include(i => i.CourseAssignments)
-                .SingleAsync(i => i.Id == id);
+                .SingleAsync(i => i.ExternalId == id);
 
             var departments = await _context.Departments
-                .Where(d => d.InstructorId == id)
+                .Where(d => d.InstructorId == instructor.Id)
                 .ToListAsync();
+            
             departments.ForEach(d => d.InstructorId = null);
 
             _context.Instructors.Remove(instructor);

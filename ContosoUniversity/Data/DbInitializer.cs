@@ -21,49 +21,57 @@
                 {
                     FirstMidName = "Carson",
                     LastName = "Alexander",
-                    EnrollmentDate = DateTime.Parse("2010-09-01")
+                    EnrollmentDate = DateTime.Parse("2010-09-01"),
+                    ExternalId = Guid.NewGuid()
                 },
                 new Student
                 {
                     FirstMidName = "Meredith",
                     LastName = "Alonso",
-                    EnrollmentDate = DateTime.Parse("2012-09-01")
+                    EnrollmentDate = DateTime.Parse("2012-09-01"),
+                    ExternalId = Guid.NewGuid()
                 },
                 new Student
                 {
                     FirstMidName = "Arturo",
                     LastName = "Anand",
-                    EnrollmentDate = DateTime.Parse("2013-09-01")
+                    EnrollmentDate = DateTime.Parse("2013-09-01"),
+                    ExternalId = Guid.NewGuid()
                 },
                 new Student
                 {
                     FirstMidName = "Gytis",
                     LastName = "Barzdukas",
-                    EnrollmentDate = DateTime.Parse("2012-09-01")
+                    EnrollmentDate = DateTime.Parse("2012-09-01"),
+                    ExternalId = Guid.NewGuid()
                 },
                 new Student
                 {
                     FirstMidName = "Yan",
                     LastName = "Li",
-                    EnrollmentDate = DateTime.Parse("2012-09-01")
+                    EnrollmentDate = DateTime.Parse("2012-09-01"),
+                    ExternalId = Guid.NewGuid()
                 },
                 new Student
                 {
                     FirstMidName = "Peggy",
                     LastName = "Justice",
-                    EnrollmentDate = DateTime.Parse("2011-09-01")
+                    EnrollmentDate = DateTime.Parse("2011-09-01"),
+                    ExternalId = Guid.NewGuid()
                 },
                 new Student
                 {
                     FirstMidName = "Laura",
                     LastName = "Norman",
-                    EnrollmentDate = DateTime.Parse("2013-09-01")
+                    EnrollmentDate = DateTime.Parse("2013-09-01"),
+                    ExternalId = Guid.NewGuid()
                 },
                 new Student
                 {
                     FirstMidName = "Nino",
                     LastName = "Olivetto",
-                    EnrollmentDate = DateTime.Parse("2005-09-01")
+                    EnrollmentDate = DateTime.Parse("2005-09-01"),
+                    ExternalId = Guid.NewGuid()
                 }
             };
 
@@ -77,31 +85,36 @@
                 {
                     FirstMidName = "Kim",
                     LastName = "Abercrombie",
-                    HireDate = DateTime.Parse("1995-03-11")
+                    HireDate = DateTime.Parse("1995-03-11"),
+                    ExternalId = Guid.NewGuid()
                 },
                 new Instructor
                 {
                     FirstMidName = "Fadi",
                     LastName = "Fakhouri",
-                    HireDate = DateTime.Parse("2002-07-06")
+                    HireDate = DateTime.Parse("2002-07-06"),
+                    ExternalId = Guid.NewGuid()
                 },
                 new Instructor
                 {
                     FirstMidName = "Roger",
                     LastName = "Harui",
-                    HireDate = DateTime.Parse("1998-07-01")
+                    HireDate = DateTime.Parse("1998-07-01"),
+                    ExternalId = Guid.NewGuid()
                 },
                 new Instructor
                 {
                     FirstMidName = "Candace",
                     LastName = "Kapoor",
-                    HireDate = DateTime.Parse("2001-01-15")
+                    HireDate = DateTime.Parse("2001-01-15"),
+                    ExternalId = Guid.NewGuid()
                 },
                 new Instructor
                 {
                     FirstMidName = "Roger",
                     LastName = "Zheng",
-                    HireDate = DateTime.Parse("2004-02-12")
+                    HireDate = DateTime.Parse("2004-02-12"),
+                    ExternalId = Guid.NewGuid()
                 }
             };
 
@@ -117,7 +130,7 @@
                     Budget = 350000,
                     StartDate = DateTime.Parse("2007-09-01"),
                     InstructorId = instructors.Single(i => i.LastName == "Abercrombie").Id,
-                    UniqueId = Guid.NewGuid()
+                    ExternalId = Guid.NewGuid()
                 },
                 new Department
                 {
@@ -125,7 +138,7 @@
                     Budget = 100000,
                     StartDate = DateTime.Parse("2007-09-01"),
                     InstructorId = instructors.Single(i => i.LastName == "Fakhouri").Id,
-                    UniqueId = Guid.NewGuid()
+                    ExternalId = Guid.NewGuid()
                 },
                 new Department
                 {
@@ -133,7 +146,7 @@
                     Budget = 350000,
                     StartDate = DateTime.Parse("2007-09-01"),
                     InstructorId = instructors.Single(i => i.LastName == "Harui").Id,
-                    UniqueId = Guid.NewGuid()
+                    ExternalId = Guid.NewGuid()
                 },
                 new Department
                 {
@@ -141,7 +154,7 @@
                     Budget = 100000,
                     StartDate = DateTime.Parse("2007-09-01"),
                     InstructorId = instructors.Single(i => i.LastName == "Kapoor").Id,
-                    UniqueId = Guid.NewGuid()
+                    ExternalId = Guid.NewGuid()
                 }
             };
 
@@ -156,56 +169,56 @@
                     CourseCode = 1050,
                     Title = "Chemistry",
                     Credits = 3,
-                    DepartmentUid = departments.Single(s => s.Name == "Engineering").UniqueId,
-                    UniqueId = Guid.NewGuid()
+                    DepartmentExternalId = departments.Single(s => s.Name == "Engineering").ExternalId,
+                    ExternalId = Guid.NewGuid()
                 },
                 new Course
                 {
                     CourseCode = 4022,
                     Title = "Microeconomics",
                     Credits = 3,
-                    DepartmentUid = departments.Single(s => s.Name == "Economics").UniqueId,
-                    UniqueId = Guid.NewGuid()
+                    DepartmentExternalId = departments.Single(s => s.Name == "Economics").ExternalId,
+                    ExternalId = Guid.NewGuid()
                 },
                 new Course
                 {
                     CourseCode = 4041,
                     Title = "Macroeconomics",
                     Credits = 3,
-                    DepartmentUid = departments.Single(s => s.Name == "Economics").UniqueId,
-                    UniqueId = Guid.NewGuid()
+                    DepartmentExternalId = departments.Single(s => s.Name == "Economics").ExternalId,
+                    ExternalId = Guid.NewGuid()
                 },
                 new Course
                 {
                     CourseCode = 1045,
                     Title = "Calculus",
                     Credits = 4,
-                    DepartmentUid = departments.Single(s => s.Name == "Mathematics").UniqueId,
-                    UniqueId = Guid.NewGuid()
+                    DepartmentExternalId = departments.Single(s => s.Name == "Mathematics").ExternalId,
+                    ExternalId = Guid.NewGuid()
                 },
                 new Course
                 {
                     CourseCode = 3141,
                     Title = "Trigonometry",
                     Credits = 4,
-                    DepartmentUid = departments.Single(s => s.Name == "Mathematics").UniqueId,
-                    UniqueId = Guid.NewGuid()
+                    DepartmentExternalId = departments.Single(s => s.Name == "Mathematics").ExternalId,
+                    ExternalId = Guid.NewGuid()
                 },
                 new Course
                 {
                     CourseCode = 2021,
                     Title = "Composition",
                     Credits = 3,
-                    DepartmentUid = departments.Single(s => s.Name == "English").UniqueId,
-                    UniqueId = Guid.NewGuid()
+                    DepartmentExternalId = departments.Single(s => s.Name == "English").ExternalId,
+                    ExternalId = Guid.NewGuid()
                 },
                 new Course
                 {
                     CourseCode = 2042,
                     Title = "Literature",
                     Credits = 4,
-                    DepartmentUid = departments.Single(s => s.Name == "English").UniqueId,
-                    UniqueId = Guid.NewGuid()
+                    DepartmentExternalId = departments.Single(s => s.Name == "English").ExternalId,
+                    ExternalId = Guid.NewGuid()
                 }
             };
 
@@ -240,42 +253,42 @@
             {
                 new CourseAssignment
                 {
-                    CourseUid = courses.Single(c => c.Title == "Chemistry").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Chemistry").ExternalId,
                     InstructorId = instructors.Single(i => i.LastName == "Kapoor").Id
                 },
                 new CourseAssignment
                 {
-                    CourseUid = courses.Single(c => c.Title == "Chemistry").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Chemistry").ExternalId,
                     InstructorId = instructors.Single(i => i.LastName == "Harui").Id
                 },
                 new CourseAssignment
                 {
-                    CourseUid = courses.Single(c => c.Title == "Microeconomics").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Microeconomics").ExternalId,
                     InstructorId = instructors.Single(i => i.LastName == "Zheng").Id
                 },
                 new CourseAssignment
                 {
-                    CourseUid = courses.Single(c => c.Title == "Macroeconomics").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Macroeconomics").ExternalId,
                     InstructorId = instructors.Single(i => i.LastName == "Zheng").Id
                 },
                 new CourseAssignment
                 {
-                    CourseUid = courses.Single(c => c.Title == "Calculus").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Calculus").ExternalId,
                     InstructorId = instructors.Single(i => i.LastName == "Fakhouri").Id
                 },
                 new CourseAssignment
                 {
-                    CourseUid = courses.Single(c => c.Title == "Trigonometry").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Trigonometry").ExternalId,
                     InstructorId = instructors.Single(i => i.LastName == "Harui").Id
                 },
                 new CourseAssignment
                 {
-                    CourseUid = courses.Single(c => c.Title == "Composition").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Composition").ExternalId,
                     InstructorId = instructors.Single(i => i.LastName == "Abercrombie").Id
                 },
                 new CourseAssignment
                 {
-                    CourseUid = courses.Single(c => c.Title == "Literature").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Literature").ExternalId,
                     InstructorId = instructors.Single(i => i.LastName == "Abercrombie").Id
                 }
             };
@@ -289,66 +302,66 @@
                 new Enrollment
                 {
                     StudentId = students.Single(s => s.LastName == "Alexander").Id,
-                    CourseUid = courses.Single(c => c.Title == "Chemistry").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Chemistry").ExternalId,
                     Grade = Grade.A
                 },
                 new Enrollment
                 {
                     StudentId = students.Single(s => s.LastName == "Alexander").Id,
-                    CourseUid = courses.Single(c => c.Title == "Microeconomics").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Microeconomics").ExternalId,
                     Grade = Grade.C
                 },
                 new Enrollment
                 {
                     StudentId = students.Single(s => s.LastName == "Alexander").Id,
-                    CourseUid = courses.Single(c => c.Title == "Macroeconomics").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Macroeconomics").ExternalId,
                     Grade = Grade.B
                 },
                 new Enrollment
                 {
                     StudentId = students.Single(s => s.LastName == "Alonso").Id,
-                    CourseUid = courses.Single(c => c.Title == "Calculus").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Calculus").ExternalId,
                     Grade = Grade.B
                 },
                 new Enrollment
                 {
                     StudentId = students.Single(s => s.LastName == "Alonso").Id,
-                    CourseUid = courses.Single(c => c.Title == "Trigonometry").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Trigonometry").ExternalId,
                     Grade = Grade.B
                 },
                 new Enrollment
                 {
                     StudentId = students.Single(s => s.LastName == "Alonso").Id,
-                    CourseUid = courses.Single(c => c.Title == "Composition").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Composition").ExternalId,
                     Grade = Grade.B
                 },
                 new Enrollment
                 {
                     StudentId = students.Single(s => s.LastName == "Anand").Id,
-                    CourseUid = courses.Single(c => c.Title == "Chemistry").UniqueId
+                    CourseExternalId = courses.Single(c => c.Title == "Chemistry").ExternalId
                 },
                 new Enrollment
                 {
                     StudentId = students.Single(s => s.LastName == "Anand").Id,
-                    CourseUid = courses.Single(c => c.Title == "Microeconomics").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Microeconomics").ExternalId,
                     Grade = Grade.B
                 },
                 new Enrollment
                 {
                     StudentId = students.Single(s => s.LastName == "Barzdukas").Id,
-                    CourseUid = courses.Single(c => c.Title == "Chemistry").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Chemistry").ExternalId,
                     Grade = Grade.B
                 },
                 new Enrollment
                 {
                     StudentId = students.Single(s => s.LastName == "Li").Id,
-                    CourseUid = courses.Single(c => c.Title == "Composition").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Composition").ExternalId,
                     Grade = Grade.B
                 },
                 new Enrollment
                 {
                     StudentId = students.Single(s => s.LastName == "Justice").Id,
-                    CourseUid = courses.Single(c => c.Title == "Literature").UniqueId,
+                    CourseExternalId = courses.Single(c => c.Title == "Literature").ExternalId,
                     Grade = Grade.B
                 }
             };
@@ -358,7 +371,7 @@
                 var enrollmentInDataBase = context.Enrollments
                     .SingleOrDefault(s =>
                         s.Student.Id == e.StudentId &&
-                        s.CourseUid == e.CourseUid);
+                        s.CourseExternalId == e.CourseExternalId);
                 if (enrollmentInDataBase == null)
                 {
                     context.Enrollments.Add(e);

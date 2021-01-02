@@ -3,7 +3,7 @@
     using System;
     using System.ComponentModel.DataAnnotations;
 
-    public class Course : IUniqueEntity
+    public class Course : IExternalIdentifier
     {
         public int Id { get; set; }
         
@@ -16,7 +16,7 @@
         [Range(0, 5)]
         public int Credits { get; set; }
 
-        public Guid DepartmentUid { get; set; }
-        public Guid UniqueId { get; set; }
+        public Guid DepartmentExternalId { get; set; }
+        public Guid ExternalId { get; set; }
     }
 }
