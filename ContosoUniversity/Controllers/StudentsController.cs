@@ -89,7 +89,7 @@
             }
 
             var courseIds = student.Enrollments.Select(x => x.CourseExternalId).ToArray();
-            
+
             ViewData["EnrolledCourses"] = await _context.Courses
                 .Where(x => courseIds.Contains(x.ExternalId))
                 .ToDictionaryAsync(x => x.ExternalId);
@@ -153,7 +153,8 @@
         // POST: Students/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost, ActionName("Edit")]
+        [HttpPost]
+        [ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPost(Guid? id)
         {
@@ -210,7 +211,8 @@
         }
 
         // POST: Students/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
+        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {

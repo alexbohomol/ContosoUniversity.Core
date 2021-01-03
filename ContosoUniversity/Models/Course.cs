@@ -6,7 +6,7 @@
     public class Course : IExternalIdentifier
     {
         public int Id { get; set; }
-        
+
         [Display(Name = "Course Code")]
         public int CourseCode { get; set; }
 

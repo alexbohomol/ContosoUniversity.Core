@@ -138,7 +138,7 @@
             {
                 return NotFound();
             }
-            
+
             PopulateAssignedCourseData(instructor);
             return View(instructor);
         }
@@ -266,7 +266,7 @@
             var departments = await _context.Departments
                 .Where(d => d.InstructorId == instructor.Id)
                 .ToListAsync();
-            
+
             departments.ForEach(d => d.InstructorId = null);
 
             _context.Instructors.Remove(instructor);
