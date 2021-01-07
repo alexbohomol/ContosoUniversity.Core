@@ -12,6 +12,8 @@
 
     using Models;
 
+    using Services;
+
     using ViewModels;
 
     public class InstructorsController : Controller
@@ -44,13 +46,14 @@
                 ViewData["selectedInstructorExternalId"] = id.Value;
                 var instructor = viewModel.Instructors.Single(i => i.ExternalId == id.Value);
                 var instructorCourses = instructor.CourseAssignments.Select(x => x.CourseExternalId);
-                var courses = _context.Courses
-                    .Where(x => instructorCourses.Contains(x.ExternalId));
+                var courses = _context.Courses.Where(x => instructorCourses.Contains(x.ExternalId)).ToList();
                 viewModel.SelectedInstructorCourses = courses;
-                viewModel.DepartmentNamesReference = await _context.Departments
+                var departmentNames = await _context.Departments
                     .Where(x => courses.Select(_ => _.DepartmentExternalId).Contains(x.ExternalId))
                     .AsNoTracking()
                     .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
+                CrossContextBoundariesHelper.CheckCoursesAgainstDepartments(courses, departmentNames);
+                viewModel.DepartmentNamesReference = departmentNames;
             }
 
             if (courseExternalId is not null)
