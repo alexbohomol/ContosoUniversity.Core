@@ -7,15 +7,15 @@ namespace ContosoUniversity.Services
     using Models;
 
     /// <summary>
-    /// TODO: these checks should be implemented in domain/service layers later
+    ///     TODO: these checks should be implemented in domain/service layers later
     /// </summary>
     public static class CrossContextBoundariesHelper
     {
         /// <summary>
-        /// Check if any course references the non-existing (deleted) departments
+        ///     Check if any course references the non-existing (deleted) departments
         /// </summary>
         public static void CheckCoursesAgainstDepartments(
-            IEnumerable<Course> courses, 
+            IEnumerable<Course> courses,
             Dictionary<Guid, string> departmentNames)
         {
             var notFoundDepartments = courses
@@ -23,7 +23,7 @@ namespace ContosoUniversity.Services
                 .Distinct()
                 .Where(x => !departmentNames.ContainsKey(x))
                 .ToArray();
-            
+
             if (notFoundDepartments.Any())
             {
                 var notFoundList = string.Join(", ", notFoundDepartments);
@@ -32,10 +32,10 @@ namespace ContosoUniversity.Services
         }
 
         /// <summary>
-        /// Ensure all assigned courses reference existing course record
+        ///     Ensure all assigned courses reference existing course record
         /// </summary>
         public static void CheckInstructorsAgainstCourses(
-            IEnumerable<Instructor> instructors, 
+            IEnumerable<Instructor> instructors,
             IEnumerable<Course> courses)
         {
             var referencedCourseIds = instructors.SelectMany(x => x.CourseAssignments.Select(ca => ca.CourseExternalId)).ToHashSet();
@@ -50,10 +50,10 @@ namespace ContosoUniversity.Services
         }
 
         /// <summary>
-        /// Ensure all enrolled courses reference existing course record
+        ///     Ensure all enrolled courses reference existing course record
         /// </summary>
         public static void CheckEnrollmentsAgainstCourses(
-            IEnumerable<Enrollment> enrollments, 
+            IEnumerable<Enrollment> enrollments,
             IEnumerable<Course> courses)
         {
             var referencedCourseIds = enrollments.Select(x => x.CourseExternalId).ToHashSet();

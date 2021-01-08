@@ -36,7 +36,7 @@
                 .ToListAsync();
 
             var courses = await _context.Courses.ToListAsync();
-            
+
             CrossContextBoundariesHelper.CheckInstructorsAgainstCourses(instructors, courses);
 
             var viewModel = new InstructorIndexData
