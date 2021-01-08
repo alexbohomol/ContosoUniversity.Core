@@ -12,6 +12,8 @@
 
     using Models;
 
+    using Services;
+
     public class CoursesController : Controller
     {
         private readonly SchoolContext _context;
@@ -26,10 +28,14 @@
         {
             var courses = await _context.Courses.AsNoTracking().ToListAsync();
 
-            ViewData["DepartmentsNames"] = await _context.Departments
-                .Where(x => courses.Select(_ => _.DepartmentExternalId).Contains(x.ExternalId))
+            var departmentNames = await _context.Departments
+                .Where(x => courses.Select(_ => _.DepartmentExternalId).Distinct().Contains(x.ExternalId))
                 .AsNoTracking()
                 .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
+
+            CrossContextBoundariesHelper.CheckCoursesAgainstDepartments(courses, departmentNames);
+
+            ViewData["DepartmentsNames"] = departmentNames;
 
             return View(courses);
         }
@@ -190,6 +196,23 @@
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var course = await _context.Courses.SingleAsync(x => x.ExternalId == id);
+
+            /*
+             * remove related assignments
+             */
+            var relatedAssignments = await _context.CourseAssignments
+                .Where(x => x.CourseExternalId == course.ExternalId)
+                .ToArrayAsync();
+            _context.CourseAssignments.RemoveRange(relatedAssignments);
+
+            /*
+             * remove related enrollments
+             */
+            var relatedEnrollments = await _context.Enrollments
+                .Where(x => x.CourseExternalId == course.ExternalId)
+                .ToArrayAsync();
+            _context.Enrollments.RemoveRange(relatedEnrollments);
+
             _context.Courses.Remove(course);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
