@@ -28,26 +28,29 @@
         // GET: Instructors
         public async Task<IActionResult> Index(Guid? id, Guid? courseExternalId)
         {
+            var instructors = await _context.Instructors
+                .Include(i => i.OfficeAssignment)
+                .Include(i => i.CourseAssignments)
+                .OrderBy(i => i.LastName)
+                .AsNoTracking()
+                .ToListAsync();
+
+            var courses = await _context.Courses.ToListAsync();
+            
+            CrossContextBoundariesHelper.CheckInstructorsAgainstCourses(instructors, courses);
+
             var viewModel = new InstructorIndexData
             {
-                Instructors = await _context.Instructors
-                    .Include(i => i.OfficeAssignment)
-                    .Include(i => i.CourseAssignments)
-                    .OrderBy(i => i.LastName)
-                    .ToListAsync(),
-
-                CoursesReference = await _context.Courses
-                    .AsNoTracking()
-                    .ToDictionaryAsync(x => x.ExternalId)
+                Instructors = instructors,
+                CoursesReference = courses.ToDictionary(x => x.ExternalId)
             };
 
             if (id is not null)
             {
                 ViewData["selectedInstructorExternalId"] = id.Value;
                 var instructor = viewModel.Instructors.Single(i => i.ExternalId == id.Value);
-                var instructorCourses = instructor.CourseAssignments.Select(x => x.CourseExternalId);
-                var courses = _context.Courses.Where(x => instructorCourses.Contains(x.ExternalId)).ToList();
-                viewModel.SelectedInstructorCourses = courses;
+                var instructorCourseIds = instructor.CourseAssignments.Select(x => x.CourseExternalId).ToHashSet();
+                viewModel.SelectedInstructorCourses = courses.Where(x => instructorCourseIds.Contains(x.ExternalId)).ToList();
                 var departmentNames = await _context.Departments
                     .Where(x => courses.Select(_ => _.DepartmentExternalId).Contains(x.ExternalId))
                     .AsNoTracking()
@@ -59,9 +62,13 @@
             if (courseExternalId is not null)
             {
                 ViewData["selectedCourseExternalId"] = courseExternalId.Value;
-                viewModel.SelectedCourseEnrollments = _context.Enrollments
+                var enrollments = await _context.Enrollments
                     .Include(x => x.Student)
-                    .Where(x => x.CourseExternalId == courseExternalId);
+                    .Where(x => x.CourseExternalId == courseExternalId)
+                    .AsNoTracking()
+                    .ToListAsync();
+                CrossContextBoundariesHelper.CheckEnrollmentsAgainstCourses(enrollments, courses);
+                viewModel.SelectedCourseEnrollments = enrollments;
             }
 
             return View(viewModel);

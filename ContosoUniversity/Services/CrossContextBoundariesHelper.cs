@@ -30,5 +30,41 @@ namespace ContosoUniversity.Services
                 throw new Exception($"Unbound contexts inconsistency. Departments not found: {notFoundList}.");
             }
         }
+
+        /// <summary>
+        /// Ensure all assigned courses reference existing course record
+        /// </summary>
+        public static void CheckInstructorsAgainstCourses(
+            IEnumerable<Instructor> instructors, 
+            IEnumerable<Course> courses)
+        {
+            var referencedCourseIds = instructors.SelectMany(x => x.CourseAssignments.Select(ca => ca.CourseExternalId)).ToHashSet();
+            var existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();
+            var notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
+
+            if (notFoundCourses.Any())
+            {
+                var notFoundList = string.Join(", ", notFoundCourses);
+                throw new Exception($"Unbound contexts inconsistency. Course not found: {notFoundList}.");
+            }
+        }
+
+        /// <summary>
+        /// Ensure all enrolled courses reference existing course record
+        /// </summary>
+        public static void CheckEnrollmentsAgainstCourses(
+            IEnumerable<Enrollment> enrollments, 
+            IEnumerable<Course> courses)
+        {
+            var referencedCourseIds = enrollments.Select(x => x.CourseExternalId).ToHashSet();
+            var existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();
+            var notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
+
+            if (notFoundCourses.Any())
+            {
+                var notFoundList = string.Join(", ", notFoundCourses);
+                throw new Exception($"Unbound contexts inconsistency. Course not found: {notFoundList}.");
+            }
+        }
     }
 }
