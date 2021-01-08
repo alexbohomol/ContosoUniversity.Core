@@ -196,6 +196,23 @@
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var course = await _context.Courses.SingleAsync(x => x.ExternalId == id);
+            
+            /*
+             * remove related assignments
+             */
+            var relatedAssignments = await _context.CourseAssignments
+                .Where(x => x.CourseExternalId == course.ExternalId)
+                .ToArrayAsync();
+            _context.CourseAssignments.RemoveRange(relatedAssignments);
+
+            /*
+             * remove related enrollments
+             */
+            var relatedEnrollments = await _context.Enrollments
+                .Where(x => x.CourseExternalId == course.ExternalId)
+                .ToArrayAsync();
+            _context.Enrollments.RemoveRange(relatedEnrollments);
+            
             _context.Courses.Remove(course);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

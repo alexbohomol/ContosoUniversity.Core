@@ -237,7 +237,35 @@
             {
                 try
                 {
+                    var relatedCourses = await _context.Courses.Where(x => x.DepartmentExternalId == id).ToArrayAsync();
+                    var relatedCoursesIds = relatedCourses.Select(x => x.ExternalId).ToArray();
+                    
+                    /*
+                     * remove related assignments
+                     */
+                    var relatedAssignments = await _context.CourseAssignments
+                        .Where(x => relatedCoursesIds.Contains(x.CourseExternalId))
+                        .ToArrayAsync();
+                    _context.CourseAssignments.RemoveRange(relatedAssignments);
+
+                    /*
+                     * remove related enrollments
+                     */
+                    var relatedEnrollments = await _context.Enrollments
+                        .Where(x => relatedCoursesIds.Contains(x.CourseExternalId))
+                        .ToArrayAsync();
+                    _context.Enrollments.RemoveRange(relatedEnrollments);
+                    
+                    /*
+                     * remove related courses
+                     */
+                    _context.Courses.RemoveRange(relatedCourses);
+                    
+                    /*
+                     * remove department
+                     */
                     _context.Departments.Remove(department);
+                    
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException /* ex */)
