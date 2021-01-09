@@ -1,4 +1,4 @@
-﻿namespace ContosoUniversity
+﻿namespace ContosoUniversity.ViewModels
 {
     using System;
     using System.Collections.Generic;

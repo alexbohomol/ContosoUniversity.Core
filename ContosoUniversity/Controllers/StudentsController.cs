@@ -11,6 +11,8 @@
 
     using Models;
 
+    using ViewModels;
+
     public class StudentsController : Controller
     {
         private readonly SchoolContext _context;
