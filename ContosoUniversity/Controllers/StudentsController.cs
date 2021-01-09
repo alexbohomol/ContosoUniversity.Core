@@ -92,9 +92,9 @@
 
             var courseIds = student.Enrollments.Select(x => x.CourseExternalId).ToArray();
 
-            ViewData["EnrolledCourses"] = await _context.Courses
+            ViewData["CourseTitles"] = await _context.Courses
                 .Where(x => courseIds.Contains(x.ExternalId))
-                .ToDictionaryAsync(x => x.ExternalId);
+                .ToDictionaryAsync(x => x.ExternalId, x => x.Title);
 
             return View(student);
         }

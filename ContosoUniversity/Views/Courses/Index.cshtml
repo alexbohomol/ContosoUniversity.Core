@@ -1,8 +1,7 @@
-﻿@model IEnumerable<ContosoUniversity.Models.Course>
+﻿@model IEnumerable<ContosoUniversity.ViewModels.Courses.CourseListItemViewModel>
 
 @{
     ViewData["Title"] = "Courses";
-    var departmentsNames = ViewBag.DepartmentsNames as IDictionary<Guid, string>;
 }
 
 <h2>Courses</h2>
@@ -23,9 +22,9 @@
             @Html.DisplayNameFor(model => model.Credits)
         </th>
         <th>
-            Department
+            @Html.DisplayNameFor(model => model.Department)
         </th>
-        <th></th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -42,12 +41,12 @@
                 @Html.DisplayFor(modelItem => item.Credits)
             </td>
             <td>
-                @departmentsNames[item.DepartmentExternalId]
+                @Html.DisplayFor(modelItem => item.Department)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ExternalId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ExternalId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ExternalId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
     }

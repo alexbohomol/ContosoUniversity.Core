@@ -1,4 +1,4 @@
-﻿@model ContosoUniversity.ViewModels.InstructorIndexData
+﻿@model ContosoUniversity.ViewModels.Instructors.InstructorIndexViewModel
 
 @{
     ViewData["Title"] = "Instructors";
@@ -48,8 +48,8 @@
                 @{
                     foreach (var assignment in item.CourseAssignments)
                     {
-                        @Model.CoursesReference[assignment.CourseExternalId].CourseCode
-                        @: @Model.CoursesReference[assignment.CourseExternalId].Title <br/>
+                        @Model.AssignedCourses[assignment.CourseExternalId]
+                        <br/>
                     }
                 }
             </td>
@@ -64,7 +64,7 @@
     </tbody>
 </table>
 
-@if (Model.SelectedInstructorCourses != null)
+@if (Model.SelectedInstructorCourseIds != null)
 {
     <h3>Courses Taught by Selected Instructor</h3>
     <table class="table">
@@ -75,16 +75,16 @@
             <th>Department</th>
         </tr>
 
-        @foreach (var item in Model.SelectedInstructorCourses)
+        @foreach (var item in Model.SelectedInstructorCourseIds)
         {
             var selectedRow = "";
-            if (item.ExternalId == (Guid?) ViewData["selectedCourseExternalId"])
+            if (item.Id == (Guid?) ViewData["selectedCourseExternalId"])
             {
                 selectedRow = "table-success";
             }
             <tr class="@selectedRow">
                 <td>
-                    @Html.ActionLink("Select", "Index", new {courseExternalId = item.ExternalId})
+                    @Html.ActionLink("Select", "Index", new {courseExternalId = item.Id})
                 </td>
                 <td>
                     @item.CourseCode
@@ -93,7 +93,7 @@
                     @item.Title
                 </td>
                 <td>
-                    @Model.DepartmentNamesReference[item.DepartmentExternalId]
+                    @item.Department
                 </td>
             </tr>
         }

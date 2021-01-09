@@ -14,6 +14,8 @@
 
     using Services;
 
+    using ViewModels.Courses;
+
     public class CoursesController : Controller
     {
         private readonly SchoolContext _context;
@@ -35,15 +37,20 @@
 
             CrossContextBoundariesHelper.CheckCoursesAgainstDepartments(courses, departmentNames);
 
-            ViewData["DepartmentsNames"] = departmentNames;
-
-            return View(courses);
+            return View(courses.Select(x => new CourseListItemViewModel
+            {
+                CourseCode = x.CourseCode,
+                Title = x.Title,
+                Credits = x.Credits,
+                Department = departmentNames[x.DepartmentExternalId],
+                Id = x.ExternalId
+            }).ToList());
         }
 
         // GET: Courses/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
@@ -60,16 +67,27 @@
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.ExternalId == course.DepartmentExternalId);
 
-            ViewData["DepartmentName"] = department.Name;
+            /*
+             * TODO: missing context boundary check when department is null
+             */
 
-            return View(course);
+            return View(new CourseDetailsViewModel
+            {
+                CourseCode = course.CourseCode,
+                Title = course.Title,
+                Credits = course.Credits,
+                Department = department.Name,
+                Id = course.ExternalId
+            });
         }
 
         // GET: Courses/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            PopulateDepartmentsDropDownList();
-            return View();
+            return View(new CourseCreateForm
+            {
+                DepartmentsSelectList = await CreateDepartmentsDropDownList()
+            });
         }
 
         // POST: Courses/Create
@@ -77,25 +95,30 @@
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseCode,Credits,DepartmentUid,Title")]
-            Course course)
+        public async Task<IActionResult> Create(CourseCreateForm form)
         {
             if (ModelState.IsValid)
             {
-                course.ExternalId = Guid.NewGuid();
-                _context.Add(course);
+                _context.Add(new Course
+                {
+                    CourseCode = form.CourseCode,
+                    Title = form.Title,
+                    Credits = form.Credits,
+                    DepartmentExternalId = form.DepartmentId,
+                    ExternalId = Guid.NewGuid()
+                });
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            PopulateDepartmentsDropDownList(course.DepartmentExternalId);
-            return View(course);
+            form.DepartmentsSelectList = await CreateDepartmentsDropDownList(form.DepartmentId);
+            return View(form);
         }
 
         // GET: Courses/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
@@ -108,8 +131,14 @@
                 return NotFound();
             }
 
-            PopulateDepartmentsDropDownList(course.DepartmentExternalId);
-            return View(course);
+            return View(new CourseEditForm
+            {
+                CourseCode = course.CourseCode,
+                Title = course.Title,
+                Credits = course.Credits,
+                DepartmentId = course.DepartmentExternalId,
+                DepartmentsSelectList = await CreateDepartmentsDropDownList(course.DepartmentExternalId)
+            });
         }
 
         // POST: Courses/Edit/5
@@ -118,19 +147,20 @@
         [HttpPost]
         [ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPost(Guid? id)
+        public async Task<IActionResult> EditPost(CourseEditForm form)
         {
-            if (id == null)
+            if (form is null || ModelState.IsValid is false)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             var courseToUpdate = await _context.Courses
-                .FirstOrDefaultAsync(c => c.ExternalId == id);
+                .FirstOrDefaultAsync(c => c.ExternalId == form.Id);
 
-            if (await TryUpdateModelAsync(courseToUpdate,
-                "",
-                c => c.Credits, c => c.DepartmentExternalId, c => c.Title))
+            if (await TryUpdateModelAsync(courseToUpdate, "",
+                c => c.Credits,
+                c => c.DepartmentExternalId,
+                c => c.Title))
             {
                 try
                 {
@@ -147,18 +177,21 @@
                 return RedirectToAction(nameof(Index));
             }
 
-            PopulateDepartmentsDropDownList(courseToUpdate.DepartmentExternalId);
-            return View(courseToUpdate);
+            form.DepartmentsSelectList = await CreateDepartmentsDropDownList(courseToUpdate.DepartmentExternalId);
+            return View(form);
         }
 
-        private void PopulateDepartmentsDropDownList(object selectedDepartment = null)
+        private async Task<SelectList> CreateDepartmentsDropDownList(object selectedDepartment = null)
         {
-            var departmentsQuery = from d in _context.Departments
-                orderby d.Name
-                select d;
+            var departments = await (
+                    from d in _context.Departments
+                    orderby d.Name
+                    select d)
+                .AsNoTracking()
+                .ToArrayAsync();
 
-            ViewBag.DepartmentUid = new SelectList(
-                departmentsQuery.AsNoTracking(),
+            return new SelectList(
+                departments,
                 nameof(Department.ExternalId),
                 nameof(Department.Name),
                 selectedDepartment);
@@ -167,7 +200,7 @@
         // GET: Courses/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
@@ -184,9 +217,18 @@
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.ExternalId == course.DepartmentExternalId);
 
-            ViewData["DepartmentName"] = department.Name;
+            /*
+             * TODO: missing context boundary check when department is null
+             */
 
-            return View(course);
+            return View(new CourseDetailsViewModel
+            {
+                CourseCode = course.CourseCode,
+                Title = course.Title,
+                Credits = course.Credits,
+                Department = department.Name,
+                Id = course.ExternalId
+            });
         }
 
         // POST: Courses/Delete/5
@@ -195,7 +237,11 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var course = await _context.Courses.SingleAsync(x => x.ExternalId == id);
+            var course = await _context.Courses.FirstOrDefaultAsync(x => x.ExternalId == id);
+            if (course is null)
+            {
+                return NotFound();
+            }
 
             /*
              * remove related assignments
@@ -226,11 +272,11 @@
         [HttpPost]
         public async Task<IActionResult> UpdateCourseCredits(int? multiplier)
         {
-            if (multiplier != null)
+            if (multiplier is not null)
             {
                 ViewData["RowsAffected"] =
                     await _context.Database.ExecuteSqlInterpolatedAsync(
-                        $"UPDATE Course SET Credits = Credits * {multiplier}");
+                        $"UPDATE [crs].[Course] SET Credits = Credits * {multiplier}");
             }
 
             return View();

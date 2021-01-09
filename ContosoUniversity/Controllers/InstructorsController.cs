@@ -15,6 +15,7 @@
     using Services;
 
     using ViewModels;
+    using ViewModels.Instructors;
 
     public class InstructorsController : Controller
     {
@@ -39,10 +40,12 @@
 
             CrossContextBoundariesHelper.CheckInstructorsAgainstCourses(instructors, courses);
 
-            var viewModel = new InstructorIndexData
+            var viewModel = new InstructorIndexViewModel
             {
                 Instructors = instructors,
-                CoursesReference = courses.ToDictionary(x => x.ExternalId)
+                AssignedCourses = courses.ToDictionary(
+                    x => x.ExternalId,
+                    x => $"{x.CourseCode} : {x.Title}")
             };
 
             if (id is not null)
@@ -50,13 +53,20 @@
                 ViewData["selectedInstructorExternalId"] = id.Value;
                 var instructor = viewModel.Instructors.Single(i => i.ExternalId == id.Value);
                 var instructorCourseIds = instructor.CourseAssignments.Select(x => x.CourseExternalId).ToHashSet();
-                viewModel.SelectedInstructorCourses = courses.Where(x => instructorCourseIds.Contains(x.ExternalId)).ToList();
                 var departmentNames = await _context.Departments
                     .Where(x => courses.Select(_ => _.DepartmentExternalId).Contains(x.ExternalId))
                     .AsNoTracking()
                     .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
                 CrossContextBoundariesHelper.CheckCoursesAgainstDepartments(courses, departmentNames);
-                viewModel.DepartmentNamesReference = departmentNames;
+                viewModel.SelectedInstructorCourseIds = courses
+                    .Where(x => instructorCourseIds.Contains(x.ExternalId))
+                    .Select(x => new CourseListItemViewModel
+                    {
+                        Id = x.ExternalId,
+                        CourseCode = x.CourseCode,
+                        Title = x.Title,
+                        Department = departmentNames[x.DepartmentExternalId]
+                    }).ToList();
             }
 
             if (courseExternalId is not null)
