@@ -14,7 +14,6 @@
 
     using Services;
 
-    using ViewModels;
     using ViewModels.Instructors;
 
     public class InstructorsController : Controller
@@ -42,23 +41,39 @@
 
             var viewModel = new InstructorIndexViewModel
             {
-                Instructors = instructors,
-                AssignedCourses = courses.ToDictionary(
-                    x => x.ExternalId,
-                    x => $"{x.CourseCode} : {x.Title}")
+                Instructors = instructors.Select(x =>
+                {
+                    var assignedCourseIds = x.CourseAssignments.Select(ca => ca.CourseExternalId).ToArray();
+
+                    return new InstructorListItemViewModel
+                    {
+                        Id = x.ExternalId,
+                        FirstName = x.FirstMidName,
+                        LastName = x.LastName,
+                        HireDate = x.HireDate,
+                        Office = x.OfficeAssignment?.Location,
+                        AssignedCourseIds = assignedCourseIds,
+                        AssignedCourses = courses
+                            .Where(c => assignedCourseIds.Contains(c.ExternalId))
+                            .Select(c => $"{c.CourseCode} {c.Title}"),
+                        RowClass = id is not null && id == x.ExternalId
+                            ? "table-success"
+                            : string.Empty
+                    };
+                }).ToArray()
             };
 
             if (id is not null)
             {
                 ViewData["selectedInstructorExternalId"] = id.Value;
-                var instructor = viewModel.Instructors.Single(i => i.ExternalId == id.Value);
-                var instructorCourseIds = instructor.CourseAssignments.Select(x => x.CourseExternalId).ToHashSet();
+                var instructor = viewModel.Instructors.Single(i => i.Id == id.Value);
+                var instructorCourseIds = instructor.AssignedCourseIds.ToHashSet();
                 var departmentNames = await _context.Departments
                     .Where(x => courses.Select(_ => _.DepartmentExternalId).Contains(x.ExternalId))
                     .AsNoTracking()
                     .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
                 CrossContextBoundariesHelper.CheckCoursesAgainstDepartments(courses, departmentNames);
-                viewModel.SelectedInstructorCourseIds = courses
+                viewModel.Courses = courses
                     .Where(x => instructorCourseIds.Contains(x.ExternalId))
                     .Select(x => new CourseListItemViewModel
                     {
@@ -78,7 +93,7 @@
                     .AsNoTracking()
                     .ToListAsync();
                 CrossContextBoundariesHelper.CheckEnrollmentsAgainstCourses(enrollments, courses);
-                viewModel.SelectedCourseEnrollments = enrollments;
+                viewModel.Enrollments = enrollments;
             }
 
             return View(viewModel);
@@ -98,53 +113,63 @@
                 return NotFound();
             }
 
-            return View(instructor);
+            return View(new InstructorDetailsViewModel
+            {
+                LastName = instructor.LastName,
+                FirstName = instructor.FirstMidName,
+                HireDate = instructor.HireDate,
+                ExternalId = instructor.ExternalId
+            });
         }
 
         // GET: Instructors/Create
         public IActionResult Create()
         {
-            var instructor = new Instructor();
-            instructor.CourseAssignments = new List<CourseAssignment>();
-            PopulateAssignedCourseData(instructor);
-            return View();
+            return View(new InstructorCreateForm
+            {
+                HireDate = DateTime.Now,
+                AssignedCourses = CreateAssignedCourseData()
+            });
         }
 
         // POST: Instructors/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FirstMidName,HireDate,LastName,OfficeAssignment")]
-            Instructor instructor, string[] selectedCourses)
+        public async Task<IActionResult> Create(InstructorCreateForm form)
         {
-            if (selectedCourses != null)
+            if (form is null || ModelState.IsValid is false)
             {
-                instructor.CourseAssignments = new List<CourseAssignment>();
-                foreach (var courseUid in selectedCourses)
-                {
-                    instructor.CourseAssignments.Add(new CourseAssignment
-                    {
-                        InstructorId = instructor.Id,
-                        CourseExternalId = Guid.Parse(courseUid)
-                    });
-                }
+                // form.AssignedCourses = CreateAssignedCourseData(instructor);
+                return View(form);
             }
 
-            if (ModelState.IsValid)
+            var instructor = new Instructor
             {
-                instructor.ExternalId = Guid.NewGuid();
-                _context.Add(instructor);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+                ExternalId = Guid.NewGuid(),
+                FirstMidName = form.FirstName,
+                LastName = form.LastName,
+                HireDate = form.HireDate,
+                OfficeAssignment = form.HasAssignedOffice
+                    ? new OfficeAssignment {Location = form.Location}
+                    : null
+            };
 
-            PopulateAssignedCourseData(instructor);
-            return View(instructor);
+            instructor.CourseAssignments = form.SelectedCourses?.Select(x => new CourseAssignment
+            {
+                InstructorId = instructor.Id, // not yet generated ???
+                CourseExternalId = Guid.Parse(x)
+            }).ToList();
+
+            _context.Add(instructor);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Instructors/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
@@ -159,22 +184,30 @@
                 return NotFound();
             }
 
-            PopulateAssignedCourseData(instructor);
-            return View(instructor);
+            return View(new InstructorEditForm
+            {
+                ExternalId = instructor.ExternalId,
+                LastName = instructor.LastName,
+                FirstName = instructor.FirstMidName,
+                HireDate = instructor.HireDate,
+                Location = instructor.OfficeAssignment?.Location,
+                AssignedCourses = CreateAssignedCourseData(instructor)
+            });
         }
 
-        private void PopulateAssignedCourseData(Instructor instructor)
+        private AssignedCourseOption[] CreateAssignedCourseData(Instructor instructor = null)
         {
             var allCourses = _context.Courses;
-            var instructorCourses = new HashSet<Guid>(instructor.CourseAssignments.Select(c => c.CourseExternalId));
+            var instructorCourses = instructor?.CourseAssignments
+                .Select(c => c.CourseExternalId) ?? Array.Empty<Guid>();
 
-            ViewData["Courses"] = allCourses.Select(course => new AssignedCourseData
+            return allCourses.Select(course => new AssignedCourseOption
             {
                 CourseCode = course.CourseCode,
                 CourseExternalId = course.ExternalId,
                 Title = course.Title,
                 Assigned = instructorCourses.Contains(course.ExternalId)
-            }).ToList();
+            }).ToArray();
         }
 
         // POST: Instructors/Edit/5
@@ -182,44 +215,54 @@
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid? id, string[] selectedCourses)
+        public async Task<IActionResult> Edit(InstructorEditForm form)
         {
-            if (id == null)
+            if (form is null || ModelState.IsValid is false)
+            {
+                return BadRequest();
+            }
+
+            var instructor = await _context.Instructors
+                .Include(i => i.OfficeAssignment)
+                .Include(i => i.CourseAssignments)
+                .FirstOrDefaultAsync(m => m.ExternalId == form.ExternalId);
+            if (instructor is null)
             {
                 return NotFound();
             }
 
-            var instructorToUpdate = await _context.Instructors
-                .Include(i => i.OfficeAssignment)
-                .Include(i => i.CourseAssignments)
-                .FirstOrDefaultAsync(m => m.ExternalId == id);
+            instructor.FirstMidName = form.FirstName;
+            instructor.LastName = form.LastName;
+            instructor.HireDate = form.HireDate;
+            instructor.OfficeAssignment = form.HasAssignedOffice
+                ? new OfficeAssignment {Location = form.Location}
+                : null;
 
-            if (await TryUpdateModelAsync(
-                instructorToUpdate,
-                "",
-                i => i.FirstMidName, i => i.LastName, i => i.HireDate, i => i.OfficeAssignment))
+            UpdateInstructorCourses(form.SelectedCourses, instructor);
+
+            try
             {
-                if (string.IsNullOrWhiteSpace(instructorToUpdate.OfficeAssignment?.Location))
-                    instructorToUpdate.OfficeAssignment = null;
-                UpdateInstructorCourses(selectedCourses, instructorToUpdate);
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateException /* ex */)
-                {
-                    //Log the error (uncomment ex variable name and write a log.)
-                    ModelState.AddModelError("", "Unable to save changes. " +
-                                                 "Try again, and if the problem persists, " +
-                                                 "see your system administrator.");
-                }
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.)
+                ModelState.AddModelError("", "Unable to save changes. " +
+                                             "Try again, and if the problem persists, " +
+                                             "see your system administrator.");
 
-                return RedirectToAction(nameof(Index));
+                return View(new InstructorEditForm
+                {
+                    ExternalId = instructor.ExternalId,
+                    LastName = instructor.LastName,
+                    FirstName = instructor.FirstMidName,
+                    HireDate = instructor.HireDate,
+                    Location = instructor.OfficeAssignment?.Location,
+                    AssignedCourses = CreateAssignedCourseData(instructor)
+                });
             }
 
-            UpdateInstructorCourses(selectedCourses, instructorToUpdate);
-            PopulateAssignedCourseData(instructorToUpdate);
-            return View(instructorToUpdate);
+            return RedirectToAction(nameof(Index));
         }
 
         private void UpdateInstructorCourses(string[] selectedCourses, Instructor instructorToUpdate)
@@ -270,7 +313,13 @@
                 return NotFound();
             }
 
-            return View(instructor);
+            return View(new InstructorDetailsViewModel
+            {
+                LastName = instructor.LastName,
+                FirstName = instructor.FirstMidName,
+                HireDate = instructor.HireDate,
+                ExternalId = instructor.ExternalId
+            });
         }
 
         // POST: Instructors/Delete/5

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ContosoUniversity.ViewModels.Courses.CourseListItemViewModel>
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@model IEnumerable<ContosoUniversity.ViewModels.Courses.CourseListItemViewModel>
 
 @{
     ViewData["Title"] = "Courses";
@@ -13,16 +14,16 @@
     <thead>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.CourseCode)
+            @HtmlHelperDisplayNameExtensions.DisplayNameFor(Html, model => model.CourseCode)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Title)
+            @HtmlHelperDisplayNameExtensions.DisplayNameFor(Html, model => model.Title)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Credits)
+            @HtmlHelperDisplayNameExtensions.DisplayNameFor(Html, model => model.Credits)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Department)
+            @HtmlHelperDisplayNameExtensions.DisplayNameFor(Html, model => model.Department)
         </th>
         <th>Actions</th>
     </tr>

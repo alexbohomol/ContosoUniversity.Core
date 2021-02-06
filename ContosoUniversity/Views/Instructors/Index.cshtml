@@ -23,48 +23,37 @@
     <tbody>
     @foreach (var item in Model.Instructors)
     {
-        var selectedRow = "";
-        if (item.ExternalId == (Guid?) ViewData["selectedInstructorExternalId"])
-        {
-            selectedRow = "table-success";
-        }
-        <tr class="@selectedRow">
+        <tr class="@item.RowClass">
             <td>
                 @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FirstMidName)
+                @Html.DisplayFor(modelItem => item.FirstName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.HireDate)
             </td>
             <td>
-                @if (item.OfficeAssignment != null)
+                @Html.DisplayFor(modelItem => item.Office)
+            </td>
+            <td>
+                @foreach (var course in item.AssignedCourses)
                 {
-                    @item.OfficeAssignment.Location
+                    @course<br/>
                 }
             </td>
             <td>
-                @{
-                    foreach (var assignment in item.CourseAssignments)
-                    {
-                        @Model.AssignedCourses[assignment.CourseExternalId]
-                        <br/>
-                    }
-                }
-            </td>
-            <td>
-                <a asp-action="Index" asp-route-id="@item.ExternalId">Select</a> |
-                <a asp-action="Edit" asp-route-id="@item.ExternalId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ExternalId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ExternalId">Delete</a>
+                <a asp-action="Index" asp-route-id="@item.Id">Select</a> |
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
     }
     </tbody>
 </table>
 
-@if (Model.SelectedInstructorCourseIds != null)
+@if (Model.Courses != null)
 {
     <h3>Courses Taught by Selected Instructor</h3>
     <table class="table">
@@ -75,7 +64,7 @@
             <th>Department</th>
         </tr>
 
-        @foreach (var item in Model.SelectedInstructorCourseIds)
+        @foreach (var item in Model.Courses)
         {
             var selectedRow = "";
             if (item.Id == (Guid?) ViewData["selectedCourseExternalId"])
@@ -101,7 +90,7 @@
     </table>
 }
 
-@if (Model.SelectedCourseEnrollments != null)
+@if (Model.Enrollments != null)
 {
     <h3>
         Students Enrolled in Selected Course
@@ -111,7 +100,7 @@
             <th>Name</th>
             <th>Grade</th>
         </tr>
-        @foreach (var item in Model.SelectedCourseEnrollments)
+        @foreach (var item in Model.Enrollments)
         {
             <tr>
                 <td>
