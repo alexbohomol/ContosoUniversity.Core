@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Mvc.Rendering
-@model IEnumerable<ContosoUniversity.Models.Department>
+﻿@model IEnumerable<ContosoUniversity.ViewModels.Departments.DepartmentListItemViewModel>
 
 @{
     ViewData["Title"] = "Departments";
@@ -14,16 +13,16 @@
     <thead>
     <tr>
         <th>
-            @HtmlHelperDisplayNameExtensions.DisplayNameFor(Html, model => model.Name)
+            @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
-            @HtmlHelperDisplayNameExtensions.DisplayNameFor(Html, model => model.Budget)
+            @Html.DisplayNameFor(model => model.Budget)
         </th>
         <th>
-            @HtmlHelperDisplayNameExtensions.DisplayNameFor(Html, model => model.StartDate)
+            @Html.DisplayNameFor(model => model.StartDate)
         </th>
         <th>
-            @HtmlHelperDisplayNameExtensions.DisplayNameFor(Html, model => model.Administrator)
+            @Html.DisplayNameFor(model => model.Administrator)
         </th>
         <th></th>
     </tr>
@@ -33,16 +32,16 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(_ => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Budget)
+                @Html.DisplayFor(_ => item.Budget)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
+                @Html.DisplayFor(_ => item.StartDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Administrator.FullName)
+                @Html.DisplayFor(_ => item.Administrator)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ExternalId">Edit</a> |
