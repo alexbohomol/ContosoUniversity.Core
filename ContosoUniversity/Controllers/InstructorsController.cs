@@ -37,7 +37,7 @@
 
             var courses = await _context.Courses.ToListAsync();
 
-            CrossContextBoundariesHelper.CheckInstructorsAgainstCourses(instructors, courses);
+            CrossContextBoundariesValidator.EnsureInstructorsReferenceTheExistingCourses(instructors, courses);
 
             var viewModel = new InstructorIndexViewModel
             {
@@ -72,7 +72,7 @@
                     .Where(x => courses.Select(_ => _.DepartmentExternalId).Contains(x.ExternalId))
                     .AsNoTracking()
                     .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
-                CrossContextBoundariesHelper.CheckCoursesAgainstDepartments(courses, departmentNames);
+                CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames);
                 viewModel.Courses = courses
                     .Where(x => instructorCourseIds.Contains(x.ExternalId))
                     .Select(x => new CourseListItemViewModel
@@ -92,7 +92,7 @@
                     .Where(x => x.CourseExternalId == courseExternalId)
                     .AsNoTracking()
                     .ToListAsync();
-                CrossContextBoundariesHelper.CheckEnrollmentsAgainstCourses(enrollments, courses);
+                CrossContextBoundariesValidator.EnsureEnrollmentsReferenceTheExistingCourses(enrollments, courses);
                 viewModel.Enrollments = enrollments;
             }
 

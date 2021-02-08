@@ -35,7 +35,7 @@
                 .AsNoTracking()
                 .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
 
-            CrossContextBoundariesHelper.CheckCoursesAgainstDepartments(courses, departmentNames);
+            CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames);
 
             return View(courses.Select(x => new CourseListItemViewModel
             {
