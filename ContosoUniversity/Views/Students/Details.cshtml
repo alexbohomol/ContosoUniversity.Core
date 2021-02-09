@@ -1,8 +1,7 @@
-﻿@model ContosoUniversity.Models.Student
+﻿@model ContosoUniversity.ViewModels.Students.StudentDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
-    var courseTitles = ViewBag.CourseTitles as IDictionary<Guid, string>;
 }
 
 <h1>Details</h1>
@@ -42,7 +41,7 @@
                 {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => courseTitles[item.CourseExternalId])
+                            @Html.DisplayFor(modelItem => item.CourseTitle)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Grade)

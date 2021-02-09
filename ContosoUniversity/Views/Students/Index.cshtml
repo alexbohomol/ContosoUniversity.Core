@@ -1,4 +1,4 @@
-﻿@model ContosoUniversity.ViewModels.PaginatedList<ContosoUniversity.Models.Student>
+﻿@model ContosoUniversity.ViewModels.Students.StudentIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -13,7 +13,7 @@
 <form asp-action="Index" method="get">
     <div class="form-actions no-color">
         <p>
-            Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]"/>
+            Find by name: <input type="text" name="SearchString" value="@Model.CurrentFilter"/>
             <input type="submit" value="Search" class="btn btn-secondary"/> |
             <a asp-action="Index">Back to Full List</a>
         </p>
@@ -24,26 +24,26 @@
     <thead>
     <tr>
         <th>
-            <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Last Name</a>
+            <a asp-action="Index" asp-route-sortOrder="@Model.NameSortParm" asp-route-currentFilter="@Model.CurrentFilter">Last Name</a>
         </th>
         <th>
             First Name
         </th>
         <th>
-            <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Enrollment Date</a>
+            <a asp-action="Index" asp-route-sortOrder="@Model.DateSortParm" asp-route-currentFilter="@Model.CurrentFilter">Enrollment Date</a>
         </th>
         <th></th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model)
+    @foreach (var item in Model.Page)
     {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FirstMidName)
+                @Html.DisplayFor(modelItem => item.FirstName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.EnrollmentDate)
@@ -59,21 +59,21 @@
 </table>
 
 @{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var prevDisabled = !Model.Page.HasPreviousPage ? "disabled" : string.Empty;
+    var nextDisabled = !Model.Page.HasNextPage ? "disabled" : string.Empty;
 }
 
 <a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-pageNumber="@(Model.Page.PageIndex - 1)"
+   asp-route-currentFilter="@Model.CurrentFilter"
    class="btn btn-secondary @prevDisabled">
     Previous
 </a>
 <a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-pageNumber="@(Model.Page.PageIndex + 1)"
+   asp-route-currentFilter="@Model.CurrentFilter"
    class="btn btn-secondary @nextDisabled">
     Next
 </a>
