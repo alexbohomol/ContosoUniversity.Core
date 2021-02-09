@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Mvc.Rendering
-@model IEnumerable<ContosoUniversity.ViewModels.Courses.CourseListItemViewModel>
+﻿@model IEnumerable<ContosoUniversity.ViewModels.Courses.CourseListItemViewModel>
 
 @{
     ViewData["Title"] = "Courses";
@@ -14,16 +13,16 @@
     <thead>
     <tr>
         <th>
-            @HtmlHelperDisplayNameExtensions.DisplayNameFor(Html, model => model.CourseCode)
+            @Html.DisplayNameFor(model => model.CourseCode)
         </th>
         <th>
-            @HtmlHelperDisplayNameExtensions.DisplayNameFor(Html, model => model.Title)
+            @Html.DisplayNameFor(model => model.Title)
         </th>
         <th>
-            @HtmlHelperDisplayNameExtensions.DisplayNameFor(Html, model => model.Credits)
+            @Html.DisplayNameFor(model => model.Credits)
         </th>
         <th>
-            @HtmlHelperDisplayNameExtensions.DisplayNameFor(Html, model => model.Department)
+            @Html.DisplayNameFor(model => model.Department)
         </th>
         <th>Actions</th>
     </tr>
@@ -33,16 +32,16 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.CourseCode)
+                @Html.DisplayFor(_ => item.CourseCode)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Title)
+                @Html.DisplayFor(_ => item.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Credits)
+                @Html.DisplayFor(_ => item.Credits)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Department)
+                @Html.DisplayFor(_ => item.Department)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Mvc.Rendering
-@model IEnumerable<ContosoUniversity.ViewModels.Departments.DepartmentListItemViewModel>
+﻿@model IEnumerable<ContosoUniversity.ViewModels.Departments.DepartmentListItemViewModel>
 
 @{
     ViewData["Title"] = "Departments";
@@ -14,16 +13,16 @@
     <thead>
     <tr>
         <th>
-            @HtmlHelperDisplayNameExtensions.DisplayNameFor(Html, model => model.Name)
+            @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
-            @HtmlHelperDisplayNameExtensions.DisplayNameFor(Html, model => model.Budget)
+            @Html.DisplayNameFor(model => model.Budget)
         </th>
         <th>
-            @HtmlHelperDisplayNameExtensions.DisplayNameFor(Html, model => model.StartDate)
+            @Html.DisplayNameFor(model => model.StartDate)
         </th>
         <th>
-            @HtmlHelperDisplayNameExtensions.DisplayNameFor(Html, model => model.Administrator)
+            @Html.DisplayNameFor(model => model.Administrator)
         </th>
         <th></th>
     </tr>
