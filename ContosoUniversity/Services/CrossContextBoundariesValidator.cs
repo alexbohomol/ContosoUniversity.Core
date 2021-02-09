@@ -9,12 +9,12 @@ namespace ContosoUniversity.Services
     /// <summary>
     ///     TODO: these checks should be implemented in domain/service layers later
     /// </summary>
-    public static class CrossContextBoundariesHelper
+    public static class CrossContextBoundariesValidator
     {
         /// <summary>
-        ///     Check if any course references the non-existing (deleted) departments
+        ///     Ensure all assigned courses reference existing department records
         /// </summary>
-        public static void CheckCoursesAgainstDepartments(
+        public static void EnsureCoursesReferenceTheExistingDepartments(
             IEnumerable<Course> courses,
             Dictionary<Guid, string> departmentNames)
         {
@@ -32,9 +32,9 @@ namespace ContosoUniversity.Services
         }
 
         /// <summary>
-        ///     Ensure all assigned courses reference existing course record
+        ///     Ensure all assigned courses reference existing course records
         /// </summary>
-        public static void CheckInstructorsAgainstCourses(
+        public static void EnsureInstructorsReferenceTheExistingCourses(
             IEnumerable<Instructor> instructors,
             IEnumerable<Course> courses)
         {
@@ -50,9 +50,9 @@ namespace ContosoUniversity.Services
         }
 
         /// <summary>
-        ///     Ensure all enrolled courses reference existing course record
+        ///     Ensure all enrollments reference existing course records
         /// </summary>
-        public static void CheckEnrollmentsAgainstCourses(
+        public static void EnsureEnrollmentsReferenceTheExistingCourses(
             IEnumerable<Enrollment> enrollments,
             IEnumerable<Course> courses)
         {

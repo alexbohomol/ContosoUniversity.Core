@@ -1,8 +1,8 @@
-﻿namespace ContosoUniversity.ViewModels
+﻿namespace ContosoUniversity.ViewModels.Instructors
 {
     using System;
 
-    public class AssignedCourseData
+    public class AssignedCourseOption
     {
         public Guid CourseExternalId { get; set; }
         public int CourseCode { get; set; }

@@ -12,8 +12,12 @@
 
     using Models;
 
+    using ViewModels.Departments;
+
     public class DepartmentsController : Controller
     {
+        private const string ErrMsgConcurrentUpdate = "The record you attempted to edit was modified by another user after you got the original value. The edit operation was canceled and the current values in the database have been displayed. If you still want to edit this record, click the Save button again. Otherwise click the Back to List hyperlink.";
+
         private readonly SchoolContext _context;
 
         public DepartmentsController(SchoolContext context)
@@ -21,17 +25,22 @@
             _context = context;
         }
 
-        // GET: Departments
         public async Task<IActionResult> Index()
         {
             var departments = await _context.Departments
                 .Include(d => d.Administrator)
                 .ToListAsync();
 
-            return View(departments);
+            return View(departments.Select(x => new DepartmentListItemViewModel
+            {
+                Name = x.Name,
+                Budget = x.Budget,
+                StartDate = x.StartDate,
+                Administrator = x.Administrator?.FullName,
+                ExternalId = x.ExternalId
+            }));
         }
 
-        // GET: Departments/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -50,37 +59,47 @@
                 return NotFound();
             }
 
-            return View(department);
+            return View(new DepartmentDetailsViewModel
+            {
+                Name = department.Name,
+                Budget = department.Budget,
+                StartDate = department.StartDate,
+                Administrator = department.Administrator?.FullName,
+                ExternalId = department.ExternalId
+            });
         }
 
-        // GET: Departments/Create
         public IActionResult Create()
         {
-            ViewData["InstructorsDropDown"] = GetInstructorSelectList();
-            return View();
+            return View(new DepartmentCreateForm
+            {
+                StartDate = DateTime.Now,
+                InstructorsDropDown = GetInstructorSelectList()
+            });
         }
 
-        // POST: Departments/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Budget,StartDate,InstructorId,RowVersion")]
-            Department department)
+        public async Task<IActionResult> Create(DepartmentCreateForm form)
         {
             if (ModelState.IsValid)
             {
-                department.ExternalId = Guid.NewGuid();
-                _context.Add(department);
+                _context.Add(new Department
+                {
+                    Name = form.Name,
+                    Budget = form.Budget,
+                    StartDate = form.StartDate,
+                    InstructorId = form.InstructorId,
+                    ExternalId = Guid.NewGuid()
+                });
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["InstructorsDropDown"] = GetInstructorSelectList(department.InstructorId);
-            return View(department);
+            form.InstructorsDropDown = GetInstructorSelectList(form.InstructorId);
+            return View(form);
         }
 
-        // GET: Departments/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -98,25 +117,30 @@
                 return NotFound();
             }
 
-            ViewData["InstructorsDropDown"] = GetInstructorSelectList(department.InstructorId);
-            return View(department);
+            return View(new DepartmentEditForm
+            {
+                Name = department.Name,
+                Budget = department.Budget,
+                StartDate = department.StartDate,
+                InstructorId = department.InstructorId,
+                ExternalId = department.ExternalId,
+                RowVersion = department.RowVersion,
+                InstructorsDropDown = GetInstructorSelectList(department.InstructorId)
+            });
         }
 
-        // POST: Departments/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid? id, byte[] rowVersion)
+        public async Task<IActionResult> Edit(DepartmentEditForm form)
         {
-            if (id == null)
+            if (form == null || !ModelState.IsValid)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             var departmentToUpdate = await _context.Departments
                 .Include(i => i.Administrator)
-                .FirstOrDefaultAsync(m => m.ExternalId == id);
+                .FirstOrDefaultAsync(m => m.ExternalId == form.ExternalId);
 
             if (departmentToUpdate == null)
             {
@@ -125,10 +149,10 @@
                 ModelState.AddModelError(string.Empty,
                     "Unable to save changes. The department was deleted by another user.");
                 ViewData["InstructorsDropDown"] = GetInstructorSelectList(deletedDepartment.InstructorId);
-                return View(deletedDepartment);
+                return View(form);
             }
 
-            _context.Entry(departmentToUpdate).Property("RowVersion").OriginalValue = rowVersion;
+            _context.Entry(departmentToUpdate).Property("RowVersion").OriginalValue = form.RowVersion;
 
             if (await TryUpdateModelAsync(
                 departmentToUpdate,
@@ -177,22 +201,17 @@
                             ModelState.AddModelError("InstructorId", $"Current value: {databaseInstructor?.FullName}");
                         }
 
-                        ModelState.AddModelError(string.Empty, "The record you attempted to edit "
-                                                               + "was modified by another user after you got the original value. The "
-                                                               + "edit operation was canceled and the current values in the database "
-                                                               + "have been displayed. If you still want to edit this record, click "
-                                                               + "the Save button again. Otherwise click the Back to List hyperlink.");
+                        ModelState.AddModelError(string.Empty, ErrMsgConcurrentUpdate);
                         departmentToUpdate.RowVersion = databaseValues.RowVersion;
                         ModelState.Remove("RowVersion");
                     }
                 }
             }
 
-            ViewData["InstructorsDropDown"] = GetInstructorSelectList(departmentToUpdate.InstructorId);
-            return View(departmentToUpdate);
+            form.InstructorsDropDown = GetInstructorSelectList(departmentToUpdate.InstructorId);
+            return View(form);
         }
 
-        // GET: Departments/Delete/5
         public async Task<IActionResult> Delete(Guid? id, bool? concurrencyError)
         {
             if (id == null)
@@ -214,20 +233,18 @@
                 return NotFound();
             }
 
-            if (concurrencyError.GetValueOrDefault())
+            return View(new DepartmentDeleteViewModel
             {
-                ViewData["ConcurrencyErrorMessage"] = "The record you attempted to delete "
-                                                      + "was modified by another user after you got the original values. "
-                                                      + "The delete operation was canceled and the current values in the "
-                                                      + "database have been displayed. If you still want to delete this "
-                                                      + "record, click the Delete button again. Otherwise "
-                                                      + "click the Back to List hyperlink.";
-            }
-
-            return View(department);
+                Name = department.Name,
+                Budget = department.Budget,
+                StartDate = department.StartDate,
+                Administrator = department.Administrator?.FullName,
+                ExternalId = department.ExternalId,
+                RowVersion = department.RowVersion,
+                ConcurrencyError = concurrencyError.GetValueOrDefault()
+            });
         }
 
-        // POST: Departments/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)

@@ -8,8 +8,6 @@
     public class Instructor : IExternalIdentifier
     {
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Hire Date")]
         public DateTime HireDate { get; set; }
 
         public ICollection<CourseAssignment> CourseAssignments { get; set; }
@@ -22,9 +20,8 @@
         public string LastName { get; set; }
 
         [Required]
-        [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
+        [StringLength(50)]
         [Column("FirstName")]
-        [Display(Name = "First Name")]
         public string FirstMidName { get; set; }
 
         [Display(Name = "Full Name")]

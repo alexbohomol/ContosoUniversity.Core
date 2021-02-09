@@ -7,7 +7,6 @@
     {
         public int Id { get; set; }
 
-        [Display(Name = "Course Code")]
         public int CourseCode { get; set; }
 
         [StringLength(50, MinimumLength = 3)]
