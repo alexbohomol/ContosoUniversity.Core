@@ -25,7 +25,6 @@
             _context = context;
         }
 
-        // GET: Departments
         public async Task<IActionResult> Index()
         {
             var departments = await _context.Departments
@@ -42,7 +41,6 @@
             }));
         }
 
-        // GET: Departments/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -71,7 +69,6 @@
             });
         }
 
-        // GET: Departments/Create
         public IActionResult Create()
         {
             return View(new DepartmentCreateForm
@@ -81,9 +78,6 @@
             });
         }
 
-        // POST: Departments/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(DepartmentCreateForm form)
@@ -106,7 +100,6 @@
             return View(form);
         }
 
-        // GET: Departments/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -136,9 +129,6 @@
             });
         }
 
-        // POST: Departments/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(DepartmentEditForm form)
@@ -222,7 +212,6 @@
             return View(form);
         }
 
-        // GET: Departments/Delete/5
         public async Task<IActionResult> Delete(Guid? id, bool? concurrencyError)
         {
             if (id == null)
@@ -256,7 +245,6 @@
             });
         }
 
-        // POST: Departments/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)

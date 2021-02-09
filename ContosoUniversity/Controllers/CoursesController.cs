@@ -25,7 +25,6 @@
             _context = context;
         }
 
-        // GET: Courses
         public async Task<IActionResult> Index()
         {
             var courses = await _context.Courses.AsNoTracking().ToListAsync();
@@ -47,7 +46,6 @@
             }).ToList());
         }
 
-        // GET: Courses/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id is null)
@@ -81,7 +79,6 @@
             });
         }
 
-        // GET: Courses/Create
         public async Task<IActionResult> Create()
         {
             return View(new CourseCreateForm
@@ -90,9 +87,6 @@
             });
         }
 
-        // POST: Courses/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CourseCreateForm form)
@@ -115,7 +109,6 @@
             return View(form);
         }
 
-        // GET: Courses/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id is null)
@@ -141,9 +134,6 @@
             });
         }
 
-        // POST: Courses/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ActionName("Edit")]
         [ValidateAntiForgeryToken]
@@ -197,7 +187,6 @@
                 selectedDepartment);
         }
 
-        // GET: Courses/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id is null)
@@ -231,7 +220,6 @@
             });
         }
 
-        // POST: Courses/Delete/5
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]

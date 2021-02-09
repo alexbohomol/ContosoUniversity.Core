@@ -25,7 +25,6 @@
             _context = context;
         }
 
-        // GET: Instructors
         public async Task<IActionResult> Index(Guid? id, Guid? courseExternalId)
         {
             var instructors = await _context.Instructors
@@ -99,7 +98,6 @@
             return View(viewModel);
         }
 
-        // GET: Instructors/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -122,7 +120,6 @@
             });
         }
 
-        // GET: Instructors/Create
         public IActionResult Create()
         {
             return View(new InstructorCreateForm
@@ -132,7 +129,6 @@
             });
         }
 
-        // POST: Instructors/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(InstructorCreateForm form)
@@ -166,7 +162,6 @@
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Instructors/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id is null)
@@ -210,9 +205,6 @@
             }).ToArray();
         }
 
-        // POST: Instructors/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(InstructorEditForm form)
@@ -298,7 +290,6 @@
                 }
         }
 
-        // GET: Instructors/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -322,7 +313,6 @@
             });
         }
 
-        // POST: Instructors/Delete/5
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]

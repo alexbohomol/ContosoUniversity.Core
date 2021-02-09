@@ -23,7 +23,6 @@
             _context = context;
         }
 
-        // GET: Students
         public async Task<IActionResult> Index(
             string sortOrder,
             string currentFilter,
@@ -84,7 +83,6 @@
             });
         }
 
-        // GET: Students/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -122,7 +120,6 @@
             });
         }
 
-        // GET: Students/Create
         public IActionResult Create()
         {
             return View(new StudentCreateForm
@@ -131,9 +128,6 @@
             });
         }
 
-        // POST: Students/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(StudentCreateForm form)
@@ -164,7 +158,6 @@
             return View(form);
         }
 
-        // GET: Students/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id is null)
@@ -187,9 +180,6 @@
             });
         }
 
-        // POST: Students/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ActionName("Edit")]
         [ValidateAntiForgeryToken]
@@ -226,7 +216,6 @@
             return View(form);
         }
 
-        // GET: Students/Delete/5
         public async Task<IActionResult> Delete(Guid? id, bool? saveChangesError = false)
         {
             if (id is null)
@@ -250,7 +239,6 @@
             });
         }
 
-        // POST: Students/Delete/5
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
