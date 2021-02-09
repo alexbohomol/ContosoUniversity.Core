@@ -66,12 +66,7 @@
 
         @foreach (var item in Model.Courses)
         {
-            var selectedRow = "";
-            if (item.Id == (Guid?) ViewData["selectedCourseExternalId"])
-            {
-                selectedRow = "table-success";
-            }
-            <tr class="@selectedRow">
+            <tr class="@item.RowClass">
                 <td>
                     @Html.ActionLink("Select", "Index", new {courseExternalId = item.Id})
                 </td>

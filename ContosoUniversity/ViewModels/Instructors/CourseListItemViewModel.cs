@@ -8,5 +8,6 @@ namespace ContosoUniversity.ViewModels.Instructors
         public int CourseCode { get; set; }
         public string Title { get; set; }
         public string Department { get; set; }
+        public string RowClass { get; set; }
     }
 }

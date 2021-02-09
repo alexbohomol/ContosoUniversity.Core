@@ -64,7 +64,6 @@
 
             if (id is not null)
             {
-                ViewData["selectedInstructorExternalId"] = id.Value;
                 var instructor = viewModel.Instructors.Single(i => i.Id == id.Value);
                 var instructorCourseIds = instructor.AssignedCourseIds.ToHashSet();
                 var departmentNames = await _context.Departments
@@ -79,13 +78,15 @@
                         Id = x.ExternalId,
                         CourseCode = x.CourseCode,
                         Title = x.Title,
-                        Department = departmentNames[x.DepartmentExternalId]
+                        Department = departmentNames[x.DepartmentExternalId],
+                        RowClass = courseExternalId is not null && courseExternalId == x.ExternalId
+                            ? "table-success"
+                            : string.Empty
                     }).ToList();
             }
 
             if (courseExternalId is not null)
             {
-                ViewData["selectedCourseExternalId"] = courseExternalId.Value;
                 var enrollments = await _context.Enrollments
                     .Include(x => x.Student)
                     .Where(x => x.CourseExternalId == courseExternalId)
