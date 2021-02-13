@@ -1,6 +1,6 @@
 ﻿namespace ContosoUniversity
 {
-    using Data;
+    using Data.Contexts;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;

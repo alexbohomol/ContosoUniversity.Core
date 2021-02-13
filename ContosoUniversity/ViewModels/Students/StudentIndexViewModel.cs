@@ -1,6 +1,6 @@
 namespace ContosoUniversity.ViewModels.Students
 {
-    using Models;
+    using Data.Models;
 
     public class StudentIndexViewModel
     {

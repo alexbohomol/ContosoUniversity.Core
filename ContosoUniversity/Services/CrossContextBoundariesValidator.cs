@@ -4,7 +4,7 @@ namespace ContosoUniversity.Services
     using System.Collections.Generic;
     using System.Linq;
 
-    using Models;
+    using Data.Models;
 
     /// <summary>
     ///     TODO: these checks should be implemented in domain/service layers later

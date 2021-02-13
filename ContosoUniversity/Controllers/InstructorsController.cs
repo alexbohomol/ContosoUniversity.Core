@@ -5,12 +5,11 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Data;
+    using Data.Contexts;
+    using Data.Models;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
-
-    using Models;
 
     using Services;
 

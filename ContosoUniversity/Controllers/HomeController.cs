@@ -4,12 +4,10 @@
     using System.Diagnostics;
     using System.Threading.Tasks;
 
-    using Data;
+    using Data.Contexts;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
-
-    using Models;
 
     using ViewModels;
 
