@@ -17,18 +17,20 @@
 
     public class CoursesController : Controller
     {
-        private readonly SchoolContext _context;
+        private readonly SchoolContext _schoolContext;
+        private readonly CoursesContext _coursesContext;
 
-        public CoursesController(SchoolContext context)
+        public CoursesController(SchoolContext schoolContext, CoursesContext coursesContext)
         {
-            _context = context;
+            _schoolContext = schoolContext;
+            _coursesContext = coursesContext;
         }
 
         public async Task<IActionResult> Index()
         {
-            var courses = await _context.Courses.AsNoTracking().ToListAsync();
+            var courses = await _coursesContext.Courses.AsNoTracking().ToListAsync();
 
-            var departmentNames = await _context.Departments
+            var departmentNames = await _schoolContext.Departments
                 .Where(x => courses.Select(_ => _.DepartmentExternalId).Distinct().Contains(x.ExternalId))
                 .AsNoTracking()
                 .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
@@ -52,7 +54,7 @@
                 return NotFound();
             }
 
-            var course = await _context.Courses
+            var course = await _coursesContext.Courses
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ExternalId == id);
             if (course == null)
@@ -60,7 +62,7 @@
                 return NotFound();
             }
 
-            var department = await _context.Departments
+            var department = await _schoolContext.Departments
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.ExternalId == course.DepartmentExternalId);
 
@@ -92,7 +94,7 @@
         {
             if (ModelState.IsValid)
             {
-                _context.Add(new Course
+                _coursesContext.Add(new Course
                 {
                     CourseCode = form.CourseCode,
                     Title = form.Title,
@@ -100,7 +102,7 @@
                     DepartmentExternalId = form.DepartmentId,
                     ExternalId = Guid.NewGuid()
                 });
-                await _context.SaveChangesAsync();
+                await _coursesContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -115,7 +117,7 @@
                 return NotFound();
             }
 
-            var course = await _context.Courses
+            var course = await _coursesContext.Courses
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ExternalId == id);
             if (course == null)
@@ -143,7 +145,7 @@
                 return BadRequest();
             }
 
-            var courseToUpdate = await _context.Courses
+            var courseToUpdate = await _coursesContext.Courses
                 .FirstOrDefaultAsync(c => c.ExternalId == form.Id);
 
             if (await TryUpdateModelAsync(courseToUpdate, "",
@@ -153,7 +155,7 @@
             {
                 try
                 {
-                    await _context.SaveChangesAsync();
+                    await _coursesContext.SaveChangesAsync();
                 }
                 catch (DbUpdateException /* ex */)
                 {
@@ -173,7 +175,7 @@
         private async Task<SelectList> CreateDepartmentsDropDownList(object selectedDepartment = null)
         {
             var departments = await (
-                    from d in _context.Departments
+                    from d in _schoolContext.Departments
                     orderby d.Name
                     select d)
                 .AsNoTracking()
@@ -193,7 +195,7 @@
                 return NotFound();
             }
 
-            var course = await _context.Courses
+            var course = await _coursesContext.Courses
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ExternalId == id);
             if (course == null)
@@ -201,7 +203,7 @@
                 return NotFound();
             }
 
-            var department = await _context.Departments
+            var department = await _schoolContext.Departments
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.ExternalId == course.DepartmentExternalId);
 
@@ -224,7 +226,7 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var course = await _context.Courses.FirstOrDefaultAsync(x => x.ExternalId == id);
+            var course = await _coursesContext.Courses.FirstOrDefaultAsync(x => x.ExternalId == id);
             if (course is null)
             {
                 return NotFound();
@@ -233,21 +235,22 @@
             /*
              * remove related assignments
              */
-            var relatedAssignments = await _context.CourseAssignments
+            var relatedAssignments = await _schoolContext.CourseAssignments
                 .Where(x => x.CourseExternalId == course.ExternalId)
                 .ToArrayAsync();
-            _context.CourseAssignments.RemoveRange(relatedAssignments);
+            _schoolContext.CourseAssignments.RemoveRange(relatedAssignments);
 
             /*
              * remove related enrollments
              */
-            var relatedEnrollments = await _context.Enrollments
+            var relatedEnrollments = await _schoolContext.Enrollments
                 .Where(x => x.CourseExternalId == course.ExternalId)
                 .ToArrayAsync();
-            _context.Enrollments.RemoveRange(relatedEnrollments);
+            _schoolContext.Enrollments.RemoveRange(relatedEnrollments);
 
-            _context.Courses.Remove(course);
-            await _context.SaveChangesAsync();
+            _coursesContext.Courses.Remove(course);
+            await _schoolContext.SaveChangesAsync();
+            await _coursesContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -262,7 +265,7 @@
             if (multiplier is not null)
             {
                 ViewData["RowsAffected"] =
-                    await _context.Database.ExecuteSqlInterpolatedAsync(
+                    await _coursesContext.Database.ExecuteSqlInterpolatedAsync(
                         $"UPDATE [crs].[Course] SET Credits = Credits * {multiplier}");
             }
 

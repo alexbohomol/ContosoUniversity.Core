@@ -42,14 +42,19 @@
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<SchoolContext>();
-
-                    if (context.Database.GetPendingMigrations().Any())
+                    var coursesContext = services.GetRequiredService<CoursesContext>();
+                    if (coursesContext.Database.GetPendingMigrations().Any())
                     {
-                        context.Database.Migrate();
+                        coursesContext.Database.Migrate();
                     }
 
-                    DbInitializer.EnsureInitialized(context);
+                    var schoolContext = services.GetRequiredService<SchoolContext>();
+                    if (schoolContext.Database.GetPendingMigrations().Any())
+                    {
+                        schoolContext.Database.Migrate();
+                    }
+                    
+                    DbInitializer.EnsureInitialized(schoolContext, coursesContext);
                 }
                 catch (Exception ex)
                 {

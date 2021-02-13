@@ -9,7 +9,7 @@
 
     public static class DbInitializer
     {
-        public static void EnsureInitialized(SchoolContext context)
+        public static void EnsureInitialized(SchoolContext context, CoursesContext coursesContext)
         {
             // Look for any students.
             if (context.Students.Any())
@@ -224,7 +224,7 @@
                 }
             };
 
-            context.Courses.AddRange(courses);
+            coursesContext.Courses.AddRange(courses);
 
             context.SaveChanges();
 

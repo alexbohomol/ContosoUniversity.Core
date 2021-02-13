@@ -10,7 +10,6 @@
         {
         }
 
-        public DbSet<Course> Courses { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Department> Departments { get; set; }
@@ -20,8 +19,6 @@
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Course>().ToTable("Course", DbSchemas.Course);
-
             modelBuilder.Entity<Enrollment>().ToTable("Enrollment", DbSchemas.Student);
             modelBuilder.Entity<Student>().ToTable("Student", DbSchemas.Student);
 
@@ -34,7 +31,6 @@
 
         private static class DbSchemas
         {
-            public static readonly string Course = "crs";
             public static readonly string Department = "dpt";
             public static readonly string Student = "std";
         }
