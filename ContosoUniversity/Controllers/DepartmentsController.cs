@@ -17,23 +17,23 @@
     {
         private const string ErrMsgConcurrentUpdate = "The record you attempted to edit was modified by another user after you got the original value. The edit operation was canceled and the current values in the database have been displayed. If you still want to edit this record, click the Save button again. Otherwise click the Back to List hyperlink.";
 
-        private readonly SchoolContext _schoolContext;
+        private readonly DepartmentsContext _departmentsContext;
         private readonly CoursesContext _coursesContext;
         private readonly StudentsContext _studentsContext;
 
         public DepartmentsController(
-            SchoolContext schoolContext, 
+            DepartmentsContext departmentsContext, 
             CoursesContext coursesContext,
             StudentsContext studentsContext)
         {
-            _schoolContext = schoolContext;
+            _departmentsContext = departmentsContext;
             _coursesContext = coursesContext;
             _studentsContext = studentsContext;
         }
 
         public async Task<IActionResult> Index()
         {
-            var departments = await _schoolContext.Departments
+            var departments = await _departmentsContext.Departments
                 .Include(d => d.Administrator)
                 .ToListAsync();
 
@@ -54,7 +54,7 @@
                 return NotFound();
             }
 
-            var department = await _schoolContext.Departments
+            var department = await _departmentsContext.Departments
                 .FromSqlInterpolated($"SELECT * FROM [dpt].Department WHERE ExternalId = {id}")
                 .Include(d => d.Administrator)
                 .AsNoTracking()
@@ -90,7 +90,7 @@
         {
             if (ModelState.IsValid)
             {
-                _schoolContext.Add(new Department
+                _departmentsContext.Add(new Department
                 {
                     Name = form.Name,
                     Budget = form.Budget,
@@ -98,7 +98,7 @@
                     InstructorId = form.InstructorId,
                     ExternalId = Guid.NewGuid()
                 });
-                await _schoolContext.SaveChangesAsync();
+                await _departmentsContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -113,7 +113,7 @@
                 return NotFound();
             }
 
-            var department = await _schoolContext.Departments
+            var department = await _departmentsContext.Departments
                 .Include(i => i.Administrator)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ExternalId == id);
@@ -144,7 +144,7 @@
                 return BadRequest();
             }
 
-            var departmentToUpdate = await _schoolContext.Departments
+            var departmentToUpdate = await _departmentsContext.Departments
                 .Include(i => i.Administrator)
                 .FirstOrDefaultAsync(m => m.ExternalId == form.ExternalId);
 
@@ -158,7 +158,7 @@
                 return View(form);
             }
 
-            _schoolContext.Entry(departmentToUpdate).Property("RowVersion").OriginalValue = form.RowVersion;
+            _departmentsContext.Entry(departmentToUpdate).Property("RowVersion").OriginalValue = form.RowVersion;
 
             if (await TryUpdateModelAsync(
                 departmentToUpdate,
@@ -167,7 +167,7 @@
             {
                 try
                 {
-                    await _schoolContext.SaveChangesAsync();
+                    await _departmentsContext.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException ex)
@@ -202,7 +202,7 @@
                         if (databaseValues.InstructorId != clientValues.InstructorId)
                         {
                             var databaseInstructor =
-                                await _schoolContext.Instructors.FirstOrDefaultAsync(i =>
+                                await _departmentsContext.Instructors.FirstOrDefaultAsync(i =>
                                     i.Id == databaseValues.InstructorId);
                             ModelState.AddModelError("InstructorId", $"Current value: {databaseInstructor?.FullName}");
                         }
@@ -225,7 +225,7 @@
                 return NotFound();
             }
 
-            var department = await _schoolContext.Departments
+            var department = await _departmentsContext.Departments
                 .Include(d => d.Administrator)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ExternalId == id);
@@ -255,7 +255,7 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var department = await _schoolContext.Departments.FirstOrDefaultAsync(x => x.ExternalId == id);
+            var department = await _departmentsContext.Departments.FirstOrDefaultAsync(x => x.ExternalId == id);
             if (department != null)
             {
                 try
@@ -266,10 +266,10 @@
                     /*
                      * remove related assignments
                      */
-                    var relatedAssignments = await _schoolContext.CourseAssignments
+                    var relatedAssignments = await _departmentsContext.CourseAssignments
                         .Where(x => relatedCoursesIds.Contains(x.CourseExternalId))
                         .ToArrayAsync();
-                    _schoolContext.CourseAssignments.RemoveRange(relatedAssignments);
+                    _departmentsContext.CourseAssignments.RemoveRange(relatedAssignments);
 
                     /*
                      * remove related enrollments
@@ -287,11 +287,11 @@
                     /*
                      * remove department
                      */
-                    _schoolContext.Departments.Remove(department);
+                    _departmentsContext.Departments.Remove(department);
 
                     await _coursesContext.SaveChangesAsync();
                     await _studentsContext.SaveChangesAsync();
-                    await _schoolContext.SaveChangesAsync();
+                    await _departmentsContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException /* ex */)
                 {
@@ -306,7 +306,7 @@
         private SelectList GetInstructorSelectList(int? departmentInstructorId = null)
         {
             return new(
-                _schoolContext.Instructors,
+                _departmentsContext.Instructors,
                 nameof(Instructor.Id),
                 nameof(Instructor.FullName),
                 departmentInstructorId);

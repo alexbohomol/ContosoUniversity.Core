@@ -4,11 +4,11 @@
 
     using Models;
 
-    public class SchoolContext : DbContext
+    public class DepartmentsContext : DbContext
     {
         private const string Schema = "dpt";
 
-        public SchoolContext(DbContextOptions<SchoolContext> options) : base(options)
+        public DepartmentsContext(DbContextOptions<DepartmentsContext> options) : base(options)
         {
         }
 

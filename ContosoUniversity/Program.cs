@@ -53,13 +53,13 @@
                     studentsContext.Database.Migrate();
                 }
 
-                var schoolContext = services.GetRequiredService<SchoolContext>();
-                if (schoolContext.Database.GetPendingMigrations().Any())
+                var departmentsContext = services.GetRequiredService<DepartmentsContext>();
+                if (departmentsContext.Database.GetPendingMigrations().Any())
                 {
-                    schoolContext.Database.Migrate();
+                    departmentsContext.Database.Migrate();
                 }
                     
-                DbInitializer.EnsureInitialized(schoolContext, coursesContext, studentsContext);
+                DbInitializer.EnsureInitialized(departmentsContext, coursesContext, studentsContext);
             }
             catch (Exception ex)
             {

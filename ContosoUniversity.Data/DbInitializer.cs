@@ -10,7 +10,7 @@
     public static class DbInitializer
     {
         public static void EnsureInitialized(
-            SchoolContext schoolContext, 
+            DepartmentsContext departmentsContext, 
             CoursesContext coursesContext,
             StudentsContext studentsContext)
         {
@@ -82,7 +82,7 @@
 
             studentsContext.Students.AddRange(students);
 
-            schoolContext.SaveChanges();
+            departmentsContext.SaveChanges();
 
             var instructors = new[]
             {
@@ -123,9 +123,9 @@
                 }
             };
 
-            schoolContext.Instructors.AddRange(instructors);
+            departmentsContext.Instructors.AddRange(instructors);
 
-            schoolContext.SaveChanges();
+            departmentsContext.SaveChanges();
 
             var departments = new[]
             {
@@ -163,9 +163,9 @@
                 }
             };
 
-            schoolContext.Departments.AddRange(departments);
+            departmentsContext.Departments.AddRange(departments);
 
-            schoolContext.SaveChanges();
+            departmentsContext.SaveChanges();
 
             var courses = new[]
             {
@@ -229,7 +229,7 @@
 
             coursesContext.Courses.AddRange(courses);
 
-            schoolContext.SaveChanges();
+            departmentsContext.SaveChanges();
 
             var officeAssignments = new[]
             {
@@ -250,9 +250,9 @@
                 }
             };
 
-            schoolContext.OfficeAssignments.AddRange(officeAssignments);
+            departmentsContext.OfficeAssignments.AddRange(officeAssignments);
 
-            schoolContext.SaveChanges();
+            departmentsContext.SaveChanges();
 
             var courseInstructors = new[]
             {
@@ -298,9 +298,9 @@
                 }
             };
 
-            schoolContext.CourseAssignments.AddRange(courseInstructors);
+            departmentsContext.CourseAssignments.AddRange(courseInstructors);
 
-            schoolContext.SaveChanges();
+            departmentsContext.SaveChanges();
 
             var enrollments = new[]
             {
@@ -383,7 +383,7 @@
                 }
             }
 
-            schoolContext.SaveChanges();
+            departmentsContext.SaveChanges();
         }
     }
 }

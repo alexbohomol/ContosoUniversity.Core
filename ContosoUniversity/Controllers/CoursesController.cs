@@ -17,16 +17,16 @@
 
     public class CoursesController : Controller
     {
-        private readonly SchoolContext _schoolContext;
+        private readonly DepartmentsContext _departmentsContext;
         private readonly CoursesContext _coursesContext;
         private readonly StudentsContext _studentsContext;
 
         public CoursesController(
-            SchoolContext schoolContext, 
+            DepartmentsContext departmentsContext, 
             CoursesContext coursesContext,
             StudentsContext studentsContext)
         {
-            _schoolContext = schoolContext;
+            _departmentsContext = departmentsContext;
             _coursesContext = coursesContext;
             _studentsContext = studentsContext;
         }
@@ -35,7 +35,7 @@
         {
             var courses = await _coursesContext.Courses.AsNoTracking().ToListAsync();
 
-            var departmentNames = await _schoolContext.Departments
+            var departmentNames = await _departmentsContext.Departments
                 .Where(x => courses.Select(_ => _.DepartmentExternalId).Distinct().Contains(x.ExternalId))
                 .AsNoTracking()
                 .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
@@ -67,7 +67,7 @@
                 return NotFound();
             }
 
-            var department = await _schoolContext.Departments
+            var department = await _departmentsContext.Departments
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.ExternalId == course.DepartmentExternalId);
 
@@ -180,7 +180,7 @@
         private async Task<SelectList> CreateDepartmentsDropDownList(object selectedDepartment = null)
         {
             var departments = await (
-                    from d in _schoolContext.Departments
+                    from d in _departmentsContext.Departments
                     orderby d.Name
                     select d)
                 .AsNoTracking()
@@ -208,7 +208,7 @@
                 return NotFound();
             }
 
-            var department = await _schoolContext.Departments
+            var department = await _departmentsContext.Departments
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.ExternalId == course.DepartmentExternalId);
 
@@ -240,10 +240,10 @@
             /*
              * remove related assignments
              */
-            var relatedAssignments = await _schoolContext.CourseAssignments
+            var relatedAssignments = await _departmentsContext.CourseAssignments
                 .Where(x => x.CourseExternalId == course.ExternalId)
                 .ToArrayAsync();
-            _schoolContext.CourseAssignments.RemoveRange(relatedAssignments);
+            _departmentsContext.CourseAssignments.RemoveRange(relatedAssignments);
 
             /*
              * remove related enrollments
@@ -254,7 +254,7 @@
             _studentsContext.Enrollments.RemoveRange(relatedEnrollments);
 
             _coursesContext.Courses.Remove(course);
-            await _schoolContext.SaveChangesAsync();
+            await _departmentsContext.SaveChangesAsync();
             await _studentsContext.SaveChangesAsync();
             await _coursesContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

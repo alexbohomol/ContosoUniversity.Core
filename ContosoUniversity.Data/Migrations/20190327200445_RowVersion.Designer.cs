@@ -11,7 +11,7 @@ namespace ContosoUniversity.Data.Migrations
     using Microsoft.EntityFrameworkCore.Metadata;
     using Microsoft.EntityFrameworkCore.Migrations;
 
-    [DbContext(typeof(SchoolContext))]
+    [DbContext(typeof(DepartmentsContext))]
     [Migration("20190327200445_RowVersion")]
     partial class RowVersion
     {

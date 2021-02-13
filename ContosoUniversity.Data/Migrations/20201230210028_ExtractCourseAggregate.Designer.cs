@@ -10,7 +10,7 @@ namespace ContosoUniversity.Data.Migrations
     using Microsoft.EntityFrameworkCore.Infrastructure;
     using Microsoft.EntityFrameworkCore.Migrations;
 
-    [DbContext(typeof(SchoolContext))]
+    [DbContext(typeof(DepartmentsContext))]
     [Migration("20201230210028_ExtractCourseAggregate")]
     partial class ExtractCourseAggregate
     {

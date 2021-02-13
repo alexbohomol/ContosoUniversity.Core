@@ -9,7 +9,7 @@ namespace ContosoUniversity.Migrations
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Infrastructure;
 
-    [DbContext(typeof(SchoolContext))]
+    [DbContext(typeof(DepartmentsContext))]
     internal class SchoolContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

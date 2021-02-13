@@ -17,23 +17,23 @@
 
     public class InstructorsController : Controller
     {
-        private readonly SchoolContext _schoolContext;
+        private readonly DepartmentsContext _departmentsContext;
         private readonly CoursesContext _coursesContext;
         private readonly StudentsContext _studentsContext;
 
         public InstructorsController(
-            SchoolContext schoolContext, 
+            DepartmentsContext departmentsContext, 
             CoursesContext coursesContext,
             StudentsContext studentsContext)
         {
-            _schoolContext = schoolContext;
+            _departmentsContext = departmentsContext;
             _coursesContext = coursesContext;
             _studentsContext = studentsContext;
         }
 
         public async Task<IActionResult> Index(Guid? id, Guid? courseExternalId)
         {
-            var instructors = await _schoolContext.Instructors
+            var instructors = await _departmentsContext.Instructors
                 .Include(i => i.OfficeAssignment)
                 .Include(i => i.CourseAssignments)
                 .OrderBy(i => i.LastName)
@@ -72,7 +72,7 @@
             {
                 var instructor = viewModel.Instructors.Single(i => i.Id == id.Value);
                 var instructorCourseIds = instructor.AssignedCourseIds.ToHashSet();
-                var departmentNames = await _schoolContext.Departments
+                var departmentNames = await _departmentsContext.Departments
                     .Where(x => courses.Select(_ => _.DepartmentExternalId).Contains(x.ExternalId))
                     .AsNoTracking()
                     .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
@@ -112,7 +112,7 @@
                 return NotFound();
             }
 
-            var instructor = await _schoolContext.Instructors.FirstOrDefaultAsync(m => m.ExternalId == id);
+            var instructor = await _departmentsContext.Instructors.FirstOrDefaultAsync(m => m.ExternalId == id);
             if (instructor == null)
             {
                 return NotFound();
@@ -163,8 +163,8 @@
                 CourseExternalId = Guid.Parse(x)
             }).ToList();
 
-            _schoolContext.Add(instructor);
-            await _schoolContext.SaveChangesAsync();
+            _departmentsContext.Add(instructor);
+            await _departmentsContext.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
@@ -176,7 +176,7 @@
                 return NotFound();
             }
 
-            var instructor = await _schoolContext.Instructors
+            var instructor = await _departmentsContext.Instructors
                 .Include(i => i.OfficeAssignment)
                 .Include(i => i.CourseAssignments)
                 .AsNoTracking()
@@ -221,7 +221,7 @@
                 return BadRequest();
             }
 
-            var instructor = await _schoolContext.Instructors
+            var instructor = await _departmentsContext.Instructors
                 .Include(i => i.OfficeAssignment)
                 .Include(i => i.CourseAssignments)
                 .FirstOrDefaultAsync(m => m.ExternalId == form.ExternalId);
@@ -241,7 +241,7 @@
 
             try
             {
-                await _schoolContext.SaveChangesAsync();
+                await _departmentsContext.SaveChangesAsync();
             }
             catch (DbUpdateException /* ex */)
             {
@@ -292,7 +292,7 @@
                         var courseToRemove =
                             instructorToUpdate.CourseAssignments.FirstOrDefault(i => i.CourseExternalId == course.ExternalId);
                         if (courseToRemove != null)
-                            _schoolContext.Remove(courseToRemove);
+                            _departmentsContext.Remove(courseToRemove);
                     }
                 }
         }
@@ -304,7 +304,7 @@
                 return NotFound();
             }
 
-            var instructor = await _schoolContext.Instructors
+            var instructor = await _departmentsContext.Instructors
                 .FirstOrDefaultAsync(m => m.ExternalId == id);
             if (instructor == null)
             {
@@ -325,19 +325,19 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var instructor = await _schoolContext.Instructors
+            var instructor = await _departmentsContext.Instructors
                 .Include(i => i.CourseAssignments)
                 .SingleAsync(i => i.ExternalId == id);
 
-            var departments = await _schoolContext.Departments
+            var departments = await _departmentsContext.Departments
                 .Where(d => d.InstructorId == instructor.Id)
                 .ToListAsync();
 
             departments.ForEach(d => d.InstructorId = null);
 
-            _schoolContext.Instructors.Remove(instructor);
+            _departmentsContext.Instructors.Remove(instructor);
 
-            await _schoolContext.SaveChangesAsync();
+            await _departmentsContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
     }

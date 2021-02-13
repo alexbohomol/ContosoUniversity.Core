@@ -11,7 +11,7 @@ namespace ContosoUniversity.Data.Migrations
     using Microsoft.EntityFrameworkCore.Metadata;
     using Microsoft.EntityFrameworkCore.Migrations;
 
-    [DbContext(typeof(SchoolContext))]
+    [DbContext(typeof(DepartmentsContext))]
     [Migration("20200126152945_DeclineInheritance")]
     partial class DeclineInheritance
     {

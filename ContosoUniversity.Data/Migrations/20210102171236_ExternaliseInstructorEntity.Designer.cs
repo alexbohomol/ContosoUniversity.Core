@@ -10,7 +10,7 @@ namespace ContosoUniversity.Data.Migrations
     using Microsoft.EntityFrameworkCore.Infrastructure;
     using Microsoft.EntityFrameworkCore.Migrations;
 
-    [DbContext(typeof(SchoolContext))]
+    [DbContext(typeof(DepartmentsContext))]
     [Migration("20210102171236_ExternaliseInstructorEntity")]
     partial class ExternaliseInstructorEntity
     {
