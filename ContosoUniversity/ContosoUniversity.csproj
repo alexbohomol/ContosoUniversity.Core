@@ -21,6 +21,10 @@
   <ItemGroup>
     <Content Remove="Properties\launchSettings.json" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ContosoUniversity.Data\ContosoUniversity.Data.csproj" />
+  </ItemGroup>
   <PropertyGroup>
     <GenerateRuntimeConfigurationFiles>True</GenerateRuntimeConfigurationFiles>
   </PropertyGroup>
