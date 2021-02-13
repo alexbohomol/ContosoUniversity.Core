@@ -19,11 +19,16 @@
     {
         private readonly SchoolContext _schoolContext;
         private readonly CoursesContext _coursesContext;
+        private readonly StudentsContext _studentsContext;
 
-        public CoursesController(SchoolContext schoolContext, CoursesContext coursesContext)
+        public CoursesController(
+            SchoolContext schoolContext, 
+            CoursesContext coursesContext,
+            StudentsContext studentsContext)
         {
             _schoolContext = schoolContext;
             _coursesContext = coursesContext;
+            _studentsContext = studentsContext;
         }
 
         public async Task<IActionResult> Index()
@@ -243,13 +248,14 @@
             /*
              * remove related enrollments
              */
-            var relatedEnrollments = await _schoolContext.Enrollments
+            var relatedEnrollments = await _studentsContext.Enrollments
                 .Where(x => x.CourseExternalId == course.ExternalId)
                 .ToArrayAsync();
-            _schoolContext.Enrollments.RemoveRange(relatedEnrollments);
+            _studentsContext.Enrollments.RemoveRange(relatedEnrollments);
 
             _coursesContext.Courses.Remove(course);
             await _schoolContext.SaveChangesAsync();
+            await _studentsContext.SaveChangesAsync();
             await _coursesContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

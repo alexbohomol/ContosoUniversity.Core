@@ -37,30 +37,34 @@
         /// </summary>
         private static void EnsureDatabaseFor(IWebHost host)
         {
-            using (var scope = host.Services.CreateScope())
+            using var scope = host.Services.CreateScope();
+            var services = scope.ServiceProvider;
+            try
             {
-                var services = scope.ServiceProvider;
-                try
+                var coursesContext = services.GetRequiredService<CoursesContext>();
+                if (coursesContext.Database.GetPendingMigrations().Any())
                 {
-                    var coursesContext = services.GetRequiredService<CoursesContext>();
-                    if (coursesContext.Database.GetPendingMigrations().Any())
-                    {
-                        coursesContext.Database.Migrate();
-                    }
+                    coursesContext.Database.Migrate();
+                }
 
-                    var schoolContext = services.GetRequiredService<SchoolContext>();
-                    if (schoolContext.Database.GetPendingMigrations().Any())
-                    {
-                        schoolContext.Database.Migrate();
-                    }
-                    
-                    DbInitializer.EnsureInitialized(schoolContext, coursesContext);
-                }
-                catch (Exception ex)
+                var studentsContext = services.GetRequiredService<StudentsContext>();
+                if (studentsContext.Database.GetPendingMigrations().Any())
                 {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred while seeding the database.");
+                    studentsContext.Database.Migrate();
                 }
+
+                var schoolContext = services.GetRequiredService<SchoolContext>();
+                if (schoolContext.Database.GetPendingMigrations().Any())
+                {
+                    schoolContext.Database.Migrate();
+                }
+                    
+                DbInitializer.EnsureInitialized(schoolContext, coursesContext, studentsContext);
+            }
+            catch (Exception ex)
+            {
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "An error occurred while seeding the database.");
             }
         }
     }

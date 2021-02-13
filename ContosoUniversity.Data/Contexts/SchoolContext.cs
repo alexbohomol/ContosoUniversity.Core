@@ -6,12 +6,12 @@
 
     public class SchoolContext : DbContext
     {
+        private const string Schema = "dpt";
+
         public SchoolContext(DbContextOptions<SchoolContext> options) : base(options)
         {
         }
 
-        public DbSet<Enrollment> Enrollments { get; set; }
-        public DbSet<Student> Students { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Instructor> Instructors { get; set; }
         public DbSet<OfficeAssignment> OfficeAssignments { get; set; }
@@ -19,20 +19,11 @@
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Enrollment>().ToTable("Enrollment", DbSchemas.Student);
-            modelBuilder.Entity<Student>().ToTable("Student", DbSchemas.Student);
-
-            modelBuilder.Entity<Department>().ToTable("Department", DbSchemas.Department);
-            modelBuilder.Entity<Instructor>().ToTable("Instructor", DbSchemas.Department);
-            modelBuilder.Entity<OfficeAssignment>().ToTable("OfficeAssignment", DbSchemas.Department);
-            modelBuilder.Entity<CourseAssignment>().ToTable("CourseAssignment", DbSchemas.Department)
+            modelBuilder.Entity<Department>().ToTable("Department", Schema);
+            modelBuilder.Entity<Instructor>().ToTable("Instructor", Schema);
+            modelBuilder.Entity<OfficeAssignment>().ToTable("OfficeAssignment", Schema);
+            modelBuilder.Entity<CourseAssignment>().ToTable("CourseAssignment", Schema)
                 .HasKey(c => new {c.CourseExternalId, c.InstructorId});
-        }
-
-        private static class DbSchemas
-        {
-            public static readonly string Department = "dpt";
-            public static readonly string Student = "std";
         }
     }
 }

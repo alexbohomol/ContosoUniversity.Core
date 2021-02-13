@@ -9,10 +9,13 @@
 
     public static class DbInitializer
     {
-        public static void EnsureInitialized(SchoolContext context, CoursesContext coursesContext)
+        public static void EnsureInitialized(
+            SchoolContext schoolContext, 
+            CoursesContext coursesContext,
+            StudentsContext studentsContext)
         {
             // Look for any students.
-            if (context.Students.Any())
+            if (studentsContext.Students.Any())
             {
                 return; // DB has been seeded
             }
@@ -77,9 +80,9 @@
                 }
             };
 
-            context.Students.AddRange(students);
+            studentsContext.Students.AddRange(students);
 
-            context.SaveChanges();
+            schoolContext.SaveChanges();
 
             var instructors = new[]
             {
@@ -120,9 +123,9 @@
                 }
             };
 
-            context.Instructors.AddRange(instructors);
+            schoolContext.Instructors.AddRange(instructors);
 
-            context.SaveChanges();
+            schoolContext.SaveChanges();
 
             var departments = new[]
             {
@@ -160,9 +163,9 @@
                 }
             };
 
-            context.Departments.AddRange(departments);
+            schoolContext.Departments.AddRange(departments);
 
-            context.SaveChanges();
+            schoolContext.SaveChanges();
 
             var courses = new[]
             {
@@ -226,7 +229,7 @@
 
             coursesContext.Courses.AddRange(courses);
 
-            context.SaveChanges();
+            schoolContext.SaveChanges();
 
             var officeAssignments = new[]
             {
@@ -247,9 +250,9 @@
                 }
             };
 
-            context.OfficeAssignments.AddRange(officeAssignments);
+            schoolContext.OfficeAssignments.AddRange(officeAssignments);
 
-            context.SaveChanges();
+            schoolContext.SaveChanges();
 
             var courseInstructors = new[]
             {
@@ -295,9 +298,9 @@
                 }
             };
 
-            context.CourseAssignments.AddRange(courseInstructors);
+            schoolContext.CourseAssignments.AddRange(courseInstructors);
 
-            context.SaveChanges();
+            schoolContext.SaveChanges();
 
             var enrollments = new[]
             {
@@ -370,17 +373,17 @@
 
             foreach (var e in enrollments)
             {
-                var enrollmentInDataBase = context.Enrollments
+                var enrollmentInDataBase = studentsContext.Enrollments
                     .SingleOrDefault(s =>
                         s.Student.Id == e.StudentId &&
                         s.CourseExternalId == e.CourseExternalId);
                 if (enrollmentInDataBase == null)
                 {
-                    context.Enrollments.Add(e);
+                    studentsContext.Enrollments.Add(e);
                 }
             }
 
-            context.SaveChanges();
+            schoolContext.SaveChanges();
         }
     }
 }

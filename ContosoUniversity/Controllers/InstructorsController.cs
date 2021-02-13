@@ -19,11 +19,16 @@
     {
         private readonly SchoolContext _schoolContext;
         private readonly CoursesContext _coursesContext;
+        private readonly StudentsContext _studentsContext;
 
-        public InstructorsController(SchoolContext schoolContext, CoursesContext coursesContext)
+        public InstructorsController(
+            SchoolContext schoolContext, 
+            CoursesContext coursesContext,
+            StudentsContext studentsContext)
         {
             _schoolContext = schoolContext;
             _coursesContext = coursesContext;
+            _studentsContext = studentsContext;
         }
 
         public async Task<IActionResult> Index(Guid? id, Guid? courseExternalId)
@@ -88,7 +93,7 @@
 
             if (courseExternalId is not null)
             {
-                var enrollments = await _schoolContext.Enrollments
+                var enrollments = await _studentsContext.Enrollments
                     .Include(x => x.Student)
                     .Where(x => x.CourseExternalId == courseExternalId)
                     .AsNoTracking()

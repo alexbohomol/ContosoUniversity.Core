@@ -15,13 +15,15 @@
 
     public class StudentsController : Controller
     {
-        private readonly SchoolContext _schoolContext;
         private readonly CoursesContext _coursesContext;
+        private readonly StudentsContext _studentsContext;
 
-        public StudentsController(SchoolContext schoolContext, CoursesContext coursesContext)
+        public StudentsController(
+            CoursesContext coursesContext,
+            StudentsContext studentsContext)
         {
-            _schoolContext = schoolContext;
             _coursesContext = coursesContext;
+            _studentsContext = studentsContext;
         }
 
         public async Task<IActionResult> Index(
@@ -39,7 +41,7 @@
                 searchString = currentFilter;
             }
 
-            var students = from s in _schoolContext.Students select s;
+            var students = from s in _studentsContext.Students select s;
             if (!string.IsNullOrEmpty(searchString))
             {
                 students = students.Where(s => s.LastName.Contains(searchString)
@@ -91,7 +93,7 @@
                 return NotFound();
             }
 
-            var student = await _schoolContext.Students
+            var student = await _studentsContext.Students
                 .Include(s => s.Enrollments)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ExternalId == id);
@@ -137,14 +139,14 @@
             {
                 if (ModelState.IsValid)
                 {
-                    _schoolContext.Add(new Student
+                    _studentsContext.Add(new Student
                     {
                         LastName = form.LastName,
                         FirstMidName = form.FirstName,
                         EnrollmentDate = form.EnrollmentDate,
                         ExternalId = Guid.NewGuid()
                     });
-                    await _schoolContext.SaveChangesAsync();
+                    await _studentsContext.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -166,7 +168,7 @@
                 return BadRequest();
             }
 
-            var student = await _schoolContext.Students.SingleAsync(x => x.ExternalId == id);
+            var student = await _studentsContext.Students.SingleAsync(x => x.ExternalId == id);
             if (student == null)
             {
                 return NotFound();
@@ -191,7 +193,7 @@
                 return BadRequest();
             }
 
-            var student = await _schoolContext.Students.SingleAsync(s => s.ExternalId == form.ExternalId);
+            var student = await _studentsContext.Students.SingleAsync(s => s.ExternalId == form.ExternalId);
             if (student is null)
             {
                 return BadRequest();
@@ -203,7 +205,7 @@
 
             try
             {
-                await _schoolContext.SaveChangesAsync();
+                await _studentsContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException /* ex */)
@@ -224,7 +226,7 @@
                 return BadRequest();
             }
 
-            var student = await _schoolContext.Students.AsNoTracking().SingleAsync(m => m.ExternalId == id);
+            var student = await _studentsContext.Students.AsNoTracking().SingleAsync(m => m.ExternalId == id);
             if (student is null)
             {
                 return NotFound();
@@ -245,7 +247,7 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var student = await _schoolContext.Students.SingleAsync(x => x.ExternalId == id);
+            var student = await _studentsContext.Students.SingleAsync(x => x.ExternalId == id);
             if (student == null)
             {
                 return RedirectToAction(nameof(Index));
@@ -253,8 +255,8 @@
 
             try
             {
-                _schoolContext.Students.Remove(student);
-                await _schoolContext.SaveChangesAsync();
+                _studentsContext.Students.Remove(student);
+                await _studentsContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException /* ex */)
