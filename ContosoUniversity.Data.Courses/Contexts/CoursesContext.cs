@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Data.Contexts
+namespace ContosoUniversity.Data.Courses.Contexts
 {
     using Microsoft.EntityFrameworkCore;
 

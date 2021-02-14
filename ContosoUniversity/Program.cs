@@ -5,6 +5,7 @@
 
     using Data;
     using Data.Contexts;
+    using Data.Courses.Contexts;
 
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;

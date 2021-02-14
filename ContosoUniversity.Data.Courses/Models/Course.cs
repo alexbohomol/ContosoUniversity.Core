@@ -1,7 +1,9 @@
-﻿namespace ContosoUniversity.Data.Models
+﻿namespace ContosoUniversity.Data.Courses.Models
 {
     using System;
     using System.ComponentModel.DataAnnotations;
+
+    using Data.Models;
 
     public class Course : IExternalIdentifier
     {

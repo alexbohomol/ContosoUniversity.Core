@@ -5,6 +5,9 @@
 
     using Contexts;
 
+    using Courses.Contexts;
+    using Courses.Models;
+
     using Models;
 
     public static class DbInitializer

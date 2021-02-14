@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
 
     using Data.Contexts;
+    using Data.Courses.Contexts;
     using Data.Models;
 
     using Microsoft.AspNetCore.Mvc;

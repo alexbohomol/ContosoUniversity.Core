@@ -4,6 +4,7 @@ namespace ContosoUniversity.Services
     using System.Collections.Generic;
     using System.Linq;
 
+    using Data.Courses.Models;
     using Data.Models;
 
     /// <summary>
