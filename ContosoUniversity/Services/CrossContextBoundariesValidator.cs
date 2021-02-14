@@ -5,6 +5,8 @@ namespace ContosoUniversity.Services
     using System.Linq;
 
     using Data.Courses.Models;
+    using Data.Departments;
+    using Data.Departments.Models;
     using Data.Models;
     using Data.Students;
     using Data.Students.Models;

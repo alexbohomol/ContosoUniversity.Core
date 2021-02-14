@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Data.Cour
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Data.Students", "ContosoUniversity.Data.Students\ContosoUniversity.Data.Students.csproj", "{C7B2EE45-B729-497D-894B-B284A9DC7A85}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Data.Departments", "ContosoUniversity.Data.Departments\ContosoUniversity.Data.Departments.csproj", "{D8E9717C-4EB5-4E36-BC0C-C78C23DC0A11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{C7B2EE45-B729-497D-894B-B284A9DC7A85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7B2EE45-B729-497D-894B-B284A9DC7A85}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7B2EE45-B729-497D-894B-B284A9DC7A85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8E9717C-4EB5-4E36-BC0C-C78C23DC0A11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8E9717C-4EB5-4E36-BC0C-C78C23DC0A11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8E9717C-4EB5-4E36-BC0C-C78C23DC0A11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8E9717C-4EB5-4E36-BC0C-C78C23DC0A11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

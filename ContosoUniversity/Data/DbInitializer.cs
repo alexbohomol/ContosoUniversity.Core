@@ -3,10 +3,11 @@
     using System;
     using System.Linq;
 
-    using Contexts;
-
     using Courses;
     using Courses.Models;
+
+    using Departments;
+    using Departments.Models;
 
     using Models;
 

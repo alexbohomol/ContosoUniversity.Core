@@ -1,4 +1,4 @@
-﻿namespace ContosoUniversity.Data.Models
+﻿namespace ContosoUniversity.Data.Departments.Models
 {
     using System.ComponentModel.DataAnnotations;
 

@@ -4,7 +4,7 @@
     using System.Diagnostics;
     using System.Threading.Tasks;
 
-    using Data.Contexts;
+    using Data.Departments;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;

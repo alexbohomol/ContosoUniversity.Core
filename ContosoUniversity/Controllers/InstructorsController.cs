@@ -5,8 +5,9 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Data.Contexts;
     using Data.Courses;
+    using Data.Departments;
+    using Data.Departments.Models;
     using Data.Models;
     using Data.Students;
 

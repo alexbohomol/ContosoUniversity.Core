@@ -4,8 +4,8 @@
     using System.Linq;
 
     using Data;
-    using Data.Contexts;
     using Data.Courses;
+    using Data.Departments;
     using Data.Students;
 
     using Microsoft.AspNetCore;
