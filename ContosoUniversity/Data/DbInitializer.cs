@@ -5,10 +5,13 @@
 
     using Contexts;
 
-    using Courses.Contexts;
+    using Courses;
     using Courses.Models;
 
     using Models;
+
+    using Students;
+    using Students.Models;
 
     public static class DbInitializer
     {

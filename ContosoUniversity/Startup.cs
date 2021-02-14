@@ -1,7 +1,8 @@
 ﻿namespace ContosoUniversity
 {
     using Data.Contexts;
-    using Data.Courses.Contexts;
+    using Data.Courses;
+    using Data.Students;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;

@@ -6,6 +6,8 @@ namespace ContosoUniversity.Services
 
     using Data.Courses.Models;
     using Data.Models;
+    using Data.Students;
+    using Data.Students.Models;
 
     /// <summary>
     ///     TODO: these checks should be implemented in domain/service layers later

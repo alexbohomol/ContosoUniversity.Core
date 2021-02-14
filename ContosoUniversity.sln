@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Data", "C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Data.Courses", "ContosoUniversity.Data.Courses\ContosoUniversity.Data.Courses.csproj", "{93FEB578-8B6C-4FA2-B089-87D17F93FE20}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Data.Students", "ContosoUniversity.Data.Students\ContosoUniversity.Data.Students.csproj", "{C7B2EE45-B729-497D-894B-B284A9DC7A85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{93FEB578-8B6C-4FA2-B089-87D17F93FE20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93FEB578-8B6C-4FA2-B089-87D17F93FE20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93FEB578-8B6C-4FA2-B089-87D17F93FE20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7B2EE45-B729-497D-894B-B284A9DC7A85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7B2EE45-B729-497D-894B-B284A9DC7A85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7B2EE45-B729-497D-894B-B284A9DC7A85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7B2EE45-B729-497D-894B-B284A9DC7A85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
