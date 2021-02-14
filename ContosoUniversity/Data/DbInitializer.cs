@@ -9,15 +9,13 @@
     using Departments;
     using Departments.Models;
 
-    using Models;
-
     using Students;
     using Students.Models;
 
     public static class DbInitializer
     {
         public static void EnsureInitialized(
-            DepartmentsContext departmentsContext, 
+            DepartmentsContext departmentsContext,
             CoursesContext coursesContext,
             StudentsContext studentsContext)
         {

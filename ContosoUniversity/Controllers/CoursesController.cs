@@ -8,7 +8,6 @@
     using Data.Courses.Models;
     using Data.Departments;
     using Data.Departments.Models;
-    using Data.Models;
     using Data.Students;
 
     using Microsoft.AspNetCore.Mvc;
@@ -21,12 +20,12 @@
 
     public class CoursesController : Controller
     {
-        private readonly DepartmentsContext _departmentsContext;
         private readonly CoursesContext _coursesContext;
+        private readonly DepartmentsContext _departmentsContext;
         private readonly StudentsContext _studentsContext;
 
         public CoursesController(
-            DepartmentsContext departmentsContext, 
+            DepartmentsContext departmentsContext,
             CoursesContext coursesContext,
             StudentsContext studentsContext)
         {

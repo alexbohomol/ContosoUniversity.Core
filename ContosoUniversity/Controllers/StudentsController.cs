@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
 
     using Data.Courses;
-    using Data.Models;
     using Data.Students;
     using Data.Students.Models;
 

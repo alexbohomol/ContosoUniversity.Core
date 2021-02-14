@@ -60,7 +60,7 @@
                 {
                     departmentsContext.Database.Migrate();
                 }
-                    
+
                 DbInitializer.EnsureInitialized(departmentsContext, coursesContext, studentsContext);
             }
             catch (Exception ex)
