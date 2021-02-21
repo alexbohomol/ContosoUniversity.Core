@@ -2,7 +2,7 @@ namespace ContosoUniversity.ViewModels.Instructors
 {
     using System.Collections.Generic;
 
-    using Models;
+    using Data.Students.Models;
 
     public class InstructorIndexViewModel
     {

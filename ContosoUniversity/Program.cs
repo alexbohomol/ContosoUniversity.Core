@@ -3,13 +3,17 @@
     using System;
     using System.Linq;
 
-    using Data;
+    using Data.Courses;
+    using Data.Departments;
+    using Data.Students;
 
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+
+    using Seed;
 
     public class Program
     {
@@ -36,25 +40,34 @@
         /// </summary>
         private static void EnsureDatabaseFor(IWebHost host)
         {
-            using (var scope = host.Services.CreateScope())
+            using var scope = host.Services.CreateScope();
+            var services = scope.ServiceProvider;
+            try
             {
-                var services = scope.ServiceProvider;
-                try
+                var coursesContext = services.GetRequiredService<CoursesContext>();
+                if (coursesContext.Database.GetPendingMigrations().Any())
                 {
-                    var context = services.GetRequiredService<SchoolContext>();
-
-                    if (context.Database.GetPendingMigrations().Any())
-                    {
-                        context.Database.Migrate();
-                    }
-
-                    DbInitializer.EnsureInitialized(context);
+                    coursesContext.Database.Migrate();
                 }
-                catch (Exception ex)
+
+                var studentsContext = services.GetRequiredService<StudentsContext>();
+                if (studentsContext.Database.GetPendingMigrations().Any())
                 {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred while seeding the database.");
+                    studentsContext.Database.Migrate();
                 }
+
+                var departmentsContext = services.GetRequiredService<DepartmentsContext>();
+                if (departmentsContext.Database.GetPendingMigrations().Any())
+                {
+                    departmentsContext.Database.Migrate();
+                }
+
+                DbSeeder.EnsureInitialized(departmentsContext, coursesContext, studentsContext);
+            }
+            catch (Exception ex)
+            {
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "An error occurred while seeding the database.");
             }
         }
     }

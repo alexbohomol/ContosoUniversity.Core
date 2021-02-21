@@ -4,20 +4,18 @@
     using System.Diagnostics;
     using System.Threading.Tasks;
 
-    using Data;
+    using Data.Departments;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
-
-    using Models;
 
     using ViewModels;
 
     public class HomeController : Controller
     {
-        private readonly SchoolContext _context;
+        private readonly DepartmentsContext _context;
 
-        public HomeController(SchoolContext context)
+        public HomeController(DepartmentsContext context)
         {
             _context = context;
         }

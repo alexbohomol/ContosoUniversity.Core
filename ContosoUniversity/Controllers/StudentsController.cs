@@ -4,23 +4,27 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Data;
+    using Data.Courses;
+    using Data.Students;
+    using Data.Students.Models;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
-
-    using Models;
 
     using ViewModels;
     using ViewModels.Students;
 
     public class StudentsController : Controller
     {
-        private readonly SchoolContext _context;
+        private readonly CoursesContext _coursesContext;
+        private readonly StudentsContext _studentsContext;
 
-        public StudentsController(SchoolContext context)
+        public StudentsController(
+            CoursesContext coursesContext,
+            StudentsContext studentsContext)
         {
-            _context = context;
+            _coursesContext = coursesContext;
+            _studentsContext = studentsContext;
         }
 
         public async Task<IActionResult> Index(
@@ -38,7 +42,7 @@
                 searchString = currentFilter;
             }
 
-            var students = from s in _context.Students select s;
+            var students = from s in _studentsContext.Students select s;
             if (!string.IsNullOrEmpty(searchString))
             {
                 students = students.Where(s => s.LastName.Contains(searchString)
@@ -90,7 +94,7 @@
                 return NotFound();
             }
 
-            var student = await _context.Students
+            var student = await _studentsContext.Students
                 .Include(s => s.Enrollments)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ExternalId == id);
@@ -102,7 +106,7 @@
 
             var courseIds = student.Enrollments.Select(x => x.CourseExternalId).ToArray();
 
-            var courseTitles = await _context.Courses
+            var courseTitles = await _coursesContext.Courses
                 .Where(x => courseIds.Contains(x.ExternalId))
                 .ToDictionaryAsync(x => x.ExternalId, x => x.Title);
 
@@ -136,14 +140,14 @@
             {
                 if (ModelState.IsValid)
                 {
-                    _context.Add(new Student
+                    _studentsContext.Add(new Student
                     {
                         LastName = form.LastName,
                         FirstMidName = form.FirstName,
                         EnrollmentDate = form.EnrollmentDate,
                         ExternalId = Guid.NewGuid()
                     });
-                    await _context.SaveChangesAsync();
+                    await _studentsContext.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -165,7 +169,7 @@
                 return BadRequest();
             }
 
-            var student = await _context.Students.SingleAsync(x => x.ExternalId == id);
+            var student = await _studentsContext.Students.SingleAsync(x => x.ExternalId == id);
             if (student == null)
             {
                 return NotFound();
@@ -190,7 +194,7 @@
                 return BadRequest();
             }
 
-            var student = await _context.Students.SingleAsync(s => s.ExternalId == form.ExternalId);
+            var student = await _studentsContext.Students.SingleAsync(s => s.ExternalId == form.ExternalId);
             if (student is null)
             {
                 return BadRequest();
@@ -202,7 +206,7 @@
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _studentsContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException /* ex */)
@@ -223,7 +227,7 @@
                 return BadRequest();
             }
 
-            var student = await _context.Students.AsNoTracking().SingleAsync(m => m.ExternalId == id);
+            var student = await _studentsContext.Students.AsNoTracking().SingleAsync(m => m.ExternalId == id);
             if (student is null)
             {
                 return NotFound();
@@ -244,7 +248,7 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var student = await _context.Students.SingleAsync(x => x.ExternalId == id);
+            var student = await _studentsContext.Students.SingleAsync(x => x.ExternalId == id);
             if (student == null)
             {
                 return RedirectToAction(nameof(Index));
@@ -252,8 +256,8 @@
 
             try
             {
-                _context.Students.Remove(student);
-                await _context.SaveChangesAsync();
+                _studentsContext.Students.Remove(student);
+                await _studentsContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException /* ex */)
