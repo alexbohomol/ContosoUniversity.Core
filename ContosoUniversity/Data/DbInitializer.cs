@@ -1,6 +1,7 @@
 ﻿namespace ContosoUniversity.Data
 {
     using System;
+    using System.IO;
     using System.Linq;
 
     using Courses;
@@ -9,8 +10,55 @@
     using Departments;
     using Departments.Models;
 
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+
     using Students;
     using Students.Models;
+
+    class CourseConfig
+    {
+        public int CourseCode { get; set; }
+        public string Title { get; set; }
+        public int Credits { get; set; }
+        public string Department { get; set; }
+    }
+
+    class DepartmentConfig
+    {
+        public string Name { get; set; }
+        public int Budget { get; set; }
+        public DateTime StartDate { get; set; }
+        public string Administrator { get; set; }
+    }
+
+    class StudentConfig
+    {
+        public DateTime EnrollmentDate { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+    }
+
+    class InstructorConfig
+    {
+        public DateTime HireDate { get; set; }
+        public string Location { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+    }
+
+    class CourseAssignmentConfig
+    {
+        public string Instructor { get; set; }
+        public int Course { get; set; }
+    }
+
+    class EnrollmentConfig
+    {
+        public string Student { get; set; }
+        public int Course { get; set; }
+        public string Grade { get; set; }
+    }
 
     public static class DbInitializer
     {
@@ -19,376 +67,132 @@
             CoursesContext coursesContext,
             StudentsContext studentsContext)
         {
-            // Look for any students.
-            if (studentsContext.Students.Any())
+            // Check seed status
+            if (coursesContext.Courses.Any() 
+                || studentsContext.Students.Any()
+                || departmentsContext.Departments.Any()
+                || departmentsContext.Instructors.Any())
             {
                 return; // DB has been seeded
             }
+            
+            IConfiguration config = new ConfigurationBuilder()
+                .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../ContosoUniversity"))
+                .AddJsonFile("appsettings.Seed.json")
+                .Build();
 
-            var students = new[]
+            var courseConfigs = config
+                .GetSection("CoursesContext:Courses")
+                .Get<CourseConfig[]>();
+            
+            coursesContext.Courses.AddRange(courseConfigs.Select(x => new Course
             {
-                new Student
-                {
-                    FirstMidName = "Carson",
-                    LastName = "Alexander",
-                    EnrollmentDate = DateTime.Parse("2010-09-01"),
-                    ExternalId = Guid.NewGuid()
-                },
-                new Student
-                {
-                    FirstMidName = "Meredith",
-                    LastName = "Alonso",
-                    EnrollmentDate = DateTime.Parse("2012-09-01"),
-                    ExternalId = Guid.NewGuid()
-                },
-                new Student
-                {
-                    FirstMidName = "Arturo",
-                    LastName = "Anand",
-                    EnrollmentDate = DateTime.Parse("2013-09-01"),
-                    ExternalId = Guid.NewGuid()
-                },
-                new Student
-                {
-                    FirstMidName = "Gytis",
-                    LastName = "Barzdukas",
-                    EnrollmentDate = DateTime.Parse("2012-09-01"),
-                    ExternalId = Guid.NewGuid()
-                },
-                new Student
-                {
-                    FirstMidName = "Yan",
-                    LastName = "Li",
-                    EnrollmentDate = DateTime.Parse("2012-09-01"),
-                    ExternalId = Guid.NewGuid()
-                },
-                new Student
-                {
-                    FirstMidName = "Peggy",
-                    LastName = "Justice",
-                    EnrollmentDate = DateTime.Parse("2011-09-01"),
-                    ExternalId = Guid.NewGuid()
-                },
-                new Student
-                {
-                    FirstMidName = "Laura",
-                    LastName = "Norman",
-                    EnrollmentDate = DateTime.Parse("2013-09-01"),
-                    ExternalId = Guid.NewGuid()
-                },
-                new Student
-                {
-                    FirstMidName = "Nino",
-                    LastName = "Olivetto",
-                    EnrollmentDate = DateTime.Parse("2005-09-01"),
-                    ExternalId = Guid.NewGuid()
-                }
-            };
+                CourseCode = x.CourseCode,
+                Title = x.Title,
+                Credits = x.Credits,
+                ExternalId = Guid.NewGuid()
+                // DepartmentExternalId = 
+            }));
 
-            studentsContext.Students.AddRange(students);
+            coursesContext.SaveChanges();
 
+            var departmentConfigs = config
+                .GetSection("DepartmentsContext:Departments")
+                .Get<DepartmentConfig[]>();
+            
+            departmentsContext.Departments.AddRange(departmentConfigs.Select(x => new Department
+            {
+                Name = x.Name,
+                Budget = x.Budget,
+                StartDate = x.StartDate,
+                ExternalId = Guid.NewGuid()
+                // InstructorId = 
+            }));
+            
             departmentsContext.SaveChanges();
-
-            var instructors = new[]
+            
+            foreach (var course in coursesContext.Courses)
             {
-                new Instructor
-                {
-                    FirstMidName = "Kim",
-                    LastName = "Abercrombie",
-                    HireDate = DateTime.Parse("1995-03-11"),
-                    ExternalId = Guid.NewGuid()
-                },
-                new Instructor
-                {
-                    FirstMidName = "Fadi",
-                    LastName = "Fakhouri",
-                    HireDate = DateTime.Parse("2002-07-06"),
-                    ExternalId = Guid.NewGuid()
-                },
-                new Instructor
-                {
-                    FirstMidName = "Roger",
-                    LastName = "Harui",
-                    HireDate = DateTime.Parse("1998-07-01"),
-                    ExternalId = Guid.NewGuid()
-                },
-                new Instructor
-                {
-                    FirstMidName = "Candace",
-                    LastName = "Kapoor",
-                    HireDate = DateTime.Parse("2001-01-15"),
-                    ExternalId = Guid.NewGuid()
-                },
-                new Instructor
-                {
-                    FirstMidName = "Roger",
-                    LastName = "Zheng",
-                    HireDate = DateTime.Parse("2004-02-12"),
-                    ExternalId = Guid.NewGuid()
-                }
-            };
+                var department = courseConfigs.Single(x => x.CourseCode == course.CourseCode).Department;
+                course.DepartmentExternalId = departmentsContext.Departments.Single(x => x.Name == department).ExternalId;
+            }
+            
+            coursesContext.SaveChanges();
 
+            var studentConfigs = config
+                .GetSection("StudentsContext:Students")
+                .Get<StudentConfig[]>();
+            
+            studentsContext.Students.AddRange(studentConfigs.Select(x => new Student
+            {
+                FirstMidName = x.FirstName,
+                LastName = x.LastName,
+                EnrollmentDate = x.EnrollmentDate,
+                ExternalId = Guid.NewGuid()
+            }));
+
+            studentsContext.SaveChanges();
+
+            var instructorConfigs = config
+                .GetSection("DepartmentsContext:Instructors")
+                .Get<InstructorConfig[]>();
+
+            var instructors = instructorConfigs.Select(x => new Instructor
+            {
+                FirstMidName = x.FirstName,
+                LastName = x.LastName,
+                HireDate = x.HireDate,
+                OfficeAssignment = string.IsNullOrWhiteSpace(x.Location)
+                    ? null
+                    : new OfficeAssignment
+                    {
+                        Location = x.Location
+                    },
+                ExternalId = Guid.NewGuid()
+            }).ToArray();
+            
             departmentsContext.Instructors.AddRange(instructors);
 
             departmentsContext.SaveChanges();
-
-            var departments = new[]
+            
+            foreach (var department in departmentsContext.Departments)
             {
-                new Department
-                {
-                    Name = "English",
-                    Budget = 350000,
-                    StartDate = DateTime.Parse("2007-09-01"),
-                    InstructorId = instructors.Single(i => i.LastName == "Abercrombie").Id,
-                    ExternalId = Guid.NewGuid()
-                },
-                new Department
-                {
-                    Name = "Mathematics",
-                    Budget = 100000,
-                    StartDate = DateTime.Parse("2007-09-01"),
-                    InstructorId = instructors.Single(i => i.LastName == "Fakhouri").Id,
-                    ExternalId = Guid.NewGuid()
-                },
-                new Department
-                {
-                    Name = "Engineering",
-                    Budget = 350000,
-                    StartDate = DateTime.Parse("2007-09-01"),
-                    InstructorId = instructors.Single(i => i.LastName == "Harui").Id,
-                    ExternalId = Guid.NewGuid()
-                },
-                new Department
-                {
-                    Name = "Economics",
-                    Budget = 100000,
-                    StartDate = DateTime.Parse("2007-09-01"),
-                    InstructorId = instructors.Single(i => i.LastName == "Kapoor").Id,
-                    ExternalId = Guid.NewGuid()
-                }
-            };
-
-            departmentsContext.Departments.AddRange(departments);
-
-            departmentsContext.SaveChanges();
-
-            var courses = new[]
-            {
-                new Course
-                {
-                    CourseCode = 1050,
-                    Title = "Chemistry",
-                    Credits = 3,
-                    DepartmentExternalId = departments.Single(s => s.Name == "Engineering").ExternalId,
-                    ExternalId = Guid.NewGuid()
-                },
-                new Course
-                {
-                    CourseCode = 4022,
-                    Title = "Microeconomics",
-                    Credits = 3,
-                    DepartmentExternalId = departments.Single(s => s.Name == "Economics").ExternalId,
-                    ExternalId = Guid.NewGuid()
-                },
-                new Course
-                {
-                    CourseCode = 4041,
-                    Title = "Macroeconomics",
-                    Credits = 3,
-                    DepartmentExternalId = departments.Single(s => s.Name == "Economics").ExternalId,
-                    ExternalId = Guid.NewGuid()
-                },
-                new Course
-                {
-                    CourseCode = 1045,
-                    Title = "Calculus",
-                    Credits = 4,
-                    DepartmentExternalId = departments.Single(s => s.Name == "Mathematics").ExternalId,
-                    ExternalId = Guid.NewGuid()
-                },
-                new Course
-                {
-                    CourseCode = 3141,
-                    Title = "Trigonometry",
-                    Credits = 4,
-                    DepartmentExternalId = departments.Single(s => s.Name == "Mathematics").ExternalId,
-                    ExternalId = Guid.NewGuid()
-                },
-                new Course
-                {
-                    CourseCode = 2021,
-                    Title = "Composition",
-                    Credits = 3,
-                    DepartmentExternalId = departments.Single(s => s.Name == "English").ExternalId,
-                    ExternalId = Guid.NewGuid()
-                },
-                new Course
-                {
-                    CourseCode = 2042,
-                    Title = "Literature",
-                    Credits = 4,
-                    DepartmentExternalId = departments.Single(s => s.Name == "English").ExternalId,
-                    ExternalId = Guid.NewGuid()
-                }
-            };
-
-            coursesContext.Courses.AddRange(courses);
-
-            departmentsContext.SaveChanges();
-
-            var officeAssignments = new[]
-            {
-                new OfficeAssignment
-                {
-                    InstructorID = instructors.Single(i => i.LastName == "Fakhouri").Id,
-                    Location = "Smith 17"
-                },
-                new OfficeAssignment
-                {
-                    InstructorID = instructors.Single(i => i.LastName == "Harui").Id,
-                    Location = "Gowan 27"
-                },
-                new OfficeAssignment
-                {
-                    InstructorID = instructors.Single(i => i.LastName == "Kapoor").Id,
-                    Location = "Thompson 304"
-                }
-            };
-
-            departmentsContext.OfficeAssignments.AddRange(officeAssignments);
-
-            departmentsContext.SaveChanges();
-
-            var courseInstructors = new[]
-            {
-                new CourseAssignment
-                {
-                    CourseExternalId = courses.Single(c => c.Title == "Chemistry").ExternalId,
-                    InstructorId = instructors.Single(i => i.LastName == "Kapoor").Id
-                },
-                new CourseAssignment
-                {
-                    CourseExternalId = courses.Single(c => c.Title == "Chemistry").ExternalId,
-                    InstructorId = instructors.Single(i => i.LastName == "Harui").Id
-                },
-                new CourseAssignment
-                {
-                    CourseExternalId = courses.Single(c => c.Title == "Microeconomics").ExternalId,
-                    InstructorId = instructors.Single(i => i.LastName == "Zheng").Id
-                },
-                new CourseAssignment
-                {
-                    CourseExternalId = courses.Single(c => c.Title == "Macroeconomics").ExternalId,
-                    InstructorId = instructors.Single(i => i.LastName == "Zheng").Id
-                },
-                new CourseAssignment
-                {
-                    CourseExternalId = courses.Single(c => c.Title == "Calculus").ExternalId,
-                    InstructorId = instructors.Single(i => i.LastName == "Fakhouri").Id
-                },
-                new CourseAssignment
-                {
-                    CourseExternalId = courses.Single(c => c.Title == "Trigonometry").ExternalId,
-                    InstructorId = instructors.Single(i => i.LastName == "Harui").Id
-                },
-                new CourseAssignment
-                {
-                    CourseExternalId = courses.Single(c => c.Title == "Composition").ExternalId,
-                    InstructorId = instructors.Single(i => i.LastName == "Abercrombie").Id
-                },
-                new CourseAssignment
-                {
-                    CourseExternalId = courses.Single(c => c.Title == "Literature").ExternalId,
-                    InstructorId = instructors.Single(i => i.LastName == "Abercrombie").Id
-                }
-            };
-
-            departmentsContext.CourseAssignments.AddRange(courseInstructors);
-
-            departmentsContext.SaveChanges();
-
-            var enrollments = new[]
-            {
-                new Enrollment
-                {
-                    StudentId = students.Single(s => s.LastName == "Alexander").Id,
-                    CourseExternalId = courses.Single(c => c.Title == "Chemistry").ExternalId,
-                    Grade = Grade.A
-                },
-                new Enrollment
-                {
-                    StudentId = students.Single(s => s.LastName == "Alexander").Id,
-                    CourseExternalId = courses.Single(c => c.Title == "Microeconomics").ExternalId,
-                    Grade = Grade.C
-                },
-                new Enrollment
-                {
-                    StudentId = students.Single(s => s.LastName == "Alexander").Id,
-                    CourseExternalId = courses.Single(c => c.Title == "Macroeconomics").ExternalId,
-                    Grade = Grade.B
-                },
-                new Enrollment
-                {
-                    StudentId = students.Single(s => s.LastName == "Alonso").Id,
-                    CourseExternalId = courses.Single(c => c.Title == "Calculus").ExternalId,
-                    Grade = Grade.B
-                },
-                new Enrollment
-                {
-                    StudentId = students.Single(s => s.LastName == "Alonso").Id,
-                    CourseExternalId = courses.Single(c => c.Title == "Trigonometry").ExternalId,
-                    Grade = Grade.B
-                },
-                new Enrollment
-                {
-                    StudentId = students.Single(s => s.LastName == "Alonso").Id,
-                    CourseExternalId = courses.Single(c => c.Title == "Composition").ExternalId,
-                    Grade = Grade.B
-                },
-                new Enrollment
-                {
-                    StudentId = students.Single(s => s.LastName == "Anand").Id,
-                    CourseExternalId = courses.Single(c => c.Title == "Chemistry").ExternalId
-                },
-                new Enrollment
-                {
-                    StudentId = students.Single(s => s.LastName == "Anand").Id,
-                    CourseExternalId = courses.Single(c => c.Title == "Microeconomics").ExternalId,
-                    Grade = Grade.B
-                },
-                new Enrollment
-                {
-                    StudentId = students.Single(s => s.LastName == "Barzdukas").Id,
-                    CourseExternalId = courses.Single(c => c.Title == "Chemistry").ExternalId,
-                    Grade = Grade.B
-                },
-                new Enrollment
-                {
-                    StudentId = students.Single(s => s.LastName == "Li").Id,
-                    CourseExternalId = courses.Single(c => c.Title == "Composition").ExternalId,
-                    Grade = Grade.B
-                },
-                new Enrollment
-                {
-                    StudentId = students.Single(s => s.LastName == "Justice").Id,
-                    CourseExternalId = courses.Single(c => c.Title == "Literature").ExternalId,
-                    Grade = Grade.B
-                }
-            };
-
-            foreach (var e in enrollments)
-            {
-                var enrollmentInDataBase = studentsContext.Enrollments
-                    .SingleOrDefault(s =>
-                        s.Student.Id == e.StudentId &&
-                        s.CourseExternalId == e.CourseExternalId);
-                if (enrollmentInDataBase == null)
-                {
-                    studentsContext.Enrollments.Add(e);
-                }
+                string administrator = departmentConfigs.Single(x => x.Name == department.Name).Administrator;
+                department.Administrator = instructors.FirstOrDefault(x => x.FullName == administrator);
             }
+            
+            departmentsContext.SaveChanges();
+
+            var courseAssignmentConfigs = config
+                .GetSection("DepartmentsContext:CourseAssignments")
+                .Get<CourseAssignmentConfig[]>();
+
+            var courses = coursesContext.Courses.AsNoTracking().ToArray();
+            
+            departmentsContext.CourseAssignments.AddRange(courseAssignmentConfigs.Select(x => new CourseAssignment
+            {
+                CourseExternalId = courses.Single(c => c.CourseCode == x.Course).ExternalId,
+                InstructorId = instructors.Single(i => i.FullName == x.Instructor).Id
+            }));
 
             departmentsContext.SaveChanges();
+
+            var enrollmentConfigs = config
+                .GetSection("StudentsContext:Enrollments")
+                .Get<EnrollmentConfig[]>();
+
+            var students = studentsContext.Students.AsNoTracking().ToArray();
+
+            studentsContext.Enrollments.AddRange(enrollmentConfigs.Select(x => new Enrollment
+            {
+                CourseExternalId = courses.Single(c => c.CourseCode == x.Course).ExternalId,
+                StudentId = students.Single(s => s.FullName == x.Student).Id,
+                Grade = Enum.TryParse<Grade>(x.Grade, true, out var grade)
+                    ? grade
+                    : null
+            }));
+
+            studentsContext.SaveChanges();
         }
     }
 }
