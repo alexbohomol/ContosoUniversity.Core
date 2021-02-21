@@ -1,66 +1,22 @@
-﻿namespace ContosoUniversity.Data
+﻿namespace ContosoUniversity.Seed
 {
     using System;
     using System.IO;
     using System.Linq;
 
-    using Courses;
-    using Courses.Models;
-
-    using Departments;
-    using Departments.Models;
+    using Data.Courses;
+    using Data.Courses.Models;
+    using Data.Departments;
+    using Data.Departments.Models;
+    using Data.Students;
+    using Data.Students.Models;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
 
-    using Students;
-    using Students.Models;
+    using Models;
 
-    class CourseConfig
-    {
-        public int CourseCode { get; set; }
-        public string Title { get; set; }
-        public int Credits { get; set; }
-        public string Department { get; set; }
-    }
-
-    class DepartmentConfig
-    {
-        public string Name { get; set; }
-        public int Budget { get; set; }
-        public DateTime StartDate { get; set; }
-        public string Administrator { get; set; }
-    }
-
-    class StudentConfig
-    {
-        public DateTime EnrollmentDate { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-    }
-
-    class InstructorConfig
-    {
-        public DateTime HireDate { get; set; }
-        public string Location { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-    }
-
-    class CourseAssignmentConfig
-    {
-        public string Instructor { get; set; }
-        public int Course { get; set; }
-    }
-
-    class EnrollmentConfig
-    {
-        public string Student { get; set; }
-        public int Course { get; set; }
-        public string Grade { get; set; }
-    }
-
-    public static class DbInitializer
+    public static class DbSeeder
     {
         public static void EnsureInitialized(
             DepartmentsContext departmentsContext,
@@ -68,7 +24,7 @@
             StudentsContext studentsContext)
         {
             // Check seed status
-            if (coursesContext.Courses.Any() 
+            if (coursesContext.Courses.Any()
                 || studentsContext.Students.Any()
                 || departmentsContext.Departments.Any()
                 || departmentsContext.Instructors.Any())
@@ -83,7 +39,7 @@
 
             var courseConfigs = config
                 .GetSection("CoursesContext:Courses")
-                .Get<CourseConfig[]>();
+                .Get<CourseSeedModel[]>();
             
             coursesContext.Courses.AddRange(courseConfigs.Select(x => new Course
             {
@@ -98,7 +54,7 @@
 
             var departmentConfigs = config
                 .GetSection("DepartmentsContext:Departments")
-                .Get<DepartmentConfig[]>();
+                .Get<DepartmentSeedModel[]>();
             
             departmentsContext.Departments.AddRange(departmentConfigs.Select(x => new Department
             {
@@ -119,23 +75,24 @@
             
             coursesContext.SaveChanges();
 
-            var studentConfigs = config
+            var students = config
                 .GetSection("StudentsContext:Students")
-                .Get<StudentConfig[]>();
+                .Get<StudentSeedModel[]>()
+                .Select(x => new Student
+                {
+                    FirstMidName = x.FirstName,
+                    LastName = x.LastName,
+                    EnrollmentDate = x.EnrollmentDate,
+                    ExternalId = Guid.NewGuid()
+                }).ToArray();
             
-            studentsContext.Students.AddRange(studentConfigs.Select(x => new Student
-            {
-                FirstMidName = x.FirstName,
-                LastName = x.LastName,
-                EnrollmentDate = x.EnrollmentDate,
-                ExternalId = Guid.NewGuid()
-            }));
+            studentsContext.Students.AddRange(students);
 
             studentsContext.SaveChanges();
 
             var instructorConfigs = config
                 .GetSection("DepartmentsContext:Instructors")
-                .Get<InstructorConfig[]>();
+                .Get<InstructorSeedModel[]>();
 
             var instructors = instructorConfigs.Select(x => new Instructor
             {
@@ -163,34 +120,30 @@
             
             departmentsContext.SaveChanges();
 
-            var courseAssignmentConfigs = config
-                .GetSection("DepartmentsContext:CourseAssignments")
-                .Get<CourseAssignmentConfig[]>();
-
             var courses = coursesContext.Courses.AsNoTracking().ToArray();
             
-            departmentsContext.CourseAssignments.AddRange(courseAssignmentConfigs.Select(x => new CourseAssignment
-            {
-                CourseExternalId = courses.Single(c => c.CourseCode == x.Course).ExternalId,
-                InstructorId = instructors.Single(i => i.FullName == x.Instructor).Id
-            }));
+            departmentsContext.CourseAssignments.AddRange(config
+                .GetSection("DepartmentsContext:CourseAssignments")
+                .Get<CourseAssignmentSeedModel[]>()
+                .Select(x => new CourseAssignment
+                {
+                    CourseExternalId = courses.Single(c => c.CourseCode == x.Course).ExternalId,
+                    InstructorId = instructors.Single(i => i.FullName == x.Instructor).Id
+                }));
 
             departmentsContext.SaveChanges();
 
-            var enrollmentConfigs = config
+            studentsContext.Enrollments.AddRange(config
                 .GetSection("StudentsContext:Enrollments")
-                .Get<EnrollmentConfig[]>();
-
-            var students = studentsContext.Students.AsNoTracking().ToArray();
-
-            studentsContext.Enrollments.AddRange(enrollmentConfigs.Select(x => new Enrollment
-            {
-                CourseExternalId = courses.Single(c => c.CourseCode == x.Course).ExternalId,
-                StudentId = students.Single(s => s.FullName == x.Student).Id,
-                Grade = Enum.TryParse<Grade>(x.Grade, true, out var grade)
-                    ? grade
-                    : null
-            }));
+                .Get<EnrollmentSeedModel[]>()
+                .Select(x => new Enrollment
+                {
+                    CourseExternalId = courses.Single(c => c.CourseCode == x.Course).ExternalId,
+                    StudentId = students.Single(s => s.FullName == x.Student).Id,
+                    Grade = Enum.TryParse<Grade>(x.Grade, true, out var grade)
+                        ? grade
+                        : null
+                }));
 
             studentsContext.SaveChanges();
         }

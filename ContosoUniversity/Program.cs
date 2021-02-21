@@ -3,7 +3,6 @@
     using System;
     using System.Linq;
 
-    using Data;
     using Data.Courses;
     using Data.Departments;
     using Data.Students;
@@ -13,6 +12,8 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+
+    using Seed;
 
     public class Program
     {
@@ -61,7 +62,7 @@
                     departmentsContext.Database.Migrate();
                 }
 
-                DbInitializer.EnsureInitialized(departmentsContext, coursesContext, studentsContext);
+                DbSeeder.EnsureInitialized(departmentsContext, coursesContext, studentsContext);
             }
             catch (Exception ex)
             {
