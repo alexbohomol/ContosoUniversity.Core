@@ -31,7 +31,7 @@
             {
                 return; // DB has been seeded
             }
-            
+
             IConfiguration config = new ConfigurationBuilder()
                 .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../ContosoUniversity"))
                 .AddJsonFile("appsettings.Seed.json")
@@ -40,7 +40,7 @@
             var courseConfigs = config
                 .GetSection("CoursesContext:Courses")
                 .Get<CourseSeedModel[]>();
-            
+
             coursesContext.Courses.AddRange(courseConfigs.Select(x => new Course
             {
                 CourseCode = x.CourseCode,
@@ -55,7 +55,7 @@
             var departmentConfigs = config
                 .GetSection("DepartmentsContext:Departments")
                 .Get<DepartmentSeedModel[]>();
-            
+
             departmentsContext.Departments.AddRange(departmentConfigs.Select(x => new Department
             {
                 Name = x.Name,
@@ -64,15 +64,15 @@
                 ExternalId = Guid.NewGuid()
                 // InstructorId = 
             }));
-            
+
             departmentsContext.SaveChanges();
-            
+
             foreach (var course in coursesContext.Courses)
             {
                 var department = courseConfigs.Single(x => x.CourseCode == course.CourseCode).Department;
                 course.DepartmentExternalId = departmentsContext.Departments.Single(x => x.Name == department).ExternalId;
             }
-            
+
             coursesContext.SaveChanges();
 
             var students = config
@@ -85,7 +85,7 @@
                     EnrollmentDate = x.EnrollmentDate,
                     ExternalId = Guid.NewGuid()
                 }).ToArray();
-            
+
             studentsContext.Students.AddRange(students);
 
             studentsContext.SaveChanges();
@@ -107,21 +107,21 @@
                     },
                 ExternalId = Guid.NewGuid()
             }).ToArray();
-            
+
             departmentsContext.Instructors.AddRange(instructors);
 
             departmentsContext.SaveChanges();
-            
+
             foreach (var department in departmentsContext.Departments)
             {
-                string administrator = departmentConfigs.Single(x => x.Name == department.Name).Administrator;
+                var administrator = departmentConfigs.Single(x => x.Name == department.Name).Administrator;
                 department.Administrator = instructors.FirstOrDefault(x => x.FullName == administrator);
             }
-            
+
             departmentsContext.SaveChanges();
 
             var courses = coursesContext.Courses.AsNoTracking().ToArray();
-            
+
             departmentsContext.CourseAssignments.AddRange(config
                 .GetSection("DepartmentsContext:CourseAssignments")
                 .Get<CourseAssignmentSeedModel[]>()
