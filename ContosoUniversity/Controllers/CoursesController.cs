@@ -16,7 +16,7 @@
     using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.EntityFrameworkCore;
 
-    using Services.Queries;
+    using Services.Queries.Courses;
 
     using ViewModels.Courses;
 

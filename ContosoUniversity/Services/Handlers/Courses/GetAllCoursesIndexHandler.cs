@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Handlers
+namespace ContosoUniversity.Services.Handlers.Courses
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -12,7 +12,7 @@ namespace ContosoUniversity.Services.Handlers
 
     using Microsoft.EntityFrameworkCore;
 
-    using Queries;
+    using Queries.Courses;
 
     using ViewModels.Courses;
 
