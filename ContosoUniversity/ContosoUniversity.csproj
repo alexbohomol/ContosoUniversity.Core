@@ -6,9 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Properties\launchSettings.json" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\ContosoUniversity.Data.Courses\ContosoUniversity.Data.Courses.csproj" />
     <ProjectReference Include="..\ContosoUniversity.Data.Departments\ContosoUniversity.Data.Departments.csproj" />

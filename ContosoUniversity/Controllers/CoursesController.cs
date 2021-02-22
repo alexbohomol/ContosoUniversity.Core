@@ -10,11 +10,13 @@
     using Data.Departments.Models;
     using Data.Students;
 
+    using MediatR;
+
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.EntityFrameworkCore;
 
-    using Services;
+    using Services.Queries;
 
     using ViewModels.Courses;
 
@@ -23,69 +25,39 @@
         private readonly CoursesContext _coursesContext;
         private readonly DepartmentsContext _departmentsContext;
         private readonly StudentsContext _studentsContext;
+        private readonly IMediator _mediator;
 
         public CoursesController(
             DepartmentsContext departmentsContext,
             CoursesContext coursesContext,
-            StudentsContext studentsContext)
+            StudentsContext studentsContext,
+            IMediator mediator)
         {
             _departmentsContext = departmentsContext;
             _coursesContext = coursesContext;
             _studentsContext = studentsContext;
+            _mediator = mediator;
         }
 
         public async Task<IActionResult> Index()
         {
-            var courses = await _coursesContext.Courses.AsNoTracking().ToListAsync();
-
-            var departmentNames = await _departmentsContext.Departments
-                .Where(x => courses.Select(_ => _.DepartmentExternalId).Distinct().Contains(x.ExternalId))
-                .AsNoTracking()
-                .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
-
-            CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames);
-
-            return View(courses.Select(x => new CourseListItemViewModel
-            {
-                CourseCode = x.CourseCode,
-                Title = x.Title,
-                Credits = x.Credits,
-                Department = departmentNames[x.DepartmentExternalId],
-                Id = x.ExternalId
-            }).ToList());
+            return View(await _mediator
+                .Send(new GetCoursesIndexQuery()));
         }
 
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id is null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            var course = await _coursesContext.Courses
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ExternalId == id);
-            if (course == null)
-            {
-                return NotFound();
-            }
+            var result = await _mediator
+                .Send(new GetCourseDetailsQuery(id.Value));
 
-            var department = await _departmentsContext.Departments
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.ExternalId == course.DepartmentExternalId);
-
-            /*
-             * TODO: missing context boundary check when department is null
-             */
-
-            return View(new CourseDetailsViewModel
-            {
-                CourseCode = course.CourseCode,
-                Title = course.Title,
-                Credits = course.Credits,
-                Department = department.Name,
-                Id = course.ExternalId
-            });
+            return result is not null
+                ? View(result)
+                : NotFound();
         }
 
         public async Task<IActionResult> Create()
