@@ -9,15 +9,14 @@ namespace ContosoUniversity.ViewModels.Courses
     {
         [Display(Name = "Course Code")]
         public int CourseCode { get; set; }
-
-        [StringLength(50, MinimumLength = 3)]
+        
         public string Title { get; set; }
-
-        [Range(0, 5)]
+        
         public int Credits { get; set; }
-
+        
+        [Display(Name = "Department")]
         public Guid DepartmentId { get; set; }
-
+        
         public SelectList DepartmentsSelectList { get; set; }
     }
 }

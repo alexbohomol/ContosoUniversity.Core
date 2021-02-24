@@ -4,12 +4,13 @@
     using Data.Departments;
     using Data.Students;
 
+    using FluentValidation.AspNetCore;
+
     using MediatR;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -41,7 +42,10 @@
             services.AddDbContext<DepartmentsContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc().AddFluentValidation(fv =>
+            {
+                fv.RegisterValidatorsFromAssembly(typeof(Startup).Assembly);
+            });
 
             services.AddMediatR(typeof(Startup));
         }

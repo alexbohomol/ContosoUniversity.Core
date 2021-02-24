@@ -72,22 +72,24 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CourseCreateForm form)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _coursesContext.Add(new Course
-                {
-                    CourseCode = form.CourseCode,
-                    Title = form.Title,
-                    Credits = form.Credits,
-                    DepartmentExternalId = form.DepartmentId,
-                    ExternalId = Guid.NewGuid()
-                });
-                await _coursesContext.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                form.DepartmentsSelectList = await CreateDepartmentsDropDownList(form.DepartmentId);
+                return View(form);
             }
 
-            form.DepartmentsSelectList = await CreateDepartmentsDropDownList(form.DepartmentId);
-            return View(form);
+            _coursesContext.Add(new Course
+            {
+                CourseCode = form.CourseCode,
+                Title = form.Title,
+                Credits = form.Credits,
+                DepartmentExternalId = form.DepartmentId,
+                ExternalId = Guid.NewGuid()
+            });
+            
+            await _coursesContext.SaveChangesAsync();
+            
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Edit(Guid? id)
