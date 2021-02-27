@@ -74,18 +74,28 @@
         {
             if (!ModelState.IsValid)
             {
-                form.DepartmentsSelectList = await CreateDepartmentsDropDownList(form.DepartmentId);
+                form.DepartmentsSelectList = await CreateDepartmentsDropDownList();
                 return View(form);
             }
 
-            _coursesContext.Add(new Course
+            // form.ToDomainModel()
+            var course = Domain.Course.Create(
+                form.CourseCode,
+                form.Title,
+                form.Credits,
+                form.DepartmentId);
+
+            // domain.ToDataModel()
+            var entity = new Course
             {
-                CourseCode = form.CourseCode,
-                Title = form.Title,
-                Credits = form.Credits,
-                DepartmentExternalId = form.DepartmentId,
-                ExternalId = Guid.NewGuid()
-            });
+                CourseCode = course.Code,
+                Title = course.Title,
+                Credits = course.Credits,
+                DepartmentExternalId = course.DepartmentId,
+                ExternalId = course.ExternalId
+            };
+            
+            _coursesContext.Add(entity);
             
             await _coursesContext.SaveChangesAsync();
             
