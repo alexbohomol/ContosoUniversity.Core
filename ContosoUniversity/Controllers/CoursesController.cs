@@ -77,27 +77,8 @@
                 form.DepartmentsSelectList = await CreateDepartmentsDropDownList();
                 return View(form);
             }
-
-            // form.ToDomainModel()
-            var course = Domain.Course.Create(
-                form.CourseCode,
-                form.Title,
-                form.Credits,
-                form.DepartmentId);
-
-            // domain.ToDataModel()
-            var entity = new Course
-            {
-                CourseCode = course.Code,
-                Title = course.Title,
-                Credits = course.Credits,
-                DepartmentExternalId = course.DepartmentId,
-                ExternalId = course.ExternalId
-            };
             
-            _coursesContext.Add(entity);
-            
-            await _coursesContext.SaveChangesAsync();
+            await _mediator.Send(form);
             
             return RedirectToAction(nameof(Index));
         }

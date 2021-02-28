@@ -3,9 +3,11 @@ namespace ContosoUniversity.ViewModels.Courses
     using System;
     using System.ComponentModel.DataAnnotations;
 
+    using MediatR;
+
     using Microsoft.AspNetCore.Mvc.Rendering;
 
-    public class CourseCreateForm
+    public class CourseCreateForm : IRequest
     {
         [Display(Name = "Course Code")]
         public int CourseCode { get; set; }
