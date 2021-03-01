@@ -23,8 +23,8 @@
     {
         private readonly CoursesContext _coursesContext;
         private readonly DepartmentsContext _departmentsContext;
-        private readonly StudentsContext _studentsContext;
         private readonly IMediator _mediator;
+        private readonly StudentsContext _studentsContext;
 
         public CoursesController(
             DepartmentsContext departmentsContext,
@@ -76,9 +76,9 @@
                 form.DepartmentsSelectList = await CreateDepartmentsDropDownList();
                 return View(form);
             }
-            
+
             await _mediator.Send(form);
-            
+
             return RedirectToAction(nameof(Index));
         }
 

@@ -2,7 +2,7 @@ namespace ContosoUniversity.Domain.Contracts
 {
     using System;
     using System.Threading.Tasks;
-    
+
     public interface IRepository<TEntity> where TEntity : IAggregateRoot
     {
         Task<TEntity> GetById(Guid entityId);

@@ -46,10 +46,12 @@
 
             services.AddScoped<ICoursesRepository, CoursesRepository>();
 
-            services.AddMvc().AddFluentValidation(fv =>
-            {
-                fv.RegisterValidatorsFromAssembly(typeof(Startup).Assembly);
-            });
+            services
+                .AddMvc()
+                .AddFluentValidation(fv =>
+                {
+                    fv.RegisterValidatorsFromAssembly(typeof(Startup).Assembly);
+                });
 
             services.AddMediatR(typeof(Startup));
         }

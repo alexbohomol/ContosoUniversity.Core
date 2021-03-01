@@ -30,18 +30,13 @@ namespace ContosoUniversity.Data.Courses
                 : ToDomainEntity(course);
         }
 
-        public Task<Course[]> GetAll() =>
-            _context.Courses
+        public Task<Course[]> GetAll()
+        {
+            return _context.Courses
                 .AsNoTracking()
                 .Select(x => ToDomainEntity(x))
                 .ToArrayAsync();
-
-        private static Course ToDomainEntity(Models.Course course) => new(
-            course.CourseCode,
-            course.Title,
-            course.Credits,
-            course.DepartmentExternalId,
-            course.ExternalId);
+        }
 
         public async Task Save(Course entity)
         {
@@ -65,7 +60,7 @@ namespace ContosoUniversity.Data.Courses
                 course.DepartmentExternalId = entity.DepartmentId;
                 course.Title = entity.Title;
             }
-            
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -84,9 +79,21 @@ namespace ContosoUniversity.Data.Courses
             throw new NotImplementedException();
         }
 
-        public Task<int> UpdateCourseCredits(int multiplier) =>
-            _context.Database
+        public Task<int> UpdateCourseCredits(int multiplier)
+        {
+            return _context.Database
                 .ExecuteSqlInterpolatedAsync(
                     $"UPDATE [crs].[Course] SET Credits = Credits * {multiplier}");
+        }
+
+        private static Course ToDomainEntity(Models.Course course)
+        {
+            return new(
+                course.CourseCode,
+                course.Title,
+                course.Credits,
+                course.DepartmentExternalId,
+                course.ExternalId);
+        }
     }
 }

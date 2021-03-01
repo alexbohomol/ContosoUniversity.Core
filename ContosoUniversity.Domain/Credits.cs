@@ -6,7 +6,7 @@ namespace ContosoUniversity.Domain
     {
         public const int MinValue = 0;
         public const int MaxValue = 5;
-        
+
         private readonly int _credits;
 
         private Credits(int credits)
@@ -15,11 +15,18 @@ namespace ContosoUniversity.Domain
                 throw new ArgumentOutOfRangeException(
                     nameof(credits),
                     $"Provided value: {credits}.");
-            
+
             _credits = credits;
         }
 
-        public static implicit operator Credits (int credits) => new(credits);
-        public static implicit operator int (Credits credits) => credits._credits;
+        public static implicit operator Credits(int credits)
+        {
+            return new(credits);
+        }
+
+        public static implicit operator int(Credits credits)
+        {
+            return credits._credits;
+        }
     }
 }

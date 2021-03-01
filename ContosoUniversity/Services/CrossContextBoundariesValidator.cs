@@ -32,7 +32,7 @@ namespace ContosoUniversity.Services
                 throw new Exception($"Unbound contexts inconsistency. Departments not found: {notFoundList}.");
             }
         }
-        
+
         /// <summary>
         ///     Ensure all assigned courses reference existing department records
         /// </summary>
@@ -48,7 +48,7 @@ namespace ContosoUniversity.Services
                     DepartmentExternalId = x.DepartmentId,
                     ExternalId = x.EntityId,
                     Title = x.Title
-                }), 
+                }),
                 departmentNames);
         }
 

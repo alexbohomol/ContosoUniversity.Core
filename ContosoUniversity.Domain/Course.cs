@@ -8,14 +8,15 @@ namespace ContosoUniversity.Domain
             CourseCode code,
             string title,
             Credits credits,
-            Guid departmentId) 
+            Guid departmentId)
             : this(
-                code, 
-                title, 
-                credits, 
-                departmentId, 
+                code,
+                title,
+                credits,
+                departmentId,
                 Guid.NewGuid())
-        { }
+        {
+        }
 
         public Course(
             CourseCode code,
@@ -42,7 +43,9 @@ namespace ContosoUniversity.Domain
     {
         public string Name { get; set; }
         public decimal Budget { get; set; }
+
         public DateTime StartDate { get; set; }
+
         // public Instructor Administrator { get; set; }
         public Guid ExternalId { get; set; }
     }

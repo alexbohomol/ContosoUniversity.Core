@@ -3,6 +3,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Domain;
     using Domain.Contracts;
 
     using MediatR;
@@ -20,12 +21,12 @@ namespace ContosoUniversity.Services.Handlers.Courses
 
         public async Task<Unit> Handle(CourseCreateForm request, CancellationToken cancellationToken)
         {
-            await _coursesRepository.Save(new Domain.Course(
+            await _coursesRepository.Save(new Course(
                 request.CourseCode,
                 request.Title,
                 request.Credits,
                 request.DepartmentId));
-            
+
             return Unit.Value;
         }
     }
