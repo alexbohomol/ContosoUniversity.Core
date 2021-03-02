@@ -17,12 +17,12 @@ namespace ContosoUniversity.Services.Handlers.Courses
 
     using ViewModels.Courses;
 
-    public class GetAllCoursesIndexHandler : IRequestHandler<GetCoursesIndexQuery, List<CourseListItemViewModel>>
+    public class QueryCoursesIndexHandler : IRequestHandler<QueryCoursesIndex, List<CourseListItemViewModel>>
     {
         private readonly ICoursesRepository _coursesRepository;
         private readonly DepartmentsContext _departmentsContext;
 
-        public GetAllCoursesIndexHandler(
+        public QueryCoursesIndexHandler(
             ICoursesRepository coursesRepository,
             DepartmentsContext departmentsContext)
         {
@@ -30,7 +30,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
             _departmentsContext = departmentsContext;
         }
 
-        public async Task<List<CourseListItemViewModel>> Handle(GetCoursesIndexQuery request, CancellationToken cancellationToken)
+        public async Task<List<CourseListItemViewModel>> Handle(QueryCoursesIndex request, CancellationToken cancellationToken)
         {
             var courses = await _coursesRepository.GetAll();
 

@@ -19,6 +19,9 @@ namespace ContosoUniversity.Domain
             _code = code;
         }
 
+        /// <summary>
+        ///     https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/user-defined-conversion-operators
+        /// </summary>
         public static implicit operator CourseCode(int code)
         {
             return new(code);

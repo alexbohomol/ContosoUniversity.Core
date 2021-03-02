@@ -3,23 +3,23 @@ namespace ContosoUniversity.Services.Handlers.Courses
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Commands.Courses;
+
     using Domain;
     using Domain.Contracts;
 
     using MediatR;
 
-    using ViewModels.Courses;
-
-    public class CreateCourseHandler : IRequestHandler<CourseCreateForm>
+    public class CreateCourseCommandHandler : IRequestHandler<CreateCourseCommand>
     {
         private readonly ICoursesRepository _coursesRepository;
 
-        public CreateCourseHandler(ICoursesRepository coursesRepository)
+        public CreateCourseCommandHandler(ICoursesRepository coursesRepository)
         {
             _coursesRepository = coursesRepository;
         }
 
-        public async Task<Unit> Handle(CourseCreateForm request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
         {
             await _coursesRepository.Save(new Course(
                 request.CourseCode,

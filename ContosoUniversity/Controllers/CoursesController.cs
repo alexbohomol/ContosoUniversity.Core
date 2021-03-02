@@ -6,7 +6,6 @@
 
     using Data.Courses;
     using Data.Departments;
-    using Data.Departments.Models;
     using Data.Students;
 
     using MediatR;
@@ -15,8 +14,10 @@
     using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.EntityFrameworkCore;
 
+    using Services.Commands.Courses;
     using Services.Queries.Courses;
 
+    using ViewModels;
     using ViewModels.Courses;
 
     public class CoursesController : Controller
@@ -40,8 +41,7 @@
 
         public async Task<IActionResult> Index()
         {
-            return View(await _mediator
-                .Send(new GetCoursesIndexQuery()));
+            return View(await _mediator.Send(new QueryCoursesIndex()));
         }
 
         public async Task<IActionResult> Details(Guid? id)
@@ -52,7 +52,7 @@
             }
 
             var result = await _mediator
-                .Send(new GetCourseDetailsQuery(id.Value));
+                .Send(new QueryCourseDetails(id.Value));
 
             return result is not null
                 ? View(result)
@@ -61,7 +61,7 @@
 
         public async Task<IActionResult> Create()
         {
-            return View(new CourseCreateForm
+            return View(new CreateCourseForm
             {
                 DepartmentsSelectList = await CreateDepartmentsDropDownList()
             });
@@ -69,15 +69,26 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CourseCreateForm form)
+        public async Task<IActionResult> Create(CreateCourseCommand command)
         {
-            if (!ModelState.IsValid)
+            if (command is null)
             {
-                form.DepartmentsSelectList = await CreateDepartmentsDropDownList();
-                return View(form);
+                return BadRequest();
             }
 
-            await _mediator.Send(form);
+            if (!ModelState.IsValid)
+            {
+                return View(new CreateCourseForm
+                {
+                    CourseCode = command.CourseCode,
+                    Title = command.Title,
+                    Credits = command.Credits,
+                    DepartmentId = command.DepartmentId,
+                    DepartmentsSelectList = await CreateDepartmentsDropDownList()
+                });
+            }
+
+            await _mediator.Send(command);
 
             return RedirectToAction(nameof(Index));
         }
@@ -86,65 +97,42 @@
         {
             if (id is null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            var course = await _coursesContext.Courses
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ExternalId == id);
-            if (course == null)
-            {
-                return NotFound();
-            }
+            var result = await _mediator.Send(new QueryCourseEditForm(id.Value));
 
-            return View(new CourseEditForm
-            {
-                CourseCode = course.CourseCode,
-                Title = course.Title,
-                Credits = course.Credits,
-                DepartmentId = course.DepartmentExternalId,
-                DepartmentsSelectList = await CreateDepartmentsDropDownList(course.DepartmentExternalId)
-            });
+            return result is not null
+                ? View(result)
+                : NotFound();
         }
 
         [HttpPost]
-        [ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPost(CourseEditForm form)
+        public async Task<IActionResult> Edit(EditCourseCommand command)
         {
-            if (form is null || ModelState.IsValid is false)
+            if (command is null)
             {
                 return BadRequest();
             }
 
-            var courseToUpdate = await _coursesContext.Courses
-                .FirstOrDefaultAsync(c => c.ExternalId == form.Id);
-
-            if (await TryUpdateModelAsync(courseToUpdate, "",
-                c => c.Credits,
-                c => c.DepartmentExternalId,
-                c => c.Title))
+            if (!ModelState.IsValid)
             {
-                try
+                return View(new EditCourseForm
                 {
-                    await _coursesContext.SaveChangesAsync();
-                }
-                catch (DbUpdateException /* ex */)
-                {
-                    //Log the error (uncomment ex variable name and write a log.)
-                    ModelState.AddModelError("", "Unable to save changes. " +
-                                                 "Try again, and if the problem persists, " +
-                                                 "see your system administrator.");
-                }
-
-                return RedirectToAction(nameof(Index));
+                    Title = command.Title,
+                    Credits = command.Credits,
+                    DepartmentId = command.DepartmentId,
+                    DepartmentsSelectList = await CreateDepartmentsDropDownList()
+                });
             }
 
-            form.DepartmentsSelectList = await CreateDepartmentsDropDownList(courseToUpdate.DepartmentExternalId);
-            return View(form);
+            await _mediator.Send(command);
+
+            return RedirectToAction(nameof(Index));
         }
 
-        private async Task<SelectList> CreateDepartmentsDropDownList(object selectedDepartment = null)
+        private async Task<SelectList> CreateDepartmentsDropDownList(Guid selectedDepartment = default)
         {
             var departments = await (
                     from d in _departmentsContext.Departments
@@ -153,11 +141,7 @@
                 .AsNoTracking()
                 .ToArrayAsync();
 
-            return new SelectList(
-                departments,
-                nameof(Department.ExternalId),
-                nameof(Department.Name),
-                selectedDepartment);
+            return departments.ToSelectList(selectedDepartment);
         }
 
         public async Task<IActionResult> Delete(Guid? id)

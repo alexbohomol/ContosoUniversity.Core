@@ -5,19 +5,16 @@ namespace ContosoUniversity.ViewModels.Courses
 
     using Microsoft.AspNetCore.Mvc.Rendering;
 
-    public class CourseEditForm
+    public class CreateCourseForm
     {
         [Display(Name = "Course Code")]
         public int CourseCode { get; set; }
 
-        [StringLength(50, MinimumLength = 3)]
         public string Title { get; set; }
 
-        [Range(0, 5)]
         public int Credits { get; set; }
 
-        public Guid Id { get; set; }
-
+        [Display(Name = "Department")]
         public Guid DepartmentId { get; set; }
 
         public SelectList DepartmentsSelectList { get; set; }

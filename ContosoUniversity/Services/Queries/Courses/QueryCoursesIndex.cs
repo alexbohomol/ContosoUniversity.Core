@@ -6,7 +6,7 @@ namespace ContosoUniversity.Services.Queries.Courses
 
     using ViewModels.Courses;
 
-    public class GetCoursesIndexQuery : IRequest<List<CourseListItemViewModel>>
+    public class QueryCoursesIndex : IRequest<List<CourseListItemViewModel>>
     {
     }
 }
