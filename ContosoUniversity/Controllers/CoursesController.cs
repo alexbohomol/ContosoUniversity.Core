@@ -11,13 +11,12 @@
     using MediatR;
 
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.EntityFrameworkCore;
 
+    using Services;
     using Services.Commands.Courses;
     using Services.Queries.Courses;
 
-    using ViewModels;
     using ViewModels.Courses;
 
     public class CoursesController : Controller
@@ -63,7 +62,7 @@
         {
             return View(new CreateCourseForm
             {
-                DepartmentsSelectList = await CreateDepartmentsDropDownList()
+                DepartmentsSelectList = await _departmentsContext.ToDepartmentsDropDownList()
             });
         }
 
@@ -84,7 +83,7 @@
                     Title = command.Title,
                     Credits = command.Credits,
                     DepartmentId = command.DepartmentId,
-                    DepartmentsSelectList = await CreateDepartmentsDropDownList()
+                    DepartmentsSelectList = await _departmentsContext.ToDepartmentsDropDownList(command.DepartmentId)
                 });
             }
 
@@ -123,7 +122,7 @@
                     Title = command.Title,
                     Credits = command.Credits,
                     DepartmentId = command.DepartmentId,
-                    DepartmentsSelectList = await CreateDepartmentsDropDownList()
+                    DepartmentsSelectList = await _departmentsContext.ToDepartmentsDropDownList(command.DepartmentId)
                 });
             }
 
@@ -131,19 +130,7 @@
 
             return RedirectToAction(nameof(Index));
         }
-
-        private async Task<SelectList> CreateDepartmentsDropDownList(Guid selectedDepartment = default)
-        {
-            var departments = await (
-                    from d in _departmentsContext.Departments
-                    orderby d.Name
-                    select d)
-                .AsNoTracking()
-                .ToArrayAsync();
-
-            return departments.ToSelectList(selectedDepartment);
-        }
-
+        
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id is null)

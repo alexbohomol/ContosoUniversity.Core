@@ -1,7 +1,5 @@
 namespace ContosoUniversity.Services.Handlers.Courses
 {
-    using System;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -11,12 +9,8 @@ namespace ContosoUniversity.Services.Handlers.Courses
 
     using MediatR;
 
-    using Microsoft.AspNetCore.Mvc.Rendering;
-    using Microsoft.EntityFrameworkCore;
-
     using Queries.Courses;
 
-    using ViewModels;
     using ViewModels.Courses;
 
     public class QueryCourseEditFormHandler : IRequestHandler<QueryCourseEditForm, EditCourseForm>
@@ -50,19 +44,8 @@ namespace ContosoUniversity.Services.Handlers.Courses
                 Title = course.Title,
                 Credits = course.Credits,
                 DepartmentId = course.DepartmentId,
-                DepartmentsSelectList = await GetSelectList(course.DepartmentId)
+                DepartmentsSelectList = await _departmentsContext.ToDepartmentsDropDownList(course.DepartmentId)
             };
-        }
-
-        private async Task<SelectList> GetSelectList(Guid selectedDepartment)
-        {
-            var departments = await _departmentsContext
-                .Departments
-                .AsNoTracking()
-                .OrderBy(x => x.Name)
-                .ToArrayAsync();
-
-            return departments.ToSelectList(selectedDepartment);
         }
     }
 }
