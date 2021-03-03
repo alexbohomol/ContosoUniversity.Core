@@ -7,11 +7,8 @@ namespace ContosoUniversity.Services.Commands.Courses
     public class CreateCourseCommand : IRequest
     {
         public int CourseCode { get; set; }
-
         public string Title { get; set; }
-
         public int Credits { get; set; }
-
         public Guid DepartmentId { get; set; }
     }
 }
