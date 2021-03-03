@@ -1,17 +1,15 @@
 ﻿namespace ContosoUniversity.Controllers
 {
     using System;
-    using System.Linq;
     using System.Threading.Tasks;
 
-    using Data.Courses;
     using Data.Departments;
-    using Data.Students;
+
+    using Domain.Contracts;
 
     using MediatR;
 
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
 
     using Services;
     using Services.Commands.Courses;
@@ -21,20 +19,17 @@
 
     public class CoursesController : Controller
     {
-        private readonly CoursesContext _coursesContext;
+        private readonly ICoursesRepository _coursesRepository;
         private readonly DepartmentsContext _departmentsContext;
         private readonly IMediator _mediator;
-        private readonly StudentsContext _studentsContext;
 
         public CoursesController(
             DepartmentsContext departmentsContext,
-            CoursesContext coursesContext,
-            StudentsContext studentsContext,
+            ICoursesRepository coursesRepository,
             IMediator mediator)
         {
             _departmentsContext = departmentsContext;
-            _coursesContext = coursesContext;
-            _studentsContext = studentsContext;
+            _coursesRepository = coursesRepository;
             _mediator = mediator;
         }
 
@@ -135,66 +130,23 @@
         {
             if (id is null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            var course = await _coursesContext.Courses
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ExternalId == id);
-            if (course == null)
-            {
-                return NotFound();
-            }
+            var result = await _mediator
+                .Send(new QueryCourseDetails(id.Value));
 
-            var department = await _departmentsContext.Departments
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.ExternalId == course.DepartmentExternalId);
-
-            /*
-             * TODO: missing context boundary check when department is null
-             */
-
-            return View(new CourseDetailsViewModel
-            {
-                CourseCode = course.CourseCode,
-                Title = course.Title,
-                Credits = course.Credits,
-                Department = department.Name,
-                Id = course.ExternalId
-            });
+            return result is not null
+                ? View(result)
+                : NotFound();
         }
 
         [HttpPost]
-        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var course = await _coursesContext.Courses.FirstOrDefaultAsync(x => x.ExternalId == id);
-            if (course is null)
-            {
-                return NotFound();
-            }
-
-            /*
-             * remove related assignments
-             */
-            var relatedAssignments = await _departmentsContext.CourseAssignments
-                .Where(x => x.CourseExternalId == course.ExternalId)
-                .ToArrayAsync();
-            _departmentsContext.CourseAssignments.RemoveRange(relatedAssignments);
-
-            /*
-             * remove related enrollments
-             */
-            var relatedEnrollments = await _studentsContext.Enrollments
-                .Where(x => x.CourseExternalId == course.ExternalId)
-                .ToArrayAsync();
-            _studentsContext.Enrollments.RemoveRange(relatedEnrollments);
-
-            _coursesContext.Courses.Remove(course);
-            await _departmentsContext.SaveChangesAsync();
-            await _studentsContext.SaveChangesAsync();
-            await _coursesContext.SaveChangesAsync();
+            await _mediator.Send(new DeleteCourseCommand(id));
+            
             return RedirectToAction(nameof(Index));
         }
 
@@ -206,11 +158,10 @@
         [HttpPost]
         public async Task<IActionResult> UpdateCourseCredits(int? multiplier)
         {
-            if (multiplier is not null)
+            if (multiplier.HasValue)
             {
-                ViewData["RowsAffected"] =
-                    await _coursesContext.Database.ExecuteSqlInterpolatedAsync(
-                        $"UPDATE [crs].[Course] SET Credits = Credits * {multiplier}");
+                ViewData["RowsAffected"] = await _coursesRepository
+                    .UpdateCourseCredits(multiplier.Value);
             }
 
             return View();

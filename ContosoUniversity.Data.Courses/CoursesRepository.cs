@@ -40,9 +40,7 @@ namespace ContosoUniversity.Data.Courses
 
         public async Task Save(Course entity)
         {
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(x => x.ExternalId == entity.EntityId);
-
+            var course = await _context.Courses.FirstOrDefaultAsync(x => x.ExternalId == entity.EntityId);
             if (course == null)
             {
                 await _context.AddAsync(new Models.Course
@@ -74,9 +72,17 @@ namespace ContosoUniversity.Data.Courses
             }
         }
 
-        public Task Remove(Guid entityId)
+        public async Task Remove(Guid entityId)
         {
-            throw new NotImplementedException();
+            var course = await _context.Courses.FirstOrDefaultAsync(x => x.ExternalId == entityId);
+            if (course == null)
+            {
+                throw new PersistenceException($"Could not find course with id {entityId}");
+            }
+
+            _context.Courses.Remove(course);
+
+            await _context.SaveChangesAsync();
         }
 
         public Task<int> UpdateCourseCredits(int multiplier)
