@@ -32,6 +32,25 @@ namespace ContosoUniversity.Services
                 throw new Exception($"Unbound contexts inconsistency. Departments not found: {notFoundList}.");
             }
         }
+        
+        /// <summary>
+        ///     Ensure all assigned courses reference existing department records
+        /// </summary>
+        public static void EnsureCoursesReferenceTheExistingDepartments(
+            IEnumerable<Domain.Course> courses,
+            Dictionary<Guid, string> departmentNames)
+        {
+            EnsureCoursesReferenceTheExistingDepartments(
+                courses.Select(x => new Course
+                {
+                    CourseCode = x.Code,
+                    Credits = x.Credits,
+                    DepartmentExternalId = x.DepartmentId,
+                    ExternalId = x.EntityId,
+                    Title = x.Title
+                }), 
+                departmentNames);
+        }
 
         /// <summary>
         ///     Ensure all assigned courses reference existing course records

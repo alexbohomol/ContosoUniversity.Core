@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Data.Depa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Data.Seed", "ContosoUniversity.Data.Seed\ContosoUniversity.Data.Seed.csproj", "{03AB8C99-CFF6-496A-A2BB-B2E2CB60DAE3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Domain", "ContosoUniversity.Domain\ContosoUniversity.Domain.csproj", "{88040F18-C794-4E08-8453-2DA5550A339E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Domain.Contracts", "ContosoUniversity.Domain.Contracts\ContosoUniversity.Domain.Contracts.csproj", "{E3ED3662-4BE3-4B59-B329-2A45F50B31B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{03AB8C99-CFF6-496A-A2BB-B2E2CB60DAE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03AB8C99-CFF6-496A-A2BB-B2E2CB60DAE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03AB8C99-CFF6-496A-A2BB-B2E2CB60DAE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88040F18-C794-4E08-8453-2DA5550A339E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88040F18-C794-4E08-8453-2DA5550A339E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88040F18-C794-4E08-8453-2DA5550A339E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88040F18-C794-4E08-8453-2DA5550A339E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3ED3662-4BE3-4B59-B329-2A45F50B31B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3ED3662-4BE3-4B59-B329-2A45F50B31B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3ED3662-4BE3-4B59-B329-2A45F50B31B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3ED3662-4BE3-4B59-B329-2A45F50B31B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

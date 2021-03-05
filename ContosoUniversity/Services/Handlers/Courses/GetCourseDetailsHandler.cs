@@ -3,8 +3,9 @@ namespace ContosoUniversity.Services.Handlers.Courses
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Data.Courses;
     using Data.Departments;
+
+    using Domain.Contracts;
 
     using MediatR;
 
@@ -16,22 +17,20 @@ namespace ContosoUniversity.Services.Handlers.Courses
 
     public class GetCourseDetailsHandler : IRequestHandler<GetCourseDetailsQuery, CourseDetailsViewModel>
     {
-        private readonly CoursesContext _coursesContext;
+        private readonly ICoursesRepository _coursesRepository;
         private readonly DepartmentsContext _departmentsContext;
 
         public GetCourseDetailsHandler(
-            CoursesContext coursesContext,
+            ICoursesRepository coursesRepository,
             DepartmentsContext departmentsContext)
         {
-            _coursesContext = coursesContext;
+            _coursesRepository = coursesRepository;
             _departmentsContext = departmentsContext;
         }
 
         public async Task<CourseDetailsViewModel> Handle(GetCourseDetailsQuery request, CancellationToken cancellationToken)
         {
-            var course = await _coursesContext.Courses
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ExternalId == request.Id);
+            var course = await _coursesRepository.GetById(request.Id);
             if (course == null)
             {
                 return null;
@@ -39,7 +38,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
 
             var department = await _departmentsContext.Departments
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.ExternalId == course.DepartmentExternalId);
+                .FirstOrDefaultAsync(x => x.ExternalId == course.DepartmentId);
 
             /*
              * TODO: missing context boundary check when department is null
@@ -47,11 +46,11 @@ namespace ContosoUniversity.Services.Handlers.Courses
 
             return new CourseDetailsViewModel
             {
-                CourseCode = course.CourseCode,
+                CourseCode = course.Code,
                 Title = course.Title,
                 Credits = course.Credits,
                 Department = department.Name,
-                Id = course.ExternalId
+                Id = course.EntityId
             };
         }
     }

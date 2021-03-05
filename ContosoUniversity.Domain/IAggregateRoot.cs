@@ -4,6 +4,6 @@ namespace ContosoUniversity.Domain
 
     public interface IAggregateRoot
     {
-        Guid ExternalId { get; }
+        Guid EntityId { get; }
     }
 }

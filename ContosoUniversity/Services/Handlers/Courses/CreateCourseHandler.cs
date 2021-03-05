@@ -3,8 +3,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Data.Courses;
-    using Data.Courses.Models;
+    using Domain.Contracts;
 
     using MediatR;
 
@@ -12,36 +11,21 @@ namespace ContosoUniversity.Services.Handlers.Courses
 
     public class CreateCourseHandler : IRequestHandler<CourseCreateForm>
     {
-        private readonly CoursesContext _coursesContext;
+        private readonly ICoursesRepository _coursesRepository;
 
-        public CreateCourseHandler(CoursesContext coursesContext)
+        public CreateCourseHandler(ICoursesRepository coursesRepository)
         {
-            _coursesContext = coursesContext;
+            _coursesRepository = coursesRepository;
         }
 
         public async Task<Unit> Handle(CourseCreateForm request, CancellationToken cancellationToken)
         {
-            // form.ToDomainModel()
-            var course = Domain.Course.Create(
+            await _coursesRepository.Save(new Domain.Course(
                 request.CourseCode,
                 request.Title,
                 request.Credits,
-                request.DepartmentId);
-
-            // domain.ToDataModel()
-            var entity = new Course
-            {
-                CourseCode = course.Code,
-                Title = course.Title,
-                Credits = course.Credits,
-                DepartmentExternalId = course.DepartmentId,
-                ExternalId = course.ExternalId
-            };
+                request.DepartmentId));
             
-            _coursesContext.Add(entity);
-            
-            await _coursesContext.SaveChangesAsync(cancellationToken);
-
             return Unit.Value;
         }
     }

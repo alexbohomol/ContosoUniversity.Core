@@ -4,6 +4,8 @@
     using Data.Departments;
     using Data.Students;
 
+    using Domain.Contracts;
+
     using FluentValidation.AspNetCore;
 
     using MediatR;
@@ -41,6 +43,8 @@
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDbContext<DepartmentsContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<ICoursesRepository, CoursesRepository>();
 
             services.AddMvc().AddFluentValidation(fv =>
             {

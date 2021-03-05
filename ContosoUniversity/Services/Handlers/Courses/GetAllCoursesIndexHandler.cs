@@ -5,8 +5,9 @@ namespace ContosoUniversity.Services.Handlers.Courses
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Data.Courses;
     using Data.Departments;
+
+    using Domain.Contracts;
 
     using MediatR;
 
@@ -18,23 +19,23 @@ namespace ContosoUniversity.Services.Handlers.Courses
 
     public class GetAllCoursesIndexHandler : IRequestHandler<GetCoursesIndexQuery, List<CourseListItemViewModel>>
     {
-        private readonly CoursesContext _coursesContext;
+        private readonly ICoursesRepository _coursesRepository;
         private readonly DepartmentsContext _departmentsContext;
 
         public GetAllCoursesIndexHandler(
-            CoursesContext coursesContext,
+            ICoursesRepository coursesRepository,
             DepartmentsContext departmentsContext)
         {
-            _coursesContext = coursesContext;
+            _coursesRepository = coursesRepository;
             _departmentsContext = departmentsContext;
         }
 
         public async Task<List<CourseListItemViewModel>> Handle(GetCoursesIndexQuery request, CancellationToken cancellationToken)
         {
-            var courses = await _coursesContext.Courses.AsNoTracking().ToListAsync();
+            var courses = await _coursesRepository.GetAll();
 
             var departmentNames = await _departmentsContext.Departments
-                .Where(x => courses.Select(_ => _.DepartmentExternalId).Distinct().Contains(x.ExternalId))
+                .Where(x => courses.Select(_ => _.DepartmentId).Distinct().Contains(x.ExternalId))
                 .AsNoTracking()
                 .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
 
@@ -42,11 +43,11 @@ namespace ContosoUniversity.Services.Handlers.Courses
 
             return courses.Select(x => new CourseListItemViewModel
             {
-                CourseCode = x.CourseCode,
+                CourseCode = x.Code,
                 Title = x.Title,
                 Credits = x.Credits,
-                Department = departmentNames[x.DepartmentExternalId],
-                Id = x.ExternalId
+                Department = departmentNames[x.DepartmentId],
+                Id = x.EntityId
             }).ToList();
         }
     }

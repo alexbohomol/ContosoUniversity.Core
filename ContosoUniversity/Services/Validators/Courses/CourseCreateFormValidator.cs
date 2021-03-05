@@ -19,8 +19,8 @@ namespace ContosoUniversity.Services.Validators.Courses
     {
         private readonly CoursesContext _coursesContext;
         private readonly DepartmentsContext _departmentsContext;
-        
-        public string ErrMsgCourseCode => $"Course code can have a value from {CourseCode.MinValue} to {CourseCode.MaxValue}.";
+
+        private string ErrMsgCourseCode => $"Course code can have a value from {CourseCode.MinValue} to {CourseCode.MaxValue}.";
         private static string ErrMsgCredits => $"The field '{nameof(CourseCreateForm.Credits)}' must be between {Credits.MinValue} and {Credits.MaxValue}.";
         private const string ErrMsgTitle = "The field '{PropertyName}' must be a string with a minimum length of {MinLength} and a maximum length of {MaxLength}.";
 
