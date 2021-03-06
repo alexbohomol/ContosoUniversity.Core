@@ -27,7 +27,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
                 request.Credits,
                 request.DepartmentId));
 
-            return Unit.Value;
+            return default;
         }
     }
 }

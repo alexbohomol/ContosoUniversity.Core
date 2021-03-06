@@ -60,7 +60,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
             await _studentsContext.SaveChangesAsync();
             await _coursesRepository.Remove(course.EntityId);
 
-            return Unit.Value;
+            return default;
         }
     }
 }
