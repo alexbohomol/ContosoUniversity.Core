@@ -39,7 +39,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
                 // return NotFound();
                 return Unit.Value;
             }
-            
+
             /*
              * remove related assignments
              */

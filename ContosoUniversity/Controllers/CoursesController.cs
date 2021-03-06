@@ -55,10 +55,9 @@
 
         public async Task<IActionResult> Create()
         {
-            return View(new CreateCourseForm
-            {
-                DepartmentsSelectList = await _departmentsContext.ToDepartmentsDropDownList()
-            });
+            return View(
+                new CreateCourseForm(
+                    await _departmentsContext.GetDepartmentsNames()));
         }
 
         [HttpPost]
@@ -72,14 +71,10 @@
 
             if (!ModelState.IsValid)
             {
-                return View(new CreateCourseForm
-                {
-                    CourseCode = command.CourseCode,
-                    Title = command.Title,
-                    Credits = command.Credits,
-                    DepartmentId = command.DepartmentId,
-                    DepartmentsSelectList = await _departmentsContext.ToDepartmentsDropDownList(command.DepartmentId)
-                });
+                return View(
+                    new CreateCourseForm(
+                        command,
+                        await _departmentsContext.GetDepartmentsNames()));
             }
 
             await _mediator.Send(command);
@@ -112,20 +107,20 @@
 
             if (!ModelState.IsValid)
             {
-                return View(new EditCourseForm
-                {
-                    Title = command.Title,
-                    Credits = command.Credits,
-                    DepartmentId = command.DepartmentId,
-                    DepartmentsSelectList = await _departmentsContext.ToDepartmentsDropDownList(command.DepartmentId)
-                });
+                var course = await _coursesRepository.GetById(command.Id);
+
+                return View(
+                    new EditCourseForm(
+                        command,
+                        course.Code,
+                        await _departmentsContext.GetDepartmentsNames()));
             }
 
             await _mediator.Send(command);
 
             return RedirectToAction(nameof(Index));
         }
-        
+
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id is null)
@@ -146,7 +141,7 @@
         public async Task<IActionResult> Delete(Guid id)
         {
             await _mediator.Send(new DeleteCourseCommand(id));
-            
+
             return RedirectToAction(nameof(Index));
         }
 

@@ -1,29 +1,25 @@
 namespace ContosoUniversity.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
     using Data.Departments;
 
-    using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.EntityFrameworkCore;
-
-    using ViewModels;
 
     public static class ContextsExtensions
     {
-        public static async Task<SelectList> ToDepartmentsDropDownList(
-            this DepartmentsContext context,
-            Guid selectedDepartment = default)
+        public static Task<Dictionary<Guid, string>> GetDepartmentsNames(this DepartmentsContext context)
         {
-            var departments = await context
+            return context
                 .Departments
                 .AsNoTracking()
                 .OrderBy(x => x.Name)
-                .ToArrayAsync();
-
-            return departments.ToSelectList(selectedDepartment);
+                .ToDictionaryAsync(
+                    x => x.ExternalId,
+                    x => x.Name);
         }
     }
 }

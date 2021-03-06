@@ -3,6 +3,8 @@ namespace ContosoUniversity.Services.Handlers.Courses
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Commands.Courses;
+
     using Data.Departments;
 
     using Domain.Contracts;
@@ -38,14 +40,10 @@ namespace ContosoUniversity.Services.Handlers.Courses
              * TODO: missing context boundary check when department is null
              */
 
-            return new EditCourseForm
-            {
-                CourseCode = course.Code,
-                Title = course.Title,
-                Credits = course.Credits,
-                DepartmentId = course.DepartmentId,
-                DepartmentsSelectList = await _departmentsContext.ToDepartmentsDropDownList(course.DepartmentId)
-            };
+            return new EditCourseForm(
+                new EditCourseCommand(course),
+                course.Code,
+                await _departmentsContext.GetDepartmentsNames());
         }
     }
 }
