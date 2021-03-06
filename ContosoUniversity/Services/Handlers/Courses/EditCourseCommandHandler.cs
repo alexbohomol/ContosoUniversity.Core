@@ -5,7 +5,6 @@ namespace ContosoUniversity.Services.Handlers.Courses
 
     using Commands.Courses;
 
-    using Domain;
     using Domain.Contracts;
 
     using MediatR;
@@ -23,12 +22,12 @@ namespace ContosoUniversity.Services.Handlers.Courses
         {
             var course = await _coursesRepository.GetById(request.Id);
 
-            await _coursesRepository.Save(new Course(
-                course.Code, //TODO: dirty, must be resolved
+            course.Update(
                 request.Title,
                 request.Credits,
-                request.DepartmentId,
-                request.Id));
+                request.DepartmentId);
+
+            await _coursesRepository.Save(course);
 
             return default;
         }

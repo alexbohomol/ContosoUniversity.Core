@@ -43,20 +43,15 @@ namespace ContosoUniversity.Data.Courses
             var course = await _context.Courses.FirstOrDefaultAsync(x => x.ExternalId == entity.EntityId);
             if (course == null)
             {
-                await _context.AddAsync(new Models.Course
-                {
-                    CourseCode = entity.Code,
-                    Title = entity.Title,
-                    Credits = entity.Credits,
-                    DepartmentExternalId = entity.DepartmentId,
-                    ExternalId = entity.EntityId
-                });
+                course = new Models.Course();
+
+                UpdateDataModelWithDomain(course, entity);
+
+                await _context.AddAsync(course);
             }
             else
             {
-                course.Credits = entity.Credits;
-                course.DepartmentExternalId = entity.DepartmentId;
-                course.Title = entity.Title;
+                UpdateDataModelWithDomain(course, entity);
             }
 
             try
@@ -92,14 +87,23 @@ namespace ContosoUniversity.Data.Courses
                     $"UPDATE [crs].[Course] SET Credits = Credits * {multiplier}");
         }
 
-        private static Course ToDomainEntity(Models.Course course)
+        private static Course ToDomainEntity(Models.Course dataModel)
         {
             return new(
-                course.CourseCode,
-                course.Title,
-                course.Credits,
-                course.DepartmentExternalId,
-                course.ExternalId);
+                dataModel.CourseCode,
+                dataModel.Title,
+                dataModel.Credits,
+                dataModel.DepartmentExternalId,
+                dataModel.ExternalId);
+        }
+
+        private void UpdateDataModelWithDomain(Models.Course model, Course entity)
+        {
+            model.CourseCode = entity.Code;
+            model.Title = entity.Title;
+            model.Credits = entity.Credits;
+            model.DepartmentExternalId = entity.DepartmentId;
+            model.ExternalId = entity.EntityId;
         }
     }
 }

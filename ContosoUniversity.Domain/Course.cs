@@ -4,6 +4,9 @@ namespace ContosoUniversity.Domain
 
     public class Course : IAggregateRoot
     {
+        private Guid _departmentId;
+        private string _title;
+
         public Course(
             CourseCode code,
             string title,
@@ -33,10 +36,46 @@ namespace ContosoUniversity.Domain
         }
 
         public CourseCode Code { get; }
-        public string Title { get; }
-        public Credits Credits { get; }
-        public Guid DepartmentId { get; }
+
+        public string Title
+        {
+            get => _title;
+            private set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ArgumentException(
+                        "Title cannot be null or whitespace.");
+
+                _title = value;
+            }
+        }
+
+        public Credits Credits { get; private set; }
+
+        public Guid DepartmentId
+        {
+            get => _departmentId;
+            private set
+            {
+                if (value == default)
+                    throw new ArgumentException(
+                        "DepartmentId value cannot be set to empty.");
+
+                _departmentId = value;
+            }
+        }
+
         public Guid EntityId { get; }
+
+        public void Update(
+            string title,
+            Credits credits,
+            Guid departmentId)
+        {
+            Title = title;
+            Credits = credits;
+            DepartmentId = departmentId;
+        }
     }
 
     public class Department
