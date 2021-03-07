@@ -4,13 +4,5 @@ namespace ContosoUniversity.Services.Commands.Courses
 
     using MediatR;
 
-    public class DeleteCourseCommand : IRequest
-    {
-        public DeleteCourseCommand(Guid id)
-        {
-            Id = id;
-        }
-
-        public Guid Id { get; }
-    }
+    public record DeleteCourseCommand(Guid Id) : IRequest;
 }

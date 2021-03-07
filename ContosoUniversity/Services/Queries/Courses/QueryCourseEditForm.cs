@@ -6,13 +6,5 @@ namespace ContosoUniversity.Services.Queries.Courses
 
     using ViewModels.Courses;
 
-    public class QueryCourseEditForm : IRequest<EditCourseForm>
-    {
-        public QueryCourseEditForm(Guid id)
-        {
-            Id = id;
-        }
-
-        public Guid Id { get; }
-    }
+    public record QueryCourseEditForm(Guid Id) : IRequest<EditCourseForm>;
 }

@@ -6,13 +6,5 @@ namespace ContosoUniversity.Services.Queries.Courses
 
     using ViewModels.Courses;
 
-    public class QueryCourseDetails : IRequest<CourseDetailsViewModel>
-    {
-        public QueryCourseDetails(Guid id)
-        {
-            Id = id;
-        }
-
-        public Guid Id { get; }
-    }
+    public record QueryCourseDetails(Guid Id) : IRequest<CourseDetailsViewModel>;
 }
