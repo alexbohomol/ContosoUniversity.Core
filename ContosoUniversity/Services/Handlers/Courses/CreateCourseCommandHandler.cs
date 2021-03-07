@@ -10,7 +10,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
 
     using MediatR;
 
-    public class CreateCourseCommandHandler : IRequestHandler<CreateCourseCommand>
+    public class CreateCourseCommandHandler : AsyncRequestHandler<CreateCourseCommand>
     {
         private readonly ICoursesRepository _coursesRepository;
 
@@ -19,15 +19,14 @@ namespace ContosoUniversity.Services.Handlers.Courses
             _coursesRepository = coursesRepository;
         }
 
-        public async Task<Unit> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
+        protected override Task Handle(CreateCourseCommand request, CancellationToken cancellationToken)
         {
-            await _coursesRepository.Save(new Course(
-                request.CourseCode,
-                request.Title,
-                request.Credits,
-                request.DepartmentId));
-
-            return default;
+            return _coursesRepository.Save(
+                new Course(
+                    request.CourseCode,
+                    request.Title,
+                    request.Credits,
+                    request.DepartmentId));
         }
     }
 }

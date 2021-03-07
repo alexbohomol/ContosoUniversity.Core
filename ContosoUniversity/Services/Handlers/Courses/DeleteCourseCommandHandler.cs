@@ -1,5 +1,6 @@
 namespace ContosoUniversity.Services.Handlers.Courses
 {
+    using System;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
 
     using Microsoft.EntityFrameworkCore;
 
-    public class DeleteCourseCommandHandler : IRequestHandler<DeleteCourseCommand>
+    public class DeleteCourseCommandHandler : AsyncRequestHandler<DeleteCourseCommand>
     {
         private readonly ICoursesRepository _coursesRepository;
         private readonly DepartmentsContext _departmentsContext;
@@ -31,13 +32,13 @@ namespace ContosoUniversity.Services.Handlers.Courses
             _studentsContext = studentsContext;
         }
 
-        public async Task<Unit> Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
+        protected override async Task Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
         {
             var course = await _coursesRepository.GetById(request.Id);
             if (course is null)
             {
                 // return NotFound();
-                return Unit.Value;
+                throw new Exception("Course not found");
             }
 
             /*
@@ -59,8 +60,6 @@ namespace ContosoUniversity.Services.Handlers.Courses
             await _departmentsContext.SaveChangesAsync();
             await _studentsContext.SaveChangesAsync();
             await _coursesRepository.Remove(course.EntityId);
-
-            return default;
         }
     }
 }

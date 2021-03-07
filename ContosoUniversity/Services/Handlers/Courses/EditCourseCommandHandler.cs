@@ -9,7 +9,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
 
     using MediatR;
 
-    public class EditCourseCommandHandler : IRequestHandler<EditCourseCommand>
+    public class EditCourseCommandHandler : AsyncRequestHandler<EditCourseCommand>
     {
         private readonly ICoursesRepository _coursesRepository;
 
@@ -18,7 +18,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
             _coursesRepository = coursesRepository;
         }
 
-        public async Task<Unit> Handle(EditCourseCommand request, CancellationToken cancellationToken)
+        protected override async Task Handle(EditCourseCommand request, CancellationToken cancellationToken)
         {
             var course = await _coursesRepository.GetById(request.Id);
 
@@ -28,8 +28,6 @@ namespace ContosoUniversity.Services.Handlers.Courses
                 request.DepartmentId);
 
             await _coursesRepository.Save(course);
-
-            return default;
         }
     }
 }
