@@ -1,35 +1,28 @@
 namespace ContosoUniversity.Services.Handlers.Courses
 {
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
     using Commands.Courses;
 
-    using Data.Departments;
-    using Data.Students;
-
     using Domain.Contracts;
     using Domain.Contracts.Exceptions;
 
-    using MediatR;
+    using Events;
 
-    using Microsoft.EntityFrameworkCore;
+    using MediatR;
 
     public class DeleteCourseCommandHandler : AsyncRequestHandler<DeleteCourseCommand>
     {
         private readonly ICoursesRepository _coursesRepository;
-        private readonly DepartmentsContext _departmentsContext;
-        private readonly StudentsContext _studentsContext;
+        private readonly IMediator _mediator;
 
         public DeleteCourseCommandHandler(
             ICoursesRepository coursesRepository,
-            DepartmentsContext departmentsContext,
-            StudentsContext studentsContext)
+            IMediator mediator)
         {
             _coursesRepository = coursesRepository;
-            _departmentsContext = departmentsContext;
-            _studentsContext = studentsContext;
+            _mediator = mediator;
         }
 
         protected override async Task Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
@@ -39,25 +32,14 @@ namespace ContosoUniversity.Services.Handlers.Courses
                 throw new FindException(
                     $"Could not find course with id:{request.Id}");
 
-            /*
-             * remove related assignments
-             */
-            var relatedAssignments = await _departmentsContext.CourseAssignments
-                .Where(x => x.CourseExternalId == course.EntityId)
-                .ToArrayAsync();
-            _departmentsContext.CourseAssignments.RemoveRange(relatedAssignments);
-
-            /*
-             * remove related enrollments
-             */
-            var relatedEnrollments = await _studentsContext.Enrollments
-                .Where(x => x.CourseExternalId == course.EntityId)
-                .ToArrayAsync();
-            _studentsContext.Enrollments.RemoveRange(relatedEnrollments);
-
-            await _departmentsContext.SaveChangesAsync();
-            await _studentsContext.SaveChangesAsync();
             await _coursesRepository.Remove(course.EntityId);
+
+            /*
+             * remove related assignments and enrollments
+             */
+            await _mediator.Publish(
+                new CourseDeleted(request.Id),
+                cancellationToken);
         }
     }
 }
