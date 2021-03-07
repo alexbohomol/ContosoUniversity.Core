@@ -27,12 +27,20 @@ namespace ContosoUniversity.Services.Validators.Courses
             _departmentsContext = departmentsContext;
 
             // POST model rules
-            RuleFor(x => x.Title).Length(3, 50).WithMessage(ErrMsgTitle);
-            RuleFor(x => x.Credits).InclusiveBetween(Credits.MinValue, Credits.MaxValue).WithMessage(ErrMsgCredits);
-            RuleFor(x => x.DepartmentId).NotEmpty().WithMessage("Please select a course department.");
+            RuleFor(x => x.Title)
+                .Length(3, 50)
+                .WithMessage(ErrMsgTitle);
+            RuleFor(x => x.Credits)
+                .InclusiveBetween(Credits.MinValue, Credits.MaxValue)
+                .WithMessage(ErrMsgCredits);
+            RuleFor(x => x.DepartmentId)
+                .NotEmpty()
+                .WithMessage("Please select a course department.");
 
             // domain rules
-            RuleFor(x => x.DepartmentId).MustAsync(BeAnExistingDepartment).WithMessage("Please select an existing department.");
+            RuleFor(x => x.DepartmentId)
+                .MustAsync(BeAnExistingDepartment)
+                .WithMessage("Please select an existing department.");
         }
 
         private static string ErrMsgCredits => $"The field '{nameof(CreateCourseForm.Credits)}' must be between {Credits.MinValue} and {Credits.MaxValue}.";
