@@ -1,6 +1,5 @@
 namespace ContosoUniversity.Services.Handlers.Courses
 {
-    using System;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -11,6 +10,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
     using Data.Students;
 
     using Domain.Contracts;
+    using Domain.Contracts.Exceptions;
 
     using MediatR;
 
@@ -36,10 +36,8 @@ namespace ContosoUniversity.Services.Handlers.Courses
         {
             var course = await _coursesRepository.GetById(request.Id);
             if (course is null)
-            {
-                // return NotFound();
-                throw new Exception("Course not found");
-            }
+                throw new FindException(
+                    $"Could not find course with id:{request.Id}");
 
             /*
              * remove related assignments
