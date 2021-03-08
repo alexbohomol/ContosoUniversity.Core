@@ -6,6 +6,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
     using Data.Departments;
 
     using Domain.Contracts;
+    using Domain.Contracts.Exceptions;
 
     using MediatR;
 
@@ -32,14 +33,14 @@ namespace ContosoUniversity.Services.Handlers.Courses
         {
             var course = await _coursesRepository.GetById(request.Id);
             if (course == null)
-            {
-                return null;
-            }
+                throw new EntityNotFoundException(nameof(course), request.Id);
 
             var department = await _departmentsContext.Departments
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.ExternalId == course.DepartmentId);
-
+            if (department == null)
+                throw new EntityNotFoundException(nameof(department), course.DepartmentId);
+            
             /*
              * TODO: missing context boundary check when department is null
              */

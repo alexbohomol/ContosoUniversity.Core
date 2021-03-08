@@ -28,9 +28,8 @@ namespace ContosoUniversity.Services.Handlers.Courses
         protected override async Task Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
         {
             var course = await _coursesRepository.GetById(request.Id);
-            if (course is null)
-                throw new FindException(
-                    $"Could not find course with id:{request.Id}");
+            if (course == null)
+                throw new EntityNotFoundException(nameof(course), request.Id);
 
             await _coursesRepository.Remove(course.EntityId);
 

@@ -6,6 +6,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
     using Commands.Courses;
 
     using Domain.Contracts;
+    using Domain.Contracts.Exceptions;
 
     using MediatR;
 
@@ -21,6 +22,8 @@ namespace ContosoUniversity.Services.Handlers.Courses
         protected override async Task Handle(EditCourseCommand request, CancellationToken cancellationToken)
         {
             var course = await _coursesRepository.GetById(request.Id);
+            if (course == null)
+                throw new EntityNotFoundException(nameof(course), request.Id);
 
             course.Update(
                 request.Title,

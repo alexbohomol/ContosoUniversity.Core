@@ -71,9 +71,7 @@ namespace ContosoUniversity.Data.Courses
         {
             var course = await _context.Courses.FirstOrDefaultAsync(x => x.ExternalId == entityId);
             if (course == null)
-            {
-                throw new PersistenceException($"Could not find course with id {entityId}");
-            }
+                throw new EntityNotFoundException(nameof(course), entityId);
 
             _context.Courses.Remove(course);
 
