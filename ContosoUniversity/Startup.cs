@@ -4,8 +4,6 @@
     using Data.Departments;
     using Data.Students;
 
-    using Domain.Contracts;
-
     using FluentValidation.AspNetCore;
 
     using MediatR;
@@ -13,7 +11,6 @@
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -37,14 +34,10 @@
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDbContext<CoursesContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDbContext<StudentsContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDbContext<DepartmentsContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddScoped<ICoursesRepository, CoursesRepository>();
+            string connectionString = Configuration.GetConnectionString("DefaultConnection");
+            services.AddCoursesDataLayer(connectionString);
+            services.AddStudentsDataLayer(connectionString);
+            services.AddDepartmentsDataLayer(connectionString);
 
             services
                 .AddMvc()

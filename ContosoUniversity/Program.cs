@@ -5,6 +5,7 @@
 
     using Data.Courses;
     using Data.Departments;
+    using Data.Seed;
     using Data.Students;
 
     using Microsoft.AspNetCore;
@@ -12,8 +13,6 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-
-    using Seed;
 
     public class Program
     {

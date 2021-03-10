@@ -1,20 +1,22 @@
-﻿namespace ContosoUniversity.Seed
+﻿namespace ContosoUniversity.Data.Seed
 {
     using System;
     using System.IO;
     using System.Linq;
 
-    using Data.Courses;
-    using Data.Courses.Models;
-    using Data.Departments;
-    using Data.Departments.Models;
-    using Data.Students;
-    using Data.Students.Models;
+    using Courses;
+    using Courses.Models;
+
+    using Departments;
+    using Departments.Models;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
 
     using Models;
+
+    using Students;
+    using Students.Models;
 
     public static class DbSeeder
     {
