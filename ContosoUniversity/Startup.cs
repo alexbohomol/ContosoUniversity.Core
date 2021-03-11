@@ -34,7 +34,7 @@
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            string connectionString = Configuration.GetConnectionString("DefaultConnection");
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddCoursesDataLayer(connectionString);
             services.AddStudentsDataLayer(connectionString);
             services.AddDepartmentsDataLayer(connectionString);

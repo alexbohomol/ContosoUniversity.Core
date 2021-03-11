@@ -31,5 +31,7 @@ namespace ContosoUniversity.Domain
         {
             return code._code;
         }
+
+        public override string ToString() => _code.ToString();
     }
 }

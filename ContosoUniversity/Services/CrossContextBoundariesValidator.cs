@@ -4,7 +4,6 @@ namespace ContosoUniversity.Services
     using System.Collections.Generic;
     using System.Linq;
 
-    using Data.Courses.Models;
     using Data.Departments.Models;
     using Data.Students.Models;
 
@@ -17,11 +16,11 @@ namespace ContosoUniversity.Services
         ///     Ensure all assigned courses reference existing department records
         /// </summary>
         public static void EnsureCoursesReferenceTheExistingDepartments(
-            IEnumerable<Course> courses,
+            IEnumerable<Domain.Course> courses,
             Dictionary<Guid, string> departmentNames)
         {
             var notFoundDepartments = courses
-                .Select(x => x.DepartmentExternalId)
+                .Select(x => x.DepartmentId)
                 .Distinct()
                 .Where(x => !departmentNames.ContainsKey(x))
                 .ToArray();
@@ -34,33 +33,14 @@ namespace ContosoUniversity.Services
         }
 
         /// <summary>
-        ///     Ensure all assigned courses reference existing department records
-        /// </summary>
-        public static void EnsureCoursesReferenceTheExistingDepartments(
-            IEnumerable<Domain.Course> courses,
-            Dictionary<Guid, string> departmentNames)
-        {
-            EnsureCoursesReferenceTheExistingDepartments(
-                courses.Select(x => new Course
-                {
-                    CourseCode = x.Code,
-                    Credits = x.Credits,
-                    DepartmentExternalId = x.DepartmentId,
-                    ExternalId = x.EntityId,
-                    Title = x.Title
-                }),
-                departmentNames);
-        }
-
-        /// <summary>
         ///     Ensure all assigned courses reference existing course records
         /// </summary>
         public static void EnsureInstructorsReferenceTheExistingCourses(
             IEnumerable<Instructor> instructors,
-            IEnumerable<Course> courses)
+            IEnumerable<Domain.Course> courses)
         {
             var referencedCourseIds = instructors.SelectMany(x => x.CourseAssignments.Select(ca => ca.CourseExternalId)).ToHashSet();
-            var existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();
+            var existingCourseIds = courses.Select(x => x.EntityId).ToHashSet();
             var notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
 
             if (notFoundCourses.Any())
@@ -75,10 +55,10 @@ namespace ContosoUniversity.Services
         /// </summary>
         public static void EnsureEnrollmentsReferenceTheExistingCourses(
             IEnumerable<Enrollment> enrollments,
-            IEnumerable<Course> courses)
+            IEnumerable<Domain.Course> courses)
         {
             var referencedCourseIds = enrollments.Select(x => x.CourseExternalId).ToHashSet();
-            var existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();
+            var existingCourseIds = courses.Select(x => x.EntityId).ToHashSet();
             var notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
 
             if (notFoundCourses.Any())

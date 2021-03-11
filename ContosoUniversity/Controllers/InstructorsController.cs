@@ -10,6 +10,8 @@
     using Data.Departments.Models;
     using Data.Students;
 
+    using Domain.Contracts;
+
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
 
@@ -20,16 +22,19 @@
     public class InstructorsController : Controller
     {
         private readonly CoursesContext _coursesContext;
+        private readonly ICoursesRepository _coursesRepository;
         private readonly DepartmentsContext _departmentsContext;
         private readonly StudentsContext _studentsContext;
 
         public InstructorsController(
             DepartmentsContext departmentsContext,
             CoursesContext coursesContext,
+            ICoursesRepository coursesRepository,
             StudentsContext studentsContext)
         {
             _departmentsContext = departmentsContext;
             _coursesContext = coursesContext;
+            _coursesRepository = coursesRepository;
             _studentsContext = studentsContext;
         }
 
@@ -42,7 +47,7 @@
                 .AsNoTracking()
                 .ToListAsync();
 
-            var courses = await _coursesContext.Courses.ToListAsync();
+            var courses = await _coursesRepository.GetAll();
 
             CrossContextBoundariesValidator.EnsureInstructorsReferenceTheExistingCourses(instructors, courses);
 
@@ -61,8 +66,8 @@
                         Office = x.OfficeAssignment?.Location,
                         AssignedCourseIds = assignedCourseIds,
                         AssignedCourses = courses
-                            .Where(c => assignedCourseIds.Contains(c.ExternalId))
-                            .Select(c => $"{c.CourseCode} {c.Title}"),
+                            .Where(c => assignedCourseIds.Contains(c.EntityId))
+                            .Select(c => $"{c.Code} {c.Title}"),
                         RowClass = id is not null && id == x.ExternalId
                             ? "table-success"
                             : string.Empty
@@ -75,19 +80,19 @@
                 var instructor = viewModel.Instructors.Single(i => i.Id == id.Value);
                 var instructorCourseIds = instructor.AssignedCourseIds.ToHashSet();
                 var departmentNames = await _departmentsContext.Departments
-                    .Where(x => courses.Select(_ => _.DepartmentExternalId).Contains(x.ExternalId))
+                    .Where(x => courses.Select(_ => _.DepartmentId).Contains(x.ExternalId))
                     .AsNoTracking()
                     .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
                 CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames);
                 viewModel.Courses = courses
-                    .Where(x => instructorCourseIds.Contains(x.ExternalId))
+                    .Where(x => instructorCourseIds.Contains(x.EntityId))
                     .Select(x => new CourseListItemViewModel
                     {
-                        Id = x.ExternalId,
-                        CourseCode = x.CourseCode,
+                        Id = x.EntityId,
+                        CourseCode = x.Code,
                         Title = x.Title,
-                        Department = departmentNames[x.DepartmentExternalId],
-                        RowClass = courseExternalId is not null && courseExternalId == x.ExternalId
+                        Department = departmentNames[x.DepartmentId],
+                        RowClass = courseExternalId is not null && courseExternalId == x.EntityId
                             ? "table-success"
                             : string.Empty
                     }).ToList();
