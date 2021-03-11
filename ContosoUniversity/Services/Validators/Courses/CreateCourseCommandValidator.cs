@@ -6,10 +6,10 @@ namespace ContosoUniversity.Services.Validators.Courses
 
     using Commands.Courses;
 
-    using Data.Courses;
     using Data.Departments;
 
     using Domain;
+    using Domain.Contracts;
 
     using FluentValidation;
 
@@ -20,14 +20,14 @@ namespace ContosoUniversity.Services.Validators.Courses
     public class CreateCourseCommandValidator : AbstractValidator<CreateCourseCommand>
     {
         private const string ErrMsgTitle = "The field '{PropertyName}' must be a string with a minimum length of {MinLength} and a maximum length of {MaxLength}.";
-        private readonly CoursesContext _coursesContext;
+        private readonly ICoursesRepository _coursesRepository;
         private readonly DepartmentsContext _departmentsContext;
 
         public CreateCourseCommandValidator(
-            CoursesContext coursesContext,
+            ICoursesRepository coursesRepository,
             DepartmentsContext departmentsContext)
         {
-            _coursesContext = coursesContext;
+            _coursesRepository = coursesRepository;
             _departmentsContext = departmentsContext;
 
             // POST model rules
@@ -56,11 +56,9 @@ namespace ContosoUniversity.Services.Validators.Courses
         private string ErrMsgCourseCode => $"Course code can have a value from {CourseCode.MinValue} to {CourseCode.MaxValue}.";
         private static string ErrMsgCredits => $"The field '{nameof(CreateCourseForm.Credits)}' must be between {Credits.MinValue} and {Credits.MaxValue}.";
 
-        private Task<bool> BeANewCourseCode(int courseCode, CancellationToken token)
+        private async Task<bool> BeANewCourseCode(int courseCode, CancellationToken token)
         {
-            return _coursesContext
-                .Courses
-                .AllAsync(x => x.CourseCode != courseCode, token);
+            return !await _coursesRepository.ExistsCourseCode(courseCode);
         }
 
         private Task<bool> BeAnExistingDepartment(Guid departmentId, CancellationToken token)

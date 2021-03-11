@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Data.Courses;
     using Data.Departments;
     using Data.Departments.Models;
     using Data.Students;
@@ -21,19 +20,16 @@
 
     public class InstructorsController : Controller
     {
-        private readonly CoursesContext _coursesContext;
         private readonly ICoursesRepository _coursesRepository;
         private readonly DepartmentsContext _departmentsContext;
         private readonly StudentsContext _studentsContext;
 
         public InstructorsController(
             DepartmentsContext departmentsContext,
-            CoursesContext coursesContext,
             ICoursesRepository coursesRepository,
             StudentsContext studentsContext)
         {
             _departmentsContext = departmentsContext;
-            _coursesContext = coursesContext;
             _coursesRepository = coursesRepository;
             _studentsContext = studentsContext;
         }
@@ -134,12 +130,12 @@
             });
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             return View(new InstructorCreateForm
             {
                 HireDate = DateTime.Now,
-                AssignedCourses = CreateAssignedCourseData()
+                AssignedCourses = await CreateAssignedCourseData()
             });
         }
 
@@ -200,22 +196,22 @@
                 FirstName = instructor.FirstMidName,
                 HireDate = instructor.HireDate,
                 Location = instructor.OfficeAssignment?.Location,
-                AssignedCourses = CreateAssignedCourseData(instructor)
+                AssignedCourses = await CreateAssignedCourseData(instructor)
             });
         }
 
-        private AssignedCourseOption[] CreateAssignedCourseData(Instructor instructor = null)
+        private async Task<AssignedCourseOption[]> CreateAssignedCourseData(Instructor instructor = null)
         {
-            var allCourses = _coursesContext.Courses;
+            var allCourses = await _coursesRepository.GetAll();
             var instructorCourses = instructor?.CourseAssignments
                 .Select(c => c.CourseExternalId) ?? Array.Empty<Guid>();
 
             return allCourses.Select(course => new AssignedCourseOption
             {
-                CourseCode = course.CourseCode,
-                CourseExternalId = course.ExternalId,
+                CourseCode = course.Code,
+                CourseExternalId = course.EntityId,
                 Title = course.Title,
-                Assigned = instructorCourses.Contains(course.ExternalId)
+                Assigned = instructorCourses.Contains(course.EntityId)
             }).ToArray();
         }
 
@@ -244,7 +240,7 @@
                 ? new OfficeAssignment {Location = form.Location}
                 : null;
 
-            UpdateInstructorCourses(form.SelectedCourses, instructor);
+            await UpdateInstructorCourses(form.SelectedCourses, instructor);
 
             try
             {
@@ -264,14 +260,14 @@
                     FirstName = instructor.FirstMidName,
                     HireDate = instructor.HireDate,
                     Location = instructor.OfficeAssignment?.Location,
-                    AssignedCourses = CreateAssignedCourseData(instructor)
+                    AssignedCourses = await CreateAssignedCourseData(instructor)
                 });
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-        private void UpdateInstructorCourses(string[] selectedCourses, Instructor instructorToUpdate)
+        private async Task UpdateInstructorCourses(string[] selectedCourses, Instructor instructorToUpdate)
         {
             if (selectedCourses == null)
             {
@@ -282,22 +278,25 @@
             var selectedCoursesHs = new HashSet<string>(selectedCourses);
             var instructorCourses = new HashSet<Guid>
                 (instructorToUpdate.CourseAssignments.Select(c => c.CourseExternalId));
-            foreach (var course in _coursesContext.Courses)
-                if (selectedCoursesHs.Contains(course.ExternalId.ToString()))
+            var courses = await _coursesRepository.GetAll();
+            foreach (var course in courses)
+                if (selectedCoursesHs.Contains(course.EntityId.ToString()))
                 {
-                    if (!instructorCourses.Contains(course.ExternalId))
+                    if (!instructorCourses.Contains(course.EntityId))
                         instructorToUpdate.CourseAssignments.Add(new CourseAssignment
                         {
                             InstructorId = instructorToUpdate.Id,
-                            CourseExternalId = course.ExternalId
+                            CourseExternalId = course.EntityId
                         });
                 }
                 else
                 {
-                    if (instructorCourses.Contains(course.ExternalId))
+                    if (instructorCourses.Contains(course.EntityId))
                     {
-                        var courseToRemove =
-                            instructorToUpdate.CourseAssignments.FirstOrDefault(i => i.CourseExternalId == course.ExternalId);
+                        var courseToRemove = instructorToUpdate
+                            .CourseAssignments
+                            .FirstOrDefault(i => i.CourseExternalId == course.EntityId);
+                        
                         if (courseToRemove != null)
                             _departmentsContext.Remove(courseToRemove);
                     }

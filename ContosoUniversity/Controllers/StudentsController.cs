@@ -4,9 +4,10 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Data.Courses;
     using Data.Students;
     using Data.Students.Models;
+
+    using Domain.Contracts;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
@@ -16,14 +17,14 @@
 
     public class StudentsController : Controller
     {
-        private readonly CoursesContext _coursesContext;
+        private readonly ICoursesRepository _coursesRepository;
         private readonly StudentsContext _studentsContext;
 
         public StudentsController(
-            CoursesContext coursesContext,
+            ICoursesRepository coursesRepository,
             StudentsContext studentsContext)
         {
-            _coursesContext = coursesContext;
+            _coursesRepository = coursesRepository;
             _studentsContext = studentsContext;
         }
 
@@ -104,11 +105,10 @@
                 return NotFound();
             }
 
-            var courseIds = student.Enrollments.Select(x => x.CourseExternalId).ToArray();
+            var coursesIds = student.Enrollments.Select(x => x.CourseExternalId).ToArray();
 
-            var courseTitles = await _coursesContext.Courses
-                .Where(x => courseIds.Contains(x.ExternalId))
-                .ToDictionaryAsync(x => x.ExternalId, x => x.Title);
+            var courseTitles = (await _coursesRepository.GetByIds(coursesIds))
+                .ToDictionary(x => x.EntityId, x => x.Title);
 
             return View(new StudentDetailsViewModel
             {

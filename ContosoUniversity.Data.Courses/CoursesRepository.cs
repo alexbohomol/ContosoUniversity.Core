@@ -38,6 +38,15 @@ namespace ContosoUniversity.Data.Courses
                 .ToArrayAsync();
         }
 
+        public Task<Course[]> GetByDepartmentId(Guid departmentId)
+        {
+            return _context.Courses
+                .AsNoTracking()
+                .Where(x => x.DepartmentExternalId == departmentId)
+                .Select(x => ToDomainEntity(x))
+                .ToArrayAsync();
+        }
+
         public async Task Save(Course entity)
         {
             var course = await _context.Courses.FirstOrDefaultAsync(x => x.ExternalId == entity.EntityId);
@@ -76,6 +85,41 @@ namespace ContosoUniversity.Data.Courses
             _context.Courses.Remove(course);
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task Remove(Guid[] entityIds)
+        {
+            var courses = await _context.Courses
+                .Where(x => entityIds.Contains(x.ExternalId))
+                .ToArrayAsync();
+
+            var notFoundIds = entityIds
+                .Except(courses.Select(c => c.ExternalId))
+                .ToArray();
+            if (notFoundIds.Any())
+                throw new AggregateException(
+                    notFoundIds
+                        .Select(x => new EntityNotFoundException(nameof(courses), x)));
+
+            _context.Courses.RemoveRange(courses);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public Task<Course[]> GetByIds(Guid[] entityIds)
+        {
+            return _context.Courses
+                .AsNoTracking()
+                .Where(x => entityIds.Contains(x.ExternalId))
+                .Select(x => ToDomainEntity(x))
+                .ToArrayAsync();
+        }
+
+        public Task<bool> ExistsCourseCode(int courseCode)
+        {
+            return _context.Courses
+                .AsNoTracking()
+                .AnyAsync(x => x.CourseCode == courseCode);
         }
 
         public Task<int> UpdateCourseCredits(int multiplier)

@@ -4,10 +4,11 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Data.Courses;
     using Data.Departments;
     using Data.Departments.Models;
     using Data.Students;
+
+    using Domain.Contracts;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,18 +19,17 @@
     public class DepartmentsController : Controller
     {
         private const string ErrMsgConcurrentUpdate = "The record you attempted to edit was modified by another user after you got the original value. The edit operation was canceled and the current values in the database have been displayed. If you still want to edit this record, click the Save button again. Otherwise click the Back to List hyperlink.";
-        private readonly CoursesContext _coursesContext;
-
+        private readonly ICoursesRepository _coursesRepository;
         private readonly DepartmentsContext _departmentsContext;
         private readonly StudentsContext _studentsContext;
 
         public DepartmentsController(
             DepartmentsContext departmentsContext,
-            CoursesContext coursesContext,
+            ICoursesRepository coursesRepository,
             StudentsContext studentsContext)
         {
             _departmentsContext = departmentsContext;
-            _coursesContext = coursesContext;
+            _coursesRepository = coursesRepository;
             _studentsContext = studentsContext;
         }
 
@@ -262,8 +262,8 @@
             {
                 try
                 {
-                    var relatedCourses = await _coursesContext.Courses.Where(x => x.DepartmentExternalId == id).ToArrayAsync();
-                    var relatedCoursesIds = relatedCourses.Select(x => x.ExternalId).ToArray();
+                    var relatedCourses = await _coursesRepository.GetByDepartmentId(id);
+                    var relatedCoursesIds = relatedCourses.Select(x => x.EntityId).ToArray();
 
                     /*
                      * remove related assignments
@@ -284,14 +284,13 @@
                     /*
                      * remove related courses
                      */
-                    _coursesContext.Courses.RemoveRange(relatedCourses);
+                    await _coursesRepository.Remove(relatedCoursesIds);
 
                     /*
                      * remove department
                      */
                     _departmentsContext.Departments.Remove(department);
 
-                    await _coursesContext.SaveChangesAsync();
                     await _studentsContext.SaveChangesAsync();
                     await _departmentsContext.SaveChangesAsync();
                 }
