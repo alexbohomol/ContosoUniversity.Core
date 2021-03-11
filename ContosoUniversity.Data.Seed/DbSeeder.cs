@@ -18,7 +18,7 @@
     using Students;
     using Students.Models;
 
-    public static class DbSeeder
+    internal static class DbSeeder
     {
         public static void EnsureInitialized(
             DepartmentsContext departmentsContext,
