@@ -1,5 +1,7 @@
 namespace ContosoUniversity.Data.Students
 {
+    using Domain.Contracts;
+
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -12,7 +14,7 @@ namespace ContosoUniversity.Data.Students
                 options.UseSqlServer(connectionString);
             });
             
-            // services.AddScoped<IStudentsRepository, StudentsRepository>();
+            services.AddScoped<IStudentsRepository, StudentsRepository>();
         }
     }
 }

@@ -7,6 +7,8 @@ namespace ContosoUniversity.Services
     using Data.Departments.Models;
     using Data.Students.Models;
 
+    using Domain.Course;
+
     /// <summary>
     ///     TODO: these checks should be implemented in domain/service layers later
     /// </summary>
@@ -16,7 +18,7 @@ namespace ContosoUniversity.Services
         ///     Ensure all assigned courses reference existing department records
         /// </summary>
         public static void EnsureCoursesReferenceTheExistingDepartments(
-            IEnumerable<Domain.Course> courses,
+            IEnumerable<Course> courses,
             Dictionary<Guid, string> departmentNames)
         {
             var notFoundDepartments = courses
@@ -37,7 +39,7 @@ namespace ContosoUniversity.Services
         /// </summary>
         public static void EnsureInstructorsReferenceTheExistingCourses(
             IEnumerable<Instructor> instructors,
-            IEnumerable<Domain.Course> courses)
+            IEnumerable<Course> courses)
         {
             var referencedCourseIds = instructors.SelectMany(x => x.CourseAssignments.Select(ca => ca.CourseExternalId)).ToHashSet();
             var existingCourseIds = courses.Select(x => x.EntityId).ToHashSet();
@@ -55,7 +57,7 @@ namespace ContosoUniversity.Services
         /// </summary>
         public static void EnsureEnrollmentsReferenceTheExistingCourses(
             IEnumerable<Enrollment> enrollments,
-            IEnumerable<Domain.Course> courses)
+            IEnumerable<Course> courses)
         {
             var referencedCourseIds = enrollments.Select(x => x.CourseExternalId).ToHashSet();
             var existingCourseIds = courses.Select(x => x.EntityId).ToHashSet();

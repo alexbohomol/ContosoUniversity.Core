@@ -1,6 +1,6 @@
 namespace ContosoUniversity.Services.Validators.Courses
 {
-    using Domain;
+    using Domain.Course;
 
     using FluentValidation;
 

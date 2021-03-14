@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Domain
+namespace ContosoUniversity.Domain.Course
 {
     using System;
 

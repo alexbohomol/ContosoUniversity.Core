@@ -2,7 +2,7 @@ namespace ContosoUniversity.Services.Commands.Courses
 {
     using System;
 
-    using Domain;
+    using Domain.Course;
 
     using MediatR;
 

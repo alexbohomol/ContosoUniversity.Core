@@ -5,8 +5,8 @@ namespace ContosoUniversity.Services.Handlers.Courses
 
     using Commands.Courses;
 
-    using Domain;
     using Domain.Contracts;
+    using Domain.Course;
 
     using MediatR;
 

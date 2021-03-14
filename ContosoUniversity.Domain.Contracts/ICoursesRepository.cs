@@ -3,6 +3,8 @@ namespace ContosoUniversity.Domain.Contracts
     using System;
     using System.Threading.Tasks;
 
+    using Course;
+
     public interface ICoursesRepository : IRepository<Course>
     {
         Task<int> UpdateCourseCredits(int multiplier);

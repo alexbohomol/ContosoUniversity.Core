@@ -7,24 +7,26 @@
     using Data.Students;
     using Data.Students.Models;
 
-    using Domain.Contracts;
+    using MediatR;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+
+    using Services.Queries.Students;
 
     using ViewModels;
     using ViewModels.Students;
 
     public class StudentsController : Controller
     {
-        private readonly ICoursesRepository _coursesRepository;
+        private readonly IMediator _mediator;
         private readonly StudentsContext _studentsContext;
 
         public StudentsController(
-            ICoursesRepository coursesRepository,
+            IMediator mediator,
             StudentsContext studentsContext)
         {
-            _coursesRepository = coursesRepository;
+            _mediator = mediator;
             _studentsContext = studentsContext;
         }
 
@@ -95,33 +97,11 @@
                 return NotFound();
             }
 
-            var student = await _studentsContext.Students
-                .Include(s => s.Enrollments)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ExternalId == id);
-
-            if (student == null)
-            {
-                return NotFound();
-            }
-
-            var coursesIds = student.Enrollments.Select(x => x.CourseExternalId).ToArray();
-
-            var courseTitles = (await _coursesRepository.GetByIds(coursesIds))
-                .ToDictionary(x => x.EntityId, x => x.Title);
-
-            return View(new StudentDetailsViewModel
-            {
-                LastName = student.LastName,
-                FirstMidName = student.FirstMidName,
-                EnrollmentDate = student.EnrollmentDate,
-                ExternalId = student.ExternalId,
-                Enrollments = student.Enrollments.Select(x => new EnrollmentViewModel
-                {
-                    CourseTitle = courseTitles[x.CourseExternalId],
-                    Grade = x.Grade?.ToString()
-                }).ToArray()
-            });
+            var result = await _mediator.Send(new QueryStudentDetails(id.Value));
+            
+            return result is not null
+                ? View(result)
+                : NotFound();
         }
 
         public IActionResult Create()

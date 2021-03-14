@@ -8,7 +8,7 @@ namespace ContosoUniversity.Services.Validators.Courses
 
     using Data.Departments;
 
-    using Domain;
+    using Domain.Course;
 
     using FluentValidation;
 

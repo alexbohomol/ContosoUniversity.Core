@@ -16,10 +16,7 @@
     {
         public int Id { get; set; }
         public int StudentId { get; set; }
-
-        [DisplayFormat(NullDisplayText = "No grade")]
         public Grade? Grade { get; set; }
-
         public Guid CourseExternalId { get; set; }
         public Student Student { get; set; }
     }
