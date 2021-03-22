@@ -6,12 +6,12 @@ namespace ContosoUniversity.Services.Handlers.Students
 
     using Domain.Contracts;
     using Domain.Contracts.Exceptions;
-    using Domain.Student;
 
     using MediatR;
 
     using Queries.Students;
 
+    using ViewModels;
     using ViewModels.Students;
 
     public class QueryStudentDetailsHandler : IRequestHandler<QueryStudentDetails, StudentDetailsViewModel>
