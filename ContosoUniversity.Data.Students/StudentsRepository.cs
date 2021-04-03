@@ -1,6 +1,7 @@
 namespace ContosoUniversity.Data.Students
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -35,6 +36,41 @@ namespace ContosoUniversity.Data.Students
         public Task Save(Student entity) => throw new NotImplementedException();
 
         public Task Remove(Guid entityId) => throw new NotImplementedException();
+        public async Task<EnrollmentDateGroup[]> GetEnrollmentDateGroups()
+        {
+            var groups = new List<EnrollmentDateGroup>();
+
+            var conn = _context.Database.GetDbConnection();
+            try
+            {
+                await conn.OpenAsync();
+                await using var command = conn.CreateCommand();
+                command.CommandText =
+                    @"SELECT EnrollmentDate, COUNT(*) AS StudentCount
+                      FROM [std].Student
+                      GROUP BY EnrollmentDate";
+                var reader = await command.ExecuteReaderAsync();
+
+                if (reader.HasRows)
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        groups.Add(
+                            new EnrollmentDateGroup(
+                                reader.GetDateTime(0),
+                                reader.GetInt32(1)));
+                    }
+                }
+
+                await reader.DisposeAsync();
+            }
+            finally
+            {
+                await conn.CloseAsync();
+            }
+
+            return groups.ToArray();
+        }
 
         private Student ToDomainEntity(Models.Student data)
         {
