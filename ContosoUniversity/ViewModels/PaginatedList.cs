@@ -19,7 +19,7 @@
             PageIndex = pageIndex;
             TotalPages = (int) Math.Ceiling(count / (double) pageSize);
 
-            AddRange(items.Select(x => mapper(x)));
+            AddRange(items.Select(mapper));
         }
 
         public int PageIndex { get; }

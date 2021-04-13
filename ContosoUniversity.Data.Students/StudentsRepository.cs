@@ -6,6 +6,7 @@ namespace ContosoUniversity.Data.Students
     using System.Threading.Tasks;
 
     using Domain.Contracts;
+    using Domain.Contracts.Exceptions;
     using Domain.Student;
 
     using Microsoft.EntityFrameworkCore;
@@ -33,9 +34,46 @@ namespace ContosoUniversity.Data.Students
 
         public Task<Student[]> GetAll() => throw new NotImplementedException();
 
-        public Task Save(Student entity) => throw new NotImplementedException();
+        public async Task Save(Student entity)
+        {
+            var student = await _context.Students.FirstOrDefaultAsync(x => x.ExternalId == entity.EntityId);
+            if (student == null)
+            {
+                student = new Models.Student();
 
-        public Task Remove(Guid entityId) => throw new NotImplementedException();
+                UpdateDataModelWithDomain(student, entity);
+
+                await _context.AddAsync(student);
+            }
+            else
+            {
+                UpdateDataModelWithDomain(student, entity);
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException exception)
+            {
+                //Log the error (uncomment ex variable name and write a log.)
+                throw new PersistenceException(
+                    "Unable to save changes. Try again, and if the problem persists, see your system administrator.",
+                    exception);
+            }
+        }
+
+        public async Task Remove(Guid entityId)
+        {
+            var student = await _context.Students.FirstOrDefaultAsync(x => x.ExternalId == entityId);
+            if (student == null)
+                throw new EntityNotFoundException(nameof(student), entityId);
+
+            _context.Students.Remove(student);
+
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<EnrollmentDateGroup[]> GetEnrollmentDateGroups()
         {
             var groups = new List<EnrollmentDateGroup>();
@@ -101,6 +139,14 @@ namespace ContosoUniversity.Data.Students
                 null => Grade.Undefined,
                 _ => throw new ArgumentOutOfRangeException(nameof(data), data, null)
             };
+        }
+
+        private void UpdateDataModelWithDomain(Models.Student model, Student entity)
+        {
+            model.LastName = entity.LastName;
+            model.FirstMidName = entity.FirstName;
+            model.EnrollmentDate = entity.EnrollmentDate;
+            model.ExternalId = entity.EntityId;
         }
     }
 }

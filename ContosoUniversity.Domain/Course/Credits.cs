@@ -11,7 +11,7 @@ namespace ContosoUniversity.Domain.Course
 
         private Credits(int credits)
         {
-            if (credits < MinValue || credits > MaxValue)
+            if (credits is < MinValue or > MaxValue)
                 throw new ArgumentOutOfRangeException(
                     nameof(credits),
                     $"Provided value: {credits}.");

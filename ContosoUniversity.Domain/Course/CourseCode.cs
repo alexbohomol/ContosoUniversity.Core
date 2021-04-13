@@ -11,7 +11,7 @@ namespace ContosoUniversity.Domain.Course
 
         private CourseCode(int code)
         {
-            if (code < MinValue || code > MaxValue)
+            if (code is < MinValue or > MaxValue)
                 throw new ArgumentOutOfRangeException(
                     nameof(code),
                     $"Provided value: {code}.");
