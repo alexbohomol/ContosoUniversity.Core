@@ -14,13 +14,14 @@ namespace ContosoUniversity.Data.Courses
     {
         public CoursesRepository(CoursesContext dbContext) : base(dbContext) { }
 
-        public Task<Course[]> GetByDepartmentId(Guid departmentId)
+        public async Task<Course[]> GetByDepartmentId(Guid departmentId)
         {
-            return DbSet
+            var courses = await DbSet
                 .AsNoTracking()
                 .Where(x => x.DepartmentExternalId == departmentId)
-                .Select(x => ToDomainEntity(x))
                 .ToArrayAsync();
+            
+            return courses.Select(ToDomainEntity).ToArray();
         }
 
         public async Task Remove(Guid[] entityIds)
@@ -42,13 +43,14 @@ namespace ContosoUniversity.Data.Courses
             await DbContext.SaveChangesAsync();
         }
 
-        public Task<Course[]> GetByIds(Guid[] entityIds)
+        public async Task<Course[]> GetByIds(Guid[] entityIds)
         {
-            return DbSet
+            var courses = await DbSet
                 .AsNoTracking()
                 .Where(x => entityIds.Contains(x.ExternalId))
-                .Select(x => ToDomainEntity(x))
                 .ToArrayAsync();
+            
+            return courses.Select(ToDomainEntity).ToArray();
         }
 
         public Task<bool> ExistsCourseCode(int courseCode)
