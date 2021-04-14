@@ -16,8 +16,7 @@ namespace ContosoUniversity.Data.Courses
 
         public Task<Course[]> GetByDepartmentId(Guid departmentId)
         {
-            return DbContext
-                .Set<Models.Course>()
+            return DbSet
                 .AsNoTracking()
                 .Where(x => x.DepartmentExternalId == departmentId)
                 .Select(x => ToDomainEntity(x))
@@ -26,8 +25,7 @@ namespace ContosoUniversity.Data.Courses
 
         public async Task Remove(Guid[] entityIds)
         {
-            var courses = await DbContext
-                .Set<Models.Course>()
+            var courses = await DbSet
                 .Where(x => entityIds.Contains(x.ExternalId))
                 .ToArrayAsync();
 
@@ -39,15 +37,14 @@ namespace ContosoUniversity.Data.Courses
                     notFoundIds
                         .Select(x => new EntityNotFoundException(nameof(courses), x)));
 
-            DbContext.Set<Models.Course>().RemoveRange(courses);
+            DbSet.RemoveRange(courses);
 
             await DbContext.SaveChangesAsync();
         }
 
         public Task<Course[]> GetByIds(Guid[] entityIds)
         {
-            return DbContext
-                .Set<Models.Course>()
+            return DbSet
                 .AsNoTracking()
                 .Where(x => entityIds.Contains(x.ExternalId))
                 .Select(x => ToDomainEntity(x))
@@ -56,8 +53,7 @@ namespace ContosoUniversity.Data.Courses
 
         public Task<bool> ExistsCourseCode(int courseCode)
         {
-            return DbContext
-                .Set<Models.Course>()
+            return DbSet
                 .AsNoTracking()
                 .AnyAsync(x => x.CourseCode == courseCode);
         }

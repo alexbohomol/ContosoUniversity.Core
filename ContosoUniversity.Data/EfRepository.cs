@@ -19,16 +19,17 @@ namespace ContosoUniversity.Data
         private const string ErrMsgDbUpdateException = "Unable to save changes. Try again, and if the problem persists, see your system administrator.";
 
         protected readonly DbContext DbContext;
+        protected readonly DbSet<TDataEntity> DbSet;
 
         protected EfRepository(DbContext dbContext)
         {
             DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            DbSet = DbContext.Set<TDataEntity>();
         }
         
         public async Task<TDomainEntity> GetById(Guid entityId)
         {
-            var dataEntity = await DbContext
-                .Set<TDataEntity>()
+            var dataEntity = await DbSet
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.ExternalId == entityId);
 
@@ -39,8 +40,7 @@ namespace ContosoUniversity.Data
 
         public async Task<TDomainEntity[]> GetAll()
         {
-            var dataEntities = await DbContext
-                .Set<TDataEntity>()
+            var dataEntities = await DbSet
                 .AsNoTracking()
                 .ToArrayAsync();
             
@@ -49,8 +49,7 @@ namespace ContosoUniversity.Data
 
         public async Task Save(TDomainEntity entity)
         {
-            var dataEntity = await DbContext
-                .Set<TDataEntity>()
+            var dataEntity = await DbSet
                 .FirstOrDefaultAsync(x => x.ExternalId == entity.EntityId);
             
             if (dataEntity == null)
@@ -59,7 +58,7 @@ namespace ContosoUniversity.Data
 
                 MapDomainEntityOntoDataEntity(dataEntity, entity);
 
-                await DbContext.AddAsync(dataEntity);
+                DbSet.Add(dataEntity);
             }
             else
             {
@@ -81,13 +80,12 @@ namespace ContosoUniversity.Data
 
         public async Task Remove(Guid entityId)
         {
-            var dataEntity = await DbContext
-                .Set<TDataEntity>()
+            var dataEntity = await DbSet
                 .FirstOrDefaultAsync(x => x.ExternalId == entityId);
             if (dataEntity == null)
                 throw new EntityNotFoundException(nameof(TDataEntity), entityId);
 
-            DbContext.Set<TDataEntity>().Remove(dataEntity);
+            DbSet.Remove(dataEntity);
 
             await DbContext.SaveChangesAsync();
         }
