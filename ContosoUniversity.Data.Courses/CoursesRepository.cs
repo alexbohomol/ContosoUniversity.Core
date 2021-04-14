@@ -16,7 +16,7 @@ namespace ContosoUniversity.Data.Courses
 
         public async Task<Course[]> GetByDepartmentId(Guid departmentId)
         {
-            var courses = await DbSet
+            var courses = await DbQuery
                 .AsNoTracking()
                 .Where(x => x.DepartmentExternalId == departmentId)
                 .ToArrayAsync();
@@ -26,7 +26,7 @@ namespace ContosoUniversity.Data.Courses
 
         public async Task Remove(Guid[] entityIds)
         {
-            var courses = await DbSet
+            var courses = await DbQuery
                 .Where(x => entityIds.Contains(x.ExternalId))
                 .ToArrayAsync();
 
@@ -45,7 +45,7 @@ namespace ContosoUniversity.Data.Courses
 
         public async Task<Course[]> GetByIds(Guid[] entityIds)
         {
-            var courses = await DbSet
+            var courses = await DbQuery
                 .AsNoTracking()
                 .Where(x => entityIds.Contains(x.ExternalId))
                 .ToArrayAsync();
@@ -55,7 +55,7 @@ namespace ContosoUniversity.Data.Courses
 
         public Task<bool> ExistsCourseCode(int courseCode)
         {
-            return DbSet
+            return DbQuery
                 .AsNoTracking()
                 .AnyAsync(x => x.CourseCode == courseCode);
         }

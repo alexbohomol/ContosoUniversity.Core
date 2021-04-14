@@ -12,7 +12,14 @@ namespace ContosoUniversity.Data.Students
 
     public class StudentsRepository : EfRepository<Student, Models.Student>, IStudentsRepository
     {
-        public StudentsRepository(StudentsContext dbContext) : base(dbContext) { }
+        public StudentsRepository(StudentsContext dbContext) 
+            : base(
+                dbContext,
+                defaultIncludes: new []
+                {
+                    nameof(StudentsContext.Enrollments)
+                })
+        { }
 
         public async Task<EnrollmentDateGroup[]> GetEnrollmentDateGroups()
         {

@@ -20,16 +20,28 @@ namespace ContosoUniversity.Data
 
         protected readonly DbContext DbContext;
         protected readonly DbSet<TDataEntity> DbSet;
+        protected readonly IQueryable<TDataEntity> DbQuery;
 
         protected EfRepository(DbContext dbContext)
         {
             DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             DbSet = DbContext.Set<TDataEntity>();
+            DbQuery = DbSet;
+        }
+
+        /// <summary>
+        /// https://gist.github.com/oneillci/3205384
+        /// </summary>
+        protected EfRepository(DbContext dbContext, string[] defaultIncludes) : this(dbContext)
+        {
+            DbQuery = defaultIncludes.Aggregate(
+                DbQuery, 
+                (current, includeProperty) => current.Include(includeProperty));
         }
         
         public async Task<TDomainEntity> GetById(Guid entityId)
         {
-            var dataEntity = await DbSet
+            var dataEntity = await DbQuery
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.ExternalId == entityId);
 
@@ -40,7 +52,7 @@ namespace ContosoUniversity.Data
 
         public async Task<TDomainEntity[]> GetAll()
         {
-            var dataEntities = await DbSet
+            var dataEntities = await DbQuery
                 .AsNoTracking()
                 .ToArrayAsync();
             
@@ -49,7 +61,7 @@ namespace ContosoUniversity.Data
 
         public async Task Save(TDomainEntity entity)
         {
-            var dataEntity = await DbSet
+            var dataEntity = await DbQuery
                 .FirstOrDefaultAsync(x => x.ExternalId == entity.EntityId);
             
             if (dataEntity == null)
@@ -80,7 +92,7 @@ namespace ContosoUniversity.Data
 
         public async Task Remove(Guid entityId)
         {
-            var dataEntity = await DbSet
+            var dataEntity = await DbQuery
                 .FirstOrDefaultAsync(x => x.ExternalId == entityId);
             if (dataEntity == null)
                 throw new EntityNotFoundException(nameof(TDataEntity), entityId);
