@@ -88,7 +88,7 @@ namespace ContosoUniversity.Data.Students
             };
         }
         
-        protected override void MapDomainEntityOntoDataEntity(Models.Student model, Student entity)
+        protected override void MapDomainEntityOntoDataEntity(Student entity, Models.Student model)
         {
             model.LastName = entity.LastName;
             model.FirstMidName = entity.FirstName;

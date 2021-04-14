@@ -77,7 +77,7 @@ namespace ContosoUniversity.Data.Courses
                 dataModel.ExternalId);
         }
 
-        protected override void MapDomainEntityOntoDataEntity(Models.Course model, Course entity)
+        protected override void MapDomainEntityOntoDataEntity(Course entity, Models.Course model)
         {
             model.CourseCode = entity.Code;
             model.Title = entity.Title;

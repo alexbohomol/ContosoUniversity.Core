@@ -12,9 +12,10 @@ namespace ContosoUniversity.Data
 
     using Models;
 
-    public abstract class EfRepository<TDomainEntity, TDataEntity> : IRepository<TDomainEntity> 
-        where TDomainEntity : class, IAggregateRoot
-        where TDataEntity : class, IExternalIdentifier, new()
+    public abstract class EfRepository<TDomainEntity, TDataEntity> 
+        : IRepository<TDomainEntity> 
+            where TDomainEntity : class, IAggregateRoot
+            where TDataEntity : class, IExternalIdentifier, new()
     {
         private const string ErrMsgDbUpdateException = "Unable to save changes. Try again, and if the problem persists, see your system administrator.";
 
@@ -36,7 +37,7 @@ namespace ContosoUniversity.Data
         {
             DbQuery = defaultIncludes.Aggregate(
                 DbQuery, 
-                (current, includeProperty) => current.Include(includeProperty));
+                (dbQuery, relationProperty) => dbQuery.Include(relationProperty));
         }
         
         public async Task<TDomainEntity> GetById(Guid entityId)
@@ -68,13 +69,13 @@ namespace ContosoUniversity.Data
             {
                 dataEntity = new TDataEntity();
 
-                MapDomainEntityOntoDataEntity(dataEntity, entity);
+                MapDomainEntityOntoDataEntity(entity, dataEntity);
 
                 DbSet.Add(dataEntity);
             }
             else
             {
-                MapDomainEntityOntoDataEntity(dataEntity, entity);
+                MapDomainEntityOntoDataEntity(entity, dataEntity);
             }
 
             try
@@ -106,7 +107,7 @@ namespace ContosoUniversity.Data
             TDataEntity dataModel);
 
         protected abstract void MapDomainEntityOntoDataEntity(
-            TDataEntity dataEntity, 
-            TDomainEntity domainEntity);
+            TDomainEntity domainEntity, 
+            TDataEntity dataEntity);
     }
 }
