@@ -6,7 +6,6 @@
 
     using Data.Departments;
     using Data.Departments.Models;
-    using Data.Students;
 
     using Domain.Contracts;
 
@@ -21,16 +20,16 @@
         private const string ErrMsgConcurrentUpdate = "The record you attempted to edit was modified by another user after you got the original value. The edit operation was canceled and the current values in the database have been displayed. If you still want to edit this record, click the Save button again. Otherwise click the Back to List hyperlink.";
         private readonly ICoursesRepository _coursesRepository;
         private readonly DepartmentsContext _departmentsContext;
-        private readonly StudentsContext _studentsContext;
+        private readonly IStudentsRepository _studentsRepository;
 
         public DepartmentsController(
             DepartmentsContext departmentsContext,
             ICoursesRepository coursesRepository,
-            StudentsContext studentsContext)
+            IStudentsRepository studentsRepository)
         {
             _departmentsContext = departmentsContext;
             _coursesRepository = coursesRepository;
-            _studentsContext = studentsContext;
+            _studentsRepository = studentsRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -274,12 +273,16 @@
                     _departmentsContext.CourseAssignments.RemoveRange(relatedAssignments);
 
                     /*
-                     * remove related enrollments
+                     * remove related enrollments (withdraw related students)
                      */
-                    var relatedEnrollments = await _studentsContext.Enrollments
-                        .Where(x => relatedCoursesIds.Contains(x.CourseExternalId))
-                        .ToArrayAsync();
-                    _studentsContext.Enrollments.RemoveRange(relatedEnrollments);
+                    var students = await _studentsRepository.GetStudentsEnrolledForCourses(relatedCoursesIds);
+                    foreach (var student in students)
+                    {
+                        var studentCourseIds = student.Enrollments.Select(x => x.CourseId);
+                        var withdrawIds = relatedCoursesIds.Intersect(studentCourseIds);
+                        student.WithdrawCourses(withdrawIds.ToArray());
+                        await _studentsRepository.Save(student);
+                    }
 
                     /*
                      * remove related courses
@@ -291,7 +294,6 @@
                      */
                     _departmentsContext.Departments.Remove(department);
 
-                    await _studentsContext.SaveChangesAsync();
                     await _departmentsContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException /* ex */)

@@ -25,10 +25,8 @@ namespace ContosoUniversity.Services.Handlers.Students
             if (student == null)
                 throw new EntityNotFoundException(nameof(student), request.ExternalId);
 
-            student.Update(
-                request.LastName,
-                request.FirstName,
-                request.EnrollmentDate);
+            student.UpdatePersonInfo(request.LastName, request.FirstName);
+            student.Enroll(request.EnrollmentDate);
 
             await _studentsRepository.Save(student);
         }

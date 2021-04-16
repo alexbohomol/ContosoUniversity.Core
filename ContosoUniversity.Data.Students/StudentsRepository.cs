@@ -57,35 +57,24 @@ namespace ContosoUniversity.Data.Students
             return groups.ToArray();
         }
 
+        public async Task<Student[]> GetStudentsEnrolledForCourses(Guid[] courseIds)
+        {
+            var students = await DbQuery
+                .AsNoTracking()
+                .Where(x => x.Enrollments.Select(e => e.CourseExternalId).Any(id => courseIds.Contains(id)))
+                .ToArrayAsync();
+            
+            return students.Select(ToDomainEntity).ToArray();
+        }
+
         protected override Student ToDomainEntity(Models.Student data)
         {
             return new(
                 data.LastName,
                 data.FirstMidName,
                 data.EnrollmentDate,
-                data.Enrollments.Select(ToDomainEntity).ToArray(),
+                data.Enrollments.Select(x => x.ToDomainEntity()).ToArray(),
                 data.ExternalId);
-        }
-
-        private Enrollment ToDomainEntity(Models.Enrollment data)
-        {
-            return new(
-                data.CourseExternalId,
-                ToDomainEntity(data.Grade));
-        }
-
-        private Grade ToDomainEntity(Models.Grade? data)
-        {
-            return data switch
-            {
-                Models.Grade.A => Grade.A,
-                Models.Grade.B => Grade.B,
-                Models.Grade.C => Grade.C,
-                Models.Grade.D => Grade.D,
-                Models.Grade.F => Grade.F,
-                null => Grade.Undefined,
-                _ => throw new ArgumentOutOfRangeException(nameof(data), data, null)
-            };
         }
         
         protected override void MapDomainEntityOntoDataEntity(Student entity, Models.Student model)
@@ -94,6 +83,43 @@ namespace ContosoUniversity.Data.Students
             model.FirstMidName = entity.FirstName;
             model.EnrollmentDate = entity.EnrollmentDate;
             model.ExternalId = entity.EntityId;
+
+            Guid[] current = model.Enrollments.Select(x => x.CourseExternalId).ToArray();
+            Guid[] domain = entity.Enrollments.Select(x => x.CourseId).ToArray();
+
+            /*
+             * TODO: next feature requirements
+             * - what if grade was changed for the existing course?
+             */
+            if (current.SequenceEqual(domain)) return;
+
+            var toBeDeleted = current.Except(domain).ToArray();
+            if (toBeDeleted.Any())
+            {
+                foreach (Guid courseId in toBeDeleted)
+                {
+                    var enrollment = model.Enrollments.Single(x => x.CourseExternalId == courseId);
+                    model.Enrollments.Remove(enrollment);
+                }
+            }
+
+            /*
+             * TODO: next feature requirements
+             * - enrolling students for courses
+             */
+            var toBeAdded = domain.Except(current).ToArray();
+            if (toBeAdded.Any())
+            {
+                foreach (Guid courseId in toBeAdded)
+                {
+                    var enrollment = entity.Enrollments.Single(x => x.CourseId == courseId);
+                    model.Enrollments.Add(new Models.Enrollment
+                    {
+                        CourseExternalId = enrollment.CourseId,
+                        Grade = enrollment.Grade.ToDataModel()
+                    });
+                }
+            }
         }
     }
 }
