@@ -1,38 +1,37 @@
 namespace ContosoUniversity.Services.Handlers.Students
 {
+    using System;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Data.Students;
+    using Domain.Contracts;
 
     using Events;
 
     using MediatR;
 
-    using Microsoft.EntityFrameworkCore;
-
     public class CourseDeletedHandler : INotificationHandler<CourseDeleted>
     {
-        private readonly StudentsContext _studentsContext;
+        private readonly IStudentsRepository _studentsRepository;
 
-        public CourseDeletedHandler(StudentsContext studentsContext)
+        public CourseDeletedHandler(IStudentsRepository studentsRepository)
         {
-            _studentsContext = studentsContext;
+            _studentsRepository = studentsRepository;
         }
 
         public async Task Handle(CourseDeleted notification, CancellationToken cancellationToken)
         {
-            var enrollments = await _studentsContext
-                .Enrollments
-                .Where(x => x.CourseExternalId == notification.Id)
-                .ToArrayAsync(cancellationToken: cancellationToken);
-
-            if (enrollments.Any())
+            Guid[] courseIds = { notification.Id };
+            
+            var enrolledStudents = await _studentsRepository.GetStudentsEnrolledForCourses(courseIds);
+            if (enrolledStudents.Any())
             {
-                _studentsContext.Enrollments.RemoveRange(enrollments);
-
-                await _studentsContext.SaveChangesAsync(cancellationToken);
+                foreach (var student in enrolledStudents)
+                {
+                    student.WithdrawCourses(courseIds);
+                    await _studentsRepository.Save(student);
+                }
             }
         }
     }
