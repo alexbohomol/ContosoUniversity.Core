@@ -8,6 +8,6 @@ namespace ContosoUniversity.ViewModels.Instructors
     {
         public IEnumerable<InstructorListItemViewModel> Instructors { get; set; }
         public IEnumerable<CourseListItemViewModel> Courses { get; set; }
-        public IEnumerable<Enrollment> Enrollments { get; set; }
+        public IEnumerable<EnrolledStudentViewModel> Students { get; set; }
     }
 }

@@ -7,7 +7,6 @@
 
     using Data.Departments;
     using Data.Departments.Models;
-    using Data.Students;
 
     using Domain.Contracts;
 
@@ -16,22 +15,23 @@
 
     using Services;
 
+    using ViewModels;
     using ViewModels.Instructors;
 
     public class InstructorsController : Controller
     {
         private readonly ICoursesRepository _coursesRepository;
         private readonly DepartmentsContext _departmentsContext;
-        private readonly StudentsContext _studentsContext;
+        private readonly IStudentsRepository _studentsRepository;
 
         public InstructorsController(
             DepartmentsContext departmentsContext,
             ICoursesRepository coursesRepository,
-            StudentsContext studentsContext)
+            IStudentsRepository studentsRepository)
         {
             _departmentsContext = departmentsContext;
             _coursesRepository = coursesRepository;
-            _studentsContext = studentsContext;
+            _studentsRepository = studentsRepository;
         }
 
         public async Task<IActionResult> Index(Guid? id, Guid? courseExternalId)
@@ -96,13 +96,23 @@
 
             if (courseExternalId is not null)
             {
-                var enrollments = await _studentsContext.Enrollments
-                    .Include(x => x.Student)
-                    .Where(x => x.CourseExternalId == courseExternalId)
-                    .AsNoTracking()
-                    .ToListAsync();
-                CrossContextBoundariesValidator.EnsureEnrollmentsReferenceTheExistingCourses(enrollments, courses);
-                viewModel.Enrollments = enrollments;
+                var students = await _studentsRepository.GetStudentsEnrolledForCourses(new[]
+                {
+                    courseExternalId.Value
+                });
+                
+                CrossContextBoundariesValidator.EnsureEnrollmentsReferenceTheExistingCourses(
+                    students.SelectMany(x => x.Enrollments).Distinct(), 
+                    courses);
+                
+                viewModel.Students = students.Select(x => new EnrolledStudentViewModel
+                {
+                    StudentFullName = $"{x.FirstName}, {x.LastName}",
+                    EnrollmentGrade = x.Enrollments
+                                       .Single(e => e.CourseId == courseExternalId.Value)
+                                       .Grade
+                                       .ToDisplayString()
+                });
             }
 
             return View(viewModel);

@@ -5,9 +5,9 @@ namespace ContosoUniversity.Services
     using System.Linq;
 
     using Data.Departments.Models;
-    using Data.Students.Models;
 
     using Domain.Course;
+    using Domain.Student;
 
     /// <summary>
     ///     TODO: these checks should be implemented in domain/service layers later
@@ -59,7 +59,7 @@ namespace ContosoUniversity.Services
             IEnumerable<Enrollment> enrollments,
             IEnumerable<Course> courses)
         {
-            var referencedCourseIds = enrollments.Select(x => x.CourseExternalId).ToHashSet();
+            var referencedCourseIds = enrollments.Select(x => x.CourseId).ToHashSet();
             var existingCourseIds = courses.Select(x => x.EntityId).ToHashSet();
             var notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
 
