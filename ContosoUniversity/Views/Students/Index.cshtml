@@ -36,7 +36,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model.Page)
+    @foreach (var item in Model.Items)
     {
         <tr>
             <td>
@@ -59,20 +59,20 @@
 </table>
 
 @{
-    var prevDisabled = !Model.Page.HasPreviousPage ? "disabled" : string.Empty;
-    var nextDisabled = !Model.Page.HasNextPage ? "disabled" : string.Empty;
+    var prevDisabled = !Model.PageInfo.HasPreviousPage ? "disabled" : string.Empty;
+    var nextDisabled = !Model.PageInfo.HasNextPage ? "disabled" : string.Empty;
 }
 
 <a asp-action="Index"
    asp-route-sortOrder="@Model.CurrentSort"
-   asp-route-pageNumber="@(Model.Page.PageIndex - 1)"
+   asp-route-pageNumber="@(Model.PageInfo.PageIndex - 1)"
    asp-route-currentFilter="@Model.CurrentFilter"
    class="btn btn-secondary @prevDisabled">
     Previous
 </a>
 <a asp-action="Index"
    asp-route-sortOrder="@Model.CurrentSort"
-   asp-route-pageNumber="@(Model.Page.PageIndex + 1)"
+   asp-route-pageNumber="@(Model.PageInfo.PageIndex + 1)"
    asp-route-currentFilter="@Model.CurrentFilter"
    class="btn btn-secondary @nextDisabled">
     Next

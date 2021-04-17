@@ -6,19 +6,17 @@ namespace ContosoUniversity.Data.Students
     using System.Threading.Tasks;
 
     using Domain.Contracts;
+    using Domain.Contracts.Paging;
     using Domain.Student;
 
     using Microsoft.EntityFrameworkCore;
 
-    public class StudentsRepository : EfRepository<Student, Models.Student>, IStudentsRepository
+    public sealed class StudentsRepository : EfRepository<Student, Models.Student>, IStudentsRepository
     {
         public StudentsRepository(StudentsContext dbContext) 
             : base(
                 dbContext,
-                defaultIncludes: new []
-                {
-                    nameof(StudentsContext.Enrollments)
-                })
+                defaultIncludes: new [] { nameof(StudentsContext.Enrollments) })
         { }
 
         public async Task<EnrollmentDateGroup[]> GetEnrollmentDateGroups()
@@ -65,6 +63,50 @@ namespace ContosoUniversity.Data.Students
                 .ToArrayAsync();
             
             return students.Select(ToDomainEntity).ToArray();
+        }
+
+        public async Task<PagedResult<Student>> Search(
+            SearchRequest searchRequest, 
+            OrderRequest orderRequest, 
+            PageRequest pageRequest)
+        {
+            /*
+             * TODO: here we don't need default includes in DbQuery
+             */
+            IQueryable<Models.Student> searchQuery = DbQuery;
+            searchQuery = ApplySearch(searchQuery, searchRequest);
+            searchQuery = ApplyOrder(searchQuery, orderRequest);
+            
+            (Models.Student[] students, PageInfo pageInfo) = await searchQuery
+                .AsNoTracking()
+                .ToPageAsync(pageRequest);
+            
+            /*
+             * TODO: here we don't need default aggregated .ToDomainEntity()
+             */
+            return new PagedResult<Student>(
+                students.Select(ToDomainEntity).ToArray(),
+                pageInfo);
+        }
+
+        private IQueryable<Models.Student> ApplySearch(IQueryable<Models.Student> source, SearchRequest request)
+        {
+            return string.IsNullOrEmpty(request.SearchString)
+                ? source
+                : source.Where(
+                    s => s.LastName.Contains(request.SearchString)
+                         || s.FirstMidName.Contains(request.SearchString));
+        }
+
+        private IQueryable<Models.Student> ApplyOrder(IQueryable<Models.Student> source, OrderRequest request)
+        {
+            return request.SortOrder switch
+            {
+                "name_desc" => source.OrderByDescending(s => s.LastName),
+                "Date" => source.OrderBy(s => s.EnrollmentDate),
+                "date_desc" => source.OrderByDescending(s => s.EnrollmentDate),
+                _ => source.OrderBy(s => s.LastName)
+            };
         }
 
         protected override Student ToDomainEntity(Models.Student data)

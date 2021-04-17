@@ -17,7 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ContosoUniversity.Data.Departments\ContosoUniversity.Data.Departments.csproj" />
     <ProjectReference Include="..\ContosoUniversity.Data.Seed\ContosoUniversity.Data.Seed.csproj" />
-    <ProjectReference Include="..\ContosoUniversity.Data.Students\ContosoUniversity.Data.Students.csproj" />
     <ProjectReference Include="..\ContosoUniversity.Domain.Contracts\ContosoUniversity.Domain.Contracts.csproj" />
   </ItemGroup>
   <PropertyGroup>
