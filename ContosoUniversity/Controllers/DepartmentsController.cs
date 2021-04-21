@@ -278,8 +278,7 @@
                     var students = await _studentsRepository.GetStudentsEnrolledForCourses(relatedCoursesIds);
                     foreach (var student in students)
                     {
-                        var studentCourseIds = student.Enrollments.Select(x => x.CourseId);
-                        var withdrawIds = relatedCoursesIds.Intersect(studentCourseIds);
+                        var withdrawIds = relatedCoursesIds.Intersect(student.Enrollments.CourseIds);
                         student.WithdrawCourses(withdrawIds.ToArray());
                         await _studentsRepository.Save(student);
                     }

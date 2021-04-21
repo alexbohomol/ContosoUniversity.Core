@@ -33,7 +33,7 @@ namespace ContosoUniversity.Services.Handlers.Students
             if (student == null)
                 throw new EntityNotFoundException(nameof(student), request.Id);
 
-            var coursesIds = student.Enrollments.Select(x => x.CourseId).ToArray();
+            var coursesIds = student.Enrollments.CourseIds.ToArray();
 
             var courseTitles = (await _coursesRepository.GetByIds(coursesIds))
                 .ToDictionary(x => x.EntityId, x => x.Title);

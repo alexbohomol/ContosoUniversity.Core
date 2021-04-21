@@ -1,31 +1,29 @@
 namespace ContosoUniversity.Domain.Student
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
 
     public class Student : IAggregateRoot
     {
-        private readonly List<Enrollment> _enrollments;
+        private readonly EnrollmentsCollection _enrollments;
 
         public Student(
             string lastName,
             string firstName,
             DateTime enrollmentDate,
-            Enrollment[] enrollments,
+            EnrollmentsCollection enrollments,
             Guid entityId)
         {
             LastName = lastName;
             FirstName = firstName;
             EnrollmentDate = enrollmentDate;
-            _enrollments = enrollments.ToList();
+            _enrollments = enrollments;
             EntityId = entityId;
         }
 
         public string LastName { get; private set; }
         public string FirstName { get; private set; }
         public DateTime EnrollmentDate { get; private set; }
-        public List<Enrollment> Enrollments => _enrollments;
+        public EnrollmentsCollection Enrollments => _enrollments;
         public Guid EntityId { get; }
 
         public void UpdatePersonInfo(string lastName, string firstName)
@@ -47,19 +45,12 @@ namespace ContosoUniversity.Domain.Student
              * - updated grade for the existing enrollment?
              */
             
-            _enrollments.AddRange(enrollments);
+            _enrollments.AddEnrollments(enrollments);
         }
 
         public void WithdrawCourses(Guid[] courseIds)
         {
-            var notEnrolledIds = courseIds.Except(_enrollments.Select(x => x.CourseId)).ToArray();
-            if (notEnrolledIds.Any())
-            {
-                var ids = string.Join(", ", notEnrolledIds);
-                throw new Exception($"Request contains ids of not enrolled courses. Provided ids: {ids}.");
-            }
-            
-            _enrollments.RemoveAll(x => courseIds.Contains(x.CourseId));
+            _enrollments.RemoveEnrollments(courseIds);
         }
     }
 }

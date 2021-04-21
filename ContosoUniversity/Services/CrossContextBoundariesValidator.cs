@@ -6,6 +6,7 @@ namespace ContosoUniversity.Services
 
     using Data.Departments.Models;
 
+    using Domain;
     using Domain.Course;
     using Domain.Student;
 
@@ -28,10 +29,8 @@ namespace ContosoUniversity.Services
                 .ToArray();
 
             if (notFoundDepartments.Any())
-            {
-                var notFoundList = string.Join(", ", notFoundDepartments);
-                throw new Exception($"Unbound contexts inconsistency. Departments not found: {notFoundList}.");
-            }
+                throw new Exception(
+                    $"Unbound contexts inconsistency. Departments not found: {notFoundDepartments.ToDisplayString()}.");
         }
 
         /// <summary>
@@ -46,10 +45,8 @@ namespace ContosoUniversity.Services
             var notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
 
             if (notFoundCourses.Any())
-            {
-                var notFoundList = string.Join(", ", notFoundCourses);
-                throw new Exception($"Unbound contexts inconsistency. Course not found: {notFoundList}.");
-            }
+                throw new Exception(
+                    $"Unbound contexts inconsistency. Course not found: {notFoundCourses.ToDisplayString()}.");
         }
 
         /// <summary>
@@ -64,10 +61,8 @@ namespace ContosoUniversity.Services
             var notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
 
             if (notFoundCourses.Any())
-            {
-                var notFoundList = string.Join(", ", notFoundCourses);
-                throw new Exception($"Unbound contexts inconsistency. Course not found: {notFoundList}.");
-            }
+                throw new Exception(
+                    $"Unbound contexts inconsistency. Course not found: {notFoundCourses.ToDisplayString()}.");
         }
     }
 }

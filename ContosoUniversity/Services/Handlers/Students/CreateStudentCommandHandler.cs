@@ -27,7 +27,7 @@ namespace ContosoUniversity.Services.Handlers.Students
                     request.LastName,
                     request.FirstName,
                     request.EnrollmentDate,
-                    null,
+                    EnrollmentsCollection.Empty,
                     Guid.NewGuid()));
         }
     }

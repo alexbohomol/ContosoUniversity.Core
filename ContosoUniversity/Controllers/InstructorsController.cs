@@ -9,6 +9,7 @@
     using Data.Departments.Models;
 
     using Domain.Contracts;
+    using Domain.Student;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
@@ -107,11 +108,8 @@
                 
                 viewModel.Students = students.Select(x => new EnrolledStudentViewModel
                 {
-                    StudentFullName = $"{x.FirstName}, {x.LastName}",
-                    EnrollmentGrade = x.Enrollments
-                                       .Single(e => e.CourseId == courseExternalId.Value)
-                                       .Grade
-                                       .ToDisplayString()
+                    StudentFullName = x.FullName(),
+                    EnrollmentGrade = x.Enrollments[courseExternalId.Value].Grade.ToDisplayString()
                 });
             }
 

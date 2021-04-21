@@ -115,7 +115,7 @@ namespace ContosoUniversity.Data.Students
                 data.LastName,
                 data.FirstMidName,
                 data.EnrollmentDate,
-                data.Enrollments.Select(x => x.ToDomainEntity()).ToArray(),
+                EnrollmentsCollection.From(data.Enrollments.Select(x => x.ToDomainEntity())), 
                 data.ExternalId);
         }
         
@@ -127,7 +127,7 @@ namespace ContosoUniversity.Data.Students
             model.ExternalId = entity.EntityId;
 
             Guid[] current = model.Enrollments.Select(x => x.CourseExternalId).ToArray();
-            Guid[] domain = entity.Enrollments.Select(x => x.CourseId).ToArray();
+            Guid[] domain = entity.Enrollments.CourseIds.ToArray();
 
             /*
              * TODO: next feature requirements
@@ -154,11 +154,10 @@ namespace ContosoUniversity.Data.Students
             {
                 foreach (Guid courseId in toBeAdded)
                 {
-                    var enrollment = entity.Enrollments.Single(x => x.CourseId == courseId);
                     model.Enrollments.Add(new Models.Enrollment
                     {
-                        CourseExternalId = enrollment.CourseId,
-                        Grade = enrollment.Grade.ToDataModel()
+                        CourseExternalId = courseId,
+                        Grade = entity.Enrollments[courseId].Grade.ToDataModel()
                     });
                 }
             }
