@@ -39,7 +39,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
                 .AsNoTracking()
                 .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
 
-            CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames);
+            CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);
 
             return courses.Select(x => new CourseListItemViewModel
             {

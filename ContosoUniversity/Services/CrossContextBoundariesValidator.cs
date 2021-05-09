@@ -20,13 +20,10 @@ namespace ContosoUniversity.Services
         /// </summary>
         public static void EnsureCoursesReferenceTheExistingDepartments(
             IEnumerable<Course> courses,
-            Dictionary<Guid, string> departmentNames)
+            IEnumerable<Guid> existingDepartmentIds)
         {
-            var notFoundDepartments = courses
-                .Select(x => x.DepartmentId)
-                .Distinct()
-                .Where(x => !departmentNames.ContainsKey(x))
-                .ToArray();
+            var referencedDepartmentIds = courses.Select(x => x.DepartmentId).ToHashSet();
+            var notFoundDepartments = referencedDepartmentIds.Except(existingDepartmentIds).ToArray();
 
             if (notFoundDepartments.Any())
                 throw new Exception(

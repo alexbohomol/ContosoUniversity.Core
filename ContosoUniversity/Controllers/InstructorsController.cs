@@ -80,7 +80,7 @@
                     .Where(x => courses.Select(_ => _.DepartmentId).Contains(x.ExternalId))
                     .AsNoTracking()
                     .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
-                CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames);
+                CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);
                 viewModel.Courses = courses
                     .Where(x => instructorCourseIds.Contains(x.EntityId))
                     .Select(x => new CourseListItemViewModel

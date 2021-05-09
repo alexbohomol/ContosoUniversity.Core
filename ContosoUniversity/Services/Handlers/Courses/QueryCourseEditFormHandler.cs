@@ -40,8 +40,8 @@ namespace ContosoUniversity.Services.Handlers.Courses
             Dictionary<Guid,string> departments = await _departmentsContext.GetDepartmentsNames();
 
             CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(
-                new[] { course },
-                departments);
+                new [] { course }, 
+                departments.Keys);
 
             return new EditCourseForm(
                 new EditCourseCommand(course),
