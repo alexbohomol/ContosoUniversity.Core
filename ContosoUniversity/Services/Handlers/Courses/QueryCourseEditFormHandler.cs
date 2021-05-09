@@ -1,5 +1,7 @@
 namespace ContosoUniversity.Services.Handlers.Courses
 {
+    using System;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -35,14 +37,16 @@ namespace ContosoUniversity.Services.Handlers.Courses
             if (course == null)
                 throw new EntityNotFoundException(nameof(course), request.Id);
 
-            /*
-             * TODO: missing context boundary check when department is null
-             */
+            Dictionary<Guid,string> departments = await _departmentsContext.GetDepartmentsNames();
+
+            CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(
+                new[] { course },
+                departments);
 
             return new EditCourseForm(
                 new EditCourseCommand(course),
                 course.Code,
-                await _departmentsContext.GetDepartmentsNames());
+                departments);
         }
     }
 }

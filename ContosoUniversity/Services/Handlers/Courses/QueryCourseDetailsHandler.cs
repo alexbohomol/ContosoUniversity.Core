@@ -41,10 +41,6 @@ namespace ContosoUniversity.Services.Handlers.Courses
             if (department == null)
                 throw new EntityNotFoundException(nameof(department), course.DepartmentId);
             
-            /*
-             * TODO: missing context boundary check when department is null
-             */
-
             return new CourseDetailsViewModel
             {
                 CourseCode = course.Code,
