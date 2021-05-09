@@ -50,6 +50,9 @@ namespace ContosoUniversity.Data.Seed
             }
             catch (Exception ex)
             {
+                /*
+                 * TODO: DI resolution failing
+                 */
                 var logger = services.GetRequiredService<ILogger>();
                 logger.LogError(ex, "An error occurred while seeding the database");
             }
