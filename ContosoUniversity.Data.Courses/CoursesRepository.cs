@@ -1,6 +1,7 @@
 namespace ContosoUniversity.Data.Courses
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -30,13 +31,9 @@ namespace ContosoUniversity.Data.Courses
                 .Where(x => entityIds.Contains(x.ExternalId))
                 .ToArrayAsync();
 
-            var notFoundIds = entityIds
-                .Except(courses.Select(c => c.ExternalId))
-                .ToArray();
-            if (notFoundIds.Any())
-                throw new AggregateException(
-                    notFoundIds
-                        .Select(x => new EntityNotFoundException(nameof(courses), x)));
+            courses.Select(x => x.ExternalId).EnsureCollectionsEqual(
+                entityIds,
+                id => new EntityNotFoundException(nameof(courses), id));
 
             DbSet.RemoveRange(courses);
 
@@ -49,7 +46,11 @@ namespace ContosoUniversity.Data.Courses
                 .AsNoTracking()
                 .Where(x => entityIds.Contains(x.ExternalId))
                 .ToArrayAsync();
-            
+
+            courses.Select(x => x.ExternalId).EnsureCollectionsEqual(
+                entityIds,
+                id => new EntityNotFoundException(nameof(courses), id));
+
             return courses.Select(ToDomainEntity).ToArray();
         }
 
@@ -84,6 +85,21 @@ namespace ContosoUniversity.Data.Courses
             model.Credits = entity.Credits;
             model.DepartmentExternalId = entity.DepartmentId;
             model.ExternalId = entity.EntityId;
+        }
+    }
+
+    static class EnsureExtensions
+    {
+        public static void EnsureCollectionsEqual(
+            this IEnumerable<Guid> source,
+            IEnumerable<Guid> target,
+            Func<Guid, Exception> exceptionFactory)
+        {
+            if (source.SequenceEqual(target)) return;
+
+            throw new AggregateException(source
+                .Except(target)
+                .Select(exceptionFactory));
         }
     }
 }
