@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ContosoUniversity.Domain\ContosoUniversity.Domain.csproj" />
+        <ProjectReference Include="..\ContosoUniversity.Domain\ContosoUniversity.Domain.csproj"/>
     </ItemGroup>
 
 </Project>
