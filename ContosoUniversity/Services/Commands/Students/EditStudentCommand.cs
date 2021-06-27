@@ -1,15 +1,16 @@
-namespace ContosoUniversity.ViewModels.Students
+namespace ContosoUniversity.Services.Commands.Students
 {
     using System;
     using System.ComponentModel.DataAnnotations;
 
-    public class StudentCreateForm
+    using MediatR;
+
+    public class EditStudentCommand : IRequest
     {
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Enrollment Date")]
         public DateTime EnrollmentDate { get; set; }
-
 
         [Required]
         [StringLength(50)]
@@ -20,5 +21,7 @@ namespace ContosoUniversity.ViewModels.Students
         [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
+
+        public Guid ExternalId { get; set; }
     }
 }

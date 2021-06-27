@@ -4,9 +4,11 @@ namespace ContosoUniversity.Services
     using System.Collections.Generic;
     using System.Linq;
 
-    using Data.Courses.Models;
     using Data.Departments.Models;
-    using Data.Students.Models;
+
+    using Domain;
+    using Domain.Course;
+    using Domain.Student;
 
     /// <summary>
     ///     TODO: these checks should be implemented in domain/service layers later
@@ -18,19 +20,14 @@ namespace ContosoUniversity.Services
         /// </summary>
         public static void EnsureCoursesReferenceTheExistingDepartments(
             IEnumerable<Course> courses,
-            Dictionary<Guid, string> departmentNames)
+            IEnumerable<Guid> existingDepartmentIds)
         {
-            var notFoundDepartments = courses
-                .Select(x => x.DepartmentExternalId)
-                .Distinct()
-                .Where(x => !departmentNames.ContainsKey(x))
-                .ToArray();
+            var referencedDepartmentIds = courses.Select(x => x.DepartmentId).ToHashSet();
+            var notFoundDepartments = referencedDepartmentIds.Except(existingDepartmentIds).ToArray();
 
             if (notFoundDepartments.Any())
-            {
-                var notFoundList = string.Join(", ", notFoundDepartments);
-                throw new Exception($"Unbound contexts inconsistency. Departments not found: {notFoundList}.");
-            }
+                throw new Exception(
+                    $"Unbound contexts inconsistency. Departments not found: {notFoundDepartments.ToDisplayString()}.");
         }
 
         /// <summary>
@@ -41,14 +38,12 @@ namespace ContosoUniversity.Services
             IEnumerable<Course> courses)
         {
             var referencedCourseIds = instructors.SelectMany(x => x.CourseAssignments.Select(ca => ca.CourseExternalId)).ToHashSet();
-            var existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();
+            var existingCourseIds = courses.Select(x => x.EntityId).ToHashSet();
             var notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
 
             if (notFoundCourses.Any())
-            {
-                var notFoundList = string.Join(", ", notFoundCourses);
-                throw new Exception($"Unbound contexts inconsistency. Course not found: {notFoundList}.");
-            }
+                throw new Exception(
+                    $"Unbound contexts inconsistency. Course not found: {notFoundCourses.ToDisplayString()}.");
         }
 
         /// <summary>
@@ -58,15 +53,13 @@ namespace ContosoUniversity.Services
             IEnumerable<Enrollment> enrollments,
             IEnumerable<Course> courses)
         {
-            var referencedCourseIds = enrollments.Select(x => x.CourseExternalId).ToHashSet();
-            var existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();
+            var referencedCourseIds = enrollments.Select(x => x.CourseId).ToHashSet();
+            var existingCourseIds = courses.Select(x => x.EntityId).ToHashSet();
             var notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
 
             if (notFoundCourses.Any())
-            {
-                var notFoundList = string.Join(", ", notFoundCourses);
-                throw new Exception($"Unbound contexts inconsistency. Course not found: {notFoundList}.");
-            }
+                throw new Exception(
+                    $"Unbound contexts inconsistency. Course not found: {notFoundCourses.ToDisplayString()}.");
         }
     }
 }

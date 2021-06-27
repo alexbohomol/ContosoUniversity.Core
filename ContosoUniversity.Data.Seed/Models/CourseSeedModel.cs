@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Seed.Models
+namespace ContosoUniversity.Data.Seed.Models
 {
     internal class CourseSeedModel
     {

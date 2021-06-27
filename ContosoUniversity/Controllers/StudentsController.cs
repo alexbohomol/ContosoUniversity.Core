@@ -1,90 +1,29 @@
 ﻿namespace ContosoUniversity.Controllers
 {
     using System;
-    using System.Linq;
     using System.Threading.Tasks;
 
-    using Data.Courses;
-    using Data.Students;
-    using Data.Students.Models;
+    using MediatR;
 
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
 
-    using ViewModels;
+    using Services.Commands.Students;
+    using Services.Queries.Students;
+
     using ViewModels.Students;
 
     public class StudentsController : Controller
     {
-        private readonly CoursesContext _coursesContext;
-        private readonly StudentsContext _studentsContext;
+        private readonly IMediator _mediator;
 
-        public StudentsController(
-            CoursesContext coursesContext,
-            StudentsContext studentsContext)
+        public StudentsController(IMediator mediator)
         {
-            _coursesContext = coursesContext;
-            _studentsContext = studentsContext;
+            _mediator = mediator;
         }
 
-        public async Task<IActionResult> Index(
-            string sortOrder,
-            string currentFilter,
-            string searchString,
-            int? pageNumber)
+        public async Task<IActionResult> Index(QueryStudentsIndex request)
         {
-            if (searchString != null)
-            {
-                pageNumber = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
-
-            var students = from s in _studentsContext.Students select s;
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                students = students.Where(s => s.LastName.Contains(searchString)
-                                               || s.FirstMidName.Contains(searchString));
-            }
-
-            switch (sortOrder)
-            {
-                case "name_desc":
-                    students = students.OrderByDescending(s => s.LastName);
-                    break;
-                case "Date":
-                    students = students.OrderBy(s => s.EnrollmentDate);
-                    break;
-                case "date_desc":
-                    students = students.OrderByDescending(s => s.EnrollmentDate);
-                    break;
-                default:
-                    students = students.OrderBy(s => s.LastName);
-                    break;
-            }
-
-            var page = await PaginatedList<Student, StudentListItemViewModel>.CreateAsync(
-                students.AsNoTracking(),
-                pageNumber ?? 1,
-                3,
-                s => new StudentListItemViewModel
-                {
-                    LastName = s.LastName,
-                    FirstName = s.FirstMidName,
-                    EnrollmentDate = s.EnrollmentDate,
-                    ExternalId = s.ExternalId
-                });
-
-            return View(new StudentIndexViewModel
-            {
-                CurrentSort = sortOrder,
-                NameSortParm = string.IsNullOrWhiteSpace(sortOrder) ? "name_desc" : string.Empty,
-                DateSortParm = sortOrder == "Date" ? "date_desc" : "Date",
-                CurrentFilter = searchString,
-                Page = page
-            });
+            return View(await _mediator.Send(request));
         }
 
         public async Task<IActionResult> Details(Guid? id)
@@ -94,39 +33,16 @@
                 return NotFound();
             }
 
-            var student = await _studentsContext.Students
-                .Include(s => s.Enrollments)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ExternalId == id);
-
-            if (student == null)
-            {
-                return NotFound();
-            }
-
-            var courseIds = student.Enrollments.Select(x => x.CourseExternalId).ToArray();
-
-            var courseTitles = await _coursesContext.Courses
-                .Where(x => courseIds.Contains(x.ExternalId))
-                .ToDictionaryAsync(x => x.ExternalId, x => x.Title);
-
-            return View(new StudentDetailsViewModel
-            {
-                LastName = student.LastName,
-                FirstMidName = student.FirstMidName,
-                EnrollmentDate = student.EnrollmentDate,
-                ExternalId = student.ExternalId,
-                Enrollments = student.Enrollments.Select(x => new EnrollmentViewModel
-                {
-                    CourseTitle = courseTitles[x.CourseExternalId],
-                    Grade = x.Grade?.ToString()
-                }).ToArray()
-            });
+            var result = await _mediator.Send(new QueryStudentDetails(id.Value));
+            
+            return result is not null
+                ? View(result)
+                : NotFound();
         }
 
         public IActionResult Create()
         {
-            return View(new StudentCreateForm
+            return View(new CreateStudentForm
             {
                 EnrollmentDate = DateTime.Now
             });
@@ -134,32 +50,16 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(StudentCreateForm form)
+        public async Task<IActionResult> Create(CreateStudentCommand command)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    _studentsContext.Add(new Student
-                    {
-                        LastName = form.LastName,
-                        FirstMidName = form.FirstName,
-                        EnrollmentDate = form.EnrollmentDate,
-                        ExternalId = Guid.NewGuid()
-                    });
-                    await _studentsContext.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-            }
-            catch (DbUpdateException /* ex */)
-            {
-                //Log the error (uncomment ex variable name and write a log.
-                ModelState.AddModelError("", "Unable to save changes. " +
-                                             "Try again, and if the problem persists " +
-                                             "see your system administrator.");
+                return View(command as CreateStudentForm);
             }
 
-            return View(form);
+            await _mediator.Send(command);
+            
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Edit(Guid? id)
@@ -169,102 +69,53 @@
                 return BadRequest();
             }
 
-            var student = await _studentsContext.Students.SingleAsync(x => x.ExternalId == id);
-            if (student == null)
-            {
-                return NotFound();
-            }
+            var result = await _mediator.Send(new QueryStudentEditForm(id.Value));
 
-            return View(new StudentEditForm
-            {
-                ExternalId = student.ExternalId,
-                LastName = student.LastName,
-                FirstName = student.FirstMidName,
-                EnrollmentDate = student.EnrollmentDate
-            });
+            return result is not null
+                ? View(result)
+                : NotFound();
         }
 
         [HttpPost]
-        [ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPost(StudentEditForm form)
+        public async Task<IActionResult> Edit(EditStudentCommand command)
         {
-            if (form is null || !ModelState.IsValid)
+            if (command is null)
             {
                 return BadRequest();
             }
 
-            var student = await _studentsContext.Students.SingleAsync(s => s.ExternalId == form.ExternalId);
-            if (student is null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return View(command as EditStudentForm);
             }
 
-            student.LastName = form.LastName;
-            student.FirstMidName = form.FirstName;
-            student.EnrollmentDate = form.EnrollmentDate;
-
-            try
-            {
-                await _studentsContext.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            catch (DbUpdateException /* ex */)
-            {
-                //Log the error (uncomment ex variable name and write a log.)
-                ModelState.AddModelError("", "Unable to save changes. " +
-                                             "Try again, and if the problem persists, " +
-                                             "see your system administrator.");
-            }
-
-            return View(form);
+            await _mediator.Send(command);
+            
+            return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Delete(Guid? id, bool? saveChangesError = false)
+        public async Task<IActionResult> Delete(Guid? id)
         {
             if (id is null)
             {
                 return BadRequest();
             }
 
-            var student = await _studentsContext.Students.AsNoTracking().SingleAsync(m => m.ExternalId == id);
-            if (student is null)
-            {
-                return NotFound();
-            }
+            var result = await _mediator.Send(new QueryStudentDeletePage(id.Value));
 
-            return View(new StudentDeleteViewModel
-            {
-                LastName = student.LastName,
-                FirstMidName = student.FirstMidName,
-                EnrollmentDate = student.EnrollmentDate,
-                ExternalId = student.ExternalId,
-                SaveChangesError = saveChangesError.GetValueOrDefault()
-            });
+            return result is not null
+                ? View(result)
+                : NotFound();
         }
 
         [HttpPost]
-        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var student = await _studentsContext.Students.SingleAsync(x => x.ExternalId == id);
-            if (student == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
+            await _mediator.Send(new DeleteStudentCommand(id));
 
-            try
-            {
-                _studentsContext.Students.Remove(student);
-                await _studentsContext.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            catch (DbUpdateException /* ex */)
-            {
-                //Log the error (uncomment ex variable name and write a log.)
-                return RedirectToAction(nameof(Delete), new {id, saveChangesError = true});
-            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -1,23 +1,23 @@
 ﻿namespace ContosoUniversity.Controllers
 {
-    using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
     using System.Threading.Tasks;
 
-    using Data.Departments;
+    using Domain.Contracts;
 
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
 
     using ViewModels;
+    using ViewModels.Home;
 
     public class HomeController : Controller
     {
-        private readonly DepartmentsContext _context;
+        private readonly IStudentsRepository _repository;
 
-        public HomeController(DepartmentsContext context)
+        public HomeController(IStudentsRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         public IActionResult Index()
@@ -27,47 +27,23 @@
 
         public async Task<ActionResult> About()
         {
-            var groups = new List<EnrollmentDateGroup>();
-            var conn = _context.Database.GetDbConnection();
-            try
+            var groups = await _repository.GetEnrollmentDateGroups();
+
+            var viewModels = groups.Select(x => new EnrollmentDateGroup
             {
-                await conn.OpenAsync();
-                await using var command = conn.CreateCommand();
-                command.CommandText =
-                    @"SELECT EnrollmentDate, COUNT(*) AS StudentCount
-                      FROM [std].Student
-                      GROUP BY EnrollmentDate";
-                var reader = await command.ExecuteReaderAsync();
-
-                if (reader.HasRows)
-                {
-                    while (await reader.ReadAsync())
-                    {
-                        var row = new EnrollmentDateGroup
-                            {EnrollmentDate = reader.GetDateTime(0), StudentCount = reader.GetInt32(1)};
-                        groups.Add(row);
-                    }
-                }
-
-                reader.Dispose();
-            }
-            finally
-            {
-                conn.Close();
-            }
-
-            return View(groups);
+                EnrollmentDate = x.EnrollmentDate,
+                StudentCount = x.StudentCount
+            }).ToArray();
+            
+            return View(viewModels);
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        public IActionResult Privacy() => View();
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error() => View(new ErrorViewModel
         {
-            return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
-        }
+            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+        });
     }
 }

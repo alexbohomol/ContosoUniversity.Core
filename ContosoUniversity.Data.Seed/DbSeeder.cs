@@ -1,22 +1,24 @@
-﻿namespace ContosoUniversity.Seed
+﻿namespace ContosoUniversity.Data.Seed
 {
     using System;
     using System.IO;
     using System.Linq;
 
-    using Data.Courses;
-    using Data.Courses.Models;
-    using Data.Departments;
-    using Data.Departments.Models;
-    using Data.Students;
-    using Data.Students.Models;
+    using Courses;
+    using Courses.Models;
+
+    using Departments;
+    using Departments.Models;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
 
     using Models;
 
-    public static class DbSeeder
+    using Students;
+    using Students.Models;
+
+    internal static class DbSeeder
     {
         public static void EnsureInitialized(
             DepartmentsContext departmentsContext,
@@ -33,7 +35,7 @@
             }
 
             IConfiguration config = new ConfigurationBuilder()
-                .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../ContosoUniversity"))
+                .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.Seed.json")
                 .Build();
 

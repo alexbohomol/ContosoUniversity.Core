@@ -5,32 +5,34 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Data.Courses;
     using Data.Departments;
     using Data.Departments.Models;
-    using Data.Students;
+
+    using Domain.Contracts;
+    using Domain.Student;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
 
     using Services;
 
+    using ViewModels;
     using ViewModels.Instructors;
 
     public class InstructorsController : Controller
     {
-        private readonly CoursesContext _coursesContext;
+        private readonly ICoursesRepository _coursesRepository;
         private readonly DepartmentsContext _departmentsContext;
-        private readonly StudentsContext _studentsContext;
+        private readonly IStudentsRepository _studentsRepository;
 
         public InstructorsController(
             DepartmentsContext departmentsContext,
-            CoursesContext coursesContext,
-            StudentsContext studentsContext)
+            ICoursesRepository coursesRepository,
+            IStudentsRepository studentsRepository)
         {
             _departmentsContext = departmentsContext;
-            _coursesContext = coursesContext;
-            _studentsContext = studentsContext;
+            _coursesRepository = coursesRepository;
+            _studentsRepository = studentsRepository;
         }
 
         public async Task<IActionResult> Index(Guid? id, Guid? courseExternalId)
@@ -42,7 +44,7 @@
                 .AsNoTracking()
                 .ToListAsync();
 
-            var courses = await _coursesContext.Courses.ToListAsync();
+            var courses = await _coursesRepository.GetAll();
 
             CrossContextBoundariesValidator.EnsureInstructorsReferenceTheExistingCourses(instructors, courses);
 
@@ -61,8 +63,8 @@
                         Office = x.OfficeAssignment?.Location,
                         AssignedCourseIds = assignedCourseIds,
                         AssignedCourses = courses
-                            .Where(c => assignedCourseIds.Contains(c.ExternalId))
-                            .Select(c => $"{c.CourseCode} {c.Title}"),
+                            .Where(c => assignedCourseIds.Contains(c.EntityId))
+                            .Select(c => $"{c.Code} {c.Title}"),
                         RowClass = id is not null && id == x.ExternalId
                             ? "table-success"
                             : string.Empty
@@ -75,19 +77,19 @@
                 var instructor = viewModel.Instructors.Single(i => i.Id == id.Value);
                 var instructorCourseIds = instructor.AssignedCourseIds.ToHashSet();
                 var departmentNames = await _departmentsContext.Departments
-                    .Where(x => courses.Select(_ => _.DepartmentExternalId).Contains(x.ExternalId))
+                    .Where(x => courses.Select(_ => _.DepartmentId).Contains(x.ExternalId))
                     .AsNoTracking()
                     .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
-                CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames);
+                CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);
                 viewModel.Courses = courses
-                    .Where(x => instructorCourseIds.Contains(x.ExternalId))
+                    .Where(x => instructorCourseIds.Contains(x.EntityId))
                     .Select(x => new CourseListItemViewModel
                     {
-                        Id = x.ExternalId,
-                        CourseCode = x.CourseCode,
+                        Id = x.EntityId,
+                        CourseCode = x.Code,
                         Title = x.Title,
-                        Department = departmentNames[x.DepartmentExternalId],
-                        RowClass = courseExternalId is not null && courseExternalId == x.ExternalId
+                        Department = departmentNames[x.DepartmentId],
+                        RowClass = courseExternalId is not null && courseExternalId == x.EntityId
                             ? "table-success"
                             : string.Empty
                     }).ToList();
@@ -95,13 +97,20 @@
 
             if (courseExternalId is not null)
             {
-                var enrollments = await _studentsContext.Enrollments
-                    .Include(x => x.Student)
-                    .Where(x => x.CourseExternalId == courseExternalId)
-                    .AsNoTracking()
-                    .ToListAsync();
-                CrossContextBoundariesValidator.EnsureEnrollmentsReferenceTheExistingCourses(enrollments, courses);
-                viewModel.Enrollments = enrollments;
+                var students = await _studentsRepository.GetStudentsEnrolledForCourses(new[]
+                {
+                    courseExternalId.Value
+                });
+                
+                CrossContextBoundariesValidator.EnsureEnrollmentsReferenceTheExistingCourses(
+                    students.SelectMany(x => x.Enrollments).Distinct(), 
+                    courses);
+                
+                viewModel.Students = students.Select(x => new EnrolledStudentViewModel
+                {
+                    StudentFullName = x.FullName(),
+                    EnrollmentGrade = x.Enrollments[courseExternalId.Value].Grade.ToDisplayString()
+                });
             }
 
             return View(viewModel);
@@ -129,12 +138,12 @@
             });
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             return View(new InstructorCreateForm
             {
                 HireDate = DateTime.Now,
-                AssignedCourses = CreateAssignedCourseData()
+                AssignedCourses = await CreateAssignedCourseData()
             });
         }
 
@@ -195,22 +204,22 @@
                 FirstName = instructor.FirstMidName,
                 HireDate = instructor.HireDate,
                 Location = instructor.OfficeAssignment?.Location,
-                AssignedCourses = CreateAssignedCourseData(instructor)
+                AssignedCourses = await CreateAssignedCourseData(instructor)
             });
         }
 
-        private AssignedCourseOption[] CreateAssignedCourseData(Instructor instructor = null)
+        private async Task<AssignedCourseOption[]> CreateAssignedCourseData(Instructor instructor = null)
         {
-            var allCourses = _coursesContext.Courses;
+            var allCourses = await _coursesRepository.GetAll();
             var instructorCourses = instructor?.CourseAssignments
                 .Select(c => c.CourseExternalId) ?? Array.Empty<Guid>();
 
             return allCourses.Select(course => new AssignedCourseOption
             {
-                CourseCode = course.CourseCode,
-                CourseExternalId = course.ExternalId,
+                CourseCode = course.Code,
+                CourseExternalId = course.EntityId,
                 Title = course.Title,
-                Assigned = instructorCourses.Contains(course.ExternalId)
+                Assigned = instructorCourses.Contains(course.EntityId)
             }).ToArray();
         }
 
@@ -239,7 +248,7 @@
                 ? new OfficeAssignment {Location = form.Location}
                 : null;
 
-            UpdateInstructorCourses(form.SelectedCourses, instructor);
+            await UpdateInstructorCourses(form.SelectedCourses, instructor);
 
             try
             {
@@ -259,14 +268,14 @@
                     FirstName = instructor.FirstMidName,
                     HireDate = instructor.HireDate,
                     Location = instructor.OfficeAssignment?.Location,
-                    AssignedCourses = CreateAssignedCourseData(instructor)
+                    AssignedCourses = await CreateAssignedCourseData(instructor)
                 });
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-        private void UpdateInstructorCourses(string[] selectedCourses, Instructor instructorToUpdate)
+        private async Task UpdateInstructorCourses(string[] selectedCourses, Instructor instructorToUpdate)
         {
             if (selectedCourses == null)
             {
@@ -277,22 +286,25 @@
             var selectedCoursesHs = new HashSet<string>(selectedCourses);
             var instructorCourses = new HashSet<Guid>
                 (instructorToUpdate.CourseAssignments.Select(c => c.CourseExternalId));
-            foreach (var course in _coursesContext.Courses)
-                if (selectedCoursesHs.Contains(course.ExternalId.ToString()))
+            var courses = await _coursesRepository.GetAll();
+            foreach (var course in courses)
+                if (selectedCoursesHs.Contains(course.EntityId.ToString()))
                 {
-                    if (!instructorCourses.Contains(course.ExternalId))
+                    if (!instructorCourses.Contains(course.EntityId))
                         instructorToUpdate.CourseAssignments.Add(new CourseAssignment
                         {
                             InstructorId = instructorToUpdate.Id,
-                            CourseExternalId = course.ExternalId
+                            CourseExternalId = course.EntityId
                         });
                 }
                 else
                 {
-                    if (instructorCourses.Contains(course.ExternalId))
+                    if (instructorCourses.Contains(course.EntityId))
                     {
-                        var courseToRemove =
-                            instructorToUpdate.CourseAssignments.FirstOrDefault(i => i.CourseExternalId == course.ExternalId);
+                        var courseToRemove = instructorToUpdate
+                            .CourseAssignments
+                            .FirstOrDefault(i => i.CourseExternalId == course.EntityId);
+                        
                         if (courseToRemove != null)
                             _departmentsContext.Remove(courseToRemove);
                     }

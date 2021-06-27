@@ -1,4 +1,4 @@
-﻿@model ContosoUniversity.ViewModels.Courses.CourseCreateForm
+﻿@model ContosoUniversity.ViewModels.Courses.CreateCourseForm
 
 @{
     ViewData["Title"] = "Create";
@@ -13,7 +13,7 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="CourseCode" class="control-label"></label>
+                <label class="control-label">Course Code</label>
                 <input asp-for="CourseCode" class="form-control"/>
                 <span asp-validation-for="CourseCode" class="text-danger"></span>
             </div>
