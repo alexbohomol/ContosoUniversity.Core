@@ -1,13 +1,14 @@
 namespace ContosoUniversity.Data.Courses
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
     using Domain.Contracts;
     using Domain.Contracts.Exceptions;
     using Domain.Course;
+
+    using Extensions;
 
     using Microsoft.EntityFrameworkCore;
 
@@ -85,21 +86,6 @@ namespace ContosoUniversity.Data.Courses
             model.Credits = entity.Credits;
             model.DepartmentExternalId = entity.DepartmentId;
             model.ExternalId = entity.EntityId;
-        }
-    }
-
-    static class EnsureExtensions
-    {
-        public static void EnsureCollectionsEqual(
-            this IEnumerable<Guid> source,
-            IEnumerable<Guid> target,
-            Func<Guid, Exception> exceptionFactory)
-        {
-            if (source.SequenceEqual(target)) return;
-
-            throw new AggregateException(source
-                .Except(target)
-                .Select(exceptionFactory));
         }
     }
 }
