@@ -9,9 +9,13 @@
 
     using Domain.Contracts;
 
+    using MediatR;
+
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.EntityFrameworkCore;
+
+    using Services.Queries.Departments;
 
     using ViewModels.Departments;
 
@@ -21,31 +25,23 @@
         private readonly ICoursesRepository _coursesRepository;
         private readonly DepartmentsContext _departmentsContext;
         private readonly IStudentsRepository _studentsRepository;
+        private readonly IMediator _mediator;
 
         public DepartmentsController(
             DepartmentsContext departmentsContext,
             ICoursesRepository coursesRepository,
-            IStudentsRepository studentsRepository)
+            IStudentsRepository studentsRepository,
+            IMediator mediator)
         {
             _departmentsContext = departmentsContext;
             _coursesRepository = coursesRepository;
             _studentsRepository = studentsRepository;
+            _mediator = mediator;
         }
 
         public async Task<IActionResult> Index()
         {
-            var departments = await _departmentsContext.Departments
-                .Include(d => d.Administrator)
-                .ToListAsync();
-
-            return View(departments.Select(x => new DepartmentListItemViewModel
-            {
-                Name = x.Name,
-                Budget = x.Budget,
-                StartDate = x.StartDate,
-                Administrator = x.Administrator?.FullName,
-                ExternalId = x.ExternalId
-            }));
+            return View(await _mediator.Send(new QueryDepartmentsIndex()));
         }
 
         public async Task<IActionResult> Details(Guid? id)
