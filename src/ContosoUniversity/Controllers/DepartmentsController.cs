@@ -51,25 +51,12 @@
                 return NotFound();
             }
 
-            var department = await _departmentsContext.Departments
-                .FromSqlInterpolated($"SELECT * FROM [dpt].Department WHERE ExternalId = {id}")
-                .Include(d => d.Administrator)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
+            var result = await _mediator
+                .Send(new QueryDepartmentDetails(id.Value));
 
-            if (department == null)
-            {
-                return NotFound();
-            }
-
-            return View(new DepartmentDetailsViewModel
-            {
-                Name = department.Name,
-                Budget = department.Budget,
-                StartDate = department.StartDate,
-                Administrator = department.Administrator?.FullName,
-                ExternalId = department.ExternalId
-            });
+            return result is not null
+                ? View(result)
+                : NotFound();
         }
 
         public IActionResult Create()
