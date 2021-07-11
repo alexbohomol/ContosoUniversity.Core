@@ -12,11 +12,12 @@
     using MediatR;
 
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.EntityFrameworkCore;
 
+    using Services;
     using Services.Queries.Departments;
 
+    using ViewModels;
     using ViewModels.Departments;
 
     public class DepartmentsController : Controller
@@ -59,35 +60,35 @@
                 : NotFound();
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             return View(new DepartmentCreateForm
             {
                 StartDate = DateTime.Now,
-                InstructorsDropDown = GetInstructorSelectList()
+                InstructorsDropDown = (await _departmentsContext.GetInstructorsNames()).ToSelectList()
             });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(DepartmentCreateForm form)
+        public async Task<IActionResult> Create(DepartmentCreateForm command)
         {
-            if (ModelState.IsValid)
+            if (command is null)
             {
-                _departmentsContext.Add(new Department
-                {
-                    Name = form.Name,
-                    Budget = form.Budget,
-                    StartDate = form.StartDate,
-                    InstructorId = form.InstructorId,
-                    ExternalId = Guid.NewGuid()
-                });
-                await _departmentsContext.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return BadRequest();
             }
 
-            form.InstructorsDropDown = GetInstructorSelectList(form.InstructorId);
-            return View(form);
+            if (!ModelState.IsValid)
+            {
+                return View(
+                    new DepartmentCreateForm(
+                        command,
+                        await _departmentsContext.GetInstructorsNames()));
+            }
+
+            await _mediator.Send(command);
+
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Edit(Guid? id)
@@ -115,7 +116,7 @@
                 InstructorId = department.InstructorId,
                 ExternalId = department.ExternalId,
                 RowVersion = department.RowVersion,
-                InstructorsDropDown = GetInstructorSelectList(department.InstructorId)
+                InstructorsDropDown = (await _departmentsContext.GetInstructorsNames()).ToSelectList(department.InstructorId.GetValueOrDefault())
             });
         }
 
@@ -138,7 +139,7 @@
                 await TryUpdateModelAsync(deletedDepartment);
                 ModelState.AddModelError(string.Empty,
                     "Unable to save changes. The department was deleted by another user.");
-                ViewData["InstructorsDropDown"] = GetInstructorSelectList(deletedDepartment.InstructorId);
+                ViewData["InstructorsDropDown"] = (await _departmentsContext.GetInstructorsNames()).ToSelectList(deletedDepartment.InstructorId.GetValueOrDefault());
                 return View(form);
             }
 
@@ -198,7 +199,7 @@
                 }
             }
 
-            form.InstructorsDropDown = GetInstructorSelectList(departmentToUpdate.InstructorId);
+            form.InstructorsDropDown = (await _departmentsContext.GetInstructorsNames()).ToSelectList(departmentToUpdate.InstructorId.GetValueOrDefault());
             return View(form);
         }
 
@@ -286,15 +287,6 @@
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private SelectList GetInstructorSelectList(int? departmentInstructorId = null)
-        {
-            return new(
-                _departmentsContext.Instructors,
-                nameof(Instructor.Id),
-                nameof(Instructor.FullName),
-                departmentInstructorId);
         }
     }
 }

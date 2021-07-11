@@ -8,14 +8,25 @@ namespace ContosoUniversity.ViewModels
     public static class ViewModelsExtensions
     {
         public static SelectList ToSelectList(
-            this IDictionary<Guid, string> departments,
-            Guid selectedDepartment = default)
+            this IDictionary<Guid, string> values,
+            Guid selectedValue = default)
         {
             return new(
-                departments,
+                values,
                 "Key",
                 "Value",
-                selectedDepartment);
+                selectedValue);
+        }
+        
+        public static SelectList ToSelectList(
+            this IDictionary<int, string> values,
+            int selectedValue = default)
+        {
+            return new(
+                values,
+                "Key",
+                "Value",
+                selectedValue);
         }
     }
 }
