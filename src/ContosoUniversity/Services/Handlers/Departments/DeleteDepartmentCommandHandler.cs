@@ -9,6 +9,9 @@ namespace ContosoUniversity.Services.Handlers.Departments
     using Data.Departments;
 
     using Domain.Contracts;
+    using Domain.Contracts.Exceptions;
+
+    using Events;
 
     using MediatR;
 
@@ -18,59 +21,49 @@ namespace ContosoUniversity.Services.Handlers.Departments
     {
         private readonly DepartmentsContext _departmentsContext;
         private readonly ICoursesRepository _coursesRepository;
-        private readonly IStudentsRepository _studentsRepository;
+        private readonly IMediator _mediator;
 
         public DeleteDepartmentCommandHandler(
             DepartmentsContext departmentsContext,
             ICoursesRepository coursesRepository,
-            IStudentsRepository studentsRepository)
+            IMediator mediator)
         {
             _departmentsContext = departmentsContext;
             _coursesRepository = coursesRepository;
-            _studentsRepository = studentsRepository;
+            _mediator = mediator;
         }
         
         protected override async Task Handle(DeleteDepartmentCommand request, CancellationToken cancellationToken)
         {
             var department = await _departmentsContext.Departments
                 .FirstOrDefaultAsync(x => x.ExternalId == request.Id, cancellationToken: cancellationToken);
+            if (department == null)
+                throw new EntityNotFoundException(nameof(department), request.Id);
             
-            if (department != null)
-            {
-                var relatedCourses = await _coursesRepository.GetByDepartmentId(request.Id);
-                var relatedCoursesIds = relatedCourses.Select(x => x.EntityId).ToArray();
+            var relatedCourses = await _coursesRepository.GetByDepartmentId(request.Id);
+            var relatedCoursesIds = relatedCourses.Select(x => x.EntityId).ToArray();
 
-                /*
-                 * remove related assignments
-                 */
-                var relatedAssignments = await _departmentsContext.CourseAssignments
-                    .Where(x => relatedCoursesIds.Contains(x.CourseExternalId))
-                    .ToArrayAsync(cancellationToken: cancellationToken);
-                _departmentsContext.CourseAssignments.RemoveRange(relatedAssignments);
+            /*
+             * remove related assignments
+             */
+            var relatedAssignments = await _departmentsContext.CourseAssignments
+                .Where(x => relatedCoursesIds.Contains(x.CourseExternalId))
+                .ToArrayAsync(cancellationToken: cancellationToken);
+            _departmentsContext.CourseAssignments.RemoveRange(relatedAssignments);
+            
+            /*
+             * remove department
+             */
+            _departmentsContext.Departments.Remove(department);
 
-                /*
-                 * remove related enrollments (withdraw related students)
-                 */
-                var students = await _studentsRepository.GetStudentsEnrolledForCourses(relatedCoursesIds);
-                foreach (var student in students)
-                {
-                    var withdrawIds = relatedCoursesIds.Intersect(student.Enrollments.CourseIds);
-                    student.WithdrawCourses(withdrawIds.ToArray());
-                    await _studentsRepository.Save(student);
-                }
-
-                /*
-                 * remove related courses
-                 */
-                await _coursesRepository.Remove(relatedCoursesIds);
-
-                /*
-                 * remove department
-                 */
-                _departmentsContext.Departments.Remove(department);
-
-                await _departmentsContext.SaveChangesAsync(cancellationToken);
-            }
+            await _departmentsContext.SaveChangesAsync(cancellationToken);
+            
+            /*
+             * remove related courses and withdraw enrolled students
+             */
+            await _mediator.Publish(
+                new DepartmentDeleted(request.Id, relatedCoursesIds),
+                cancellationToken);
         }
     }
 }
