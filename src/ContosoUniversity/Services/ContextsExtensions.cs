@@ -21,5 +21,15 @@ namespace ContosoUniversity.Services
                     x => x.ExternalId,
                     x => x.Name);
         }
+        
+        public static Task<Dictionary<int, string>> GetInstructorsNames(this DepartmentsContext context)
+        {
+            return context
+                   .Instructors
+                   .AsNoTracking()
+                   .ToDictionaryAsync(
+                       x => x.Id,
+                       x => x.FullName);
+        }
     }
 }

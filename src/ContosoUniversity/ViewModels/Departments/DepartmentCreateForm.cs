@@ -1,27 +1,26 @@
 namespace ContosoUniversity.ViewModels.Departments
 {
-    using System;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
+    using System.Collections.Generic;
 
     using Microsoft.AspNetCore.Mvc.Rendering;
 
-    public class DepartmentCreateForm
+    using Services.Commands.Departments;
+
+    public class CreateDepartmentForm : CreateDepartmentCommand
     {
-        [StringLength(50, MinimumLength = 3)]
-        public string Name { get; set; }
+        public CreateDepartmentForm()
+        {
+            
+        }
 
-        [DataType(DataType.Currency)]
-        [Column(TypeName = "money")]
-        public decimal Budget { get; set; }
-
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Start Date")]
-        public DateTime StartDate { get; set; }
-
-        [Display(Name = "Administrator")]
-        public int? InstructorId { get; set; }
+        public CreateDepartmentForm(CreateDepartmentCommand command, IDictionary<int, string> instructorNames)
+        {
+            Name = command.Name;
+            Budget = command.Budget;
+            StartDate = command.StartDate;
+            InstructorId = command.InstructorId;
+            InstructorsDropDown = instructorNames.ToSelectList();
+        }
 
         public SelectList InstructorsDropDown { get; set; }
     }

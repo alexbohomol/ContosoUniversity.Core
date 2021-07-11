@@ -1,16 +1,10 @@
-﻿@using ContosoUniversity.ViewModels.Departments
-@model ContosoUniversity.ViewModels.Departments.DepartmentDeleteViewModel
+﻿@model ContosoUniversity.ViewModels.Departments.DepartmentDetailsViewModel
 
 @{
     ViewData["Title"] = "Delete";
 }
 
 <h2>Delete</h2>
-
-@if (Model.ConcurrencyError)
-{
-    <p class="text-danger">@DepartmentDeleteViewModel.ConcurrencyErrorMessage</p>
-}
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
@@ -45,7 +39,6 @@
 
     <form asp-action="Delete">
         <input type="hidden" asp-for="ExternalId"/>
-        <input type="hidden" asp-for="RowVersion"/>
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-secondary"/> |
             <a asp-action="Index">Back to List</a>
