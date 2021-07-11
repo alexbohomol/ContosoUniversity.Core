@@ -1,19 +1,16 @@
 ﻿namespace ContosoUniversity.Controllers
 {
     using System;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Data.Departments;
 
-    using Domain.Contracts;
-
     using MediatR;
 
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
 
     using Services;
+    using Services.Commands.Departments;
     using Services.Queries.Departments;
 
     using ViewModels;
@@ -21,20 +18,14 @@
 
     public class DepartmentsController : Controller
     {
-        private readonly ICoursesRepository _coursesRepository;
         private readonly DepartmentsContext _departmentsContext;
-        private readonly IStudentsRepository _studentsRepository;
         private readonly IMediator _mediator;
 
         public DepartmentsController(
             DepartmentsContext departmentsContext,
-            ICoursesRepository coursesRepository,
-            IStudentsRepository studentsRepository,
             IMediator mediator)
         {
             _departmentsContext = departmentsContext;
-            _coursesRepository = coursesRepository;
-            _studentsRepository = studentsRepository;
             _mediator = mediator;
         }
 
@@ -125,89 +116,27 @@
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Delete(Guid? id, bool? concurrencyError)
+        public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null)
+            if (id is null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            var department = await _departmentsContext.Departments
-                .Include(d => d.Administrator)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ExternalId == id);
-            if (department == null)
-            {
-                if (concurrencyError.GetValueOrDefault())
-                {
-                    return RedirectToAction(nameof(Index));
-                }
+            var result = await _mediator
+                .Send(new QueryDepartmentDetails(id.Value));
 
-                return NotFound();
-            }
-
-            return View(new DepartmentDeleteViewModel
-            {
-                Name = department.Name,
-                Budget = department.Budget,
-                StartDate = department.StartDate,
-                Administrator = department.Administrator?.FullName,
-                ExternalId = department.ExternalId,
-                RowVersion = department.RowVersion,
-                ConcurrencyError = concurrencyError.GetValueOrDefault()
-            });
+            return result is not null
+                ? View(result)
+                : NotFound();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var department = await _departmentsContext.Departments.FirstOrDefaultAsync(x => x.ExternalId == id);
-            if (department != null)
-            {
-                try
-                {
-                    var relatedCourses = await _coursesRepository.GetByDepartmentId(id);
-                    var relatedCoursesIds = relatedCourses.Select(x => x.EntityId).ToArray();
-
-                    /*
-                     * remove related assignments
-                     */
-                    var relatedAssignments = await _departmentsContext.CourseAssignments
-                        .Where(x => relatedCoursesIds.Contains(x.CourseExternalId))
-                        .ToArrayAsync();
-                    _departmentsContext.CourseAssignments.RemoveRange(relatedAssignments);
-
-                    /*
-                     * remove related enrollments (withdraw related students)
-                     */
-                    var students = await _studentsRepository.GetStudentsEnrolledForCourses(relatedCoursesIds);
-                    foreach (var student in students)
-                    {
-                        var withdrawIds = relatedCoursesIds.Intersect(student.Enrollments.CourseIds);
-                        student.WithdrawCourses(withdrawIds.ToArray());
-                        await _studentsRepository.Save(student);
-                    }
-
-                    /*
-                     * remove related courses
-                     */
-                    await _coursesRepository.Remove(relatedCoursesIds);
-
-                    /*
-                     * remove department
-                     */
-                    _departmentsContext.Departments.Remove(department);
-
-                    await _departmentsContext.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException /* ex */)
-                {
-                    //Log the error (uncomment ex variable name and write a log.)
-                    return RedirectToAction(nameof(Delete), new {concurrencyError = true, id = department.ExternalId});
-                }
-            }
-
+            await _mediator.Send(new DeleteDepartmentCommand(id));
+            
             return RedirectToAction(nameof(Index));
         }
     }
