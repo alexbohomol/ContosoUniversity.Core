@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
 
     using Data.Departments;
-    using Data.Departments.Models;
 
     using Domain.Contracts;
 
@@ -22,7 +21,6 @@
 
     public class DepartmentsController : Controller
     {
-        private const string ErrMsgConcurrentUpdate = "The record you attempted to edit was modified by another user after you got the original value. The edit operation was canceled and the current values in the database have been displayed. If you still want to edit this record, click the Save button again. Otherwise click the Back to List hyperlink.";
         private readonly ICoursesRepository _coursesRepository;
         private readonly DepartmentsContext _departmentsContext;
         private readonly IStudentsRepository _studentsRepository;
@@ -93,114 +91,38 @@
 
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var department = await _departmentsContext.Departments
-                .Include(i => i.Administrator)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ExternalId == id);
-
-            if (department == null)
-            {
-                return NotFound();
-            }
-
-            return View(new DepartmentEditForm
-            {
-                Name = department.Name,
-                Budget = department.Budget,
-                StartDate = department.StartDate,
-                InstructorId = department.InstructorId,
-                ExternalId = department.ExternalId,
-                RowVersion = department.RowVersion,
-                InstructorsDropDown = (await _departmentsContext.GetInstructorsNames()).ToSelectList(department.InstructorId.GetValueOrDefault())
-            });
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(DepartmentEditForm form)
-        {
-            if (form == null || !ModelState.IsValid)
+            if (id is null)
             {
                 return BadRequest();
             }
 
-            var departmentToUpdate = await _departmentsContext.Departments
-                .Include(i => i.Administrator)
-                .FirstOrDefaultAsync(m => m.ExternalId == form.ExternalId);
+            var result = await _mediator.Send(new QueryDepartmentEditForm(id.Value));
 
-            if (departmentToUpdate == null)
+            return result is not null
+                ? View(result)
+                : NotFound();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(DepartmentEditForm command)
+        {
+            if (command is null)
             {
-                var deletedDepartment = new Department();
-                await TryUpdateModelAsync(deletedDepartment);
-                ModelState.AddModelError(string.Empty,
-                    "Unable to save changes. The department was deleted by another user.");
-                ViewData["InstructorsDropDown"] = (await _departmentsContext.GetInstructorsNames()).ToSelectList(deletedDepartment.InstructorId.GetValueOrDefault());
-                return View(form);
+                return BadRequest();
             }
 
-            _departmentsContext.Entry(departmentToUpdate).Property("RowVersion").OriginalValue = form.RowVersion;
-
-            if (await TryUpdateModelAsync(
-                departmentToUpdate,
-                "",
-                s => s.Name, s => s.StartDate, s => s.Budget, s => s.InstructorId))
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    await _departmentsContext.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateConcurrencyException ex)
-                {
-                    var exceptionEntry = ex.Entries.Single();
-                    var clientValues = (Department) exceptionEntry.Entity;
-                    var databaseEntry = exceptionEntry.GetDatabaseValues();
-                    if (databaseEntry == null)
-                    {
-                        ModelState.AddModelError(string.Empty,
-                            "Unable to save changes. The department was deleted by another user.");
-                    }
-                    else
-                    {
-                        var databaseValues = (Department) databaseEntry.ToObject();
-
-                        if (databaseValues.Name != clientValues.Name)
-                        {
-                            ModelState.AddModelError("Name", $"Current value: {databaseValues.Name}");
-                        }
-
-                        if (databaseValues.Budget != clientValues.Budget)
-                        {
-                            ModelState.AddModelError("Budget", $"Current value: {databaseValues.Budget:c}");
-                        }
-
-                        if (databaseValues.StartDate != clientValues.StartDate)
-                        {
-                            ModelState.AddModelError("StartDate", $"Current value: {databaseValues.StartDate:d}");
-                        }
-
-                        if (databaseValues.InstructorId != clientValues.InstructorId)
-                        {
-                            var databaseInstructor =
-                                await _departmentsContext.Instructors.FirstOrDefaultAsync(i =>
-                                    i.Id == databaseValues.InstructorId);
-                            ModelState.AddModelError("InstructorId", $"Current value: {databaseInstructor?.FullName}");
-                        }
-
-                        ModelState.AddModelError(string.Empty, ErrMsgConcurrentUpdate);
-                        departmentToUpdate.RowVersion = databaseValues.RowVersion;
-                        ModelState.Remove("RowVersion");
-                    }
-                }
+                return View(
+                    new DepartmentEditForm(
+                        command,
+                        await _departmentsContext.GetInstructorsNames()));
             }
 
-            form.InstructorsDropDown = (await _departmentsContext.GetInstructorsNames()).ToSelectList(departmentToUpdate.InstructorId.GetValueOrDefault());
-            return View(form);
+            await _mediator.Send(command);
+
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Delete(Guid? id, bool? concurrencyError)
