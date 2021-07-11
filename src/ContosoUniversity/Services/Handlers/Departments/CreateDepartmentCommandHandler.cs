@@ -4,14 +4,14 @@ namespace ContosoUniversity.Services.Handlers.Departments
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Commands.Departments;
+
     using Data.Departments;
     using Data.Departments.Models;
 
     using MediatR;
 
-    using ViewModels.Departments;
-
-    public class CreateDepartmentCommandHandler : AsyncRequestHandler<DepartmentCreateForm>
+    public class CreateDepartmentCommandHandler : AsyncRequestHandler<CreateDepartmentCommand>
     {
         private readonly DepartmentsContext _departmentsContext;
 
@@ -20,7 +20,7 @@ namespace ContosoUniversity.Services.Handlers.Departments
             _departmentsContext = departmentsContext;
         }
         
-        protected override async Task Handle(DepartmentCreateForm request, CancellationToken cancellationToken)
+        protected override async Task Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
         {
             _departmentsContext.Add(new Department
             {

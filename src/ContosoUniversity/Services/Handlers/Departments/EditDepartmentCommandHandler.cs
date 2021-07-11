@@ -3,15 +3,15 @@ namespace ContosoUniversity.Services.Handlers.Departments
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Commands.Departments;
+
     using Data.Departments;
 
     using MediatR;
 
     using Microsoft.EntityFrameworkCore;
 
-    using ViewModels.Departments;
-
-    public class EditDepartmentCommandHandler : AsyncRequestHandler<DepartmentEditForm>
+    public class EditDepartmentCommandHandler : AsyncRequestHandler<DepartmentEditCommand>
     {
         private readonly DepartmentsContext _departmentsContext;
 
@@ -20,7 +20,7 @@ namespace ContosoUniversity.Services.Handlers.Departments
             _departmentsContext = departmentsContext;
         }
         
-        protected override async Task Handle(DepartmentEditForm request, CancellationToken cancellationToken)
+        protected override async Task Handle(DepartmentEditCommand request, CancellationToken cancellationToken)
         {
             var department = await _departmentsContext.Departments
                 .Include(i => i.Administrator)

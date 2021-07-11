@@ -51,7 +51,7 @@
 
         public async Task<IActionResult> Create()
         {
-            return View(new DepartmentCreateForm
+            return View(new CreateDepartmentForm
             {
                 StartDate = DateTime.Now,
                 InstructorsDropDown = (await _departmentsContext.GetInstructorsNames()).ToSelectList()
@@ -60,7 +60,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(DepartmentCreateForm command)
+        public async Task<IActionResult> Create(CreateDepartmentCommand command)
         {
             if (command is null)
             {
@@ -70,7 +70,7 @@
             if (!ModelState.IsValid)
             {
                 return View(
-                    new DepartmentCreateForm(
+                    new CreateDepartmentForm(
                         command,
                         await _departmentsContext.GetInstructorsNames()));
             }
@@ -96,7 +96,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(DepartmentEditForm command)
+        public async Task<IActionResult> Edit(DepartmentEditCommand command)
         {
             if (command is null)
             {
