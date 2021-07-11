@@ -11,7 +11,7 @@ namespace ContosoUniversity.Data.Extensions
             IEnumerable<Guid> target,
             Func<Guid, Exception> exceptionFactory)
         {
-            if (source.SequenceEqual(target)) return;
+            if (source.Count() == target.Count() && !source.Except(target).Any()) return;
 
             throw new AggregateException(source
                 .Except(target)
