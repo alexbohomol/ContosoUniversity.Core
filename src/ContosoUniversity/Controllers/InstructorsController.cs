@@ -47,19 +47,11 @@
                 return NotFound();
             }
 
-            var instructor = await _departmentsContext.Instructors.FirstOrDefaultAsync(m => m.ExternalId == id);
-            if (instructor == null)
-            {
-                return NotFound();
-            }
-
-            return View(new InstructorDetailsViewModel
-            {
-                LastName = instructor.LastName,
-                FirstName = instructor.FirstMidName,
-                HireDate = instructor.HireDate,
-                ExternalId = instructor.ExternalId
-            });
+            var result = await _mediator.Send(new QueryInstructorDetails(id.Value));
+            
+            return result is not null
+                ? View(result)
+                : NotFound();
         }
 
         public async Task<IActionResult> Create()
