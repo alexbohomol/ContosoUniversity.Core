@@ -17,6 +17,7 @@
 
     using Services.Queries.Instructors;
 
+    using ViewModels;
     using ViewModels.Instructors;
 
     public class InstructorsController : Controller
@@ -59,7 +60,7 @@
             return View(new InstructorCreateForm
             {
                 HireDate = DateTime.Now,
-                AssignedCourses = await CreateAssignedCourseData()
+                AssignedCourses = (await _coursesRepository.GetAll()).ToAssignedCourseOptions()
             });
         }
 
@@ -120,24 +121,10 @@
                 FirstName = instructor.FirstMidName,
                 HireDate = instructor.HireDate,
                 Location = instructor.OfficeAssignment?.Location,
-                AssignedCourses = await CreateAssignedCourseData(instructor)
+                AssignedCourses = (await _coursesRepository.GetAll()).ToAssignedCourseOptions(instructor)
             });
         }
 
-        private async Task<AssignedCourseOption[]> CreateAssignedCourseData(Instructor instructor = null)
-        {
-            var allCourses = await _coursesRepository.GetAll();
-            var instructorCourses = instructor?.CourseAssignments
-                .Select(c => c.CourseExternalId) ?? Array.Empty<Guid>();
-
-            return allCourses.Select(course => new AssignedCourseOption
-            {
-                CourseCode = course.Code,
-                CourseExternalId = course.EntityId,
-                Title = course.Title,
-                Assigned = instructorCourses.Contains(course.EntityId)
-            }).ToArray();
-        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -184,7 +171,7 @@
                     FirstName = instructor.FirstMidName,
                     HireDate = instructor.HireDate,
                     Location = instructor.OfficeAssignment?.Location,
-                    AssignedCourses = await CreateAssignedCourseData(instructor)
+                    AssignedCourses = (await _coursesRepository.GetAll()).ToAssignedCourseOptions(instructor)
                 });
             }
 
