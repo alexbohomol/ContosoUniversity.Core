@@ -15,6 +15,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
 
+    using Services.Commands.Instructors;
     using Services.Queries.Instructors;
 
     using ViewModels;
@@ -57,7 +58,7 @@
 
         public async Task<IActionResult> Create()
         {
-            return View(new InstructorCreateForm
+            return View(new CreateInstructorForm
             {
                 HireDate = DateTime.Now,
                 AssignedCourses = (await _coursesRepository.GetAll()).ToAssignedCourseOptions()
@@ -66,33 +67,22 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(InstructorCreateForm form)
+        public async Task<IActionResult> Create(CreateInstructorCommand command)
         {
-            if (form is null || ModelState.IsValid is false)
+            if (command is null)
             {
-                // form.AssignedCourses = CreateAssignedCourseData(instructor);
-                return View(form);
+                return BadRequest();
             }
 
-            var instructor = new Instructor
+            if (!ModelState.IsValid)
             {
-                ExternalId = Guid.NewGuid(),
-                FirstMidName = form.FirstName,
-                LastName = form.LastName,
-                HireDate = form.HireDate,
-                OfficeAssignment = form.HasAssignedOffice
-                    ? new OfficeAssignment {Location = form.Location}
-                    : null
-            };
+                return View(
+                    new CreateInstructorForm(
+                        command,
+                        (await _coursesRepository.GetAll()).ToAssignedCourseOptions()));
+            }
 
-            instructor.CourseAssignments = form.SelectedCourses?.Select(x => new CourseAssignment
-            {
-                InstructorId = instructor.Id, // not yet generated ???
-                CourseExternalId = Guid.Parse(x)
-            }).ToList();
-
-            _departmentsContext.Add(instructor);
-            await _departmentsContext.SaveChangesAsync();
+            await _mediator.Send(command);
 
             return RedirectToAction(nameof(Index));
         }
