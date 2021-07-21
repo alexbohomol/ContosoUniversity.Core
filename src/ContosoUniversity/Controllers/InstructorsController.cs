@@ -1,17 +1,13 @@
 ﻿namespace ContosoUniversity.Controllers
 {
     using System;
-    using System.Linq;
     using System.Threading.Tasks;
-
-    using Data.Departments;
 
     using Domain.Contracts;
     
     using MediatR;
 
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
 
     using Services.Commands.Instructors;
     using Services.Queries.Instructors;
@@ -22,15 +18,12 @@
     public class InstructorsController : Controller
     {
         private readonly ICoursesRepository _coursesRepository;
-        private readonly DepartmentsContext _departmentsContext;
         private readonly IMediator _mediator;
 
         public InstructorsController(
-            DepartmentsContext departmentsContext,
             ICoursesRepository coursesRepository,
             IMediator mediator)
         {
-            _departmentsContext = departmentsContext;
             _coursesRepository = coursesRepository;
             _mediator = mediator;
         }
@@ -128,40 +121,19 @@
                 return NotFound();
             }
 
-            var instructor = await _departmentsContext.Instructors
-                .FirstOrDefaultAsync(m => m.ExternalId == id);
-            if (instructor == null)
-            {
-                return NotFound();
-            }
-
-            return View(new InstructorDetailsViewModel
-            {
-                LastName = instructor.LastName,
-                FirstName = instructor.FirstMidName,
-                HireDate = instructor.HireDate,
-                ExternalId = instructor.ExternalId
-            });
+            var result = await _mediator.Send(new QueryInstructorDetails(id.Value));
+            
+            return result is not null
+                ? View(result)
+                : NotFound();
         }
 
         [HttpPost]
-        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var instructor = await _departmentsContext.Instructors
-                .Include(i => i.CourseAssignments)
-                .SingleAsync(i => i.ExternalId == id);
-
-            var departments = await _departmentsContext.Departments
-                .Where(d => d.InstructorId == instructor.Id)
-                .ToListAsync();
-
-            departments.ForEach(d => d.InstructorId = null);
-
-            _departmentsContext.Instructors.Remove(instructor);
-
-            await _departmentsContext.SaveChangesAsync();
+            await _mediator.Send(new DeleteInstructorCommand(id));
+            
             return RedirectToAction(nameof(Index));
         }
     }
