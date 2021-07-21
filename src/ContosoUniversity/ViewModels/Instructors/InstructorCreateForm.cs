@@ -1,34 +1,26 @@
 namespace ContosoUniversity.ViewModels.Instructors
 {
-    using System;
     using System.ComponentModel.DataAnnotations;
 
-    public class InstructorCreateForm
+    using Services.Commands.Instructors;
+
+    public class CreateInstructorForm : CreateInstructorCommand
     {
-        [StringLength(50, MinimumLength = 1)]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$", ErrorMessage = "The first character must upper case and the remaining characters must be alphabetical")]
-        [Display(Name = "Last Name")]
-        public string LastName { get; set; }
+        public CreateInstructorForm(CreateInstructorCommand command, AssignedCourseOption[] assignedCourses)
+        {
+            LastName = command.LastName;
+            FirstName = command.FirstName;
+            HireDate = command.HireDate;
+            Location = command.Location;
+            AssignedCourses = assignedCourses;
+        }
 
-        [Required]
-        [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
-        [Display(Name = "First Name")]
-        public string FirstName { get; set; }
-
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Hire Date")]
-        public DateTime HireDate { get; set; }
+        public CreateInstructorForm()
+        {
+            
+        }
 
         [Display(Name = "Assigned Courses")]
         public AssignedCourseOption[] AssignedCourses { get; set; }
-
-        public string[] SelectedCourses { get; set; }
-
-        [StringLength(50)]
-        [Display(Name = "Office Location")]
-        public string Location { get; set; }
-
-        public bool HasAssignedOffice => !string.IsNullOrWhiteSpace(Location);
     }
 }

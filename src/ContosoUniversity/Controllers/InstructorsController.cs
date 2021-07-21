@@ -1,20 +1,16 @@
 ﻿namespace ContosoUniversity.Controllers
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
-    using Data.Departments;
-    using Data.Departments.Models;
-
     using Domain.Contracts;
-    using Domain.Student;
+    
+    using MediatR;
 
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
 
-    using Services;
+    using Services.Commands.Instructors;
+    using Services.Queries.Instructors;
 
     using ViewModels;
     using ViewModels.Instructors;
@@ -22,98 +18,19 @@
     public class InstructorsController : Controller
     {
         private readonly ICoursesRepository _coursesRepository;
-        private readonly DepartmentsContext _departmentsContext;
-        private readonly IStudentsRepository _studentsRepository;
+        private readonly IMediator _mediator;
 
         public InstructorsController(
-            DepartmentsContext departmentsContext,
             ICoursesRepository coursesRepository,
-            IStudentsRepository studentsRepository)
+            IMediator mediator)
         {
-            _departmentsContext = departmentsContext;
             _coursesRepository = coursesRepository;
-            _studentsRepository = studentsRepository;
+            _mediator = mediator;
         }
 
-        public async Task<IActionResult> Index(Guid? id, Guid? courseExternalId)
+        public async Task<IActionResult> Index(QueryInstructorsIndex request)
         {
-            var instructors = await _departmentsContext.Instructors
-                .Include(i => i.OfficeAssignment)
-                .Include(i => i.CourseAssignments)
-                .OrderBy(i => i.LastName)
-                .AsNoTracking()
-                .ToListAsync();
-
-            var courses = await _coursesRepository.GetAll();
-
-            CrossContextBoundariesValidator.EnsureInstructorsReferenceTheExistingCourses(instructors, courses);
-
-            var viewModel = new InstructorIndexViewModel
-            {
-                Instructors = instructors.Select(x =>
-                {
-                    var assignedCourseIds = x.CourseAssignments.Select(ca => ca.CourseExternalId).ToArray();
-
-                    return new InstructorListItemViewModel
-                    {
-                        Id = x.ExternalId,
-                        FirstName = x.FirstMidName,
-                        LastName = x.LastName,
-                        HireDate = x.HireDate,
-                        Office = x.OfficeAssignment?.Location,
-                        AssignedCourseIds = assignedCourseIds,
-                        AssignedCourses = courses
-                            .Where(c => assignedCourseIds.Contains(c.EntityId))
-                            .Select(c => $"{c.Code} {c.Title}"),
-                        RowClass = id is not null && id == x.ExternalId
-                            ? "table-success"
-                            : string.Empty
-                    };
-                }).ToArray()
-            };
-
-            if (id is not null)
-            {
-                var instructor = viewModel.Instructors.Single(i => i.Id == id.Value);
-                var instructorCourseIds = instructor.AssignedCourseIds.ToHashSet();
-                var departmentNames = await _departmentsContext.Departments
-                    .Where(x => courses.Select(_ => _.DepartmentId).Contains(x.ExternalId))
-                    .AsNoTracking()
-                    .ToDictionaryAsync(x => x.ExternalId, x => x.Name);
-                CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);
-                viewModel.Courses = courses
-                    .Where(x => instructorCourseIds.Contains(x.EntityId))
-                    .Select(x => new CourseListItemViewModel
-                    {
-                        Id = x.EntityId,
-                        CourseCode = x.Code,
-                        Title = x.Title,
-                        Department = departmentNames[x.DepartmentId],
-                        RowClass = courseExternalId is not null && courseExternalId == x.EntityId
-                            ? "table-success"
-                            : string.Empty
-                    }).ToList();
-            }
-
-            if (courseExternalId is not null)
-            {
-                var students = await _studentsRepository.GetStudentsEnrolledForCourses(new[]
-                {
-                    courseExternalId.Value
-                });
-                
-                CrossContextBoundariesValidator.EnsureEnrollmentsReferenceTheExistingCourses(
-                    students.SelectMany(x => x.Enrollments).Distinct(), 
-                    courses);
-                
-                viewModel.Students = students.Select(x => new EnrolledStudentViewModel
-                {
-                    StudentFullName = x.FullName(),
-                    EnrollmentGrade = x.Enrollments[courseExternalId.Value].Grade.ToDisplayString()
-                });
-            }
-
-            return View(viewModel);
+            return View(await _mediator.Send(request));
         }
 
         public async Task<IActionResult> Details(Guid? id)
@@ -123,59 +40,40 @@
                 return NotFound();
             }
 
-            var instructor = await _departmentsContext.Instructors.FirstOrDefaultAsync(m => m.ExternalId == id);
-            if (instructor == null)
-            {
-                return NotFound();
-            }
-
-            return View(new InstructorDetailsViewModel
-            {
-                LastName = instructor.LastName,
-                FirstName = instructor.FirstMidName,
-                HireDate = instructor.HireDate,
-                ExternalId = instructor.ExternalId
-            });
+            var result = await _mediator.Send(new QueryInstructorDetails(id.Value));
+            
+            return result is not null
+                ? View(result)
+                : NotFound();
         }
 
         public async Task<IActionResult> Create()
         {
-            return View(new InstructorCreateForm
+            return View(new CreateInstructorForm
             {
                 HireDate = DateTime.Now,
-                AssignedCourses = await CreateAssignedCourseData()
+                AssignedCourses = (await _coursesRepository.GetAll()).ToAssignedCourseOptions()
             });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(InstructorCreateForm form)
+        public async Task<IActionResult> Create(CreateInstructorCommand command)
         {
-            if (form is null || ModelState.IsValid is false)
+            if (command is null)
             {
-                // form.AssignedCourses = CreateAssignedCourseData(instructor);
-                return View(form);
+                return BadRequest();
             }
 
-            var instructor = new Instructor
+            if (!ModelState.IsValid)
             {
-                ExternalId = Guid.NewGuid(),
-                FirstMidName = form.FirstName,
-                LastName = form.LastName,
-                HireDate = form.HireDate,
-                OfficeAssignment = form.HasAssignedOffice
-                    ? new OfficeAssignment {Location = form.Location}
-                    : null
-            };
+                return View(
+                    new CreateInstructorForm(
+                        command,
+                        (await _coursesRepository.GetAll()).ToAssignedCourseOptions()));
+            }
 
-            instructor.CourseAssignments = form.SelectedCourses?.Select(x => new CourseAssignment
-            {
-                InstructorId = instructor.Id, // not yet generated ???
-                CourseExternalId = Guid.Parse(x)
-            }).ToList();
-
-            _departmentsContext.Add(instructor);
-            await _departmentsContext.SaveChangesAsync();
+            await _mediator.Send(command);
 
             return RedirectToAction(nameof(Index));
         }
@@ -184,131 +82,36 @@
         {
             if (id is null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            var instructor = await _departmentsContext.Instructors
-                .Include(i => i.OfficeAssignment)
-                .Include(i => i.CourseAssignments)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ExternalId == id);
-            if (instructor == null)
-            {
-                return NotFound();
-            }
+            var result = await _mediator.Send(new QueryInstructorEditForm(id.Value));
 
-            return View(new InstructorEditForm
-            {
-                ExternalId = instructor.ExternalId,
-                LastName = instructor.LastName,
-                FirstName = instructor.FirstMidName,
-                HireDate = instructor.HireDate,
-                Location = instructor.OfficeAssignment?.Location,
-                AssignedCourses = await CreateAssignedCourseData(instructor)
-            });
-        }
-
-        private async Task<AssignedCourseOption[]> CreateAssignedCourseData(Instructor instructor = null)
-        {
-            var allCourses = await _coursesRepository.GetAll();
-            var instructorCourses = instructor?.CourseAssignments
-                .Select(c => c.CourseExternalId) ?? Array.Empty<Guid>();
-
-            return allCourses.Select(course => new AssignedCourseOption
-            {
-                CourseCode = course.Code,
-                CourseExternalId = course.EntityId,
-                Title = course.Title,
-                Assigned = instructorCourses.Contains(course.EntityId)
-            }).ToArray();
+            return result is not null
+                ? View(result)
+                : NotFound();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(InstructorEditForm form)
+        public async Task<IActionResult> Edit(InstructorEditCommand command)
         {
-            if (form is null || ModelState.IsValid is false)
+            if (command is null)
             {
                 return BadRequest();
             }
 
-            var instructor = await _departmentsContext.Instructors
-                .Include(i => i.OfficeAssignment)
-                .Include(i => i.CourseAssignments)
-                .FirstOrDefaultAsync(m => m.ExternalId == form.ExternalId);
-            if (instructor is null)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return View(
+                    new InstructorEditForm(
+                        command,
+                        (await _coursesRepository.GetAll()).ToAssignedCourseOptions(/* instructor? */)));
             }
 
-            instructor.FirstMidName = form.FirstName;
-            instructor.LastName = form.LastName;
-            instructor.HireDate = form.HireDate;
-            instructor.OfficeAssignment = form.HasAssignedOffice
-                ? new OfficeAssignment {Location = form.Location}
-                : null;
-
-            await UpdateInstructorCourses(form.SelectedCourses, instructor);
-
-            try
-            {
-                await _departmentsContext.SaveChangesAsync();
-            }
-            catch (DbUpdateException /* ex */)
-            {
-                //Log the error (uncomment ex variable name and write a log.)
-                ModelState.AddModelError("", "Unable to save changes. " +
-                                             "Try again, and if the problem persists, " +
-                                             "see your system administrator.");
-
-                return View(new InstructorEditForm
-                {
-                    ExternalId = instructor.ExternalId,
-                    LastName = instructor.LastName,
-                    FirstName = instructor.FirstMidName,
-                    HireDate = instructor.HireDate,
-                    Location = instructor.OfficeAssignment?.Location,
-                    AssignedCourses = await CreateAssignedCourseData(instructor)
-                });
-            }
+            await _mediator.Send(command);
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private async Task UpdateInstructorCourses(string[] selectedCourses, Instructor instructorToUpdate)
-        {
-            if (selectedCourses == null)
-            {
-                instructorToUpdate.CourseAssignments = new List<CourseAssignment>();
-                return;
-            }
-
-            var selectedCoursesHs = new HashSet<string>(selectedCourses);
-            var instructorCourses = new HashSet<Guid>
-                (instructorToUpdate.CourseAssignments.Select(c => c.CourseExternalId));
-            var courses = await _coursesRepository.GetAll();
-            foreach (var course in courses)
-                if (selectedCoursesHs.Contains(course.EntityId.ToString()))
-                {
-                    if (!instructorCourses.Contains(course.EntityId))
-                        instructorToUpdate.CourseAssignments.Add(new CourseAssignment
-                        {
-                            InstructorId = instructorToUpdate.Id,
-                            CourseExternalId = course.EntityId
-                        });
-                }
-                else
-                {
-                    if (instructorCourses.Contains(course.EntityId))
-                    {
-                        var courseToRemove = instructorToUpdate
-                            .CourseAssignments
-                            .FirstOrDefault(i => i.CourseExternalId == course.EntityId);
-                        
-                        if (courseToRemove != null)
-                            _departmentsContext.Remove(courseToRemove);
-                    }
-                }
         }
 
         public async Task<IActionResult> Delete(Guid? id)
@@ -318,40 +121,19 @@
                 return NotFound();
             }
 
-            var instructor = await _departmentsContext.Instructors
-                .FirstOrDefaultAsync(m => m.ExternalId == id);
-            if (instructor == null)
-            {
-                return NotFound();
-            }
-
-            return View(new InstructorDetailsViewModel
-            {
-                LastName = instructor.LastName,
-                FirstName = instructor.FirstMidName,
-                HireDate = instructor.HireDate,
-                ExternalId = instructor.ExternalId
-            });
+            var result = await _mediator.Send(new QueryInstructorDetails(id.Value));
+            
+            return result is not null
+                ? View(result)
+                : NotFound();
         }
 
         [HttpPost]
-        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var instructor = await _departmentsContext.Instructors
-                .Include(i => i.CourseAssignments)
-                .SingleAsync(i => i.ExternalId == id);
-
-            var departments = await _departmentsContext.Departments
-                .Where(d => d.InstructorId == instructor.Id)
-                .ToListAsync();
-
-            departments.ForEach(d => d.InstructorId = null);
-
-            _departmentsContext.Instructors.Remove(instructor);
-
-            await _departmentsContext.SaveChangesAsync();
+            await _mediator.Send(new DeleteInstructorCommand(id));
+            
             return RedirectToAction(nameof(Index));
         }
     }
