@@ -2,7 +2,7 @@ namespace ContosoUniversity.Domain
 {
     using System;
 
-    public class Department
+    public class Department : IAggregateRoot
     {
         private string _name;
         private decimal _budget;
@@ -28,13 +28,13 @@ namespace ContosoUniversity.Domain
             decimal budget, 
             DateTime startDate, 
             Guid administratorId, 
-            Guid externalId)
+            Guid entityId)
         {
             Name = name;
             Budget = budget;
             StartDate = startDate;
             AdministratorId = administratorId;
-            ExternalId = externalId;
+            EntityId = entityId;
         }
 
         public string Name
@@ -61,6 +61,6 @@ namespace ContosoUniversity.Domain
             set => _administratorId = value;
         }
 
-        public Guid ExternalId { get; }
+        public Guid EntityId { get; }
     }
 }
