@@ -4,10 +4,10 @@ namespace ContosoUniversity.ViewModels.Instructors
 
     using Services.Commands.Instructors;
 
-    public class InstructorEditForm : InstructorEditCommand
+    public class EditInstructorForm : EditInstructorCommand
     {
-        public InstructorEditForm(
-            InstructorEditCommand command, 
+        public EditInstructorForm(
+            EditInstructorCommand command, 
             AssignedCourseOption[] assignedCourses)
         {
             LastName = command.LastName;
@@ -17,7 +17,7 @@ namespace ContosoUniversity.ViewModels.Instructors
             AssignedCourses = assignedCourses;
         }
 
-        public InstructorEditForm()
+        public EditInstructorForm()
         {
             
         }

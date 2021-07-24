@@ -5,7 +5,7 @@ namespace ContosoUniversity.Services.Commands.Instructors
 
     using MediatR;
 
-    public class InstructorEditCommand : IRequest
+    public class EditInstructorCommand : IRequest
     {
         public Guid ExternalId { get; set; }
 

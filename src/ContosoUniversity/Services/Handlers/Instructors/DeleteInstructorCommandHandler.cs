@@ -29,7 +29,7 @@ namespace ContosoUniversity.Services.Handlers.Instructors
 
             var departments = await _departmentsContext.Departments
                 .Where(d => d.InstructorId == instructor.Id)
-                .ToListAsync(cancellationToken: cancellationToken);
+                .ToListAsync(cancellationToken);
 
             departments.ForEach(d => d.InstructorId = null);
 

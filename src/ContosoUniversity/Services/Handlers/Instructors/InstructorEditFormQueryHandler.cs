@@ -16,7 +16,7 @@ namespace ContosoUniversity.Services.Handlers.Instructors
     using ViewModels;
     using ViewModels.Instructors;
 
-    public class InstructorEditFormQueryHandler : IRequestHandler<InstructorEditFormQuery, InstructorEditForm>
+    public class InstructorEditFormQueryHandler : IRequestHandler<InstructorEditFormQuery, EditInstructorForm>
     {
         private readonly DepartmentsContext _departmentsContext;
         private readonly ICoursesRepository _coursesRepository;
@@ -29,7 +29,7 @@ namespace ContosoUniversity.Services.Handlers.Instructors
             _coursesRepository = coursesRepository;
         }
         
-        public async Task<InstructorEditForm> Handle(InstructorEditFormQuery request, CancellationToken cancellationToken)
+        public async Task<EditInstructorForm> Handle(InstructorEditFormQuery request, CancellationToken cancellationToken)
         {
             var instructor = await _departmentsContext.Instructors
                 .Include(i => i.OfficeAssignment)
@@ -39,7 +39,7 @@ namespace ContosoUniversity.Services.Handlers.Instructors
             
             return instructor == null
                 ? null
-                : new InstructorEditForm
+                : new EditInstructorForm
                 {
                     ExternalId = instructor.ExternalId,
                     LastName = instructor.LastName,

@@ -94,7 +94,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(InstructorEditCommand command)
+        public async Task<IActionResult> Edit(EditInstructorCommand command)
         {
             if (command is null)
             {
@@ -104,7 +104,7 @@
             if (!ModelState.IsValid)
             {
                 return View(
-                    new InstructorEditForm(
+                    new EditInstructorForm(
                         command,
                         (await _coursesRepository.GetAll()).ToAssignedCourseOptions(/* instructor? */)));
             }

@@ -36,7 +36,7 @@ namespace ContosoUniversity.Services.Handlers.Departments
         protected override async Task Handle(DeleteDepartmentCommand request, CancellationToken cancellationToken)
         {
             var department = await _departmentsContext.Departments
-                .FirstOrDefaultAsync(x => x.ExternalId == request.Id, cancellationToken: cancellationToken);
+                .FirstOrDefaultAsync(x => x.ExternalId == request.Id, cancellationToken);
             if (department == null)
                 throw new EntityNotFoundException(nameof(department), request.Id);
             

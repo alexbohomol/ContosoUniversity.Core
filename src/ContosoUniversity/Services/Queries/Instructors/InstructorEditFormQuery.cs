@@ -6,5 +6,5 @@ namespace ContosoUniversity.Services.Queries.Instructors
 
     using ViewModels.Instructors;
 
-    public record InstructorEditFormQuery(Guid Id) : IRequest<InstructorEditForm>;
+    public record InstructorEditFormQuery(Guid Id) : IRequest<EditInstructorForm>;
 }
