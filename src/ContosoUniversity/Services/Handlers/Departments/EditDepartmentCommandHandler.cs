@@ -24,7 +24,7 @@ namespace ContosoUniversity.Services.Handlers.Departments
         {
             var department = await _departmentsContext.Departments
                 .Include(i => i.Administrator)
-                .FirstOrDefaultAsync(m => m.ExternalId == request.ExternalId, cancellationToken: cancellationToken);
+                .FirstOrDefaultAsync(m => m.ExternalId == request.ExternalId, cancellationToken);
 
             department.Name = request.Name;
             department.StartDate = request.StartDate;

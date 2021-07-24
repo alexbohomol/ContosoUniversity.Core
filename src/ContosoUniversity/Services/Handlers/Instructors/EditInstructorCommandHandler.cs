@@ -18,7 +18,7 @@ namespace ContosoUniversity.Services.Handlers.Instructors
 
     using Microsoft.EntityFrameworkCore;
 
-    public class EditInstructorCommandHandler : AsyncRequestHandler<InstructorEditCommand>
+    public class EditInstructorCommandHandler : AsyncRequestHandler<EditInstructorCommand>
     {
         private readonly DepartmentsContext _departmentsContext;
         private readonly ICoursesRepository _coursesRepository;
@@ -31,7 +31,7 @@ namespace ContosoUniversity.Services.Handlers.Instructors
             _coursesRepository = coursesRepository;
         }
         
-        protected override async Task Handle(InstructorEditCommand request, CancellationToken cancellationToken)
+        protected override async Task Handle(EditInstructorCommand request, CancellationToken cancellationToken)
         {
             var instructor = await _departmentsContext.Instructors
                 .Include(i => i.OfficeAssignment)

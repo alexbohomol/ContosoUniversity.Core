@@ -8,7 +8,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
     using Domain.Contracts;
     using Domain.Contracts.Exceptions;
 
-    using Events;
+    using Notifications;
 
     using MediatR;
 
@@ -37,7 +37,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
              * remove related assignments and enrollments
              */
             await _mediator.Publish(
-                new CourseDeleted(request.Id),
+                new CourseDeletedNotification(request.Id),
                 cancellationToken);
         }
     }
