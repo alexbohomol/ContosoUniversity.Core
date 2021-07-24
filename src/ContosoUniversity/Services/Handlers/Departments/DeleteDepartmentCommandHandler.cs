@@ -11,7 +11,7 @@ namespace ContosoUniversity.Services.Handlers.Departments
     using Domain.Contracts;
     using Domain.Contracts.Exceptions;
 
-    using Events;
+    using Notifications;
 
     using MediatR;
 

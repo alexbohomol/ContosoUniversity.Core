@@ -6,7 +6,7 @@ namespace ContosoUniversity.Services.Handlers.Departments
 
     using Data.Departments;
 
-    using Events;
+    using Notifications;
 
     using MediatR;
 

@@ -8,7 +8,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
     using Domain.Contracts;
     using Domain.Contracts.Exceptions;
 
-    using Events;
+    using Notifications;
 
     using MediatR;
 
