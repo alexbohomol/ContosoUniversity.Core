@@ -62,7 +62,7 @@ namespace ContosoUniversity.Services.Handlers.Departments
              * remove related courses and withdraw enrolled students
              */
             await _mediator.Publish(
-                new DepartmentDeleted(request.Id, relatedCoursesIds),
+                new DepartmentDeletedNotification(request.Id, relatedCoursesIds),
                 cancellationToken);
         }
     }

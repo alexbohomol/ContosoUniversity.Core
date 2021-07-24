@@ -1,5 +1,5 @@
 ﻿@using ContosoUniversity.ViewModels.Students
-@model ContosoUniversity.ViewModels.Students.StudentDeleteViewModel
+@model ContosoUniversity.ViewModels.Students.StudentDeletePageViewModel
 
 @{
     ViewData["Title"] = "Delete";
@@ -8,7 +8,7 @@
 <h1>Delete</h1>
 @if (Model.SaveChangesError)
 {
-    <p class="text-danger">@StudentDeleteViewModel.ErrMsgSaveChanges</p>
+    <p class="text-danger">@StudentDeletePageViewModel.ErrMsgSaveChanges</p>
 }
 <h3>Are you sure you want to delete this?</h3>
 <div>

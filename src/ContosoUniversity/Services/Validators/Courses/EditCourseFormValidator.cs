@@ -6,7 +6,7 @@ namespace ContosoUniversity.Services.Validators.Courses
 
     using ViewModels.Courses;
 
-    public class EditCourseFormValidator : AbstractValidator<EditCourseForm>
+    public class EditCourseFormValidator : AbstractValidator<CourseEditForm>
     {
         private const string ErrMsgTitle = "The field '{PropertyName}' must be a string with a minimum length of {MinLength} and a maximum length of {MaxLength}.";
 
