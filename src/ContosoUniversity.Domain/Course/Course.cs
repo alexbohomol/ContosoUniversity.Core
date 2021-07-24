@@ -77,15 +77,4 @@ namespace ContosoUniversity.Domain.Course
             DepartmentId = departmentId;
         }
     }
-
-    public class Department
-    {
-        public string Name { get; set; }
-        public decimal Budget { get; set; }
-
-        public DateTime StartDate { get; set; }
-
-        // public Instructor Administrator { get; set; }
-        public Guid ExternalId { get; set; }
-    }
 }
