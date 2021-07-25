@@ -3,8 +3,8 @@ namespace ContosoUniversity.Data.Departments
     using System;
     using System.Threading.Tasks;
 
-    using Domain;
     using Domain.Contracts;
+    using Domain.Department;
 
     using Microsoft.EntityFrameworkCore;
 
@@ -33,7 +33,7 @@ namespace ContosoUniversity.Data.Departments
             dataModel.Name,
             dataModel.Budget,
             dataModel.StartDate,
-            dataModel.Administrator?.ExternalId ?? default,
+            new Administrator(dataModel.Administrator?.FirstMidName, dataModel.Administrator?.LastName),
             dataModel.ExternalId);
 
         protected override void MapDomainEntityOntoDataEntity(Department domainEntity, Models.Department dataEntity)
