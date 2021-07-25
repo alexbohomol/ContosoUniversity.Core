@@ -3,17 +3,19 @@ namespace ContosoUniversity.Data.Departments
     using Domain;
     using Domain.Contracts;
 
-    using Microsoft.EntityFrameworkCore;
-
     public class DepartmentsRepository : EfRepository<Department, Models.Department>, IDepartmentsRepository
     {
-        public DepartmentsRepository(DbContext dbContext) : base(dbContext) { }
+        public DepartmentsRepository(DepartmentsContext dbContext) 
+            : base(
+                dbContext,
+                defaultIncludes: new [] { nameof(Models.Department.Administrator) }) 
+        { }
 
         protected override Department ToDomainEntity(Models.Department dataModel) => new(
             dataModel.Name,
             dataModel.Budget,
             dataModel.StartDate,
-            dataModel.Administrator.ExternalId,
+            dataModel.Administrator?.ExternalId ?? default,
             dataModel.ExternalId);
 
         protected override void MapDomainEntityOntoDataEntity(Department domainEntity, Models.Department dataEntity)
