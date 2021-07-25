@@ -4,5 +4,5 @@ namespace ContosoUniversity.Services.Notifications
 
     using MediatR;
 
-    public record DepartmentDeletedNotification(Guid DepartmentId, Guid[] CourseIds) : INotification;
+    public record DepartmentDeletedNotification(Guid[] CourseIds) : INotification;
 }

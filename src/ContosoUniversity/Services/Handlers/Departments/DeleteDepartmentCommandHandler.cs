@@ -6,8 +6,6 @@ namespace ContosoUniversity.Services.Handlers.Departments
 
     using Commands.Departments;
 
-    using Data.Departments;
-
     using Domain.Contracts;
     using Domain.Contracts.Exceptions;
 
@@ -15,22 +13,17 @@ namespace ContosoUniversity.Services.Handlers.Departments
 
     using MediatR;
 
-    using Microsoft.EntityFrameworkCore;
-
     public class DeleteDepartmentCommandHandler : AsyncRequestHandler<DeleteDepartmentCommand>
     {
-        private readonly DepartmentsContext _departmentsContext;
         private readonly IDepartmentsRepository _departmentsRepository;
         private readonly ICoursesRepository _coursesRepository;
         private readonly IMediator _mediator;
 
         public DeleteDepartmentCommandHandler(
-            DepartmentsContext departmentsContext,
             IDepartmentsRepository departmentsRepository,
             ICoursesRepository coursesRepository,
             IMediator mediator)
         {
-            _departmentsContext = departmentsContext;
             _departmentsRepository = departmentsRepository;
             _coursesRepository = coursesRepository;
             _mediator = mediator;
@@ -42,29 +35,23 @@ namespace ContosoUniversity.Services.Handlers.Departments
             if (!exists)
                 throw new EntityNotFoundException(nameof(exists), request.Id);
             
-            var relatedCourses = await _coursesRepository.GetByDepartmentId(request.Id);
-            var relatedCoursesIds = relatedCourses.Select(x => x.EntityId).ToArray();
-
-            /*
-             * remove related assignments
-             */
-            var relatedAssignments = await _departmentsContext.CourseAssignments
-                .Where(x => relatedCoursesIds.Contains(x.CourseExternalId))
-                .ToArrayAsync(cancellationToken: cancellationToken);
-            _departmentsContext.CourseAssignments.RemoveRange(relatedAssignments);
-
-            await _departmentsContext.SaveChangesAsync(cancellationToken);
-            
             await _departmentsRepository.Remove(request.Id);
+
+            var relatedCoursesIds = (await _coursesRepository.GetByDepartmentId(request.Id))
+                .Select(x => x.EntityId)
+                .ToArray();
             
             /*
              * - remove related courses
              * - withdraw enrolled students
-             * - remove related assignments ???
+             * - remove related assignments (restrain assigned instructors)
              */
-            await _mediator.Publish(
-                new DepartmentDeletedNotification(request.Id, relatedCoursesIds),
-                cancellationToken);
+            if (relatedCoursesIds.Any())
+            {
+                await _mediator.Publish(
+                    new DepartmentDeletedNotification(relatedCoursesIds),
+                    cancellationToken);
+            }
         }
     }
 }
