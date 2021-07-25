@@ -9,5 +9,6 @@ namespace ContosoUniversity.Domain.Contracts
     public interface IDepartmentsRepository : IRepository<Department>
     {
         Task<Dictionary<Guid, string>> GetDepartmentNamesReference();
+        Task<bool> Exists(Guid departmentId);
     }
 }

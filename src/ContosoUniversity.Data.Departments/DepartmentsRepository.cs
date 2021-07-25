@@ -38,6 +38,8 @@ namespace ContosoUniversity.Data.Departments
                x => x.ExternalId,
                x => x.Name);
 
+        public Task<bool> Exists(Guid departmentId) => DbSet.AnyAsync(x => x.ExternalId == departmentId);
+
         protected override Department ToDomainEntity(Models.Department dataModel) => new(
             dataModel.Name,
             dataModel.Budget,
