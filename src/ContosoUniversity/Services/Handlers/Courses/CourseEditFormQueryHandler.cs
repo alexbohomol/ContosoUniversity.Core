@@ -1,13 +1,9 @@
 namespace ContosoUniversity.Services.Handlers.Courses
 {
-    using System;
-    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
 
     using Commands.Courses;
-
-    using Data.Departments;
 
     using Domain.Contracts;
     using Domain.Contracts.Exceptions;
@@ -21,14 +17,14 @@ namespace ContosoUniversity.Services.Handlers.Courses
     public class CourseEditFormQueryHandler : IRequestHandler<CourseEditFormQuery, CourseEditForm>
     {
         private readonly ICoursesRepository _coursesRepository;
-        private readonly DepartmentsContext _departmentsContext;
+        private readonly IDepartmentsRepository _departmentsRepository;
 
         public CourseEditFormQueryHandler(
             ICoursesRepository coursesRepository,
-            DepartmentsContext departmentsContext)
+            IDepartmentsRepository departmentsRepository)
         {
             _coursesRepository = coursesRepository;
-            _departmentsContext = departmentsContext;
+            _departmentsRepository = departmentsRepository;
         }
 
         public async Task<CourseEditForm> Handle(CourseEditFormQuery request, CancellationToken cancellationToken)
@@ -37,7 +33,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
             if (course == null)
                 throw new EntityNotFoundException(nameof(course), request.Id);
 
-            Dictionary<Guid,string> departments = await _departmentsContext.GetDepartmentsNames();
+            var departments = await _departmentsRepository.GetDepartmentNamesReference();
 
             CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(
                 new [] { course }, 

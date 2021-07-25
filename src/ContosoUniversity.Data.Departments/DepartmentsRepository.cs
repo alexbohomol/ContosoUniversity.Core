@@ -1,6 +1,8 @@
 namespace ContosoUniversity.Data.Departments
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Domain.Contracts;
@@ -28,6 +30,13 @@ namespace ContosoUniversity.Data.Departments
                 ? null
                 : ToDomainEntity(department);
         }
+
+        public Task<Dictionary<Guid, string>> GetDepartmentNamesReference() => DbSet
+            .AsNoTracking()
+            .OrderBy(x => x.Name)
+            .ToDictionaryAsync(
+               x => x.ExternalId,
+               x => x.Name);
 
         protected override Department ToDomainEntity(Models.Department dataModel) => new(
             dataModel.Name,
