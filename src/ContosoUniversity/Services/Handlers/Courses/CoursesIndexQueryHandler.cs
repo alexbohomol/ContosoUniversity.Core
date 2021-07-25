@@ -5,13 +5,9 @@ namespace ContosoUniversity.Services.Handlers.Courses
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Data.Departments;
-
     using Domain.Contracts;
 
     using MediatR;
-
-    using Microsoft.EntityFrameworkCore;
 
     using Queries.Courses;
 
@@ -20,24 +16,21 @@ namespace ContosoUniversity.Services.Handlers.Courses
     public class CoursesIndexQueryHandler : IRequestHandler<CoursesIndexQuery, List<CourseListItemViewModel>>
     {
         private readonly ICoursesRepository _coursesRepository;
-        private readonly DepartmentsContext _departmentsContext;
+        private readonly IDepartmentsRepository _departmentsRepository;
 
         public CoursesIndexQueryHandler(
             ICoursesRepository coursesRepository,
-            DepartmentsContext departmentsContext)
+            IDepartmentsRepository departmentsRepository)
         {
             _coursesRepository = coursesRepository;
-            _departmentsContext = departmentsContext;
+            _departmentsRepository = departmentsRepository;
         }
 
         public async Task<List<CourseListItemViewModel>> Handle(CoursesIndexQuery request, CancellationToken cancellationToken)
         {
             var courses = await _coursesRepository.GetAll();
 
-            var departmentNames = await _departmentsContext.Departments
-                .Where(x => courses.Select(_ => _.DepartmentId).Distinct().Contains(x.ExternalId))
-                .AsNoTracking()
-                .ToDictionaryAsync(x => x.ExternalId, x => x.Name, cancellationToken);
+            var departmentNames = await _departmentsRepository.GetDepartmentNamesReference();
 
             CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);
 
