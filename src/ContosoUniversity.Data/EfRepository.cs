@@ -40,7 +40,7 @@ namespace ContosoUniversity.Data
                 (dbQuery, relationProperty) => dbQuery.Include(relationProperty));
         }
         
-        public async Task<TDomainEntity> GetById(Guid entityId)
+        public virtual async Task<TDomainEntity> GetById(Guid entityId)
         {
             var dataEntity = await DbQuery
                 .AsNoTracking()
@@ -51,7 +51,7 @@ namespace ContosoUniversity.Data
                 : ToDomainEntity(dataEntity);
         }
 
-        public async Task<TDomainEntity[]> GetAll()
+        public virtual async Task<TDomainEntity[]> GetAll()
         {
             var dataEntities = await DbQuery
                 .AsNoTracking()
