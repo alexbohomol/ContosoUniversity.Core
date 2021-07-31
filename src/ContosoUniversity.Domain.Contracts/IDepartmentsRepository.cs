@@ -10,5 +10,6 @@ namespace ContosoUniversity.Domain.Contracts
     {
         Task<Dictionary<Guid, string>> GetDepartmentNamesReference();
         Task<bool> Exists(Guid departmentId);
+        Task<Department[]> GetByAdministrator(Guid instructorId);
     }
 }

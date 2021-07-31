@@ -38,8 +38,13 @@ namespace ContosoUniversity.Domain.Department
 
         public DateTime StartDate { get; }
 
-        public Administrator Administrator { get; }
+        public Administrator Administrator { get; private set; }
 
         public Guid EntityId { get; }
+
+        public void DisassociateAdministrator()
+        {
+            Administrator = null;
+        }
     }
 }

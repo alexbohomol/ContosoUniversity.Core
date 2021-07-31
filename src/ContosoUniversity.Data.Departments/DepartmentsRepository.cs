@@ -39,6 +39,16 @@ namespace ContosoUniversity.Data.Departments
                x => x.Name);
 
         public Task<bool> Exists(Guid departmentId) => DbSet.AnyAsync(x => x.ExternalId == departmentId);
+        
+        public async Task<Department[]> GetByAdministrator(Guid instructorId)
+        {
+            var departments = await DbSet
+                .AsNoTracking()
+                .Where(x => x.Administrator.ExternalId == instructorId)
+                .ToArrayAsync();
+
+            return departments.Select(ToDomainEntity).ToArray();
+        }
 
         protected override Department ToDomainEntity(Models.Department dataModel) => new(
             dataModel.Name,
