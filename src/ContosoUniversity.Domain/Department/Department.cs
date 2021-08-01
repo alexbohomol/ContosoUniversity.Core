@@ -8,12 +8,12 @@ namespace ContosoUniversity.Domain.Department
             string name, 
             decimal budget, 
             DateTime startDate, 
-            Administrator administrator) 
+            Guid? administratorId) 
             : this(
                 name, 
                 budget, 
                 startDate, 
-                administrator,
+                administratorId,
                 Guid.NewGuid())
         {
         }
@@ -22,13 +22,13 @@ namespace ContosoUniversity.Domain.Department
             string name, 
             decimal budget, 
             DateTime startDate, 
-            Administrator administrator,
+            Guid? administratorId,
             Guid entityId)
         {
             Name = name;
             Budget = budget;
             StartDate = startDate;
-            Administrator = administrator;
+            AdministratorId = administratorId;
             EntityId = entityId;
         }
 
@@ -38,13 +38,13 @@ namespace ContosoUniversity.Domain.Department
 
         public DateTime StartDate { get; }
 
-        public Administrator Administrator { get; private set; }
+        public Guid? AdministratorId { get; private set; }
 
         public Guid EntityId { get; }
 
         public void DisassociateAdministrator()
         {
-            Administrator = null;
+            AdministratorId = null;
         }
     }
 }

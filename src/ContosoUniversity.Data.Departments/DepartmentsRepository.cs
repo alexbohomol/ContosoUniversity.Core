@@ -54,7 +54,7 @@ namespace ContosoUniversity.Data.Departments
             dataModel.Name,
             dataModel.Budget,
             dataModel.StartDate,
-            new Administrator(dataModel.Administrator?.FirstMidName, dataModel.Administrator?.LastName),
+            dataModel.Administrator?.ExternalId,
             dataModel.ExternalId);
 
         protected override void MapDomainEntityOntoDataEntity(Department domainEntity, Models.Department dataEntity)
@@ -64,6 +64,17 @@ namespace ContosoUniversity.Data.Departments
             dataEntity.StartDate = domainEntity.StartDate;
             // dataEntity.InstructorId = domainEntity.AdministratorId;
             dataEntity.ExternalId = domainEntity.EntityId;
+
+            if (domainEntity.AdministratorId.HasValue)
+            {
+                dataEntity.Administrator = ((DepartmentsContext)DbContext)
+                                           .Instructors
+                                           .FirstOrDefault(x => x.ExternalId == domainEntity.AdministratorId);
+            }
+            else
+            {
+                dataEntity.Administrator = null;
+            }
         }
     }
 }
