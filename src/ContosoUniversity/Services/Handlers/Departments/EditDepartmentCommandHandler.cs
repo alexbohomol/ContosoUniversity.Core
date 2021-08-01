@@ -11,7 +11,7 @@ namespace ContosoUniversity.Services.Handlers.Departments
 
     using Microsoft.EntityFrameworkCore;
 
-    public class EditDepartmentCommandHandler : AsyncRequestHandler<DepartmentEditCommand>
+    public class EditDepartmentCommandHandler : AsyncRequestHandler<EditDepartmentCommand>
     {
         private readonly DepartmentsContext _departmentsContext;
 
@@ -20,7 +20,7 @@ namespace ContosoUniversity.Services.Handlers.Departments
             _departmentsContext = departmentsContext;
         }
         
-        protected override async Task Handle(DepartmentEditCommand request, CancellationToken cancellationToken)
+        protected override async Task Handle(EditDepartmentCommand request, CancellationToken cancellationToken)
         {
             var department = await _departmentsContext.Departments
                 .Include(i => i.Administrator)

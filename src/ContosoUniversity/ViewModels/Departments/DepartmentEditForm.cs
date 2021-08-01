@@ -6,9 +6,9 @@ namespace ContosoUniversity.ViewModels.Departments
 
     using Services.Commands.Departments;
 
-    public class DepartmentEditForm : DepartmentEditCommand
+    public class DepartmentEditForm : EditDepartmentCommand
     {
-        public DepartmentEditForm(DepartmentEditCommand command, Dictionary<int,string> instructorNames)
+        public DepartmentEditForm(EditDepartmentCommand command, Dictionary<int,string> instructorNames)
         {
             Name = command.Name;
             Budget = command.Budget;

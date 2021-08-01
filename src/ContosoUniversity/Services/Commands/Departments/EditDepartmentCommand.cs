@@ -6,7 +6,7 @@ namespace ContosoUniversity.Services.Commands.Departments
 
     using MediatR;
 
-    public class DepartmentEditCommand : IRequest
+    public class EditDepartmentCommand : IRequest
     {
         [StringLength(50, MinimumLength = 3)]
         public string Name { get; set; }
