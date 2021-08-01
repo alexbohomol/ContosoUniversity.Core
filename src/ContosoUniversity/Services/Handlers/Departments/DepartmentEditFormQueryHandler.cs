@@ -5,9 +5,9 @@ namespace ContosoUniversity.Services.Handlers.Departments
 
     using Data.Departments;
 
-    using MediatR;
+    using Domain.Contracts;
 
-    using Microsoft.EntityFrameworkCore;
+    using MediatR;
 
     using Queries.Departments;
 
@@ -17,18 +17,17 @@ namespace ContosoUniversity.Services.Handlers.Departments
     public class DepartmentEditFormQueryHandler : IRequestHandler<DepartmentEditFormQuery, DepartmentEditForm>
     {
         private readonly DepartmentsContext _departmentsContext;
+        private readonly IDepartmentsRepository _departmentsRepository;
 
-        public DepartmentEditFormQueryHandler(DepartmentsContext departmentsContext)
+        public DepartmentEditFormQueryHandler(DepartmentsContext departmentsContext, IDepartmentsRepository departmentsRepository)
         {
             _departmentsContext = departmentsContext;
+            _departmentsRepository = departmentsRepository;
         }
         
         public async Task<DepartmentEditForm> Handle(DepartmentEditFormQuery request, CancellationToken cancellationToken)
         {
-            var department = await _departmentsContext.Departments
-                .Include(i => i.Administrator)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ExternalId == request.Id, cancellationToken);
+            var department = await _departmentsRepository.GetById(request.Id);
 
             return department == null
                 ? null
@@ -37,10 +36,10 @@ namespace ContosoUniversity.Services.Handlers.Departments
                     Name = department.Name,
                     Budget = department.Budget,
                     StartDate = department.StartDate,
-                    InstructorId = department.Administrator?.ExternalId,
-                    ExternalId = department.ExternalId,
-                    RowVersion = department.RowVersion,
-                    InstructorsDropDown = (await _departmentsContext.GetInstructorsNames()).ToSelectList(department.Administrator?.ExternalId ?? default)
+                    InstructorId = department.AdministratorId,
+                    ExternalId = department.EntityId,
+                    // RowVersion = department.RowVersion,
+                    InstructorsDropDown = (await _departmentsContext.GetInstructorsNames()).ToSelectList(department.AdministratorId ?? default)
                 };
         }
     }
