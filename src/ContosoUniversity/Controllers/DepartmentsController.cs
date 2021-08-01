@@ -10,8 +10,8 @@
     using Microsoft.AspNetCore.Mvc;
 
     using Services;
-    using Services.Commands.Departments;
-    using Services.Queries.Departments;
+    using Services.Departments.Commands;
+    using Services.Departments.Queries;
 
     using ViewModels;
     using ViewModels.Departments;

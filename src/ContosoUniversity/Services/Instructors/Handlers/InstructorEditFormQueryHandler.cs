@@ -1,0 +1,53 @@
+namespace ContosoUniversity.Services.Instructors.Handlers
+{
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    using Data.Departments;
+
+    using Domain.Contracts;
+
+    using MediatR;
+
+    using Microsoft.EntityFrameworkCore;
+
+    using Queries;
+
+    using ViewModels;
+    using ViewModels.Instructors;
+
+    public class InstructorEditFormQueryHandler : IRequestHandler<InstructorEditFormQuery, EditInstructorForm>
+    {
+        private readonly DepartmentsContext _departmentsContext;
+        private readonly ICoursesRepository _coursesRepository;
+
+        public InstructorEditFormQueryHandler(
+            DepartmentsContext departmentsContext,
+            ICoursesRepository coursesRepository)
+        {
+            _departmentsContext = departmentsContext;
+            _coursesRepository = coursesRepository;
+        }
+        
+        public async Task<EditInstructorForm> Handle(InstructorEditFormQuery request, CancellationToken cancellationToken)
+        {
+            var instructor = await _departmentsContext.Instructors
+                .Include(i => i.OfficeAssignment)
+                .Include(i => i.CourseAssignments)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ExternalId == request.Id, cancellationToken);
+            
+            return instructor == null
+                ? null
+                : new EditInstructorForm
+                {
+                    ExternalId = instructor.ExternalId,
+                    LastName = instructor.LastName,
+                    FirstName = instructor.FirstMidName,
+                    HireDate = instructor.HireDate,
+                    Location = instructor.OfficeAssignment?.Location,
+                    AssignedCourses = (await _coursesRepository.GetAll()).ToAssignedCourseOptions(instructor)
+                };
+        }
+    }
+}

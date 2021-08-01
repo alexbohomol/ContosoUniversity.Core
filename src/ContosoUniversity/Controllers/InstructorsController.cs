@@ -9,8 +9,8 @@
 
     using Microsoft.AspNetCore.Mvc;
 
-    using Services.Commands.Instructors;
-    using Services.Queries.Instructors;
+    using Services.Instructors.Commands;
+    using Services.Instructors.Queries;
 
     using ViewModels;
     using ViewModels.Instructors;

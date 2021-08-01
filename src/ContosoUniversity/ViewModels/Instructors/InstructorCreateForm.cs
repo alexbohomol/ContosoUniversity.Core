@@ -2,7 +2,7 @@ namespace ContosoUniversity.ViewModels.Instructors
 {
     using System.ComponentModel.DataAnnotations;
 
-    using Services.Commands.Instructors;
+    using Services.Instructors.Commands;
 
     public class CreateInstructorForm : CreateInstructorCommand
     {

@@ -9,8 +9,8 @@
 
     using Microsoft.AspNetCore.Mvc;
 
-    using Services.Commands.Courses;
-    using Services.Queries.Courses;
+    using Services.Courses.Commands;
+    using Services.Courses.Queries;
 
     using ViewModels.Courses;
 

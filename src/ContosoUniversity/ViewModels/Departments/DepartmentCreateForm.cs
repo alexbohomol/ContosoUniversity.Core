@@ -5,7 +5,7 @@ namespace ContosoUniversity.ViewModels.Departments
 
     using Microsoft.AspNetCore.Mvc.Rendering;
 
-    using Services.Commands.Departments;
+    using Services.Departments.Commands;
 
     public class CreateDepartmentForm : CreateDepartmentCommand
     {
