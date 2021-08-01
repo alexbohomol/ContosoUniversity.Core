@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Notifications
+namespace ContosoUniversity.Services.Courses.Notifications
 {
     using System;
 

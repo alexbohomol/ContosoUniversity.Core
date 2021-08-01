@@ -4,13 +4,13 @@ namespace ContosoUniversity.Services.Departments.Handlers
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Courses.Notifications;
+
     using Data.Departments;
 
     using MediatR;
 
     using Microsoft.EntityFrameworkCore;
-
-    using Notifications;
 
     public class CourseDeletedNotificationHandler : INotificationHandler<CourseDeletedNotification>
     {

@@ -6,11 +6,11 @@ namespace ContosoUniversity.Services.Instructors.Handlers
 
     using Data.Departments;
 
+    using Departments.Notifications;
+
     using MediatR;
 
     using Microsoft.EntityFrameworkCore;
-
-    using Notifications;
 
     public class DepartmentDeletedNotificationHandler : INotificationHandler<DepartmentDeletedNotification>
     {

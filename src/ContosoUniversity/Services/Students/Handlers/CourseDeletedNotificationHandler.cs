@@ -5,11 +5,11 @@ namespace ContosoUniversity.Services.Students.Handlers
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Courses.Notifications;
+
     using Domain.Contracts;
 
     using MediatR;
-
-    using Notifications;
 
     public class CourseDeletedNotificationHandler : INotificationHandler<CourseDeletedNotification>
     {
