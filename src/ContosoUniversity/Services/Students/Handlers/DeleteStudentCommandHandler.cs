@@ -1,9 +1,9 @@
-namespace ContosoUniversity.Services.Handlers.Students
+namespace ContosoUniversity.Services.Students.Handlers
 {
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Commands.Students;
+    using Commands;
 
     using Domain.Contracts;
     using Domain.Contracts.Exceptions;

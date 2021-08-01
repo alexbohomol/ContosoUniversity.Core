@@ -1,11 +1,11 @@
-namespace ContosoUniversity.Services.Commands.Students
+namespace ContosoUniversity.Services.Students.Commands
 {
     using System;
     using System.ComponentModel.DataAnnotations;
 
     using MediatR;
 
-    public class CreateStudentCommand : IRequest
+    public class EditStudentCommand : IRequest
     {
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
@@ -21,5 +21,7 @@ namespace ContosoUniversity.Services.Commands.Students
         [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
+
+        public Guid ExternalId { get; set; }
     }
 }

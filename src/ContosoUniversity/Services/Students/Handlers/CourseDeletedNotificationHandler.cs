@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Handlers.Students
+namespace ContosoUniversity.Services.Students.Handlers
 {
     using System;
     using System.Linq;
@@ -7,9 +7,9 @@ namespace ContosoUniversity.Services.Handlers.Students
 
     using Domain.Contracts;
 
-    using Notifications;
-
     using MediatR;
+
+    using Notifications;
 
     public class CourseDeletedNotificationHandler : INotificationHandler<CourseDeletedNotification>
     {

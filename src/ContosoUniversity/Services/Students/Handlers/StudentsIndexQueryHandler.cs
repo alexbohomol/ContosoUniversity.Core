@@ -1,8 +1,8 @@
-namespace ContosoUniversity.Services.Handlers.Students
+namespace ContosoUniversity.Services.Students.Handlers
 {
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using System.Linq;
 
     using Domain.Contracts;
     using Domain.Contracts.Paging;
@@ -10,7 +10,7 @@ namespace ContosoUniversity.Services.Handlers.Students
 
     using MediatR;
 
-    using Queries.Students;
+    using Queries;
 
     using ViewModels.Students;
 

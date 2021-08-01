@@ -7,8 +7,8 @@
 
     using Microsoft.AspNetCore.Mvc;
 
-    using Services.Commands.Students;
-    using Services.Queries.Students;
+    using Services.Students.Commands;
+    using Services.Students.Queries;
 
     using ViewModels.Students;
 
