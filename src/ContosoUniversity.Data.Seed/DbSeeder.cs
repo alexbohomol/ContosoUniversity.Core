@@ -117,7 +117,7 @@
             foreach (var department in departmentsContext.Departments)
             {
                 var administrator = departmentConfigs.Single(x => x.Name == department.Name).Administrator;
-                department.Administrator = instructors.FirstOrDefault(x => x.FullName == administrator);
+                department.InstructorId = instructors.FirstOrDefault(x => x.FullName == administrator)?.Id;
             }
 
             departmentsContext.SaveChanges();
