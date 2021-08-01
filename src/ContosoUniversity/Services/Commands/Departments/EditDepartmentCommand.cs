@@ -21,7 +21,7 @@ namespace ContosoUniversity.Services.Commands.Departments
         public DateTime StartDate { get; set; }
 
         [Display(Name = "Administrator")]
-        public int? InstructorId { get; set; }
+        public Guid? InstructorId { get; set; }
 
         public Guid ExternalId { get; set; }
         public byte[] RowVersion { get; set; }

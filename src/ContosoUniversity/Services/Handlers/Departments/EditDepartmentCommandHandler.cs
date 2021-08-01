@@ -7,6 +7,8 @@ namespace ContosoUniversity.Services.Handlers.Departments
 
     using Data.Departments;
 
+    using Domain.Contracts.Exceptions;
+
     using MediatR;
 
     using Microsoft.EntityFrameworkCore;
@@ -29,8 +31,20 @@ namespace ContosoUniversity.Services.Handlers.Departments
             department.Name = request.Name;
             department.StartDate = request.StartDate;
             department.Budget = request.Budget;
-            department.InstructorId = request.InstructorId;
             department.RowVersion = request.RowVersion;
+
+            if (request.InstructorId.HasValue)
+            {
+                var instructor = await _departmentsContext.Instructors
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.ExternalId == request.InstructorId);
+
+                department.InstructorId = instructor?.Id ?? throw new EntityNotFoundException(nameof(instructor), request.InstructorId.Value);
+            }
+            else
+            {
+                department.InstructorId = null;
+            }
 
             await _departmentsContext.SaveChangesAsync(cancellationToken);
         }

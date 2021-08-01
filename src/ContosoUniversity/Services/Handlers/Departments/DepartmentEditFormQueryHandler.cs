@@ -37,10 +37,10 @@ namespace ContosoUniversity.Services.Handlers.Departments
                     Name = department.Name,
                     Budget = department.Budget,
                     StartDate = department.StartDate,
-                    InstructorId = department.InstructorId,
+                    InstructorId = department.Administrator?.ExternalId,
                     ExternalId = department.ExternalId,
                     RowVersion = department.RowVersion,
-                    InstructorsDropDown = (await _departmentsContext.GetInstructorsNames()).ToSelectList(department.InstructorId.GetValueOrDefault())
+                    InstructorsDropDown = (await _departmentsContext.GetInstructorsNames()).ToSelectList(department.Administrator?.ExternalId ?? default)
                 };
         }
     }

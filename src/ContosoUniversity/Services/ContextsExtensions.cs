@@ -1,5 +1,6 @@
 namespace ContosoUniversity.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -9,13 +10,13 @@ namespace ContosoUniversity.Services
 
     public static class ContextsExtensions
     {
-        public static Task<Dictionary<int, string>> GetInstructorsNames(this DepartmentsContext context)
+        public static Task<Dictionary<Guid, string>> GetInstructorsNames(this DepartmentsContext context)
         {
             return context
                    .Instructors
                    .AsNoTracking()
                    .ToDictionaryAsync(
-                       x => x.Id,
+                       x => x.ExternalId,
                        x => x.FullName);
         }
     }

@@ -1,5 +1,6 @@
 namespace ContosoUniversity.ViewModels.Departments
 {
+    using System;
     using System.Collections.Generic;
 
     using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,7 +9,7 @@ namespace ContosoUniversity.ViewModels.Departments
 
     public class DepartmentEditForm : EditDepartmentCommand
     {
-        public DepartmentEditForm(EditDepartmentCommand command, Dictionary<int,string> instructorNames)
+        public DepartmentEditForm(EditDepartmentCommand command, Dictionary<Guid,string> instructorNames)
         {
             Name = command.Name;
             Budget = command.Budget;

@@ -17,16 +17,5 @@ namespace ContosoUniversity.ViewModels
                 "Value",
                 selectedValue);
         }
-        
-        public static SelectList ToSelectList(
-            this IDictionary<int, string> values,
-            int selectedValue = default)
-        {
-            return new(
-                values,
-                "Key",
-                "Value",
-                selectedValue);
-        }
     }
 }
