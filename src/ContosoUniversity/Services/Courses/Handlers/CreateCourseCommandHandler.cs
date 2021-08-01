@@ -1,9 +1,9 @@
-namespace ContosoUniversity.Services.Handlers.Courses
+namespace ContosoUniversity.Services.Courses.Handlers
 {
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Commands.Courses;
+    using Commands;
 
     using Domain.Contracts;
     using Domain.Course;

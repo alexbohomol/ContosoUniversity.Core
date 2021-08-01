@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Commands.Courses
+namespace ContosoUniversity.Services.Courses.Commands
 {
     using System;
 

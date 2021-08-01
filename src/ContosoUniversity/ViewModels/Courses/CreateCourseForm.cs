@@ -5,7 +5,7 @@ namespace ContosoUniversity.ViewModels.Courses
 
     using Microsoft.AspNetCore.Mvc.Rendering;
 
-    using Services.Commands.Courses;
+    using Services.Courses.Commands;
 
     public class CreateCourseForm : CreateCourseCommand
     {

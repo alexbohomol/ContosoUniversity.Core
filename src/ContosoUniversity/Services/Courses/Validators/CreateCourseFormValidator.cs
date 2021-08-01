@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Validators.Courses
+namespace ContosoUniversity.Services.Courses.Validators
 {
     using Domain.Course;
 

@@ -1,10 +1,10 @@
-namespace ContosoUniversity.Services.Validators.Courses
+namespace ContosoUniversity.Services.Courses.Validators
 {
     using System;
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Commands.Courses;
+    using Commands;
 
     using Domain.Contracts;
     using Domain.Course;

@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Queries.Courses
+namespace ContosoUniversity.Services.Courses.Queries
 {
     using System.Collections.Generic;
 

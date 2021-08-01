@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Handlers.Courses
+namespace ContosoUniversity.Services.Courses.Handlers
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -9,7 +9,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
 
     using MediatR;
 
-    using Queries.Courses;
+    using Queries;
 
     using ViewModels.Courses;
 
