@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Handlers.Instructors
+namespace ContosoUniversity.Services.Instructors.Handlers
 {
     using System.Linq;
     using System.Threading;

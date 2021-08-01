@@ -1,14 +1,12 @@
-namespace ContosoUniversity.Services.Commands.Instructors
+namespace ContosoUniversity.Services.Instructors.Commands
 {
     using System;
     using System.ComponentModel.DataAnnotations;
 
     using MediatR;
 
-    public class EditInstructorCommand : IRequest
+    public class CreateInstructorCommand : IRequest
     {
-        public Guid ExternalId { get; set; }
-
         [StringLength(50, MinimumLength = 1)]
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$", ErrorMessage = "The first character must upper case and the remaining characters must be alphabetical")]
         [Display(Name = "Last Name")]

@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Queries.Instructors
+namespace ContosoUniversity.Services.Instructors.Queries
 {
     using System;
 

@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Handlers.Instructors
+namespace ContosoUniversity.Services.Instructors.Handlers
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@ namespace ContosoUniversity.Services.Handlers.Instructors
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Commands.Instructors;
+    using Commands;
 
     using Data.Departments;
     using Data.Departments.Models;

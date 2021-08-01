@@ -1,11 +1,11 @@
-namespace ContosoUniversity.Services.Handlers.Instructors
+namespace ContosoUniversity.Services.Instructors.Handlers
 {
     using System;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Commands.Instructors;
+    using Commands;
 
     using Data.Departments;
     using Data.Departments.Models;
@@ -37,7 +37,7 @@ namespace ContosoUniversity.Services.Handlers.Instructors
             instructor.CourseAssignments = command.SelectedCourses?.Select(x => new CourseAssignment
             {
                 InstructorId = instructor.Id, // not yet generated ???
-                CourseExternalId = Guid.Parse(x)
+                CourseExternalId = Guid.Parse((string)x)
             }).ToList();
 
             _departmentsContext.Add(instructor);

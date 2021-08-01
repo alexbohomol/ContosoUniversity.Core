@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Handlers.Instructors
+namespace ContosoUniversity.Services.Instructors.Handlers
 {
     using System.Threading;
     using System.Threading.Tasks;
@@ -11,7 +11,7 @@ namespace ContosoUniversity.Services.Handlers.Instructors
 
     using Microsoft.EntityFrameworkCore;
 
-    using Queries.Instructors;
+    using Queries;
 
     using ViewModels.Instructors;
 

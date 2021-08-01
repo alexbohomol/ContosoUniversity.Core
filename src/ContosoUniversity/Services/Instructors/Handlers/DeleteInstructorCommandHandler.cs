@@ -1,9 +1,9 @@
-namespace ContosoUniversity.Services.Handlers.Instructors
+namespace ContosoUniversity.Services.Instructors.Handlers
 {
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Commands.Instructors;
+    using Commands;
 
     using Data.Departments;
 
