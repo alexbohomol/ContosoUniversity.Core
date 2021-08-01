@@ -65,6 +65,10 @@ namespace ContosoUniversity.Data.Departments
             // dataEntity.InstructorId = domainEntity.AdministratorId;
             dataEntity.ExternalId = domainEntity.EntityId;
 
+            /*
+             * TODO: git rid of Instructor entity reference
+             * It creates a mess with relations here
+             */
             if (domainEntity.AdministratorId.HasValue)
             {
                 dataEntity.Administrator = ((DepartmentsContext)DbContext)

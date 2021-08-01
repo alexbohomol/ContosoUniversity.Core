@@ -1,55 +1,29 @@
 namespace ContosoUniversity.Services.Handlers.Departments
 {
-    using System;
     using System.Threading;
     using System.Threading.Tasks;
 
     using Commands.Departments;
 
-    using Data.Departments;
-    using Data.Departments.Models;
-
-    using Domain.Contracts.Exceptions;
+    using Domain.Contracts;
+    using Domain.Department;
 
     using MediatR;
 
-    using Microsoft.EntityFrameworkCore;
-
     public class CreateDepartmentCommandHandler : AsyncRequestHandler<CreateDepartmentCommand>
     {
-        private readonly DepartmentsContext _departmentsContext;
+        private readonly IDepartmentsRepository _departmentsRepository;
 
-        public CreateDepartmentCommandHandler(DepartmentsContext departmentsContext)
+        public CreateDepartmentCommandHandler(IDepartmentsRepository departmentsRepository)
         {
-            _departmentsContext = departmentsContext;
+            _departmentsRepository = departmentsRepository;
         }
         
         protected override async Task Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
         {
-            int? instructorId;
-            if (request.InstructorId.HasValue)
-            {
-                var instructor = await _departmentsContext.Instructors
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.ExternalId == request.InstructorId);
+            var department = new Department(request.Name, request.Budget, request.StartDate, request.InstructorId);
 
-                instructorId = instructor?.Id ?? throw new EntityNotFoundException(nameof(instructor), request.InstructorId.Value);
-            }
-            else
-            {
-                instructorId = null;
-            }
-            
-            _departmentsContext.Add(new Department
-            {
-                Name = request.Name,
-                Budget = request.Budget,
-                StartDate = request.StartDate,
-                InstructorId = instructorId,
-                ExternalId = Guid.NewGuid()
-            });
-            
-            await _departmentsContext.SaveChangesAsync(cancellationToken);
+            await _departmentsRepository.Save(department);
         }
     }
 }
