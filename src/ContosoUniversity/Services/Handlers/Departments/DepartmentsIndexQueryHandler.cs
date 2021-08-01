@@ -7,9 +7,9 @@ namespace ContosoUniversity.Services.Handlers.Departments
 
     using Data.Departments;
 
-    using MediatR;
+    using Domain.Contracts;
 
-    using Microsoft.EntityFrameworkCore;
+    using MediatR;
 
     using Queries.Departments;
 
@@ -18,25 +18,31 @@ namespace ContosoUniversity.Services.Handlers.Departments
     public class DepartmentsIndexQueryHandler : IRequestHandler<DepartmentsIndexQuery, IList<DepartmentListItemViewModel>>
     {
         private readonly DepartmentsContext _departmentsContext;
+        private readonly IDepartmentsRepository _departmentsRepository;
 
-        public DepartmentsIndexQueryHandler(DepartmentsContext departmentsContext)
+        public DepartmentsIndexQueryHandler(DepartmentsContext departmentsContext, IDepartmentsRepository departmentsRepository)
         {
             _departmentsContext = departmentsContext;
+            _departmentsRepository = departmentsRepository;
         }
         
         public async Task<IList<DepartmentListItemViewModel>> Handle(DepartmentsIndexQuery request, CancellationToken cancellationToken)
         {
-            var departments = await _departmentsContext.Departments
-                .Include(d => d.Administrator)
-                .ToListAsync(cancellationToken);
+            var departments = await _departmentsRepository.GetAll();
+
+            var instructorsNames = await _departmentsContext.GetInstructorsNames();
 
             return departments.Select(x => new DepartmentListItemViewModel
             {
                 Name = x.Name,
                 Budget = x.Budget,
                 StartDate = x.StartDate,
-                Administrator = x.Administrator?.FullName,
-                ExternalId = x.ExternalId
+                Administrator = x.AdministratorId.HasValue
+                    ? instructorsNames.ContainsKey(x.AdministratorId.Value) 
+                        ? instructorsNames[x.AdministratorId.Value] 
+                        : string.Empty 
+                    : string.Empty,
+                ExternalId = x.EntityId
             }).ToList();
         }
     }

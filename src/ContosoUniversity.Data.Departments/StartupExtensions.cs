@@ -1,5 +1,7 @@
 namespace ContosoUniversity.Data.Departments
 {
+    using Domain.Contracts;
+
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -12,7 +14,7 @@ namespace ContosoUniversity.Data.Departments
                 options.UseSqlServer(connectionString);
             });
             
-            // services.AddScoped<IDepartmentsRepository, DepartmentsRepository>();
+            services.AddScoped<IDepartmentsRepository, DepartmentsRepository>();
         }
     }
 }

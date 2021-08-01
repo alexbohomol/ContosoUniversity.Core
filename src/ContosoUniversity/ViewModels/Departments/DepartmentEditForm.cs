@@ -1,22 +1,23 @@
 namespace ContosoUniversity.ViewModels.Departments
 {
+    using System;
     using System.Collections.Generic;
 
     using Microsoft.AspNetCore.Mvc.Rendering;
 
     using Services.Commands.Departments;
 
-    public class DepartmentEditForm : DepartmentEditCommand
+    public class DepartmentEditForm : EditDepartmentCommand
     {
-        public DepartmentEditForm(DepartmentEditCommand command, Dictionary<int,string> instructorNames)
+        public DepartmentEditForm(EditDepartmentCommand command, Dictionary<Guid,string> instructorNames)
         {
             Name = command.Name;
             Budget = command.Budget;
             StartDate = command.StartDate;
-            InstructorId = command.InstructorId;
+            AdministratorId = command.AdministratorId;
             ExternalId = command.ExternalId;
             RowVersion = command.RowVersion;
-            InstructorsDropDown = instructorNames.ToSelectList(command.InstructorId.GetValueOrDefault());
+            InstructorsDropDown = instructorNames.ToSelectList(command.AdministratorId.GetValueOrDefault());
         }
 
         public DepartmentEditForm()

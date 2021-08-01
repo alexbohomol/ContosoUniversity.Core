@@ -2,7 +2,7 @@ namespace ContosoUniversity.Domain.Course
 {
     using System;
 
-    public class Course : IAggregateRoot
+    public class Course : IIdentifiable<Guid>
     {
         private Guid _departmentId;
         private string _title;
@@ -76,16 +76,5 @@ namespace ContosoUniversity.Domain.Course
             Credits = credits;
             DepartmentId = departmentId;
         }
-    }
-
-    public class Department
-    {
-        public string Name { get; set; }
-        public decimal Budget { get; set; }
-
-        public DateTime StartDate { get; set; }
-
-        // public Instructor Administrator { get; set; }
-        public Guid ExternalId { get; set; }
     }
 }

@@ -3,14 +3,10 @@ namespace ContosoUniversity.Services.Handlers.Courses
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Data.Departments;
-
     using Domain.Contracts;
     using Domain.Contracts.Exceptions;
 
     using MediatR;
-
-    using Microsoft.EntityFrameworkCore;
 
     using Queries.Courses;
 
@@ -19,14 +15,14 @@ namespace ContosoUniversity.Services.Handlers.Courses
     public class CourseDetailsQueryHandler : IRequestHandler<CourseDetailsQuery, CourseDetailsViewModel>
     {
         private readonly ICoursesRepository _coursesRepository;
-        private readonly DepartmentsContext _departmentsContext;
+        private readonly IDepartmentsRepository _departmentsRepository;
 
         public CourseDetailsQueryHandler(
             ICoursesRepository coursesRepository,
-            DepartmentsContext departmentsContext)
+            IDepartmentsRepository departmentsRepository)
         {
             _coursesRepository = coursesRepository;
-            _departmentsContext = departmentsContext;
+            _departmentsRepository = departmentsRepository;
         }
 
         public async Task<CourseDetailsViewModel> Handle(CourseDetailsQuery request, CancellationToken cancellationToken)
@@ -35,9 +31,7 @@ namespace ContosoUniversity.Services.Handlers.Courses
             if (course == null)
                 throw new EntityNotFoundException(nameof(course), request.Id);
 
-            var department = await _departmentsContext.Departments
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.ExternalId == course.DepartmentId);
+            var department = await _departmentsRepository.GetById(course.DepartmentId);
             if (department == null)
                 throw new EntityNotFoundException(nameof(department), course.DepartmentId);
             

@@ -6,7 +6,7 @@ namespace ContosoUniversity.Services.Commands.Departments
 
     using MediatR;
 
-    public class DepartmentEditCommand : IRequest
+    public class EditDepartmentCommand : IRequest
     {
         [StringLength(50, MinimumLength = 3)]
         public string Name { get; set; }
@@ -21,7 +21,7 @@ namespace ContosoUniversity.Services.Commands.Departments
         public DateTime StartDate { get; set; }
 
         [Display(Name = "Administrator")]
-        public int? InstructorId { get; set; }
+        public Guid? AdministratorId { get; set; }
 
         public Guid ExternalId { get; set; }
         public byte[] RowVersion { get; set; }

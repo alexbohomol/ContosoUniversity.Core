@@ -3,15 +3,12 @@
     using System;
     using System.Threading.Tasks;
 
-    using Data.Departments;
-
     using Domain.Contracts;
 
     using MediatR;
 
     using Microsoft.AspNetCore.Mvc;
 
-    using Services;
     using Services.Commands.Courses;
     using Services.Queries.Courses;
 
@@ -20,15 +17,15 @@
     public class CoursesController : Controller
     {
         private readonly ICoursesRepository _coursesRepository;
-        private readonly DepartmentsContext _departmentsContext;
+        private readonly IDepartmentsRepository _departmentsRepository;
         private readonly IMediator _mediator;
 
         public CoursesController(
-            DepartmentsContext departmentsContext,
+            IDepartmentsRepository departmentsRepository,
             ICoursesRepository coursesRepository,
             IMediator mediator)
         {
-            _departmentsContext = departmentsContext;
+            _departmentsRepository = departmentsRepository;
             _coursesRepository = coursesRepository;
             _mediator = mediator;
         }
@@ -57,7 +54,7 @@
         {
             return View(
                 new CreateCourseForm(
-                    await _departmentsContext.GetDepartmentsNames()));
+                    await _departmentsRepository.GetDepartmentNamesReference()));
         }
 
         [HttpPost]
@@ -74,7 +71,7 @@
                 return View(
                     new CreateCourseForm(
                         command,
-                        await _departmentsContext.GetDepartmentsNames()));
+                        await _departmentsRepository.GetDepartmentNamesReference()));
             }
 
             await _mediator.Send(command);
@@ -113,7 +110,7 @@
                     new CourseEditForm(
                         command,
                         course.Code,
-                        await _departmentsContext.GetDepartmentsNames()));
+                        await _departmentsRepository.GetDepartmentNamesReference()));
             }
 
             await _mediator.Send(command);

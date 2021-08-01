@@ -2,7 +2,7 @@ namespace ContosoUniversity.Domain.Student
 {
     using System;
 
-    public class Student : IAggregateRoot
+    public class Student : IIdentifiable<Guid>
     {
         private readonly EnrollmentsCollection _enrollments;
 

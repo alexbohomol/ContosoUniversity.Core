@@ -96,7 +96,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(DepartmentEditCommand command)
+        public async Task<IActionResult> Edit(EditDepartmentCommand command)
         {
             if (command is null)
             {

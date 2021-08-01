@@ -1,37 +1,29 @@
 namespace ContosoUniversity.Services.Handlers.Departments
 {
-    using System;
     using System.Threading;
     using System.Threading.Tasks;
 
     using Commands.Departments;
 
-    using Data.Departments;
-    using Data.Departments.Models;
+    using Domain.Contracts;
+    using Domain.Department;
 
     using MediatR;
 
     public class CreateDepartmentCommandHandler : AsyncRequestHandler<CreateDepartmentCommand>
     {
-        private readonly DepartmentsContext _departmentsContext;
+        private readonly IDepartmentsRepository _departmentsRepository;
 
-        public CreateDepartmentCommandHandler(DepartmentsContext departmentsContext)
+        public CreateDepartmentCommandHandler(IDepartmentsRepository departmentsRepository)
         {
-            _departmentsContext = departmentsContext;
+            _departmentsRepository = departmentsRepository;
         }
         
         protected override async Task Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
         {
-            _departmentsContext.Add(new Department
-            {
-                Name = request.Name,
-                Budget = request.Budget,
-                StartDate = request.StartDate,
-                InstructorId = request.InstructorId,
-                ExternalId = Guid.NewGuid()
-            });
-            
-            await _departmentsContext.SaveChangesAsync(cancellationToken);
+            var department = new Department(request.Name, request.Budget, request.StartDate, request.AdministratorId);
+
+            await _departmentsRepository.Save(department);
         }
     }
 }

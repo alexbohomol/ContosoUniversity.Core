@@ -6,14 +6,10 @@ namespace ContosoUniversity.Services.Validators.Courses
 
     using Commands.Courses;
 
-    using Data.Departments;
-
     using Domain.Contracts;
     using Domain.Course;
 
     using FluentValidation;
-
-    using Microsoft.EntityFrameworkCore;
 
     using ViewModels.Courses;
 
@@ -21,14 +17,14 @@ namespace ContosoUniversity.Services.Validators.Courses
     {
         private const string ErrMsgTitle = "The field '{PropertyName}' must be a string with a minimum length of {MinLength} and a maximum length of {MaxLength}.";
         private readonly ICoursesRepository _coursesRepository;
-        private readonly DepartmentsContext _departmentsContext;
+        private readonly IDepartmentsRepository _departmentsRepository;
 
         public CreateCourseCommandValidator(
             ICoursesRepository coursesRepository,
-            DepartmentsContext departmentsContext)
+            IDepartmentsRepository departmentsRepository)
         {
             _coursesRepository = coursesRepository;
-            _departmentsContext = departmentsContext;
+            _departmentsRepository = departmentsRepository;
 
             // POST model rules
             RuleFor(x => x.CourseCode)
@@ -56,16 +52,10 @@ namespace ContosoUniversity.Services.Validators.Courses
         private string ErrMsgCourseCode => $"Course code can have a value from {CourseCode.MinValue} to {CourseCode.MaxValue}.";
         private static string ErrMsgCredits => $"The field '{nameof(CreateCourseForm.Credits)}' must be between {Credits.MinValue} and {Credits.MaxValue}.";
 
-        private async Task<bool> BeANewCourseCode(int courseCode, CancellationToken token)
-        {
-            return !await _coursesRepository.ExistsCourseCode(courseCode);
-        }
+        private async Task<bool> BeANewCourseCode(int courseCode, CancellationToken token) => 
+            !await _coursesRepository.ExistsCourseCode(courseCode);
 
-        private Task<bool> BeAnExistingDepartment(Guid departmentId, CancellationToken token)
-        {
-            return _departmentsContext
-                .Departments
-                .AnyAsync(x => x.ExternalId == departmentId, token);
-        }
+        private Task<bool> BeAnExistingDepartment(Guid departmentId, CancellationToken token) => 
+            _departmentsRepository.Exists(departmentId);
     }
 }

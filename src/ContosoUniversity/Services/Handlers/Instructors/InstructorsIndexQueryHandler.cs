@@ -21,15 +21,18 @@ namespace ContosoUniversity.Services.Handlers.Instructors
     public class InstructorsIndexQueryHandler : IRequestHandler<InstructorsIndexQuery, InstructorIndexViewModel>
     {
         private readonly DepartmentsContext _departmentsContext;
+        private readonly IDepartmentsRepository _departmentsRepository;
         private readonly ICoursesRepository _coursesRepository;
         private readonly IStudentsRepository _studentsRepository;
 
         public InstructorsIndexQueryHandler(
             DepartmentsContext departmentsContext,
+            IDepartmentsRepository departmentsRepository,
             ICoursesRepository coursesRepository,
             IStudentsRepository studentsRepository)
         {
             _departmentsContext = departmentsContext;
+            _departmentsRepository = departmentsRepository;
             _coursesRepository = coursesRepository;
             _studentsRepository = studentsRepository;
         }
@@ -78,10 +81,7 @@ namespace ContosoUniversity.Services.Handlers.Instructors
             {
                 var instructor = viewModel.Instructors.Single(i => i.Id == id.Value);
                 var instructorCourseIds = instructor.AssignedCourseIds.ToHashSet();
-                var departmentNames = await _departmentsContext.Departments
-                    .Where(x => courses.Select(_ => _.DepartmentId).Contains(x.ExternalId))
-                    .AsNoTracking()
-                    .ToDictionaryAsync(x => x.ExternalId, x => x.Name, cancellationToken);
+                var departmentNames = await _departmentsRepository.GetDepartmentNamesReference();
                 CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);
                 viewModel.Courses = courses
                     .Where(x => instructorCourseIds.Contains(x.EntityId))

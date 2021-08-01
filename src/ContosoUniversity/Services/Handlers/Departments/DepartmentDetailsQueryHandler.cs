@@ -5,6 +5,9 @@ namespace ContosoUniversity.Services.Handlers.Departments
 
     using Data.Departments;
 
+    using Domain.Contracts;
+    using Domain.Contracts.Exceptions;
+
     using MediatR;
 
     using Microsoft.EntityFrameworkCore;
@@ -16,30 +19,37 @@ namespace ContosoUniversity.Services.Handlers.Departments
     public class DepartmentDetailsQueryHandler : IRequestHandler<DepartmentDetailsQuery, DepartmentDetailsViewModel>
     {
         private readonly DepartmentsContext _departmentsContext;
+        private readonly IDepartmentsRepository _departmentsRepository;
 
-        public DepartmentDetailsQueryHandler(DepartmentsContext departmentsContext)
+        public DepartmentDetailsQueryHandler(DepartmentsContext departmentsContext, IDepartmentsRepository departmentsRepository)
         {
             _departmentsContext = departmentsContext;
+            _departmentsRepository = departmentsRepository;
         }
         
         public async Task<DepartmentDetailsViewModel> Handle(DepartmentDetailsQuery request, CancellationToken cancellationToken)
         {
-            var department = await _departmentsContext.Departments
-                .FromSqlInterpolated($"SELECT * FROM [dpt].Department WHERE ExternalId = {request.Id}")
-                .Include(d => d.Administrator)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(cancellationToken);
+            var department = await _departmentsRepository.GetById(request.Id);
+            if (department is null)
+                throw new EntityNotFoundException(nameof(department), request.Id);
 
-            return department == null
-                ? null
-                : new DepartmentDetailsViewModel
-                {
-                    Name = department.Name,
-                    Budget = department.Budget,
-                    StartDate = department.StartDate,
-                    Administrator = department.Administrator?.FullName,
-                    ExternalId = department.ExternalId
-                };
+            var fullname = string.Empty;
+            if (department.AdministratorId.HasValue)
+            {
+                var administrator = await _departmentsContext.Instructors.FirstOrDefaultAsync(x => x.ExternalId == department.AdministratorId);
+                if (administrator is null)
+                    throw new EntityNotFoundException(nameof(administrator), department.AdministratorId.Value);
+                fullname = administrator.FullName;
+            }
+
+            return new DepartmentDetailsViewModel
+            {
+                Name = department.Name,
+                Budget = department.Budget,
+                StartDate = department.StartDate,
+                Administrator = fullname,
+                ExternalId = department.EntityId
+            };
         }
     }
 }

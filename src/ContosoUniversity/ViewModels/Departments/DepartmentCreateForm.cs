@@ -1,5 +1,6 @@
 namespace ContosoUniversity.ViewModels.Departments
 {
+    using System;
     using System.Collections.Generic;
 
     using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,12 +14,12 @@ namespace ContosoUniversity.ViewModels.Departments
             
         }
 
-        public CreateDepartmentForm(CreateDepartmentCommand command, IDictionary<int, string> instructorNames)
+        public CreateDepartmentForm(CreateDepartmentCommand command, IDictionary<Guid, string> instructorNames)
         {
             Name = command.Name;
             Budget = command.Budget;
             StartDate = command.StartDate;
-            InstructorId = command.InstructorId;
+            AdministratorId = command.AdministratorId;
             InstructorsDropDown = instructorNames.ToSelectList();
         }
 
