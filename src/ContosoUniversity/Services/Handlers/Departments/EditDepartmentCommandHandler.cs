@@ -31,16 +31,16 @@ namespace ContosoUniversity.Services.Handlers.Departments
 
             department.UpdateGeneralInfo(request.Name, request.Budget, request.StartDate);
             
-            if (request.InstructorId.HasValue)
+            if (request.AdministratorId.HasValue)
             {
                 var instructor = await _departmentsContext.Instructors
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.ExternalId == request.InstructorId);
+                    .FirstOrDefaultAsync(x => x.ExternalId == request.AdministratorId);
 
                if (instructor is null)
-                   throw new EntityNotFoundException(nameof(instructor), request.InstructorId.Value);
+                   throw new EntityNotFoundException(nameof(instructor), request.AdministratorId.Value);
                 
-                department.AssociateAdministrator(request.InstructorId.Value);
+                department.AssociateAdministrator(request.AdministratorId.Value);
             }
             else
             {

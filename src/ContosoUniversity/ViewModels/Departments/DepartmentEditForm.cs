@@ -14,10 +14,10 @@ namespace ContosoUniversity.ViewModels.Departments
             Name = command.Name;
             Budget = command.Budget;
             StartDate = command.StartDate;
-            InstructorId = command.InstructorId;
+            AdministratorId = command.AdministratorId;
             ExternalId = command.ExternalId;
             RowVersion = command.RowVersion;
-            InstructorsDropDown = instructorNames.ToSelectList(command.InstructorId.GetValueOrDefault());
+            InstructorsDropDown = instructorNames.ToSelectList(command.AdministratorId.GetValueOrDefault());
         }
 
         public DepartmentEditForm()

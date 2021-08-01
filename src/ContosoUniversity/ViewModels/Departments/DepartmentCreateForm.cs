@@ -19,7 +19,7 @@ namespace ContosoUniversity.ViewModels.Departments
             Name = command.Name;
             Budget = command.Budget;
             StartDate = command.StartDate;
-            InstructorId = command.InstructorId;
+            AdministratorId = command.AdministratorId;
             InstructorsDropDown = instructorNames.ToSelectList();
         }
 

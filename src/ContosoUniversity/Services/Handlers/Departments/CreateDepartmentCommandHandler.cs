@@ -21,7 +21,7 @@ namespace ContosoUniversity.Services.Handlers.Departments
         
         protected override async Task Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
         {
-            var department = new Department(request.Name, request.Budget, request.StartDate, request.InstructorId);
+            var department = new Department(request.Name, request.Budget, request.StartDate, request.AdministratorId);
 
             await _departmentsRepository.Save(department);
         }

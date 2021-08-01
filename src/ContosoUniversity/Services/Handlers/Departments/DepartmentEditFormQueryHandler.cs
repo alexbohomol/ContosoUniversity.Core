@@ -36,7 +36,7 @@ namespace ContosoUniversity.Services.Handlers.Departments
                     Name = department.Name,
                     Budget = department.Budget,
                     StartDate = department.StartDate,
-                    InstructorId = department.AdministratorId,
+                    AdministratorId = department.AdministratorId,
                     ExternalId = department.EntityId,
                     // RowVersion = department.RowVersion,
                     InstructorsDropDown = (await _departmentsContext.GetInstructorsNames()).ToSelectList(department.AdministratorId ?? default)
