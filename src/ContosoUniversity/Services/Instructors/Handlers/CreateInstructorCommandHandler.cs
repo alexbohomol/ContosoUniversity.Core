@@ -37,7 +37,7 @@ namespace ContosoUniversity.Services.Instructors.Handlers
             instructor.CourseAssignments = command.SelectedCourses?.Select(x => new CourseAssignment
             {
                 InstructorId = instructor.Id, // not yet generated ???
-                CourseExternalId = Guid.Parse((string)x)
+                CourseExternalId = Guid.Parse(x)
             }).ToList();
 
             _departmentsContext.Add(instructor);
