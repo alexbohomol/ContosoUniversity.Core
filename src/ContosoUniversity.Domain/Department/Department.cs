@@ -2,7 +2,7 @@ namespace ContosoUniversity.Domain.Department
 {
     using System;
 
-    public class Department : IAggregateRoot
+    public class Department : IIdentifiable<Guid>
     {
         public Department(
             string name, 

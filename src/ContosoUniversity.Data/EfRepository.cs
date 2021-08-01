@@ -14,7 +14,7 @@ namespace ContosoUniversity.Data
 
     public abstract class EfRepository<TDomainEntity, TDataEntity> 
         : IRepository<TDomainEntity> 
-            where TDomainEntity : class, IAggregateRoot
+            where TDomainEntity : class, IIdentifiable<Guid>
             where TDataEntity : class, IExternalIdentifier, new()
     {
         private const string ErrMsgDbUpdateException = "Unable to save changes. Try again, and if the problem persists, see your system administrator.";

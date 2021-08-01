@@ -3,7 +3,7 @@ namespace ContosoUniversity.Domain.Contracts
     using System;
     using System.Threading.Tasks;
 
-    public interface IRepository<TEntity> where TEntity : IAggregateRoot
+    public interface IRepository<TEntity> where TEntity : IIdentifiable<Guid>
     {
         Task<TEntity> GetById(Guid entityId);
         Task<TEntity[]> GetAll();

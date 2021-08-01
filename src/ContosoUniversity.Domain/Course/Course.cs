@@ -2,7 +2,7 @@ namespace ContosoUniversity.Domain.Course
 {
     using System;
 
-    public class Course : IAggregateRoot
+    public class Course : IIdentifiable<Guid>
     {
         private Guid _departmentId;
         private string _title;
