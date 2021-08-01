@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Commands.Departments
+namespace ContosoUniversity.Services.Departments.Commands
 {
     using System;
 

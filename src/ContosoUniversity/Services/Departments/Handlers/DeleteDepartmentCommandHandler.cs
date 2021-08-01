@@ -1,17 +1,17 @@
-namespace ContosoUniversity.Services.Handlers.Departments
+namespace ContosoUniversity.Services.Departments.Handlers
 {
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Commands.Departments;
+    using Commands;
 
     using Domain.Contracts;
     using Domain.Contracts.Exceptions;
 
-    using Notifications;
-
     using MediatR;
+
+    using Notifications;
 
     public class DeleteDepartmentCommandHandler : AsyncRequestHandler<DeleteDepartmentCommand>
     {

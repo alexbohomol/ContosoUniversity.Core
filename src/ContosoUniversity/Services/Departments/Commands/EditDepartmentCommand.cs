@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Commands.Departments
+namespace ContosoUniversity.Services.Departments.Commands
 {
     using System;
     using System.ComponentModel.DataAnnotations;
@@ -6,7 +6,7 @@ namespace ContosoUniversity.Services.Commands.Departments
 
     using MediatR;
 
-    public class CreateDepartmentCommand : IRequest
+    public class EditDepartmentCommand : IRequest
     {
         [StringLength(50, MinimumLength = 3)]
         public string Name { get; set; }
@@ -22,5 +22,8 @@ namespace ContosoUniversity.Services.Commands.Departments
 
         [Display(Name = "Administrator")]
         public Guid? AdministratorId { get; set; }
+
+        public Guid ExternalId { get; set; }
+        public byte[] RowVersion { get; set; }
     }
 }

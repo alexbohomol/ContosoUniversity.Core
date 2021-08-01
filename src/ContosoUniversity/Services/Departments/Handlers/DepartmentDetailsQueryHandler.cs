@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Handlers.Departments
+namespace ContosoUniversity.Services.Departments.Handlers
 {
     using System.Threading;
     using System.Threading.Tasks;
@@ -12,7 +12,7 @@ namespace ContosoUniversity.Services.Handlers.Departments
 
     using Microsoft.EntityFrameworkCore;
 
-    using Queries.Departments;
+    using Queries;
 
     using ViewModels.Departments;
 

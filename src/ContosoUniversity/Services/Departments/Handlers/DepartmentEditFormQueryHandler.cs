@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Handlers.Departments
+namespace ContosoUniversity.Services.Departments.Handlers
 {
     using System.Threading;
     using System.Threading.Tasks;
@@ -9,7 +9,7 @@ namespace ContosoUniversity.Services.Handlers.Departments
 
     using MediatR;
 
-    using Queries.Departments;
+    using Queries;
 
     using ViewModels;
     using ViewModels.Departments;
