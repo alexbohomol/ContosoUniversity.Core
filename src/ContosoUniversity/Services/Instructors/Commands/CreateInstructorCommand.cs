@@ -2,6 +2,12 @@ namespace ContosoUniversity.Services.Instructors.Commands
 {
     using System;
     using System.ComponentModel.DataAnnotations;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    using Data.Departments;
+    using Data.Departments.Models;
 
     using MediatR;
 
@@ -29,5 +35,39 @@ namespace ContosoUniversity.Services.Instructors.Commands
         public string Location { get; set; }
 
         public bool HasAssignedOffice => !string.IsNullOrWhiteSpace(Location);
+    }
+    
+    public class CreateInstructorCommandHandler : AsyncRequestHandler<CreateInstructorCommand>
+    {
+        private readonly DepartmentsContext _departmentsContext;
+
+        public CreateInstructorCommandHandler(DepartmentsContext departmentsContext)
+        {
+            _departmentsContext = departmentsContext;
+        }
+        
+        protected override async Task Handle(CreateInstructorCommand command, CancellationToken cancellationToken)
+        {
+            var instructor = new Instructor
+            {
+                ExternalId = Guid.NewGuid(),
+                FirstMidName = command.FirstName,
+                LastName = command.LastName,
+                HireDate = command.HireDate,
+                OfficeAssignment = command.HasAssignedOffice
+                    ? new OfficeAssignment {Location = command.Location}
+                    : null
+            };
+
+            instructor.CourseAssignments = command.SelectedCourses?.Select(x => new CourseAssignment
+            {
+                InstructorId = instructor.Id, // not yet generated ???
+                CourseExternalId = Guid.Parse(x)
+            }).ToList();
+
+            _departmentsContext.Add(instructor);
+            
+            await _departmentsContext.SaveChangesAsync();
+        }
     }
 }
