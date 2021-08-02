@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Courses.Handlers
+namespace ContosoUniversity.Services.Courses.Notifications
 {
     using System.Threading;
     using System.Threading.Tasks;

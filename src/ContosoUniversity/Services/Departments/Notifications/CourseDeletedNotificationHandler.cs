@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Departments.Handlers
+namespace ContosoUniversity.Services.Departments.Notifications
 {
     using System.Linq;
     using System.Threading;
