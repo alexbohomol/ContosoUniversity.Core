@@ -2,6 +2,11 @@ namespace ContosoUniversity.Services.Students.Commands
 {
     using System;
     using System.ComponentModel.DataAnnotations;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    using Domain.Contracts;
+    using Domain.Contracts.Exceptions;
 
     using MediatR;
 
@@ -23,5 +28,27 @@ namespace ContosoUniversity.Services.Students.Commands
         public string FirstName { get; set; }
 
         public Guid ExternalId { get; set; }
+    }
+    
+    public class EditStudentCommandHandler : AsyncRequestHandler<EditStudentCommand>
+    {
+        private readonly IStudentsRepository _studentsRepository;
+
+        public EditStudentCommandHandler(IStudentsRepository studentsRepository)
+        {
+            _studentsRepository = studentsRepository;
+        }
+
+        protected override async Task Handle(EditStudentCommand request, CancellationToken cancellationToken)
+        {
+            var student = await _studentsRepository.GetById(request.ExternalId);
+            if (student == null)
+                throw new EntityNotFoundException(nameof(student), request.ExternalId);
+
+            student.UpdatePersonInfo(request.LastName, request.FirstName);
+            student.Enroll(request.EnrollmentDate);
+
+            await _studentsRepository.Save(student);
+        }
     }
 }

@@ -28,7 +28,7 @@
             _mediator = mediator;
         }
 
-        public async Task<IActionResult> Index(InstructorsIndexQuery request)
+        public async Task<IActionResult> Index(GetInstructorsIndexQuery request)
         {
             return View(await _mediator.Send(request));
         }
@@ -40,7 +40,7 @@
                 return NotFound();
             }
 
-            var result = await _mediator.Send(new InstructorDetailsQuery(id.Value));
+            var result = await _mediator.Send(new GetInstructorDetailsQuery(id.Value));
             
             return result is not null
                 ? View(result)
@@ -85,7 +85,7 @@
                 return BadRequest();
             }
 
-            var result = await _mediator.Send(new InstructorEditFormQuery(id.Value));
+            var result = await _mediator.Send(new GetInstructorEditFormQuery(id.Value));
 
             return result is not null
                 ? View(result)
@@ -121,7 +121,7 @@
                 return NotFound();
             }
 
-            var result = await _mediator.Send(new InstructorDetailsQuery(id.Value));
+            var result = await _mediator.Send(new GetInstructorDetailsQuery(id.Value));
             
             return result is not null
                 ? View(result)

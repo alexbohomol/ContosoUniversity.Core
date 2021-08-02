@@ -1,5 +1,6 @@
-namespace ContosoUniversity.Services.Instructors.Handlers
+namespace ContosoUniversity.Services.Instructors.Queries
 {
+    using System;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -13,19 +14,19 @@ namespace ContosoUniversity.Services.Instructors.Handlers
 
     using Microsoft.EntityFrameworkCore;
 
-    using Queries;
-
     using ViewModels;
     using ViewModels.Instructors;
 
-    public class InstructorsIndexQueryHandler : IRequestHandler<InstructorsIndexQuery, InstructorIndexViewModel>
+    public record GetInstructorsIndexQuery(Guid? Id, Guid? CourseExternalId) : IRequest<InstructorIndexViewModel>;
+    
+    public class GetInstructorsIndexQueryHandler : IRequestHandler<GetInstructorsIndexQuery, InstructorIndexViewModel>
     {
         private readonly DepartmentsContext _departmentsContext;
         private readonly IDepartmentsRepository _departmentsRepository;
         private readonly ICoursesRepository _coursesRepository;
         private readonly IStudentsRepository _studentsRepository;
 
-        public InstructorsIndexQueryHandler(
+        public GetInstructorsIndexQueryHandler(
             DepartmentsContext departmentsContext,
             IDepartmentsRepository departmentsRepository,
             ICoursesRepository coursesRepository,
@@ -37,7 +38,7 @@ namespace ContosoUniversity.Services.Instructors.Handlers
             _studentsRepository = studentsRepository;
         }
         
-        public async Task<InstructorIndexViewModel> Handle(InstructorsIndexQuery request, CancellationToken cancellationToken)
+        public async Task<InstructorIndexViewModel> Handle(GetInstructorsIndexQuery request, CancellationToken cancellationToken)
         {
             var id = request.Id;
             var courseExternalId = request.CourseExternalId;

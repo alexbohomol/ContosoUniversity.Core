@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Students.Handlers
+namespace ContosoUniversity.Services.Students.Notifications
 {
     using System;
     using System.Linq;

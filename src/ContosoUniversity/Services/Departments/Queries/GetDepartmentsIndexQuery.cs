@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Departments.Handlers
+namespace ContosoUniversity.Services.Departments.Queries
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -11,22 +11,22 @@ namespace ContosoUniversity.Services.Departments.Handlers
 
     using MediatR;
 
-    using Queries;
-
     using ViewModels.Departments;
 
-    public class DepartmentsIndexQueryHandler : IRequestHandler<DepartmentsIndexQuery, IList<DepartmentListItemViewModel>>
+    public record GetDepartmentsIndexQuery : IRequest<IList<DepartmentListItemViewModel>>;
+    
+    public class GetDepartmentsIndexQueryHandler : IRequestHandler<GetDepartmentsIndexQuery, IList<DepartmentListItemViewModel>>
     {
         private readonly DepartmentsContext _departmentsContext;
         private readonly IDepartmentsRepository _departmentsRepository;
 
-        public DepartmentsIndexQueryHandler(DepartmentsContext departmentsContext, IDepartmentsRepository departmentsRepository)
+        public GetDepartmentsIndexQueryHandler(DepartmentsContext departmentsContext, IDepartmentsRepository departmentsRepository)
         {
             _departmentsContext = departmentsContext;
             _departmentsRepository = departmentsRepository;
         }
         
-        public async Task<IList<DepartmentListItemViewModel>> Handle(DepartmentsIndexQuery request, CancellationToken cancellationToken)
+        public async Task<IList<DepartmentListItemViewModel>> Handle(GetDepartmentsIndexQuery request, CancellationToken cancellationToken)
         {
             var departments = await _departmentsRepository.GetAll();
 

@@ -1,5 +1,6 @@
-namespace ContosoUniversity.Services.Students.Handlers
+namespace ContosoUniversity.Services.Students.Queries
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -8,20 +9,20 @@ namespace ContosoUniversity.Services.Students.Handlers
 
     using MediatR;
 
-    using Queries;
-
     using ViewModels.Students;
 
-    public class StudentDeletePageQueryHandler : IRequestHandler<StudentDeletePageQuery, StudentDeletePageViewModel>
+    public record GetStudentDeletePageQuery(Guid Id) : IRequest<StudentDeletePageViewModel>;
+    
+    public class GetStudentDeletePageQueryHandler : IRequestHandler<GetStudentDeletePageQuery, StudentDeletePageViewModel>
     {
         private readonly IStudentsRepository _studentsRepository;
 
-        public StudentDeletePageQueryHandler(IStudentsRepository studentsRepository)
+        public GetStudentDeletePageQueryHandler(IStudentsRepository studentsRepository)
         {
             _studentsRepository = studentsRepository;
         }
 
-        public async Task<StudentDeletePageViewModel> Handle(StudentDeletePageQuery request, CancellationToken cancellationToken)
+        public async Task<StudentDeletePageViewModel> Handle(GetStudentDeletePageQuery request, CancellationToken cancellationToken)
         {
             var student = await _studentsRepository.GetById(request.Id);
             if (student == null)

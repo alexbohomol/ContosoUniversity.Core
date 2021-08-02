@@ -1,5 +1,6 @@
-namespace ContosoUniversity.Services.Students.Handlers
+namespace ContosoUniversity.Services.Students.Queries
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -8,20 +9,20 @@ namespace ContosoUniversity.Services.Students.Handlers
 
     using MediatR;
 
-    using Queries;
-
     using ViewModels.Students;
 
-    public class StudentEditFormQueryHandler : IRequestHandler<StudentEditFormQuery, EditStudentForm>
+    public record GetStudentEditFormQuery(Guid Id) : IRequest<EditStudentForm>;
+    
+    public class GetStudentEditFormQueryHandler : IRequestHandler<GetStudentEditFormQuery, EditStudentForm>
     {
         private readonly IStudentsRepository _studentsRepository;
 
-        public StudentEditFormQueryHandler(IStudentsRepository studentsRepository)
+        public GetStudentEditFormQueryHandler(IStudentsRepository studentsRepository)
         {
             _studentsRepository = studentsRepository;
         }
 
-        public async Task<EditStudentForm> Handle(StudentEditFormQuery request, CancellationToken cancellationToken)
+        public async Task<EditStudentForm> Handle(GetStudentEditFormQuery request, CancellationToken cancellationToken)
         {
             var student = await _studentsRepository.GetById(request.Id);
             if (student == null)
