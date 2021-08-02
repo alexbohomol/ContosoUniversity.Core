@@ -33,10 +33,10 @@ namespace ContosoUniversity.Services.Instructors.Queries
         public async Task<EditInstructorForm> Handle(GetInstructorEditFormQuery request, CancellationToken cancellationToken)
         {
             var instructor = await _departmentsContext.Instructors
-                                                      .Include(i => i.OfficeAssignment)
-                                                      .Include(i => i.CourseAssignments)
-                                                      .AsNoTracking()
-                                                      .FirstOrDefaultAsync(m => m.ExternalId == request.Id, cancellationToken);
+                .Include(i => i.OfficeAssignment)
+                .Include(i => i.CourseAssignments)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ExternalId == request.Id, cancellationToken);
             
             return instructor == null
                 ? null
