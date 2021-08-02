@@ -31,7 +31,7 @@
 
         public async Task<IActionResult> Index()
         {
-            return View(await _mediator.Send(new DepartmentsIndexQuery()));
+            return View(await _mediator.Send(new GetDepartmentsIndexQuery()));
         }
 
         public async Task<IActionResult> Details(Guid? id)
@@ -42,7 +42,7 @@
             }
 
             var result = await _mediator
-                .Send(new DepartmentDetailsQuery(id.Value));
+                .Send(new GetDepartmentDetailsQuery(id.Value));
 
             return result is not null
                 ? View(result)
@@ -87,7 +87,7 @@
                 return BadRequest();
             }
 
-            var result = await _mediator.Send(new DepartmentEditFormQuery(id.Value));
+            var result = await _mediator.Send(new GetDepartmentEditFormQuery(id.Value));
 
             return result is not null
                 ? View(result)
@@ -124,7 +124,7 @@
             }
 
             var result = await _mediator
-                .Send(new DepartmentDetailsQuery(id.Value));
+                .Send(new GetDepartmentDetailsQuery(id.Value));
 
             return result is not null
                 ? View(result)

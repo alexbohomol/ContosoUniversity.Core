@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Courses.Handlers
+namespace ContosoUniversity.Services.Courses.Queries
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -9,16 +9,16 @@ namespace ContosoUniversity.Services.Courses.Handlers
 
     using MediatR;
 
-    using Queries;
-
     using ViewModels.Courses;
 
-    public class CoursesIndexQueryHandler : IRequestHandler<CoursesIndexQuery, List<CourseListItemViewModel>>
+    public record GetCoursesIndexQuery : IRequest<List<CourseListItemViewModel>>;
+    
+    public class GetCoursesIndexQueryHandler : IRequestHandler<GetCoursesIndexQuery, List<CourseListItemViewModel>>
     {
         private readonly ICoursesRepository _coursesRepository;
         private readonly IDepartmentsRepository _departmentsRepository;
 
-        public CoursesIndexQueryHandler(
+        public GetCoursesIndexQueryHandler(
             ICoursesRepository coursesRepository,
             IDepartmentsRepository departmentsRepository)
         {
@@ -26,7 +26,7 @@ namespace ContosoUniversity.Services.Courses.Handlers
             _departmentsRepository = departmentsRepository;
         }
 
-        public async Task<List<CourseListItemViewModel>> Handle(CoursesIndexQuery request, CancellationToken cancellationToken)
+        public async Task<List<CourseListItemViewModel>> Handle(GetCoursesIndexQuery request, CancellationToken cancellationToken)
         {
             var courses = await _coursesRepository.GetAll();
 

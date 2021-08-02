@@ -1,5 +1,6 @@
-namespace ContosoUniversity.Services.Instructors.Handlers
+namespace ContosoUniversity.Services.Instructors.Queries
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -11,20 +12,20 @@ namespace ContosoUniversity.Services.Instructors.Handlers
 
     using Microsoft.EntityFrameworkCore;
 
-    using Queries;
-
     using ViewModels.Instructors;
 
-    public class InstructorDetailsQueryHandler : IRequestHandler<InstructorDetailsQuery, InstructorDetailsViewModel>
+    public record GetInstructorDetailsQuery(Guid Id) : IRequest<InstructorDetailsViewModel>;
+    
+    public class GetInstructorDetailsQueryHandler : IRequestHandler<GetInstructorDetailsQuery, InstructorDetailsViewModel>
     {
         private readonly DepartmentsContext _departmentsContext;
 
-        public InstructorDetailsQueryHandler(DepartmentsContext departmentsContext)
+        public GetInstructorDetailsQueryHandler(DepartmentsContext departmentsContext)
         {
             _departmentsContext = departmentsContext;
         }
         
-        public async Task<InstructorDetailsViewModel> Handle(InstructorDetailsQuery request, CancellationToken cancellationToken)
+        public async Task<InstructorDetailsViewModel> Handle(GetInstructorDetailsQuery request, CancellationToken cancellationToken)
         {
             var instructor = await _departmentsContext.Instructors.FirstOrDefaultAsync(m => m.ExternalId == request.Id, cancellationToken);
             if (instructor == null)

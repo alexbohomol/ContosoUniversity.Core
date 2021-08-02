@@ -1,5 +1,6 @@
-namespace ContosoUniversity.Services.Departments.Handlers
+namespace ContosoUniversity.Services.Departments.Queries
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -9,23 +10,23 @@ namespace ContosoUniversity.Services.Departments.Handlers
 
     using MediatR;
 
-    using Queries;
-
     using ViewModels;
     using ViewModels.Departments;
 
-    public class DepartmentEditFormQueryHandler : IRequestHandler<DepartmentEditFormQuery, DepartmentEditForm>
+    public record GetDepartmentEditFormQuery(Guid Id) : IRequest<DepartmentEditForm>;
+    
+    public class GetDepartmentEditFormQueryHandler : IRequestHandler<GetDepartmentEditFormQuery, DepartmentEditForm>
     {
         private readonly DepartmentsContext _departmentsContext;
         private readonly IDepartmentsRepository _departmentsRepository;
 
-        public DepartmentEditFormQueryHandler(DepartmentsContext departmentsContext, IDepartmentsRepository departmentsRepository)
+        public GetDepartmentEditFormQueryHandler(DepartmentsContext departmentsContext, IDepartmentsRepository departmentsRepository)
         {
             _departmentsContext = departmentsContext;
             _departmentsRepository = departmentsRepository;
         }
         
-        public async Task<DepartmentEditForm> Handle(DepartmentEditFormQuery request, CancellationToken cancellationToken)
+        public async Task<DepartmentEditForm> Handle(GetDepartmentEditFormQuery request, CancellationToken cancellationToken)
         {
             var department = await _departmentsRepository.GetById(request.Id);
 

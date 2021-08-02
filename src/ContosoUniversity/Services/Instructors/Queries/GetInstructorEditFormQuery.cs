@@ -1,5 +1,6 @@
-namespace ContosoUniversity.Services.Instructors.Handlers
+namespace ContosoUniversity.Services.Instructors.Queries
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -11,17 +12,17 @@ namespace ContosoUniversity.Services.Instructors.Handlers
 
     using Microsoft.EntityFrameworkCore;
 
-    using Queries;
-
     using ViewModels;
     using ViewModels.Instructors;
 
-    public class InstructorEditFormQueryHandler : IRequestHandler<InstructorEditFormQuery, EditInstructorForm>
+    public record GetInstructorEditFormQuery(Guid Id) : IRequest<EditInstructorForm>;
+    
+    public class GetInstructorEditFormQueryHandler : IRequestHandler<GetInstructorEditFormQuery, EditInstructorForm>
     {
         private readonly DepartmentsContext _departmentsContext;
         private readonly ICoursesRepository _coursesRepository;
 
-        public InstructorEditFormQueryHandler(
+        public GetInstructorEditFormQueryHandler(
             DepartmentsContext departmentsContext,
             ICoursesRepository coursesRepository)
         {
@@ -29,7 +30,7 @@ namespace ContosoUniversity.Services.Instructors.Handlers
             _coursesRepository = coursesRepository;
         }
         
-        public async Task<EditInstructorForm> Handle(InstructorEditFormQuery request, CancellationToken cancellationToken)
+        public async Task<EditInstructorForm> Handle(GetInstructorEditFormQuery request, CancellationToken cancellationToken)
         {
             var instructor = await _departmentsContext.Instructors
                 .Include(i => i.OfficeAssignment)

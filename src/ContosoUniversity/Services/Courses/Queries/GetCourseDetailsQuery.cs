@@ -1,5 +1,6 @@
-namespace ContosoUniversity.Services.Courses.Handlers
+namespace ContosoUniversity.Services.Courses.Queries
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -8,16 +9,16 @@ namespace ContosoUniversity.Services.Courses.Handlers
 
     using MediatR;
 
-    using Queries;
-
     using ViewModels.Courses;
 
-    public class CourseDetailsQueryHandler : IRequestHandler<CourseDetailsQuery, CourseDetailsViewModel>
+    public record GetCourseDetailsQuery(Guid Id) : IRequest<CourseDetailsViewModel>;
+    
+    public class GetCourseDetailsQueryHandler : IRequestHandler<GetCourseDetailsQuery, CourseDetailsViewModel>
     {
         private readonly ICoursesRepository _coursesRepository;
         private readonly IDepartmentsRepository _departmentsRepository;
 
-        public CourseDetailsQueryHandler(
+        public GetCourseDetailsQueryHandler(
             ICoursesRepository coursesRepository,
             IDepartmentsRepository departmentsRepository)
         {
@@ -25,7 +26,7 @@ namespace ContosoUniversity.Services.Courses.Handlers
             _departmentsRepository = departmentsRepository;
         }
 
-        public async Task<CourseDetailsViewModel> Handle(CourseDetailsQuery request, CancellationToken cancellationToken)
+        public async Task<CourseDetailsViewModel> Handle(GetCourseDetailsQuery request, CancellationToken cancellationToken)
         {
             var course = await _coursesRepository.GetById(request.Id);
             if (course == null)

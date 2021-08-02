@@ -1,5 +1,6 @@
-namespace ContosoUniversity.Services.Departments.Handlers
+namespace ContosoUniversity.Services.Departments.Queries
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -12,22 +13,22 @@ namespace ContosoUniversity.Services.Departments.Handlers
 
     using Microsoft.EntityFrameworkCore;
 
-    using Queries;
-
     using ViewModels.Departments;
 
-    public class DepartmentDetailsQueryHandler : IRequestHandler<DepartmentDetailsQuery, DepartmentDetailsViewModel>
+    public record GetDepartmentDetailsQuery(Guid Id) : IRequest<DepartmentDetailsViewModel>;
+    
+    public class GetDepartmentDetailsQueryHandler : IRequestHandler<GetDepartmentDetailsQuery, DepartmentDetailsViewModel>
     {
         private readonly DepartmentsContext _departmentsContext;
         private readonly IDepartmentsRepository _departmentsRepository;
 
-        public DepartmentDetailsQueryHandler(DepartmentsContext departmentsContext, IDepartmentsRepository departmentsRepository)
+        public GetDepartmentDetailsQueryHandler(DepartmentsContext departmentsContext, IDepartmentsRepository departmentsRepository)
         {
             _departmentsContext = departmentsContext;
             _departmentsRepository = departmentsRepository;
         }
         
-        public async Task<DepartmentDetailsViewModel> Handle(DepartmentDetailsQuery request, CancellationToken cancellationToken)
+        public async Task<DepartmentDetailsViewModel> Handle(GetDepartmentDetailsQuery request, CancellationToken cancellationToken)
         {
             var department = await _departmentsRepository.GetById(request.Id);
             if (department is null)

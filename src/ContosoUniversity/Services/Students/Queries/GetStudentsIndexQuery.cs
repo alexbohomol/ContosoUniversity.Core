@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Services.Students.Handlers
+namespace ContosoUniversity.Services.Students.Queries
 {
     using System.Linq;
     using System.Threading;
@@ -10,20 +10,26 @@ namespace ContosoUniversity.Services.Students.Handlers
 
     using MediatR;
 
-    using Queries;
-
     using ViewModels.Students;
 
-    public class StudentsIndexQueryHandler : IRequestHandler<StudentsIndexQuery, StudentIndexViewModel>
+    public class GetStudentsIndexQuery : IRequest<StudentIndexViewModel>
+    {
+        public string SortOrder { get; set; }
+        public string CurrentFilter { get; set; }
+        public string SearchString { get; set; }
+        public int? PageNumber { get; set; }
+    }
+    
+    public class GetStudentsIndexQueryHandler : IRequestHandler<GetStudentsIndexQuery, StudentIndexViewModel>
     {
         private readonly IStudentsRepository _studentsRepository;
 
-        public StudentsIndexQueryHandler(IStudentsRepository studentsRepository)
+        public GetStudentsIndexQueryHandler(IStudentsRepository studentsRepository)
         {
             _studentsRepository = studentsRepository;
         }
         
-        public async Task<StudentIndexViewModel> Handle(StudentsIndexQuery request, CancellationToken cancellationToken)
+        public async Task<StudentIndexViewModel> Handle(GetStudentsIndexQuery request, CancellationToken cancellationToken)
         {
             if (request.SearchString != null)
             {

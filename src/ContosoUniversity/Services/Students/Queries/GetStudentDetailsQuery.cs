@@ -1,5 +1,6 @@
-namespace ContosoUniversity.Services.Students.Handlers
+namespace ContosoUniversity.Services.Students.Queries
 {
+    using System;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -9,17 +10,17 @@ namespace ContosoUniversity.Services.Students.Handlers
 
     using MediatR;
 
-    using Queries;
-
     using ViewModels;
     using ViewModels.Students;
 
-    public class StudentDetailsQueryHandler : IRequestHandler<StudentDetailsQuery, StudentDetailsViewModel>
+    public record GetStudentDetailsQuery(Guid Id) : IRequest<StudentDetailsViewModel>;
+    
+    public class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQuery, StudentDetailsViewModel>
     {
         private readonly IStudentsRepository _studentsRepository;
         private readonly ICoursesRepository _coursesRepository;
 
-        public StudentDetailsQueryHandler(
+        public GetStudentDetailsQueryHandler(
             IStudentsRepository studentsRepository,
             ICoursesRepository coursesRepository)
         {
@@ -27,7 +28,7 @@ namespace ContosoUniversity.Services.Students.Handlers
             _coursesRepository = coursesRepository;
         }
 
-        public async Task<StudentDetailsViewModel> Handle(StudentDetailsQuery request, CancellationToken cancellationToken)
+        public async Task<StudentDetailsViewModel> Handle(GetStudentDetailsQuery request, CancellationToken cancellationToken)
         {
             var student = await _studentsRepository.GetById(request.Id);
             if (student == null)
