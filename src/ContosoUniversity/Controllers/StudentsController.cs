@@ -21,7 +21,7 @@
             _mediator = mediator;
         }
 
-        public async Task<IActionResult> Index(StudentsIndexQuery request)
+        public async Task<IActionResult> Index(GetStudentsIndexQuery request)
         {
             return View(await _mediator.Send(request));
         }
@@ -33,7 +33,7 @@
                 return NotFound();
             }
 
-            var result = await _mediator.Send(new StudentDetailsQuery(id.Value));
+            var result = await _mediator.Send(new GetStudentDetailsQuery(id.Value));
             
             return result is not null
                 ? View(result)
@@ -69,7 +69,7 @@
                 return BadRequest();
             }
 
-            var result = await _mediator.Send(new StudentEditFormQuery(id.Value));
+            var result = await _mediator.Send(new GetStudentEditFormQuery(id.Value));
 
             return result is not null
                 ? View(result)
@@ -102,7 +102,7 @@
                 return BadRequest();
             }
 
-            var result = await _mediator.Send(new StudentDeletePageQuery(id.Value));
+            var result = await _mediator.Send(new GetStudentDeletePageQuery(id.Value));
 
             return result is not null
                 ? View(result)
