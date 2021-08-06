@@ -4,8 +4,6 @@ namespace ContosoUniversity.Services.Departments.Queries
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Data.Departments;
-
     using Domain.Contracts;
 
     using MediatR;
@@ -17,13 +15,15 @@ namespace ContosoUniversity.Services.Departments.Queries
     
     public class GetDepartmentEditFormQueryHandler : IRequestHandler<GetDepartmentEditFormQuery, DepartmentEditForm>
     {
-        private readonly DepartmentsContext _departmentsContext;
         private readonly IDepartmentsRepository _departmentsRepository;
+        private readonly IInstructorsRepository _instructorsRepository;
 
-        public GetDepartmentEditFormQueryHandler(DepartmentsContext departmentsContext, IDepartmentsRepository departmentsRepository)
+        public GetDepartmentEditFormQueryHandler(
+            IDepartmentsRepository departmentsRepository,
+            IInstructorsRepository instructorsRepository)
         {
-            _departmentsContext = departmentsContext;
             _departmentsRepository = departmentsRepository;
+            _instructorsRepository = instructorsRepository;
         }
         
         public async Task<DepartmentEditForm> Handle(GetDepartmentEditFormQuery request, CancellationToken cancellationToken)
@@ -40,7 +40,7 @@ namespace ContosoUniversity.Services.Departments.Queries
                     AdministratorId = department.AdministratorId,
                     ExternalId = department.EntityId,
                     // RowVersion = department.RowVersion,
-                    InstructorsDropDown = (await _departmentsContext.GetInstructorsNames()).ToSelectList(department.AdministratorId ?? default)
+                    InstructorsDropDown = (await _instructorsRepository.GetInstructorNamesReference()).ToSelectList(department.AdministratorId ?? default)
                 };
         }
     }

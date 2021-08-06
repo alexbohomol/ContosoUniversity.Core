@@ -5,8 +5,6 @@ namespace ContosoUniversity.Services.Departments.Queries
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Data.Departments;
-
     using Domain.Contracts;
 
     using MediatR;
@@ -17,20 +15,22 @@ namespace ContosoUniversity.Services.Departments.Queries
     
     public class GetDepartmentsIndexQueryHandler : IRequestHandler<GetDepartmentsIndexQuery, IList<DepartmentListItemViewModel>>
     {
-        private readonly DepartmentsContext _departmentsContext;
         private readonly IDepartmentsRepository _departmentsRepository;
+        private readonly IInstructorsRepository _instructorsRepository;
 
-        public GetDepartmentsIndexQueryHandler(DepartmentsContext departmentsContext, IDepartmentsRepository departmentsRepository)
+        public GetDepartmentsIndexQueryHandler(
+            IDepartmentsRepository departmentsRepository,
+            IInstructorsRepository instructorsRepository)
         {
-            _departmentsContext = departmentsContext;
             _departmentsRepository = departmentsRepository;
+            _instructorsRepository = instructorsRepository;
         }
         
         public async Task<IList<DepartmentListItemViewModel>> Handle(GetDepartmentsIndexQuery request, CancellationToken cancellationToken)
         {
             var departments = await _departmentsRepository.GetAll();
 
-            var instructorsNames = await _departmentsContext.GetInstructorsNames();
+            var instructorsNames = await _instructorsRepository.GetInstructorNamesReference();
 
             return departments.Select(x => new DepartmentListItemViewModel
             {

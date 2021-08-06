@@ -1,9 +1,14 @@
 namespace ContosoUniversity.Data.Departments
 {
+    using System;
+    using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Domain.Contracts;
     using Domain.Instructor;
+
+    using Microsoft.EntityFrameworkCore;
 
     public class InstructorsRepository : EfRepository<Instructor, Models.Instructor>, IInstructorsRepository
     {
@@ -39,5 +44,11 @@ namespace ContosoUniversity.Data.Departments
             // target.CourseAssignments = source.Courses;
             // target.OfficeAssignment = source.Office;
         }
+
+        public Task<Dictionary<Guid, string>> GetInstructorNamesReference() => DbSet
+            .AsNoTracking()
+            .ToDictionaryAsync(
+               x => x.ExternalId,
+               x => x.FullName);
     }
 }

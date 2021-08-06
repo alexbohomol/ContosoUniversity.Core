@@ -45,7 +45,7 @@ namespace ContosoUniversity.Services.Instructors.Commands
         public bool HasAssignedOffice => !string.IsNullOrWhiteSpace(Location);
     }
     
-        public class EditInstructorCommandHandler : AsyncRequestHandler<EditInstructorCommand>
+    public class EditInstructorCommandHandler : AsyncRequestHandler<EditInstructorCommand>
     {
         private readonly DepartmentsContext _departmentsContext;
         private readonly ICoursesRepository _coursesRepository;
