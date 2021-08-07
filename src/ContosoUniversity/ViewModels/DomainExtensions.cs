@@ -30,6 +30,13 @@ namespace ContosoUniversity.ViewModels
                 .CourseAssignments
                 .Select(c => c.CourseExternalId) ?? Array.Empty<Guid>();
 
+            return ToAssignedCourseOptions(courses, instructorCourses);
+        }
+
+        public static AssignedCourseOption[] ToAssignedCourseOptions(
+            this IEnumerable<Course> courses, 
+            IEnumerable<Guid> instructorCourses)
+        {
             return courses.Select(course => new AssignedCourseOption
             {
                 CourseCode = course.Code,
@@ -38,6 +45,5 @@ namespace ContosoUniversity.ViewModels
                 Assigned = instructorCourses.Contains(course.EntityId)
             }).ToArray();
         }
-
     }
 }

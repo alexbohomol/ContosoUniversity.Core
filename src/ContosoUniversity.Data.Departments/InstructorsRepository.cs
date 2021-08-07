@@ -28,7 +28,7 @@ namespace ContosoUniversity.Data.Departments
             dataModel.LastName,
             dataModel.HireDate,
             dataModel.CourseAssignments.Select(x => new CourseAssignment(x.CourseExternalId)).ToArray(),
-            new OfficeAssignment(dataModel.OfficeAssignment.Location),
+            new OfficeAssignment(dataModel.OfficeAssignment?.Location),
             dataModel.ExternalId);
 
         protected override void MapDomainEntityOntoDataEntity(Instructor source, Models.Instructor target)
@@ -50,5 +50,7 @@ namespace ContosoUniversity.Data.Departments
             .ToDictionaryAsync(
                x => x.ExternalId,
                x => x.FullName);
+
+        public Task<bool> Exists(Guid departmentId) => DbSet.AnyAsync(x => x.ExternalId == departmentId);
     }
 }

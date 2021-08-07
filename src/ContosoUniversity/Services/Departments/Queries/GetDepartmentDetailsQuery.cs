@@ -4,14 +4,11 @@ namespace ContosoUniversity.Services.Departments.Queries
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Data.Departments;
-
     using Domain.Contracts;
     using Domain.Contracts.Exceptions;
+    using Domain.Instructor;
 
     using MediatR;
-
-    using Microsoft.EntityFrameworkCore;
 
     using ViewModels.Departments;
 
@@ -19,13 +16,15 @@ namespace ContosoUniversity.Services.Departments.Queries
     
     public class GetDepartmentDetailsQueryHandler : IRequestHandler<GetDepartmentDetailsQuery, DepartmentDetailsViewModel>
     {
-        private readonly DepartmentsContext _departmentsContext;
         private readonly IDepartmentsRepository _departmentsRepository;
+        private readonly IInstructorsRepository _instructorsRepository;
 
-        public GetDepartmentDetailsQueryHandler(DepartmentsContext departmentsContext, IDepartmentsRepository departmentsRepository)
+        public GetDepartmentDetailsQueryHandler(
+            IDepartmentsRepository departmentsRepository,
+            IInstructorsRepository instructorsRepository)
         {
-            _departmentsContext = departmentsContext;
             _departmentsRepository = departmentsRepository;
+            _instructorsRepository = instructorsRepository;
         }
         
         public async Task<DepartmentDetailsViewModel> Handle(GetDepartmentDetailsQuery request, CancellationToken cancellationToken)
@@ -37,10 +36,10 @@ namespace ContosoUniversity.Services.Departments.Queries
             var fullname = string.Empty;
             if (department.AdministratorId.HasValue)
             {
-                var administrator = await _departmentsContext.Instructors.FirstOrDefaultAsync(x => x.ExternalId == department.AdministratorId);
+                var administrator = await _instructorsRepository.GetById(department.AdministratorId.Value);
                 if (administrator is null)
                     throw new EntityNotFoundException(nameof(administrator), department.AdministratorId.Value);
-                fullname = administrator.FullName;
+                fullname = administrator.FullName();
             }
 
             return new DepartmentDetailsViewModel
