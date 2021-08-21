@@ -30,7 +30,7 @@ namespace ContosoUniversity.Data.Departments
             dataModel.FirstMidName,
             dataModel.LastName,
             dataModel.HireDate,
-            dataModel.CourseAssignments.Select(x => x.CourseExternalId).ToArray(),
+            dataModel.CourseAssignments.Select(x => x.CourseExternalId).ToList(),
             new OfficeAssignment(dataModel.OfficeAssignment?.Location),
             dataModel.ExternalId);
 

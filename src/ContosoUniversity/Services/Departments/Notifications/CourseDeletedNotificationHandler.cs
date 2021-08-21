@@ -6,33 +6,28 @@ namespace ContosoUniversity.Services.Departments.Notifications
 
     using Courses.Notifications;
 
-    using Data.Departments;
+    using Domain.Contracts;
 
     using MediatR;
 
-    using Microsoft.EntityFrameworkCore;
-
     public class CourseDeletedNotificationHandler : INotificationHandler<CourseDeletedNotification>
     {
-        private readonly DepartmentsContext _departmentsContext;
+        private readonly IInstructorsRepository _instructorsRepository;
 
-        public CourseDeletedNotificationHandler(DepartmentsContext departmentsContext)
+        public CourseDeletedNotificationHandler(IInstructorsRepository instructorsRepository)
         {
-            _departmentsContext = departmentsContext;
+            _instructorsRepository = instructorsRepository;
         }
 
         public async Task Handle(CourseDeletedNotification notification, CancellationToken cancellationToken)
         {
-            var assignments = await _departmentsContext
-                .CourseAssignments
-                .Where(x => x.CourseExternalId == notification.Id)
-                .ToArrayAsync(cancellationToken);
+            var instructors = (await _instructorsRepository.GetAll())
+                .Where(x => x.Courses.Contains(notification.Id));
 
-            if (assignments.Any())
+            foreach (var instructor in instructors)
             {
-                _departmentsContext.CourseAssignments.RemoveRange(assignments);
-            
-                await _departmentsContext.SaveChangesAsync(cancellationToken);
+                instructor.Courses.Remove(notification.Id);
+                await _instructorsRepository.Save(instructor);
             }
         }
     }

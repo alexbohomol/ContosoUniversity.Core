@@ -1,6 +1,7 @@
 namespace ContosoUniversity.Domain.Instructor
 {
     using System;
+    using System.Collections.Generic;
 
     public class Instructor : IIdentifiable<Guid>
     {
@@ -8,7 +9,7 @@ namespace ContosoUniversity.Domain.Instructor
             string firstName, 
             string lastName,
             DateTime hireDate,
-            Guid[] courses,
+            IList<Guid> courses,
             OfficeAssignment office,
             Guid entityId)
         {
@@ -26,7 +27,7 @@ namespace ContosoUniversity.Domain.Instructor
 
         public DateTime HireDate { get; private set; }
 
-        public Guid[] Courses { get; set; }
+        public IList<Guid> Courses { get; set; }
 
         public OfficeAssignment Office { get; set; }
 
