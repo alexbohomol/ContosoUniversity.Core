@@ -30,6 +30,8 @@ namespace ContosoUniversity.Services.Departments.Queries
         {
             var department = await _departmentsRepository.GetById(request.Id);
 
+            var instructorNames = await _instructorsRepository.GetInstructorNamesReference();
+
             return department == null
                 ? null
                 : new DepartmentEditForm
@@ -40,7 +42,7 @@ namespace ContosoUniversity.Services.Departments.Queries
                     AdministratorId = department.AdministratorId,
                     ExternalId = department.EntityId,
                     // RowVersion = department.RowVersion,
-                    InstructorsDropDown = (await _instructorsRepository.GetInstructorNamesReference()).ToSelectList(department.AdministratorId ?? default)
+                    InstructorsDropDown = instructorNames.ToSelectList(department.AdministratorId ?? default)
                 };
         }
     }
