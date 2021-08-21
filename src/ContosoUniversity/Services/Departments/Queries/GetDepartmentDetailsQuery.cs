@@ -16,15 +16,15 @@ namespace ContosoUniversity.Services.Departments.Queries
     
     public class GetDepartmentDetailsQueryHandler : IRequestHandler<GetDepartmentDetailsQuery, DepartmentDetailsViewModel>
     {
-        private readonly IDepartmentsRepository _departmentsRepository;
         private readonly IInstructorsRepository _instructorsRepository;
+        private readonly IDepartmentsRepository _departmentsRepository;
 
         public GetDepartmentDetailsQueryHandler(
-            IDepartmentsRepository departmentsRepository,
-            IInstructorsRepository instructorsRepository)
+            IInstructorsRepository instructorsRepository,
+            IDepartmentsRepository departmentsRepository)
         {
-            _departmentsRepository = departmentsRepository;
             _instructorsRepository = instructorsRepository;
+            _departmentsRepository = departmentsRepository;
         }
         
         public async Task<DepartmentDetailsViewModel> Handle(GetDepartmentDetailsQuery request, CancellationToken cancellationToken)

@@ -15,15 +15,15 @@ namespace ContosoUniversity.Services.Departments.Queries
     
     public class GetDepartmentsIndexQueryHandler : IRequestHandler<GetDepartmentsIndexQuery, IList<DepartmentListItemViewModel>>
     {
-        private readonly IDepartmentsRepository _departmentsRepository;
         private readonly IInstructorsRepository _instructorsRepository;
+        private readonly IDepartmentsRepository _departmentsRepository;
 
         public GetDepartmentsIndexQueryHandler(
-            IDepartmentsRepository departmentsRepository,
-            IInstructorsRepository instructorsRepository)
+            IInstructorsRepository instructorsRepository,
+            IDepartmentsRepository departmentsRepository)
         {
-            _departmentsRepository = departmentsRepository;
             _instructorsRepository = instructorsRepository;
+            _departmentsRepository = departmentsRepository;
         }
         
         public async Task<IList<DepartmentListItemViewModel>> Handle(GetDepartmentsIndexQuery request, CancellationToken cancellationToken)

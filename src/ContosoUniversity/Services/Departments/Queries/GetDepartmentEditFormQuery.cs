@@ -15,15 +15,15 @@ namespace ContosoUniversity.Services.Departments.Queries
     
     public class GetDepartmentEditFormQueryHandler : IRequestHandler<GetDepartmentEditFormQuery, DepartmentEditForm>
     {
-        private readonly IDepartmentsRepository _departmentsRepository;
         private readonly IInstructorsRepository _instructorsRepository;
+        private readonly IDepartmentsRepository _departmentsRepository;
 
         public GetDepartmentEditFormQueryHandler(
-            IDepartmentsRepository departmentsRepository,
-            IInstructorsRepository instructorsRepository)
+            IInstructorsRepository instructorsRepository,
+            IDepartmentsRepository departmentsRepository)
         {
-            _departmentsRepository = departmentsRepository;
             _instructorsRepository = instructorsRepository;
+            _departmentsRepository = departmentsRepository;
         }
         
         public async Task<DepartmentEditForm> Handle(GetDepartmentEditFormQuery request, CancellationToken cancellationToken)

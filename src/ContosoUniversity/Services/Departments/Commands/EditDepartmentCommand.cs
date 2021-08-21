@@ -34,15 +34,15 @@ namespace ContosoUniversity.Services.Departments.Commands
     
     public class EditDepartmentCommandHandler : AsyncRequestHandler<EditDepartmentCommand>
     {
-        private readonly IDepartmentsRepository _departmentsRepository;
         private readonly IInstructorsRepository _instructorsRepository;
+        private readonly IDepartmentsRepository _departmentsRepository;
 
         public EditDepartmentCommandHandler(
-            IDepartmentsRepository departmentsRepository,
-            IInstructorsRepository instructorsRepository)
+            IInstructorsRepository instructorsRepository,
+            IDepartmentsRepository departmentsRepository)
         {
-            _departmentsRepository = departmentsRepository;
             _instructorsRepository = instructorsRepository;
+            _departmentsRepository = departmentsRepository;
         }
         
         protected override async Task Handle(EditDepartmentCommand request, CancellationToken cancellationToken)
