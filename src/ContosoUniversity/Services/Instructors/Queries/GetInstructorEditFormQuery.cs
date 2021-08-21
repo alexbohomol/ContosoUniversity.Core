@@ -1,7 +1,6 @@
 namespace ContosoUniversity.Services.Instructors.Queries
 {
     using System;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -33,8 +32,6 @@ namespace ContosoUniversity.Services.Instructors.Queries
             if (instructor is null)
                 return null;
 
-            var assignedCourses = instructor.Courses.Select(x => x.CourseId).ToArray();
-
             var courses = await _coursesRepository.GetAll();
             
             return new EditInstructorForm
@@ -44,7 +41,7 @@ namespace ContosoUniversity.Services.Instructors.Queries
                 FirstName = instructor.FirstName,
                 HireDate = instructor.HireDate,
                 Location = instructor.Office?.Title,
-                AssignedCourses = courses.ToAssignedCourseOptions(assignedCourses)
+                AssignedCourses = courses.ToAssignedCourseOptions(instructor.Courses)
             };
         }
     }

@@ -51,8 +51,6 @@ namespace ContosoUniversity.Services.Instructors.Queries
             {
                 Instructors = instructors.Select(x =>
                 {
-                    var assignedCourseIds = x.Courses.Select(ca => ca.CourseId).ToArray();
-
                     return new InstructorListItemViewModel
                     {
                         Id = x.EntityId,
@@ -60,9 +58,9 @@ namespace ContosoUniversity.Services.Instructors.Queries
                         LastName = x.LastName,
                         HireDate = x.HireDate,
                         Office = x.Office?.Title,
-                        AssignedCourseIds = assignedCourseIds,
+                        AssignedCourseIds = x.Courses,
                         AssignedCourses = courses
-                            .Where(c => assignedCourseIds.Contains(c.EntityId))
+                            .Where(c => x.Courses.Contains(c.EntityId))
                             .Select(c => $"{c.Code} {c.Title}"),
                         RowClass = id is not null && id == x.EntityId
                             ? "table-success"

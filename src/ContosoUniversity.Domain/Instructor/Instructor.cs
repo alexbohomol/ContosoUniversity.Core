@@ -5,26 +5,10 @@ namespace ContosoUniversity.Domain.Instructor
     public class Instructor : IIdentifiable<Guid>
     {
         public Instructor(
-            string firstName,
-            string lastName,
-            DateTime hireDate,
-            CourseAssignment[] courses,
-            OfficeAssignment office)
-            : this(
-                firstName, 
-                lastName, 
-                hireDate, 
-                courses, 
-                office,
-                Guid.NewGuid())
-        {
-        }
-
-        public Instructor(
             string firstName, 
             string lastName,
             DateTime hireDate,
-            CourseAssignment[] courses,
+            Guid[] courses,
             OfficeAssignment office,
             Guid entityId)
         {
@@ -36,16 +20,23 @@ namespace ContosoUniversity.Domain.Instructor
             EntityId = entityId;
         }
 
-        public string FirstName { get; }
-        
-        public string LastName { get; }
+        public string FirstName { get; private set; }
 
-        public DateTime HireDate { get; }
+        public string LastName { get; private set; }
 
-        public CourseAssignment[] Courses { get; }
-        
-        public OfficeAssignment Office { get; }
-        
+        public DateTime HireDate { get; private set; }
+
+        public Guid[] Courses { get; set; }
+
+        public OfficeAssignment Office { get; set; }
+
         public Guid EntityId { get; }
+
+        public void UpdatePersonalInfo(string firstName, string lastName, DateTime hireDate)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            HireDate = hireDate;
+        }
     }
 }

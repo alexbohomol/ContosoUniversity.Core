@@ -6,9 +6,13 @@ namespace ContosoUniversity.Data.Departments
     using System.Threading.Tasks;
 
     using Domain.Contracts;
-    using Domain.Instructor;
 
     using Microsoft.EntityFrameworkCore;
+
+    using Models;
+
+    using Instructor = Domain.Instructor.Instructor;
+    using OfficeAssignment = Domain.Instructor.OfficeAssignment;
 
     public class InstructorsRepository : EfRepository<Instructor, Models.Instructor>, IInstructorsRepository
     {
@@ -20,14 +24,13 @@ namespace ContosoUniversity.Data.Departments
                     nameof(Models.Instructor.OfficeAssignment),
                     nameof(Models.Instructor.CourseAssignments)
                 })
-        {
-        }
+        { }
 
         protected override Instructor ToDomainEntity(Models.Instructor dataModel) => new(
             dataModel.FirstMidName,
             dataModel.LastName,
             dataModel.HireDate,
-            dataModel.CourseAssignments.Select(x => new CourseAssignment(x.CourseExternalId)).ToArray(),
+            dataModel.CourseAssignments.Select(x => x.CourseExternalId).ToArray(),
             new OfficeAssignment(dataModel.OfficeAssignment?.Location),
             dataModel.ExternalId);
 
@@ -38,11 +41,18 @@ namespace ContosoUniversity.Data.Departments
             target.HireDate = source.HireDate;
             target.ExternalId = source.EntityId;
             
-            /*
-             * TODO: specify later
-             */
-            // target.CourseAssignments = source.Courses;
-            // target.OfficeAssignment = source.Office;
+            target.CourseAssignments = source.Courses.Select(x => new CourseAssignment
+            {
+                InstructorId = target.Id,
+                CourseExternalId = x
+            }).ToList();
+            
+            target.OfficeAssignment = string.IsNullOrWhiteSpace(source.Office?.Title)
+                ? null
+                : new Models.OfficeAssignment
+                {
+                    Location = source.Office.Title
+                };
         }
 
         public Task<Dictionary<Guid, string>> GetInstructorNamesReference() => DbSet
