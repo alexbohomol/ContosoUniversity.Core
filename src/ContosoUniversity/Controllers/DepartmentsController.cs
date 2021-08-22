@@ -1,6 +1,8 @@
 ﻿namespace ContosoUniversity.Controllers
 {
     using System;
+    using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Domain.Contracts;
@@ -48,18 +50,20 @@
                 : NotFound();
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(CancellationToken cancellationToken)
         {
+            var instructorNames = await _instructorsRepository.GetInstructorNamesReference(cancellationToken);
+            
             return View(new CreateDepartmentForm
             {
                 StartDate = DateTime.Now,
-                InstructorsDropDown = (await _instructorsRepository.GetInstructorNamesReference()).ToSelectList()
+                InstructorsDropDown = instructorNames.ToSelectList()
             });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateDepartmentCommand command)
+        public async Task<IActionResult> Create(CreateDepartmentCommand command, CancellationToken cancellationToken)
         {
             if (command is null)
             {
@@ -71,10 +75,10 @@
                 return View(
                     new CreateDepartmentForm(
                         command,
-                        await _instructorsRepository.GetInstructorNamesReference()));
+                        await _instructorsRepository.GetInstructorNamesReference(cancellationToken)));
             }
 
-            await _mediator.Send(command);
+            await _mediator.Send(command, cancellationToken);
 
             return RedirectToAction(nameof(Index));
         }
@@ -95,7 +99,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditDepartmentCommand command)
+        public async Task<IActionResult> Edit(EditDepartmentCommand command, CancellationToken cancellationToken)
         {
             if (command is null)
             {
@@ -107,10 +111,10 @@
                 return View(
                     new DepartmentEditForm(
                         command,
-                        await _instructorsRepository.GetInstructorNamesReference()));
+                        await _instructorsRepository.GetInstructorNamesReference(cancellationToken)));
             }
 
-            await _mediator.Send(command);
+            await _mediator.Send(command, cancellationToken);
 
             return RedirectToAction(nameof(Index));
         }

@@ -21,7 +21,7 @@ namespace ContosoUniversity.Services.Instructors.Notifications
         
         public async Task Handle(DepartmentDeletedNotification notification, CancellationToken cancellationToken)
         {
-            var instructors = (await _instructorsRepository.GetAll())
+            var instructors = (await _instructorsRepository.GetAll(cancellationToken))
                 .Where(x => x.Courses.Any(c => notification.CourseIds.Contains(c)))
                 .ToArray();
 
@@ -31,7 +31,7 @@ namespace ContosoUniversity.Services.Instructors.Notifications
                 {
                     instructor.Courses.Remove(courseId);
                 }
-                await _instructorsRepository.Save(instructor);
+                await _instructorsRepository.Save(instructor, cancellationToken);
             }
         }
     }

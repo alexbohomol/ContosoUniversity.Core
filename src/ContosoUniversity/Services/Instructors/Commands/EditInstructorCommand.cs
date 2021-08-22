@@ -43,15 +43,14 @@ namespace ContosoUniversity.Services.Instructors.Commands
     {
         private readonly IInstructorsRepository _instructorsRepository;
 
-        public EditInstructorCommandHandler(
-            IInstructorsRepository instructorsRepository)
+        public EditInstructorCommandHandler(IInstructorsRepository instructorsRepository)
         {
             _instructorsRepository = instructorsRepository;
         }
         
         protected override async Task Handle(EditInstructorCommand request, CancellationToken cancellationToken)
         {
-            var instructor = await _instructorsRepository.GetById(request.ExternalId);
+            var instructor = await _instructorsRepository.GetById(request.ExternalId, cancellationToken);
             if (instructor is null)
                 throw new EntityNotFoundException(nameof(instructor), request.ExternalId);
 
@@ -61,7 +60,7 @@ namespace ContosoUniversity.Services.Instructors.Commands
                 ? new OfficeAssignment(request.Location) 
                 : null;
 
-            await _instructorsRepository.Save(instructor);
+            await _instructorsRepository.Save(instructor, cancellationToken);
         }
     }
 }
