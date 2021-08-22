@@ -28,9 +28,9 @@ namespace ContosoUniversity.Services.Departments.Queries
         
         public async Task<IList<DepartmentListItemViewModel>> Handle(GetDepartmentsIndexQuery request, CancellationToken cancellationToken)
         {
-            var departments = await _departmentsRepository.GetAll();
+            var departments = await _departmentsRepository.GetAll(cancellationToken);
 
-            var instructorsNames = await _instructorsRepository.GetInstructorNamesReference();
+            var instructorsNames = await _instructorsRepository.GetInstructorNamesReference(cancellationToken);
 
             return departments.Select(x => new DepartmentListItemViewModel
             {

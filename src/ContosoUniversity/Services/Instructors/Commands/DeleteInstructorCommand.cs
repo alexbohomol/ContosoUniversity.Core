@@ -27,17 +27,19 @@ namespace ContosoUniversity.Services.Instructors.Commands
         
         protected override async Task Handle(DeleteInstructorCommand request, CancellationToken cancellationToken)
         {
-            if (!await _instructorsRepository.Exists(request.Id))
+            if (!await _instructorsRepository.Exists(request.Id, cancellationToken))
                 throw new EntityNotFoundException("instructor", request.Id);
 
-            Department[] administratedDepartments = await _departmentsRepository.GetByAdministrator(request.Id);
+            Department[] administratedDepartments = await _departmentsRepository.GetByAdministrator(
+                request.Id,
+                cancellationToken);
             foreach (var department in administratedDepartments)
             {
                 department.DisassociateAdministrator();
-                await _departmentsRepository.Save(department);
+                await _departmentsRepository.Save(department, cancellationToken);
             }
             
-            await _instructorsRepository.Remove(request.Id);
+            await _instructorsRepository.Remove(request.Id, cancellationToken);
         }
     }
 }

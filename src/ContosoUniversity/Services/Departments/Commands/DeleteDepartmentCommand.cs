@@ -36,7 +36,7 @@ namespace ContosoUniversity.Services.Departments.Commands
             if (!exists)
                 throw new EntityNotFoundException(nameof(exists), request.Id);
             
-            await _departmentsRepository.Remove(request.Id);
+            await _departmentsRepository.Remove(request.Id, cancellationToken);
 
             var relatedCoursesIds = (await _coursesRepository.GetByDepartmentId(request.Id, cancellationToken))
                                     .Select(x => x.EntityId)

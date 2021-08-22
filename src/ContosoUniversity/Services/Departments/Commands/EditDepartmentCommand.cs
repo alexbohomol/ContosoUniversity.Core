@@ -47,13 +47,13 @@ namespace ContosoUniversity.Services.Departments.Commands
         
         protected override async Task Handle(EditDepartmentCommand request, CancellationToken cancellationToken)
         {
-            var department = await _departmentsRepository.GetById(request.ExternalId);
+            var department = await _departmentsRepository.GetById(request.ExternalId, cancellationToken);
 
             department.UpdateGeneralInfo(request.Name, request.Budget, request.StartDate);
             
             if (request.AdministratorId.HasValue)
             {
-                if (!await _instructorsRepository.Exists(request.AdministratorId.Value))
+                if (!await _instructorsRepository.Exists(request.AdministratorId.Value, cancellationToken))
                     throw new EntityNotFoundException("instructor", request.AdministratorId.Value);
                 
                 department.AssociateAdministrator(request.AdministratorId.Value);
@@ -63,7 +63,7 @@ namespace ContosoUniversity.Services.Departments.Commands
                 department.DisassociateAdministrator();
             }
 
-            await _departmentsRepository.Save(department);
+            await _departmentsRepository.Save(department, cancellationToken);
         }
     }
 }

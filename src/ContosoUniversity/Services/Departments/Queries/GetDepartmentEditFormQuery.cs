@@ -28,9 +28,9 @@ namespace ContosoUniversity.Services.Departments.Queries
         
         public async Task<DepartmentEditForm> Handle(GetDepartmentEditFormQuery request, CancellationToken cancellationToken)
         {
-            var department = await _departmentsRepository.GetById(request.Id);
+            var department = await _departmentsRepository.GetById(request.Id, cancellationToken);
 
-            var instructorNames = await _instructorsRepository.GetInstructorNamesReference();
+            var instructorNames = await _instructorsRepository.GetInstructorNamesReference(cancellationToken);
 
             return department == null
                 ? null

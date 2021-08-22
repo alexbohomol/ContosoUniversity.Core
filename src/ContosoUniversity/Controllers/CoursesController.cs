@@ -51,16 +51,16 @@
                 : NotFound();
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(CancellationToken cancellationToken)
         {
             return View(
                 new CreateCourseForm(
-                    await _departmentsRepository.GetDepartmentNamesReference()));
+                    await _departmentsRepository.GetDepartmentNamesReference(cancellationToken)));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateCourseCommand command)
+        public async Task<IActionResult> Create(CreateCourseCommand command, CancellationToken cancellationToken)
         {
             if (command is null)
             {
@@ -72,10 +72,10 @@
                 return View(
                     new CreateCourseForm(
                         command,
-                        await _departmentsRepository.GetDepartmentNamesReference()));
+                        await _departmentsRepository.GetDepartmentNamesReference(cancellationToken)));
             }
 
-            await _mediator.Send(command);
+            await _mediator.Send(command, cancellationToken);
 
             return RedirectToAction(nameof(Index));
         }
@@ -96,7 +96,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditCourseCommand command)
+        public async Task<IActionResult> Edit(EditCourseCommand command, CancellationToken cancellationToken)
         {
             if (command is null)
             {
@@ -105,16 +105,16 @@
 
             if (!ModelState.IsValid)
             {
-                var course = await _coursesRepository.GetById(command.Id);
+                var course = await _coursesRepository.GetById(command.Id, cancellationToken);
 
                 return View(
                     new CourseEditForm(
                         command,
                         course.Code,
-                        await _departmentsRepository.GetDepartmentNamesReference()));
+                        await _departmentsRepository.GetDepartmentNamesReference(cancellationToken)));
             }
 
-            await _mediator.Send(command);
+            await _mediator.Send(command, cancellationToken);
 
             return RedirectToAction(nameof(Index));
         }
