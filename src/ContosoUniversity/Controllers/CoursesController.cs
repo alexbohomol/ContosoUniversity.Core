@@ -31,20 +31,21 @@
             _mediator = mediator;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            return View(await _mediator.Send(new GetCoursesIndexQuery()));
+            return View(await _mediator.Send(new GetCoursesIndexQuery(), cancellationToken));
         }
 
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
         {
             if (id is null)
             {
                 return BadRequest();
             }
 
-            var result = await _mediator
-                .Send(new GetCourseDetailsQuery(id.Value));
+            var result = await _mediator.Send(
+                new GetCourseDetailsQuery(id.Value),
+                cancellationToken);
 
             return result is not null
                 ? View(result)
@@ -80,14 +81,16 @@
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid? id, CancellationToken cancellationToken)
         {
             if (id is null)
             {
                 return BadRequest();
             }
 
-            var result = await _mediator.Send(new GetCourseEditFormQuery(id.Value));
+            var result = await _mediator.Send(
+                new GetCourseEditFormQuery(id.Value),
+                cancellationToken);
 
             return result is not null
                 ? View(result)
@@ -119,15 +122,16 @@
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
         {
             if (id is null)
             {
                 return BadRequest();
             }
 
-            var result = await _mediator
-                .Send(new GetCourseDetailsQuery(id.Value));
+            var result = await _mediator.Send(
+                new GetCourseDetailsQuery(id.Value),
+                cancellationToken);
 
             return result is not null
                 ? View(result)
@@ -136,9 +140,11 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
-            await _mediator.Send(new DeleteCourseCommand(id));
+            await _mediator.Send(
+                new DeleteCourseCommand(id),
+                cancellationToken);
 
             return RedirectToAction(nameof(Index));
         }
@@ -153,8 +159,9 @@
         {
             if (multiplier.HasValue)
             {
-                ViewData["RowsAffected"] = await _coursesRepository
-                    .UpdateCourseCredits(multiplier.Value, cancellationToken);
+                ViewData["RowsAffected"] = await _coursesRepository.UpdateCourseCredits(
+                    multiplier.Value, 
+                    cancellationToken);
             }
 
             return View();

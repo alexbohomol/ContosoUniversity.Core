@@ -59,9 +59,9 @@ namespace ContosoUniversity.Data.Departments
         public Task<Dictionary<Guid, string>> GetInstructorNamesReference(CancellationToken cancellationToken = default) => DbSet
             .AsNoTracking()
             .ToDictionaryAsync(
-                x => x.ExternalId,
-                x => x.FullName,
-                cancellationToken);
+               x => x.ExternalId,
+               x => x.FullName,
+               cancellationToken);
 
         public Task<bool> Exists(Guid departmentId, CancellationToken cancellationToken = default) => DbSet
             .AnyAsync(x => x.ExternalId == departmentId, cancellationToken);

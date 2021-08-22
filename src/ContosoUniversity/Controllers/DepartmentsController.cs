@@ -1,7 +1,6 @@
 ﻿namespace ContosoUniversity.Controllers
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -30,20 +29,24 @@
             _mediator = mediator;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            return View(await _mediator.Send(new GetDepartmentsIndexQuery()));
+            return View(
+                await _mediator.Send(
+                    new GetDepartmentsIndexQuery(),
+                    cancellationToken));
         }
 
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var result = await _mediator
-                .Send(new GetDepartmentDetailsQuery(id.Value));
+            var result = await _mediator.Send(
+                new GetDepartmentDetailsQuery(id.Value),
+                cancellationToken);
 
             return result is not null
                 ? View(result)
@@ -83,14 +86,16 @@
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid? id, CancellationToken cancellationToken)
         {
             if (id is null)
             {
                 return BadRequest();
             }
 
-            var result = await _mediator.Send(new GetDepartmentEditFormQuery(id.Value));
+            var result = await _mediator.Send(
+                new GetDepartmentEditFormQuery(id.Value),
+                cancellationToken);
 
             return result is not null
                 ? View(result)
@@ -119,15 +124,16 @@
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
         {
             if (id is null)
             {
                 return BadRequest();
             }
 
-            var result = await _mediator
-                .Send(new GetDepartmentDetailsQuery(id.Value));
+            var result = await _mediator.Send(
+                new GetDepartmentDetailsQuery(id.Value),
+                cancellationToken);
 
             return result is not null
                 ? View(result)
@@ -136,9 +142,11 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
-            await _mediator.Send(new DeleteDepartmentCommand(id));
+            await _mediator.Send(
+                new DeleteDepartmentCommand(id),
+                cancellationToken);
             
             return RedirectToAction(nameof(Index));
         }

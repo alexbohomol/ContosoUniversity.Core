@@ -36,9 +36,9 @@ namespace ContosoUniversity.Data.Departments
             .AsNoTracking()
             .OrderBy(x => x.Name)
             .ToDictionaryAsync(
-                x => x.ExternalId,
-                x => x.Name,
-                cancellationToken);
+               x => x.ExternalId,
+               x => x.Name,
+               cancellationToken);
 
         public Task<bool> Exists(Guid departmentId, CancellationToken cancellationToken = default) => DbSet
             .AnyAsync(x => x.ExternalId == departmentId, cancellationToken);
