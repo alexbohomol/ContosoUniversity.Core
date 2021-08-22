@@ -45,7 +45,8 @@ namespace ContosoUniversity.Services.Students.Commands
                     request.FirstName,
                     request.EnrollmentDate,
                     EnrollmentsCollection.Empty,
-                    Guid.NewGuid()));
+                    Guid.NewGuid()),
+                cancellationToken);
         }
     }
 }

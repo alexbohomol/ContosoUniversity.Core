@@ -53,9 +53,9 @@ namespace ContosoUniversity.Services.Courses.Validators
         private static string ErrMsgCredits => $"The field '{nameof(CreateCourseForm.Credits)}' must be between {Credits.MinValue} and {Credits.MaxValue}.";
 
         private async Task<bool> BeANewCourseCode(int courseCode, CancellationToken token) => 
-            !await _coursesRepository.ExistsCourseCode(courseCode);
+            !await _coursesRepository.ExistsCourseCode(courseCode, token);
 
         private Task<bool> BeAnExistingDepartment(Guid departmentId, CancellationToken token) => 
-            _departmentsRepository.Exists(departmentId);
+            _departmentsRepository.Exists(departmentId, token);
     }
 }

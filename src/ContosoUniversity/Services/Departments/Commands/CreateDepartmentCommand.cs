@@ -42,7 +42,7 @@ namespace ContosoUniversity.Services.Departments.Commands
         {
             var department = new Department(request.Name, request.Budget, request.StartDate, request.AdministratorId);
 
-            await _departmentsRepository.Save(department);
+            await _departmentsRepository.Save(department, cancellationToken);
         }
     }
 }

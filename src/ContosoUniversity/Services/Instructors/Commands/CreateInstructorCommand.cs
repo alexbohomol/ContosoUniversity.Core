@@ -56,7 +56,7 @@ namespace ContosoUniversity.Services.Instructors.Commands
                     ? new OfficeAssignment(command.Location)
                     : null);
 
-            await _instructorsRepository.Save(instructor);
+            await _instructorsRepository.Save(instructor, cancellationToken);
         }
     }
 }

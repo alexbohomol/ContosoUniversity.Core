@@ -29,14 +29,17 @@ namespace ContosoUniversity.Services.Departments.Queries
         
         public async Task<DepartmentDetailsViewModel> Handle(GetDepartmentDetailsQuery request, CancellationToken cancellationToken)
         {
-            var department = await _departmentsRepository.GetById(request.Id);
+            var department = await _departmentsRepository.GetById(request.Id, cancellationToken);
             if (department is null)
                 throw new EntityNotFoundException(nameof(department), request.Id);
 
             var fullname = string.Empty;
             if (department.AdministratorId.HasValue)
             {
-                var administrator = await _instructorsRepository.GetById(department.AdministratorId.Value);
+                var administrator = await _instructorsRepository.GetById(
+                    department.AdministratorId.Value,
+                    cancellationToken);
+                
                 if (administrator is null)
                     throw new EntityNotFoundException(nameof(administrator), department.AdministratorId.Value);
                 fullname = administrator.FullName();

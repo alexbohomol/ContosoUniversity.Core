@@ -28,11 +28,11 @@ namespace ContosoUniversity.Services.Courses.Queries
 
         public async Task<CourseDetailsViewModel> Handle(GetCourseDetailsQuery request, CancellationToken cancellationToken)
         {
-            var course = await _coursesRepository.GetById(request.Id);
+            var course = await _coursesRepository.GetById(request.Id, cancellationToken);
             if (course == null)
                 throw new EntityNotFoundException(nameof(course), request.Id);
 
-            var department = await _departmentsRepository.GetById(course.DepartmentId);
+            var department = await _departmentsRepository.GetById(course.DepartmentId, cancellationToken);
             if (department == null)
                 throw new EntityNotFoundException(nameof(department), course.DepartmentId);
             

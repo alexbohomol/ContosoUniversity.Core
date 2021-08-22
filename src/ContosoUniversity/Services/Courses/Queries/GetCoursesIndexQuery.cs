@@ -28,9 +28,9 @@ namespace ContosoUniversity.Services.Courses.Queries
 
         public async Task<List<CourseListItemViewModel>> Handle(GetCoursesIndexQuery request, CancellationToken cancellationToken)
         {
-            var courses = await _coursesRepository.GetAll();
+            var courses = await _coursesRepository.GetAll(cancellationToken);
 
-            var departmentNames = await _departmentsRepository.GetDepartmentNamesReference();
+            var departmentNames = await _departmentsRepository.GetDepartmentNamesReference(cancellationToken);
 
             CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);
 

@@ -28,11 +28,11 @@ namespace ContosoUniversity.Services.Courses.Commands
 
         protected override async Task Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
         {
-            var course = await _coursesRepository.GetById(request.Id);
+            var course = await _coursesRepository.GetById(request.Id, cancellationToken);
             if (course == null)
                 throw new EntityNotFoundException(nameof(course), request.Id);
 
-            await _coursesRepository.Remove(course.EntityId);
+            await _coursesRepository.Remove(course.EntityId, cancellationToken);
 
             /*
              * remove related assignments and enrollments

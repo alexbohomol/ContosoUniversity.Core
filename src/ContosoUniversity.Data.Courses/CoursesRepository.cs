@@ -2,6 +2,7 @@ namespace ContosoUniversity.Data.Courses
 {
     using System;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Domain.Contracts;
@@ -16,21 +17,21 @@ namespace ContosoUniversity.Data.Courses
     {
         public CoursesRepository(CoursesContext dbContext) : base(dbContext) { }
 
-        public async Task<Course[]> GetByDepartmentId(Guid departmentId)
+        public async Task<Course[]> GetByDepartmentId(Guid departmentId, CancellationToken cancellationToken = default)
         {
             var courses = await DbQuery
                 .AsNoTracking()
                 .Where(x => x.DepartmentExternalId == departmentId)
-                .ToArrayAsync();
+                .ToArrayAsync(cancellationToken);
             
             return courses.Select(ToDomainEntity).ToArray();
         }
 
-        public async Task Remove(Guid[] entityIds)
+        public async Task Remove(Guid[] entityIds, CancellationToken cancellationToken = default)
         {
             var courses = await DbQuery
                 .Where(x => entityIds.Contains(x.ExternalId))
-                .ToArrayAsync();
+                .ToArrayAsync(cancellationToken);
 
             courses.Select(x => x.ExternalId).EnsureCollectionsEqual(
                 entityIds,
@@ -38,15 +39,15 @@ namespace ContosoUniversity.Data.Courses
 
             DbSet.RemoveRange(courses);
 
-            await DbContext.SaveChangesAsync();
+            await DbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<Course[]> GetByIds(Guid[] entityIds)
+        public async Task<Course[]> GetByIds(Guid[] entityIds, CancellationToken cancellationToken = default)
         {
             var courses = await DbQuery
                 .AsNoTracking()
                 .Where(x => entityIds.Contains(x.ExternalId))
-                .ToArrayAsync();
+                .ToArrayAsync(cancellationToken);
 
             courses.Select(x => x.ExternalId).EnsureCollectionsEqual(
                 entityIds,
@@ -55,18 +56,18 @@ namespace ContosoUniversity.Data.Courses
             return courses.Select(ToDomainEntity).ToArray();
         }
 
-        public Task<bool> ExistsCourseCode(int courseCode)
+        public Task<bool> ExistsCourseCode(int courseCode, CancellationToken cancellationToken = default)
         {
             return DbQuery
                 .AsNoTracking()
-                .AnyAsync(x => x.CourseCode == courseCode);
+                .AnyAsync(x => x.CourseCode == courseCode, cancellationToken);
         }
 
-        public Task<int> UpdateCourseCredits(int multiplier)
+        public Task<int> UpdateCourseCredits(int multiplier, CancellationToken cancellationToken = default)
         {
             return DbContext.Database
                 .ExecuteSqlInterpolatedAsync(
-                    $"UPDATE [crs].[Course] SET Credits = Credits * {multiplier}");
+                    $"UPDATE [crs].[Course] SET Credits = Credits * {multiplier}", cancellationToken);
         }
 
         protected override Course ToDomainEntity(Models.Course dataModel)

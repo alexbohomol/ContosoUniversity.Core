@@ -3,6 +3,7 @@ namespace ContosoUniversity.Data.Students
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Domain.Contracts;
@@ -19,24 +20,24 @@ namespace ContosoUniversity.Data.Students
                 defaultIncludes: new [] { nameof(StudentsContext.Enrollments) })
         { }
 
-        public async Task<EnrollmentDateGroup[]> GetEnrollmentDateGroups()
+        public async Task<EnrollmentDateGroup[]> GetEnrollmentDateGroups(CancellationToken cancellationToken = default)
         {
             var groups = new List<EnrollmentDateGroup>();
 
             var conn = DbContext.Database.GetDbConnection();
             try
             {
-                await conn.OpenAsync();
+                await conn.OpenAsync(cancellationToken);
                 await using var command = conn.CreateCommand();
                 command.CommandText =
                     @"SELECT EnrollmentDate, COUNT(*) AS StudentCount
                       FROM [std].Student
                       GROUP BY EnrollmentDate";
-                var reader = await command.ExecuteReaderAsync();
+                var reader = await command.ExecuteReaderAsync(cancellationToken);
 
                 if (reader.HasRows)
                 {
-                    while (await reader.ReadAsync())
+                    while (await reader.ReadAsync(cancellationToken))
                     {
                         groups.Add(
                             new EnrollmentDateGroup(
@@ -55,12 +56,12 @@ namespace ContosoUniversity.Data.Students
             return groups.ToArray();
         }
 
-        public async Task<Student[]> GetStudentsEnrolledForCourses(Guid[] courseIds)
+        public async Task<Student[]> GetStudentsEnrolledForCourses(Guid[] courseIds, CancellationToken cancellationToken = default)
         {
             var students = await DbQuery
                 .AsNoTracking()
                 .Where(x => x.Enrollments.Select(e => e.CourseExternalId).Any(id => courseIds.Contains(id)))
-                .ToArrayAsync();
+                .ToArrayAsync(cancellationToken);
             
             return students.Select(ToDomainEntity).ToArray();
         }
@@ -68,7 +69,8 @@ namespace ContosoUniversity.Data.Students
         public async Task<PagedResult<Student>> Search(
             SearchRequest searchRequest, 
             OrderRequest orderRequest, 
-            PageRequest pageRequest)
+            PageRequest pageRequest,
+            CancellationToken cancellationToken = default)
         {
             /*
              * TODO: here we don't need default includes in DbQuery
@@ -79,7 +81,7 @@ namespace ContosoUniversity.Data.Students
             
             (Models.Student[] students, PageInfo pageInfo) = await searchQuery
                 .AsNoTracking()
-                .ToPageAsync(pageRequest);
+                .ToPageAsync(pageRequest, cancellationToken);
             
             /*
              * TODO: here we don't need default aggregated .ToDomainEntity()

@@ -24,7 +24,7 @@ namespace ContosoUniversity.Services.Instructors.Queries
         
         public async Task<InstructorDetailsViewModel> Handle(GetInstructorDetailsQuery request, CancellationToken cancellationToken)
         {
-            var instructor = await _instructorsRepository.GetById(request.Id);
+            var instructor = await _instructorsRepository.GetById(request.Id, cancellationToken);
             if (instructor == null)
                 throw new EntityNotFoundException(nameof(instructor), request.Id);
 

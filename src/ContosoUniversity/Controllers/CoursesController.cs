@@ -1,6 +1,7 @@
 ﻿namespace ContosoUniversity.Controllers
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Domain.Contracts;
@@ -30,36 +31,37 @@
             _mediator = mediator;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            return View(await _mediator.Send(new GetCoursesIndexQuery()));
+            return View(await _mediator.Send(new GetCoursesIndexQuery(), cancellationToken));
         }
 
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
         {
             if (id is null)
             {
                 return BadRequest();
             }
 
-            var result = await _mediator
-                .Send(new GetCourseDetailsQuery(id.Value));
+            var result = await _mediator.Send(
+                new GetCourseDetailsQuery(id.Value),
+                cancellationToken);
 
             return result is not null
                 ? View(result)
                 : NotFound();
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(CancellationToken cancellationToken)
         {
             return View(
                 new CreateCourseForm(
-                    await _departmentsRepository.GetDepartmentNamesReference()));
+                    await _departmentsRepository.GetDepartmentNamesReference(cancellationToken)));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateCourseCommand command)
+        public async Task<IActionResult> Create(CreateCourseCommand command, CancellationToken cancellationToken)
         {
             if (command is null)
             {
@@ -71,22 +73,24 @@
                 return View(
                     new CreateCourseForm(
                         command,
-                        await _departmentsRepository.GetDepartmentNamesReference()));
+                        await _departmentsRepository.GetDepartmentNamesReference(cancellationToken)));
             }
 
-            await _mediator.Send(command);
+            await _mediator.Send(command, cancellationToken);
 
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid? id, CancellationToken cancellationToken)
         {
             if (id is null)
             {
                 return BadRequest();
             }
 
-            var result = await _mediator.Send(new GetCourseEditFormQuery(id.Value));
+            var result = await _mediator.Send(
+                new GetCourseEditFormQuery(id.Value),
+                cancellationToken);
 
             return result is not null
                 ? View(result)
@@ -95,7 +99,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditCourseCommand command)
+        public async Task<IActionResult> Edit(EditCourseCommand command, CancellationToken cancellationToken)
         {
             if (command is null)
             {
@@ -104,29 +108,30 @@
 
             if (!ModelState.IsValid)
             {
-                var course = await _coursesRepository.GetById(command.Id);
+                var course = await _coursesRepository.GetById(command.Id, cancellationToken);
 
                 return View(
                     new CourseEditForm(
                         command,
                         course.Code,
-                        await _departmentsRepository.GetDepartmentNamesReference()));
+                        await _departmentsRepository.GetDepartmentNamesReference(cancellationToken)));
             }
 
-            await _mediator.Send(command);
+            await _mediator.Send(command, cancellationToken);
 
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
         {
             if (id is null)
             {
                 return BadRequest();
             }
 
-            var result = await _mediator
-                .Send(new GetCourseDetailsQuery(id.Value));
+            var result = await _mediator.Send(
+                new GetCourseDetailsQuery(id.Value),
+                cancellationToken);
 
             return result is not null
                 ? View(result)
@@ -135,9 +140,11 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
-            await _mediator.Send(new DeleteCourseCommand(id));
+            await _mediator.Send(
+                new DeleteCourseCommand(id),
+                cancellationToken);
 
             return RedirectToAction(nameof(Index));
         }
@@ -148,12 +155,13 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateCourseCredits(int? multiplier)
+        public async Task<IActionResult> UpdateCourseCredits(int? multiplier, CancellationToken cancellationToken)
         {
             if (multiplier.HasValue)
             {
-                ViewData["RowsAffected"] = await _coursesRepository
-                    .UpdateCourseCredits(multiplier.Value);
+                ViewData["RowsAffected"] = await _coursesRepository.UpdateCourseCredits(
+                    multiplier.Value, 
+                    cancellationToken);
             }
 
             return View();

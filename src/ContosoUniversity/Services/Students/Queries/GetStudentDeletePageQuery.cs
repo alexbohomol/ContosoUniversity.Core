@@ -24,7 +24,7 @@ namespace ContosoUniversity.Services.Students.Queries
 
         public async Task<StudentDeletePageViewModel> Handle(GetStudentDeletePageQuery request, CancellationToken cancellationToken)
         {
-            var student = await _studentsRepository.GetById(request.Id);
+            var student = await _studentsRepository.GetById(request.Id, cancellationToken);
             if (student == null)
                 throw new EntityNotFoundException(nameof(student), request.Id);
 

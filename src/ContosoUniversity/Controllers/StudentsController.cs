@@ -1,6 +1,7 @@
 ﻿namespace ContosoUniversity.Controllers
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using MediatR;
@@ -21,19 +22,24 @@
             _mediator = mediator;
         }
 
-        public async Task<IActionResult> Index(GetStudentsIndexQuery request)
+        public async Task<IActionResult> Index(GetStudentsIndexQuery request, CancellationToken cancellationToken)
         {
-            return View(await _mediator.Send(request));
+            return View(
+                await _mediator.Send(
+                    request,
+                    cancellationToken));
         }
 
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var result = await _mediator.Send(new GetStudentDetailsQuery(id.Value));
+            var result = await _mediator.Send(
+                new GetStudentDetailsQuery(id.Value),
+                cancellationToken);
             
             return result is not null
                 ? View(result)
@@ -50,26 +56,28 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateStudentCommand command)
+        public async Task<IActionResult> Create(CreateStudentCommand command, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return View(command as CreateStudentForm);
             }
 
-            await _mediator.Send(command);
+            await _mediator.Send(command, cancellationToken);
             
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid? id, CancellationToken cancellationToken)
         {
             if (id is null)
             {
                 return BadRequest();
             }
 
-            var result = await _mediator.Send(new GetStudentEditFormQuery(id.Value));
+            var result = await _mediator.Send(
+                new GetStudentEditFormQuery(id.Value),
+                cancellationToken);
 
             return result is not null
                 ? View(result)
@@ -78,7 +86,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditStudentCommand command)
+        public async Task<IActionResult> Edit(EditStudentCommand command, CancellationToken cancellationToken)
         {
             if (command is null)
             {
@@ -90,19 +98,21 @@
                 return View(command as EditStudentForm);
             }
 
-            await _mediator.Send(command);
+            await _mediator.Send(command, cancellationToken);
             
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
         {
             if (id is null)
             {
                 return BadRequest();
             }
 
-            var result = await _mediator.Send(new GetStudentDeletePageQuery(id.Value));
+            var result = await _mediator.Send(
+                new GetStudentDeletePageQuery(id.Value),
+                cancellationToken);
 
             return result is not null
                 ? View(result)
@@ -111,9 +121,11 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
-            await _mediator.Send(new DeleteStudentCommand(id));
+            await _mediator.Send(
+                new DeleteStudentCommand(id),
+                cancellationToken);
 
             return RedirectToAction(nameof(Index));
         }

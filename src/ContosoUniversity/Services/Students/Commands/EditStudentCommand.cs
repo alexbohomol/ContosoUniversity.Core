@@ -41,14 +41,14 @@ namespace ContosoUniversity.Services.Students.Commands
 
         protected override async Task Handle(EditStudentCommand request, CancellationToken cancellationToken)
         {
-            var student = await _studentsRepository.GetById(request.ExternalId);
+            var student = await _studentsRepository.GetById(request.ExternalId, cancellationToken);
             if (student == null)
                 throw new EntityNotFoundException(nameof(student), request.ExternalId);
 
             student.UpdatePersonInfo(request.LastName, request.FirstName);
             student.Enroll(request.EnrollmentDate);
 
-            await _studentsRepository.Save(student);
+            await _studentsRepository.Save(student, cancellationToken);
         }
     }
 }

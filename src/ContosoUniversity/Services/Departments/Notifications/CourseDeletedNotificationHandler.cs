@@ -21,13 +21,13 @@ namespace ContosoUniversity.Services.Departments.Notifications
 
         public async Task Handle(CourseDeletedNotification notification, CancellationToken cancellationToken)
         {
-            var instructors = (await _instructorsRepository.GetAll())
+            var instructors = (await _instructorsRepository.GetAll(cancellationToken))
                 .Where(x => x.Courses.Contains(notification.Id));
 
             foreach (var instructor in instructors)
             {
                 instructor.Courses.Remove(notification.Id);
-                await _instructorsRepository.Save(instructor);
+                await _instructorsRepository.Save(instructor, cancellationToken);
             }
         }
     }

@@ -1,6 +1,7 @@
 namespace ContosoUniversity.Data
 {
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Domain.Contracts.Paging;
@@ -11,12 +12,13 @@ namespace ContosoUniversity.Data
     {
         public static async Task<PagedResult<T>> ToPageAsync<T>(
             this IQueryable<T> source, 
-            PageRequest request) 
+            PageRequest request,
+            CancellationToken cancellationToken = default) 
             => new(
-                await source.TakePage(request).ToArrayAsync(), 
+                await source.TakePage(request).ToArrayAsync(cancellationToken), 
                 new PageInfo(
                     request,
-                    await source.CountAsync()));
+                    await source.CountAsync(cancellationToken)));
 
         private static IQueryable<T> TakePage<T>(
             this IQueryable<T> source,

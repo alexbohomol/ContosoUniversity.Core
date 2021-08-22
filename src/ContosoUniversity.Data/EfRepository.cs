@@ -2,6 +2,7 @@ namespace ContosoUniversity.Data
 {
     using System;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Domain;
@@ -40,27 +41,27 @@ namespace ContosoUniversity.Data
                 (dbQuery, relationProperty) => dbQuery.Include(relationProperty));
         }
         
-        public virtual async Task<TDomainEntity> GetById(Guid entityId)
+        public virtual async Task<TDomainEntity> GetById(Guid entityId, CancellationToken cancellationToken = default)
         {
             var dataEntity = await DbQuery
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.ExternalId == entityId);
+                .FirstOrDefaultAsync(x => x.ExternalId == entityId, cancellationToken);
 
             return dataEntity == null
                 ? null
                 : ToDomainEntity(dataEntity);
         }
 
-        public virtual async Task<TDomainEntity[]> GetAll()
+        public virtual async Task<TDomainEntity[]> GetAll(CancellationToken cancellationToken = default)
         {
             var dataEntities = await DbQuery
                 .AsNoTracking()
-                .ToArrayAsync();
+                .ToArrayAsync(cancellationToken);
             
             return dataEntities.Select(ToDomainEntity).ToArray();
         }
 
-        public async Task Save(TDomainEntity entity)
+        public async Task Save(TDomainEntity entity, CancellationToken cancellationToken = default)
         {
             var dataEntity = await DbQuery
                 .FirstOrDefaultAsync(x => x.ExternalId == entity.EntityId);
@@ -80,7 +81,7 @@ namespace ContosoUniversity.Data
 
             try
             {
-                await DbContext.SaveChangesAsync();
+                await DbContext.SaveChangesAsync(cancellationToken);
             }
             catch (DbUpdateException exception)
             {
@@ -91,16 +92,16 @@ namespace ContosoUniversity.Data
             }
         }
 
-        public async Task Remove(Guid entityId)
+        public async Task Remove(Guid entityId, CancellationToken cancellationToken = default)
         {
             var dataEntity = await DbQuery
-                .FirstOrDefaultAsync(x => x.ExternalId == entityId);
+                .FirstOrDefaultAsync(x => x.ExternalId == entityId, cancellationToken);
             if (dataEntity == null)
                 throw new EntityNotFoundException(nameof(TDataEntity), entityId);
 
             DbSet.Remove(dataEntity);
 
-            await DbContext.SaveChangesAsync();
+            await DbContext.SaveChangesAsync(cancellationToken);
         }
 
         protected abstract TDomainEntity ToDomainEntity(

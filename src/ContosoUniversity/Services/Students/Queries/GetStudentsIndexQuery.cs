@@ -43,7 +43,8 @@ namespace ContosoUniversity.Services.Students.Queries
             (Student[] students, PageInfo pageInfo) = await _studentsRepository.Search(
                 new SearchRequest(request.SearchString), 
                 new OrderRequest(request.SortOrder), 
-                new PageRequest(request.PageNumber ?? 1, PageSize: 3));
+                new PageRequest(request.PageNumber ?? 1, PageSize: 3),
+                cancellationToken);
 
             return new StudentIndexViewModel
             {
