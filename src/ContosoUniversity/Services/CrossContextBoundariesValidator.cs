@@ -4,10 +4,9 @@ namespace ContosoUniversity.Services
     using System.Collections.Generic;
     using System.Linq;
 
-    using Data.Departments.Models;
-
     using Domain;
     using Domain.Course;
+    using Domain.Instructor;
     using Domain.Student;
 
     /// <summary>
@@ -37,7 +36,7 @@ namespace ContosoUniversity.Services
             IEnumerable<Instructor> instructors,
             IEnumerable<Course> courses)
         {
-            var referencedCourseIds = instructors.SelectMany(x => x.CourseAssignments.Select(ca => ca.CourseExternalId)).ToHashSet();
+            var referencedCourseIds = instructors.SelectMany(x => x.Courses).ToHashSet();
             var existingCourseIds = courses.Select(x => x.EntityId).ToHashSet();
             var notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
 

@@ -6,14 +6,10 @@ namespace ContosoUniversity.Services.Departments.Commands
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Data.Departments;
-
     using Domain.Contracts;
     using Domain.Contracts.Exceptions;
 
     using MediatR;
-
-    using Microsoft.EntityFrameworkCore;
 
     public class EditDepartmentCommand : IRequest
     {
@@ -38,12 +34,14 @@ namespace ContosoUniversity.Services.Departments.Commands
     
     public class EditDepartmentCommandHandler : AsyncRequestHandler<EditDepartmentCommand>
     {
-        private readonly DepartmentsContext _departmentsContext;
+        private readonly IInstructorsRepository _instructorsRepository;
         private readonly IDepartmentsRepository _departmentsRepository;
 
-        public EditDepartmentCommandHandler(DepartmentsContext departmentsContext, IDepartmentsRepository departmentsRepository)
+        public EditDepartmentCommandHandler(
+            IInstructorsRepository instructorsRepository,
+            IDepartmentsRepository departmentsRepository)
         {
-            _departmentsContext = departmentsContext;
+            _instructorsRepository = instructorsRepository;
             _departmentsRepository = departmentsRepository;
         }
         
@@ -55,12 +53,8 @@ namespace ContosoUniversity.Services.Departments.Commands
             
             if (request.AdministratorId.HasValue)
             {
-                var instructor = await _departmentsContext.Instructors
-                                                          .AsNoTracking()
-                                                          .FirstOrDefaultAsync(x => x.ExternalId == request.AdministratorId);
-
-                if (instructor is null)
-                    throw new EntityNotFoundException(nameof(instructor), request.AdministratorId.Value);
+                if (!await _instructorsRepository.Exists(request.AdministratorId.Value))
+                    throw new EntityNotFoundException("instructor", request.AdministratorId.Value);
                 
                 department.AssociateAdministrator(request.AdministratorId.Value);
             }

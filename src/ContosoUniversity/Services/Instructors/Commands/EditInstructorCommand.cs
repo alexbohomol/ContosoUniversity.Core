@@ -1,21 +1,15 @@
 namespace ContosoUniversity.Services.Instructors.Commands
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Data.Departments;
-    using Data.Departments.Models;
-
     using Domain.Contracts;
     using Domain.Contracts.Exceptions;
+    using Domain.Instructor;
 
     using MediatR;
-
-    using Microsoft.EntityFrameworkCore;
 
     public class EditInstructorCommand : IRequest
     {
@@ -36,7 +30,7 @@ namespace ContosoUniversity.Services.Instructors.Commands
         [Display(Name = "Hire Date")]
         public DateTime HireDate { get; set; }
 
-        public string[] SelectedCourses { get; set; }
+        public Guid[] SelectedCourses { get; set; }
 
         [StringLength(50)]
         [Display(Name = "Office Location")]
@@ -45,74 +39,29 @@ namespace ContosoUniversity.Services.Instructors.Commands
         public bool HasAssignedOffice => !string.IsNullOrWhiteSpace(Location);
     }
     
-        public class EditInstructorCommandHandler : AsyncRequestHandler<EditInstructorCommand>
+    public class EditInstructorCommandHandler : AsyncRequestHandler<EditInstructorCommand>
     {
-        private readonly DepartmentsContext _departmentsContext;
-        private readonly ICoursesRepository _coursesRepository;
+        private readonly IInstructorsRepository _instructorsRepository;
 
         public EditInstructorCommandHandler(
-            DepartmentsContext departmentsContext,
-            ICoursesRepository coursesRepository)
+            IInstructorsRepository instructorsRepository)
         {
-            _departmentsContext = departmentsContext;
-            _coursesRepository = coursesRepository;
+            _instructorsRepository = instructorsRepository;
         }
         
         protected override async Task Handle(EditInstructorCommand request, CancellationToken cancellationToken)
         {
-            var instructor = await _departmentsContext.Instructors
-                .Include(i => i.OfficeAssignment)
-                .Include(i => i.CourseAssignments)
-                .FirstOrDefaultAsync(m => m.ExternalId == request.ExternalId, cancellationToken);
+            var instructor = await _instructorsRepository.GetById(request.ExternalId);
             if (instructor is null)
                 throw new EntityNotFoundException(nameof(instructor), request.ExternalId);
 
-            instructor.FirstMidName = request.FirstName;
-            instructor.LastName = request.LastName;
-            instructor.HireDate = request.HireDate;
-            instructor.OfficeAssignment = request.HasAssignedOffice
-                ? new OfficeAssignment {Location = request.Location}
+            instructor.UpdatePersonalInfo(request.FirstName, request.LastName, request.HireDate);
+            instructor.Courses = request.SelectedCourses;
+            instructor.Office = request.HasAssignedOffice 
+                ? new OfficeAssignment(request.Location) 
                 : null;
 
-            await UpdateInstructorCourses(request.SelectedCourses, instructor);
-
-            await _departmentsContext.SaveChangesAsync(cancellationToken);
-        }
-
-        private async Task UpdateInstructorCourses(string[] selectedCourses, Instructor instructorToUpdate)
-        {
-            if (selectedCourses == null)
-            {
-                instructorToUpdate.CourseAssignments = new List<CourseAssignment>();
-                return;
-            }
-
-            var selectedCoursesHs = new HashSet<string>(selectedCourses);
-            var instructorCourses = new HashSet<Guid>
-                (instructorToUpdate.CourseAssignments.Select(c => c.CourseExternalId));
-            var courses = await _coursesRepository.GetAll();
-            foreach (var course in courses)
-                if (selectedCoursesHs.Contains(course.EntityId.ToString()))
-                {
-                    if (!instructorCourses.Contains(course.EntityId))
-                        instructorToUpdate.CourseAssignments.Add(new CourseAssignment
-                        {
-                            InstructorId = instructorToUpdate.Id,
-                            CourseExternalId = course.EntityId
-                        });
-                }
-                else
-                {
-                    if (instructorCourses.Contains(course.EntityId))
-                    {
-                        var courseToRemove = instructorToUpdate
-                                             .CourseAssignments
-                                             .FirstOrDefault(i => i.CourseExternalId == course.EntityId);
-                        
-                        if (courseToRemove != null)
-                            _departmentsContext.Remove(courseToRemove);
-                    }
-                }
+            await _instructorsRepository.Save(instructor);
         }
     }
 }

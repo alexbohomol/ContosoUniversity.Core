@@ -15,6 +15,7 @@ namespace ContosoUniversity.Data.Departments
             });
             
             services.AddScoped<IDepartmentsRepository, DepartmentsRepository>();
+            services.AddScoped<IInstructorsRepository, InstructorsRepository>();
         }
     }
 }

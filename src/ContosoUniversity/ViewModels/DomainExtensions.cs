@@ -4,8 +4,6 @@ namespace ContosoUniversity.ViewModels
     using System.Collections.Generic;
     using System.Linq;
 
-    using Data.Departments.Models;
-
     using Domain.Course;
     using Domain.Student;
 
@@ -21,23 +19,18 @@ namespace ContosoUniversity.ViewModels
                 var regular => regular.ToString()
             };
         }
-        
-        public static AssignedCourseOption[] ToAssignedCourseOptions(
-            this IEnumerable<Course> courses,
-            Instructor instructor = null)
-        {
-            var instructorCourses = instructor?
-                .CourseAssignments
-                .Select(c => c.CourseExternalId) ?? Array.Empty<Guid>();
 
+        public static AssignedCourseOption[] ToAssignedCourseOptions(
+            this IEnumerable<Course> courses, 
+            IEnumerable<Guid> instructorCourses = null)
+        {
             return courses.Select(course => new AssignedCourseOption
             {
                 CourseCode = course.Code,
                 CourseExternalId = course.EntityId,
                 Title = course.Title,
-                Assigned = instructorCourses.Contains(course.EntityId)
+                Assigned = instructorCourses?.Contains(course.EntityId) ?? false
             }).ToArray();
         }
-
     }
 }

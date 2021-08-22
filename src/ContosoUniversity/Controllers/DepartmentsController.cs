@@ -3,13 +3,12 @@
     using System;
     using System.Threading.Tasks;
 
-    using Data.Departments;
+    using Domain.Contracts;
 
     using MediatR;
 
     using Microsoft.AspNetCore.Mvc;
 
-    using Services;
     using Services.Departments.Commands;
     using Services.Departments.Queries;
 
@@ -18,14 +17,14 @@
 
     public class DepartmentsController : Controller
     {
-        private readonly DepartmentsContext _departmentsContext;
+        private readonly IInstructorsRepository _instructorsRepository;
         private readonly IMediator _mediator;
 
         public DepartmentsController(
-            DepartmentsContext departmentsContext,
+            IInstructorsRepository instructorsRepository,
             IMediator mediator)
         {
-            _departmentsContext = departmentsContext;
+            _instructorsRepository = instructorsRepository;
             _mediator = mediator;
         }
 
@@ -54,7 +53,7 @@
             return View(new CreateDepartmentForm
             {
                 StartDate = DateTime.Now,
-                InstructorsDropDown = (await _departmentsContext.GetInstructorsNames()).ToSelectList()
+                InstructorsDropDown = (await _instructorsRepository.GetInstructorNamesReference()).ToSelectList()
             });
         }
 
@@ -72,7 +71,7 @@
                 return View(
                     new CreateDepartmentForm(
                         command,
-                        await _departmentsContext.GetInstructorsNames()));
+                        await _instructorsRepository.GetInstructorNamesReference()));
             }
 
             await _mediator.Send(command);
@@ -108,7 +107,7 @@
                 return View(
                     new DepartmentEditForm(
                         command,
-                        await _departmentsContext.GetInstructorsNames()));
+                        await _instructorsRepository.GetInstructorNamesReference()));
             }
 
             await _mediator.Send(command);

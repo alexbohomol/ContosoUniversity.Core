@@ -4,44 +4,40 @@ namespace ContosoUniversity.Services.Instructors.Commands
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Data.Departments;
-
     using Domain.Contracts;
+    using Domain.Contracts.Exceptions;
     using Domain.Department;
 
     using MediatR;
-
-    using Microsoft.EntityFrameworkCore;
 
     public record DeleteInstructorCommand(Guid Id) : IRequest;
     
     public class DeleteInstructorCommandHandler : AsyncRequestHandler<DeleteInstructorCommand>
     {
-        private readonly DepartmentsContext _departmentsContext;
+        private readonly IInstructorsRepository _instructorsRepository;
         private readonly IDepartmentsRepository _departmentsRepository;
 
-        public DeleteInstructorCommandHandler(DepartmentsContext departmentsContext, IDepartmentsRepository departmentsRepository)
+        public DeleteInstructorCommandHandler(
+            IInstructorsRepository instructorsRepository, 
+            IDepartmentsRepository departmentsRepository)
         {
-            _departmentsContext = departmentsContext;
+            _instructorsRepository = instructorsRepository;
             _departmentsRepository = departmentsRepository;
         }
         
         protected override async Task Handle(DeleteInstructorCommand request, CancellationToken cancellationToken)
         {
-            var instructor = await _departmentsContext.Instructors
-                                                      .Include(i => i.CourseAssignments)
-                                                      .SingleAsync(i => i.ExternalId == request.Id, cancellationToken);
+            if (!await _instructorsRepository.Exists(request.Id))
+                throw new EntityNotFoundException("instructor", request.Id);
 
-            Department[] administratedDepartments = await _departmentsRepository.GetByAdministrator(instructor.ExternalId);
+            Department[] administratedDepartments = await _departmentsRepository.GetByAdministrator(request.Id);
             foreach (var department in administratedDepartments)
             {
                 department.DisassociateAdministrator();
                 await _departmentsRepository.Save(department);
             }
             
-            _departmentsContext.Instructors.Remove(instructor);
-
-            await _departmentsContext.SaveChangesAsync(cancellationToken);
+            await _instructorsRepository.Remove(request.Id);
         }
     }
 }

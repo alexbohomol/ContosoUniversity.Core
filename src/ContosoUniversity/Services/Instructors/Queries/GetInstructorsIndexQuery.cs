@@ -5,14 +5,10 @@ namespace ContosoUniversity.Services.Instructors.Queries
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Data.Departments;
-
     using Domain.Contracts;
     using Domain.Student;
 
     using MediatR;
-
-    using Microsoft.EntityFrameworkCore;
 
     using ViewModels;
     using ViewModels.Instructors;
@@ -21,18 +17,18 @@ namespace ContosoUniversity.Services.Instructors.Queries
     
     public class GetInstructorsIndexQueryHandler : IRequestHandler<GetInstructorsIndexQuery, InstructorIndexViewModel>
     {
-        private readonly DepartmentsContext _departmentsContext;
+        private readonly IInstructorsRepository _instructorsRepository;
         private readonly IDepartmentsRepository _departmentsRepository;
         private readonly ICoursesRepository _coursesRepository;
         private readonly IStudentsRepository _studentsRepository;
 
         public GetInstructorsIndexQueryHandler(
-            DepartmentsContext departmentsContext,
+            IInstructorsRepository instructorsRepository,
             IDepartmentsRepository departmentsRepository,
             ICoursesRepository coursesRepository,
             IStudentsRepository studentsRepository)
         {
-            _departmentsContext = departmentsContext;
+            _instructorsRepository = instructorsRepository;
             _departmentsRepository = departmentsRepository;
             _coursesRepository = coursesRepository;
             _studentsRepository = studentsRepository;
@@ -43,12 +39,9 @@ namespace ContosoUniversity.Services.Instructors.Queries
             var id = request.Id;
             var courseExternalId = request.CourseExternalId;
             
-            var instructors = await _departmentsContext.Instructors
-                .Include(i => i.OfficeAssignment)
-                .Include(i => i.CourseAssignments)
-                .OrderBy(i => i.LastName)
-                .AsNoTracking()
-                .ToListAsync(cancellationToken);
+            var instructors = (await _instructorsRepository.GetAll())
+                .OrderBy(x => x.LastName)
+                .ToArray();
 
             var courses = await _coursesRepository.GetAll();
 
@@ -58,20 +51,18 @@ namespace ContosoUniversity.Services.Instructors.Queries
             {
                 Instructors = instructors.Select(x =>
                 {
-                    var assignedCourseIds = x.CourseAssignments.Select(ca => ca.CourseExternalId).ToArray();
-
                     return new InstructorListItemViewModel
                     {
-                        Id = x.ExternalId,
-                        FirstName = x.FirstMidName,
+                        Id = x.EntityId,
+                        FirstName = x.FirstName,
                         LastName = x.LastName,
                         HireDate = x.HireDate,
-                        Office = x.OfficeAssignment?.Location,
-                        AssignedCourseIds = assignedCourseIds,
+                        Office = x.Office?.Title,
+                        AssignedCourseIds = x.Courses,
                         AssignedCourses = courses
-                            .Where(c => assignedCourseIds.Contains(c.EntityId))
+                            .Where(c => x.Courses.Contains(c.EntityId))
                             .Select(c => $"{c.Code} {c.Title}"),
-                        RowClass = id is not null && id == x.ExternalId
+                        RowClass = id is not null && id == x.EntityId
                             ? "table-success"
                             : string.Empty
                     };
@@ -83,7 +74,9 @@ namespace ContosoUniversity.Services.Instructors.Queries
                 var instructor = viewModel.Instructors.Single(i => i.Id == id.Value);
                 var instructorCourseIds = instructor.AssignedCourseIds.ToHashSet();
                 var departmentNames = await _departmentsRepository.GetDepartmentNamesReference();
+                
                 CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);
+                
                 viewModel.Courses = courses
                     .Where(x => instructorCourseIds.Contains(x.EntityId))
                     .Select(x => new CourseListItemViewModel

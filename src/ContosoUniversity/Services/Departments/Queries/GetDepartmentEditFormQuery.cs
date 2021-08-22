@@ -4,8 +4,6 @@ namespace ContosoUniversity.Services.Departments.Queries
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Data.Departments;
-
     using Domain.Contracts;
 
     using MediatR;
@@ -17,18 +15,22 @@ namespace ContosoUniversity.Services.Departments.Queries
     
     public class GetDepartmentEditFormQueryHandler : IRequestHandler<GetDepartmentEditFormQuery, DepartmentEditForm>
     {
-        private readonly DepartmentsContext _departmentsContext;
+        private readonly IInstructorsRepository _instructorsRepository;
         private readonly IDepartmentsRepository _departmentsRepository;
 
-        public GetDepartmentEditFormQueryHandler(DepartmentsContext departmentsContext, IDepartmentsRepository departmentsRepository)
+        public GetDepartmentEditFormQueryHandler(
+            IInstructorsRepository instructorsRepository,
+            IDepartmentsRepository departmentsRepository)
         {
-            _departmentsContext = departmentsContext;
+            _instructorsRepository = instructorsRepository;
             _departmentsRepository = departmentsRepository;
         }
         
         public async Task<DepartmentEditForm> Handle(GetDepartmentEditFormQuery request, CancellationToken cancellationToken)
         {
             var department = await _departmentsRepository.GetById(request.Id);
+
+            var instructorNames = await _instructorsRepository.GetInstructorNamesReference();
 
             return department == null
                 ? null
@@ -40,7 +42,7 @@ namespace ContosoUniversity.Services.Departments.Queries
                     AdministratorId = department.AdministratorId,
                     ExternalId = department.EntityId,
                     // RowVersion = department.RowVersion,
-                    InstructorsDropDown = (await _departmentsContext.GetInstructorsNames()).ToSelectList(department.AdministratorId ?? default)
+                    InstructorsDropDown = instructorNames.ToSelectList(department.AdministratorId ?? default)
                 };
         }
     }
