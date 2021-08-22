@@ -3,6 +3,7 @@ namespace ContosoUniversity.Data.Departments
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Domain.Contracts;
@@ -18,34 +19,36 @@ namespace ContosoUniversity.Data.Departments
                 defaultIncludes: new [] { nameof(Models.Department.Administrator) }) 
         { }
 
-        public override async Task<Department> GetById(Guid entityId)
+        public override async Task<Department> GetById(Guid entityId, CancellationToken cancellationToken = default)
         {
             var department = await DbSet
                 .FromSqlInterpolated($"SELECT * FROM [dpt].Department WHERE ExternalId = {entityId}")
                 .Include(d => d.Administrator)
                 .AsNoTracking()
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
             
             return department == null
                 ? null
                 : ToDomainEntity(department);
         }
 
-        public Task<Dictionary<Guid, string>> GetDepartmentNamesReference() => DbSet
+        public Task<Dictionary<Guid, string>> GetDepartmentNamesReference(CancellationToken cancellationToken = default) => DbSet
             .AsNoTracking()
             .OrderBy(x => x.Name)
             .ToDictionaryAsync(
-               x => x.ExternalId,
-               x => x.Name);
+                x => x.ExternalId,
+                x => x.Name,
+                cancellationToken);
 
-        public Task<bool> Exists(Guid departmentId) => DbSet.AnyAsync(x => x.ExternalId == departmentId);
+        public Task<bool> Exists(Guid departmentId, CancellationToken cancellationToken = default) => DbSet
+            .AnyAsync(x => x.ExternalId == departmentId, cancellationToken);
         
-        public async Task<Department[]> GetByAdministrator(Guid instructorId)
+        public async Task<Department[]> GetByAdministrator(Guid instructorId, CancellationToken cancellationToken = default)
         {
             var departments = await DbSet
                 .AsNoTracking()
                 .Where(x => x.Administrator.ExternalId == instructorId)
-                .ToArrayAsync();
+                .ToArrayAsync(cancellationToken);
 
             return departments.Select(ToDomainEntity).ToArray();
         }

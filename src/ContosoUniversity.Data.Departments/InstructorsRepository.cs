@@ -3,6 +3,7 @@ namespace ContosoUniversity.Data.Departments
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Domain.Contracts;
@@ -55,12 +56,14 @@ namespace ContosoUniversity.Data.Departments
                 };
         }
 
-        public Task<Dictionary<Guid, string>> GetInstructorNamesReference() => DbSet
+        public Task<Dictionary<Guid, string>> GetInstructorNamesReference(CancellationToken cancellationToken = default) => DbSet
             .AsNoTracking()
             .ToDictionaryAsync(
-               x => x.ExternalId,
-               x => x.FullName);
+                x => x.ExternalId,
+                x => x.FullName,
+                cancellationToken);
 
-        public Task<bool> Exists(Guid departmentId) => DbSet.AnyAsync(x => x.ExternalId == departmentId);
+        public Task<bool> Exists(Guid departmentId, CancellationToken cancellationToken = default) => DbSet
+            .AnyAsync(x => x.ExternalId == departmentId, cancellationToken);
     }
 }
