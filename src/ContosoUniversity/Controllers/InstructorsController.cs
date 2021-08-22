@@ -1,6 +1,7 @@
 ﻿namespace ContosoUniversity.Controllers
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Domain.Contracts;
@@ -47,18 +48,18 @@
                 : NotFound();
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(CancellationToken cancellationToken)
         {
             return View(new CreateInstructorForm
             {
                 HireDate = DateTime.Now,
-                AssignedCourses = (await _coursesRepository.GetAll()).ToAssignedCourseOptions()
+                AssignedCourses = (await _coursesRepository.GetAll(cancellationToken)).ToAssignedCourseOptions()
             });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateInstructorCommand command)
+        public async Task<IActionResult> Create(CreateInstructorCommand command, CancellationToken cancellationToken)
         {
             if (command is null)
             {
@@ -70,7 +71,7 @@
                 return View(
                     new CreateInstructorForm(
                         command,
-                        (await _coursesRepository.GetAll()).ToAssignedCourseOptions()));
+                        (await _coursesRepository.GetAll(cancellationToken)).ToAssignedCourseOptions()));
             }
 
             await _mediator.Send(command);
@@ -94,7 +95,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditInstructorCommand command)
+        public async Task<IActionResult> Edit(EditInstructorCommand command, CancellationToken cancellationToken)
         {
             if (command is null)
             {
@@ -106,7 +107,7 @@
                 return View(
                     new EditInstructorForm(
                         command,
-                        (await _coursesRepository.GetAll()).ToAssignedCourseOptions(/* instructor? */)));
+                        (await _coursesRepository.GetAll(cancellationToken)).ToAssignedCourseOptions(/* instructor? */)));
             }
 
             await _mediator.Send(command);

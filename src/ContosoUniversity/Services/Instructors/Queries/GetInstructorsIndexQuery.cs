@@ -39,11 +39,11 @@ namespace ContosoUniversity.Services.Instructors.Queries
             var id = request.Id;
             var courseExternalId = request.CourseExternalId;
             
-            var instructors = (await _instructorsRepository.GetAll())
+            var instructors = (await _instructorsRepository.GetAll(cancellationToken))
                 .OrderBy(x => x.LastName)
                 .ToArray();
 
-            var courses = await _coursesRepository.GetAll();
+            var courses = await _coursesRepository.GetAll(cancellationToken);
 
             CrossContextBoundariesValidator.EnsureInstructorsReferenceTheExistingCourses(instructors, courses);
 
@@ -73,7 +73,7 @@ namespace ContosoUniversity.Services.Instructors.Queries
             {
                 var instructor = viewModel.Instructors.Single(i => i.Id == id.Value);
                 var instructorCourseIds = instructor.AssignedCourseIds.ToHashSet();
-                var departmentNames = await _departmentsRepository.GetDepartmentNamesReference();
+                var departmentNames = await _departmentsRepository.GetDepartmentNamesReference(cancellationToken);
                 
                 CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);
                 
@@ -93,10 +93,12 @@ namespace ContosoUniversity.Services.Instructors.Queries
 
             if (courseExternalId is not null)
             {
-                var students = await _studentsRepository.GetStudentsEnrolledForCourses(new[]
-                {
-                    courseExternalId.Value
-                });
+                var students = await _studentsRepository.GetStudentsEnrolledForCourses(
+                    new[]
+                    {
+                        courseExternalId.Value
+                    },
+                    cancellationToken);
                 
                 CrossContextBoundariesValidator.EnsureEnrollmentsReferenceTheExistingCourses(
                     students.SelectMany(x => x.Enrollments).Distinct(), 

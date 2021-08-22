@@ -32,13 +32,13 @@ namespace ContosoUniversity.Services.Departments.Commands
         
         protected override async Task Handle(DeleteDepartmentCommand request, CancellationToken cancellationToken)
         {
-            var exists = await _departmentsRepository.Exists(request.Id);
+            var exists = await _departmentsRepository.Exists(request.Id, cancellationToken);
             if (!exists)
                 throw new EntityNotFoundException(nameof(exists), request.Id);
             
             await _departmentsRepository.Remove(request.Id);
 
-            var relatedCoursesIds = (await _coursesRepository.GetByDepartmentId(request.Id))
+            var relatedCoursesIds = (await _coursesRepository.GetByDepartmentId(request.Id, cancellationToken))
                                     .Select(x => x.EntityId)
                                     .ToArray();
             

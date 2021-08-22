@@ -30,13 +30,13 @@ namespace ContosoUniversity.Services.Students.Queries
 
         public async Task<StudentDetailsViewModel> Handle(GetStudentDetailsQuery request, CancellationToken cancellationToken)
         {
-            var student = await _studentsRepository.GetById(request.Id);
+            var student = await _studentsRepository.GetById(request.Id, cancellationToken);
             if (student == null)
                 throw new EntityNotFoundException(nameof(student), request.Id);
 
             var coursesIds = student.Enrollments.CourseIds.ToArray();
 
-            var courseTitles = (await _coursesRepository.GetByIds(coursesIds))
+            var courseTitles = (await _coursesRepository.GetByIds(coursesIds, cancellationToken))
                 .ToDictionary(x => x.EntityId, x => x.Title);
 
             return new StudentDetailsViewModel

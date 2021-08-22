@@ -30,11 +30,11 @@ namespace ContosoUniversity.Services.Courses.Queries
 
         public async Task<CourseEditForm> Handle(GetCourseEditFormQuery request, CancellationToken cancellationToken)
         {
-            var course = await _coursesRepository.GetById(request.Id);
+            var course = await _coursesRepository.GetById(request.Id, cancellationToken);
             if (course == null)
                 throw new EntityNotFoundException(nameof(course), request.Id);
 
-            var departments = await _departmentsRepository.GetDepartmentNamesReference();
+            var departments = await _departmentsRepository.GetDepartmentNamesReference(cancellationToken);
 
             CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(
                 new [] { course }, 

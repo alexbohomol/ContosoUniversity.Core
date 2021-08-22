@@ -41,7 +41,7 @@ namespace ContosoUniversity.Services.Courses.Commands
 
         protected override async Task Handle(EditCourseCommand request, CancellationToken cancellationToken)
         {
-            var course = await _coursesRepository.GetById(request.Id);
+            var course = await _coursesRepository.GetById(request.Id, cancellationToken);
             if (course == null)
                 throw new EntityNotFoundException(nameof(course), request.Id);
 
@@ -50,7 +50,7 @@ namespace ContosoUniversity.Services.Courses.Commands
                 request.Credits,
                 request.DepartmentId);
 
-            await _coursesRepository.Save(course);
+            await _coursesRepository.Save(course, cancellationToken);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace ContosoUniversity.Controllers
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Domain.Contracts;
@@ -148,12 +149,12 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateCourseCredits(int? multiplier)
+        public async Task<IActionResult> UpdateCourseCredits(int? multiplier, CancellationToken cancellationToken)
         {
             if (multiplier.HasValue)
             {
                 ViewData["RowsAffected"] = await _coursesRepository
-                    .UpdateCourseCredits(multiplier.Value);
+                    .UpdateCourseCredits(multiplier.Value, cancellationToken);
             }
 
             return View();

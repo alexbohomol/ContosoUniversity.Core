@@ -28,11 +28,11 @@ namespace ContosoUniversity.Services.Instructors.Queries
         
         public async Task<EditInstructorForm> Handle(GetInstructorEditFormQuery request, CancellationToken cancellationToken)
         {
-            var instructor = await _instructorsRepository.GetById(request.Id);
+            var instructor = await _instructorsRepository.GetById(request.Id, cancellationToken);
             if (instructor is null)
                 return null;
 
-            var courses = await _coursesRepository.GetAll();
+            var courses = await _coursesRepository.GetAll(cancellationToken);
             
             return new EditInstructorForm
             {

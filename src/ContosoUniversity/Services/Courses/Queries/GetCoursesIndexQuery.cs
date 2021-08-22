@@ -30,7 +30,7 @@ namespace ContosoUniversity.Services.Courses.Queries
         {
             var courses = await _coursesRepository.GetAll();
 
-            var departmentNames = await _departmentsRepository.GetDepartmentNamesReference();
+            var departmentNames = await _departmentsRepository.GetDepartmentNamesReference(cancellationToken);
 
             CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);
 

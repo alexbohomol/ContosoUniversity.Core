@@ -20,7 +20,7 @@ namespace ContosoUniversity.Services.Courses.Notifications
         
         public async Task Handle(DepartmentDeletedNotification notification, CancellationToken cancellationToken)
         {
-            await _coursesRepository.Remove(notification.CourseIds);
+            await _coursesRepository.Remove(notification.CourseIds, cancellationToken);
         }
     }
 }
