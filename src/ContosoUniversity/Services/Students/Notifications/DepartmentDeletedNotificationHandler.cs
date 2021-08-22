@@ -21,12 +21,15 @@ namespace ContosoUniversity.Services.Students.Notifications
         
         public async Task Handle(DepartmentDeletedNotification notification, CancellationToken cancellationToken)
         {
-            var students = await _studentsRepository.GetStudentsEnrolledForCourses(notification.CourseIds);
+            var students = await _studentsRepository.GetStudentsEnrolledForCourses(
+                notification.CourseIds,
+                cancellationToken);
+            
             foreach (var student in students)
             {
                 var withdrawIds = notification.CourseIds.Intersect(student.Enrollments.CourseIds).ToArray();
                 student.WithdrawCourses(withdrawIds);
-                await _studentsRepository.Save(student);
+                await _studentsRepository.Save(student, cancellationToken);
             }
         }
     }

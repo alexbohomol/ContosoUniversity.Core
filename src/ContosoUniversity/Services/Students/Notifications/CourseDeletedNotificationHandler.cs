@@ -24,13 +24,13 @@ namespace ContosoUniversity.Services.Students.Notifications
         {
             Guid[] courseIds = { notification.Id };
             
-            var enrolledStudents = await _studentsRepository.GetStudentsEnrolledForCourses(courseIds);
+            var enrolledStudents = await _studentsRepository.GetStudentsEnrolledForCourses(courseIds, cancellationToken);
             if (enrolledStudents.Any())
             {
                 foreach (var student in enrolledStudents)
                 {
                     student.WithdrawCourses(courseIds);
-                    await _studentsRepository.Save(student);
+                    await _studentsRepository.Save(student, cancellationToken);
                 }
             }
         }

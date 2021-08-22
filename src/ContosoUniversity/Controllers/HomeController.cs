@@ -2,6 +2,7 @@
 {
     using System.Diagnostics;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Domain.Contracts;
@@ -25,9 +26,9 @@
             return View();
         }
 
-        public async Task<ActionResult> About()
+        public async Task<ActionResult> About(CancellationToken cancellationToken)
         {
-            var groups = await _repository.GetEnrollmentDateGroups();
+            var groups = await _repository.GetEnrollmentDateGroups(cancellationToken);
 
             var viewModels = groups.Select(x => new EnrollmentDateGroup
             {

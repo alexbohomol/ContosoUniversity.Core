@@ -22,11 +22,11 @@ namespace ContosoUniversity.Services.Students.Commands
 
         protected override async Task Handle(DeleteStudentCommand request, CancellationToken cancellationToken)
         {
-            var student = await _studentsRepository.GetById(request.Id);
+            var student = await _studentsRepository.GetById(request.Id, cancellationToken);
             if (student == null)
                 throw new EntityNotFoundException(nameof(student), request.Id);
 
-            await _studentsRepository.Remove(student.EntityId);
+            await _studentsRepository.Remove(student.EntityId, cancellationToken);
         }
     }
 }
