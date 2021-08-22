@@ -6,6 +6,21 @@ namespace ContosoUniversity.Domain.Instructor
     public class Instructor : IIdentifiable<Guid>
     {
         public Instructor(
+            string firstName,
+            string lastName,
+            DateTime hireDate,
+            IList<Guid> courses,
+            OfficeAssignment office)
+            : this(
+                firstName,
+                lastName,
+                hireDate,
+                courses,
+                office,
+                Guid.NewGuid())
+        { }
+
+        public Instructor(
             string firstName, 
             string lastName,
             DateTime hireDate,

@@ -2,12 +2,11 @@ namespace ContosoUniversity.Services.Instructors.Commands
 {
     using System;
     using System.ComponentModel.DataAnnotations;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Data.Departments;
-    using Data.Departments.Models;
+    using Domain.Contracts;
+    using Domain.Instructor;
 
     using MediatR;
 
@@ -28,7 +27,7 @@ namespace ContosoUniversity.Services.Instructors.Commands
         [Display(Name = "Hire Date")]
         public DateTime HireDate { get; set; }
 
-        public string[] SelectedCourses { get; set; }
+        public Guid[] SelectedCourses { get; set; }
 
         [StringLength(50)]
         [Display(Name = "Office Location")]
@@ -39,35 +38,25 @@ namespace ContosoUniversity.Services.Instructors.Commands
     
     public class CreateInstructorCommandHandler : AsyncRequestHandler<CreateInstructorCommand>
     {
-        private readonly DepartmentsContext _departmentsContext;
+        private readonly IInstructorsRepository _instructorsRepository;
 
-        public CreateInstructorCommandHandler(DepartmentsContext departmentsContext)
+        public CreateInstructorCommandHandler(IInstructorsRepository instructorsRepository)
         {
-            _departmentsContext = departmentsContext;
+            _instructorsRepository = instructorsRepository;
         }
         
         protected override async Task Handle(CreateInstructorCommand command, CancellationToken cancellationToken)
         {
-            var instructor = new Instructor
-            {
-                ExternalId = Guid.NewGuid(),
-                FirstMidName = command.FirstName,
-                LastName = command.LastName,
-                HireDate = command.HireDate,
-                OfficeAssignment = command.HasAssignedOffice
-                    ? new OfficeAssignment {Location = command.Location}
-                    : null
-            };
+            var instructor = new Instructor(
+                command.FirstName,
+                command.LastName,
+                command.HireDate,
+                command.SelectedCourses,
+                command.HasAssignedOffice
+                    ? new OfficeAssignment(command.Location)
+                    : null);
 
-            instructor.CourseAssignments = command.SelectedCourses?.Select(x => new CourseAssignment
-            {
-                InstructorId = instructor.Id, // not yet generated ???
-                CourseExternalId = Guid.Parse(x)
-            }).ToList();
-
-            _departmentsContext.Add(instructor);
-            
-            await _departmentsContext.SaveChangesAsync();
+            await _instructorsRepository.Save(instructor);
         }
     }
 }
