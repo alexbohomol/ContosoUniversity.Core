@@ -86,7 +86,7 @@ namespace ContosoUniversity.Data.Courses
             model.Title = entity.Title;
             model.Credits = entity.Credits;
             model.DepartmentExternalId = entity.DepartmentId;
-            model.ExternalId = entity.EntityId;
+            model.ExternalId = entity.ExternalId;
         }
     }
 }

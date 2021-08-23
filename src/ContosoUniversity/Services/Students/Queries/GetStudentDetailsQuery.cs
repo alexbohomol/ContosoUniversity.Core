@@ -37,14 +37,14 @@ namespace ContosoUniversity.Services.Students.Queries
             var coursesIds = student.Enrollments.CourseIds.ToArray();
 
             var courseTitles = (await _coursesRepository.GetByIds(coursesIds, cancellationToken))
-                .ToDictionary(x => x.EntityId, x => x.Title);
+                .ToDictionary(x => x.ExternalId, x => x.Title);
 
             return new StudentDetailsViewModel
             {
                 LastName = student.LastName,
                 FirstMidName = student.FirstName,
                 EnrollmentDate = student.EnrollmentDate,
-                ExternalId = student.EntityId,
+                ExternalId = student.ExternalId,
                 Enrollments = student.Enrollments.Select(x => new EnrollmentViewModel
                 {
                     CourseTitle = courseTitles[x.CourseId],

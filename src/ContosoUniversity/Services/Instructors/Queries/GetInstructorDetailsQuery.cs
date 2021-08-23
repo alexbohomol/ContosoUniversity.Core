@@ -33,7 +33,7 @@ namespace ContosoUniversity.Services.Instructors.Queries
                 LastName = instructor.LastName,
                 FirstName = instructor.FirstName,
                 HireDate = instructor.HireDate,
-                ExternalId = instructor.EntityId
+                ExternalId = instructor.ExternalId
             };
         }
     }

@@ -40,7 +40,7 @@ namespace ContosoUniversity.Services.Courses.Queries
                 Title = x.Title,
                 Credits = x.Credits,
                 Department = departmentNames[x.DepartmentId],
-                Id = x.EntityId
+                Id = x.ExternalId
             }).ToList();
         }
     }

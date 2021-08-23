@@ -26,13 +26,13 @@ namespace ContosoUniversity.Domain.Course
             string title,
             Credits credits,
             Guid departmentId,
-            Guid entityId)
+            Guid externalId)
         {
             Code = code;
             Title = title;
             Credits = credits;
             DepartmentId = departmentId;
-            EntityId = entityId;
+            ExternalId = externalId;
         }
 
         public CourseCode Code { get; }
@@ -65,7 +65,7 @@ namespace ContosoUniversity.Domain.Course
             }
         }
 
-        public Guid EntityId { get; }
+        public Guid ExternalId { get; }
 
         public void Update(
             string title,

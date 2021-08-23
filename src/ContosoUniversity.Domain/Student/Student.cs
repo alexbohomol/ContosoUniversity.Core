@@ -11,20 +11,20 @@ namespace ContosoUniversity.Domain.Student
             string firstName,
             DateTime enrollmentDate,
             EnrollmentsCollection enrollments,
-            Guid entityId)
+            Guid externalId)
         {
             LastName = lastName;
             FirstName = firstName;
             EnrollmentDate = enrollmentDate;
             _enrollments = enrollments;
-            EntityId = entityId;
+            ExternalId = externalId;
         }
 
         public string LastName { get; private set; }
         public string FirstName { get; private set; }
         public DateTime EnrollmentDate { get; private set; }
         public EnrollmentsCollection Enrollments => _enrollments;
-        public Guid EntityId { get; }
+        public Guid ExternalId { get; }
 
         public void UpdatePersonInfo(string lastName, string firstName)
         {

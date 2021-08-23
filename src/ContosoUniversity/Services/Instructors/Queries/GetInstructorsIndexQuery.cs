@@ -53,16 +53,16 @@ namespace ContosoUniversity.Services.Instructors.Queries
                 {
                     return new InstructorListItemViewModel
                     {
-                        Id = x.EntityId,
+                        Id = x.ExternalId,
                         FirstName = x.FirstName,
                         LastName = x.LastName,
                         HireDate = x.HireDate,
                         Office = x.Office?.Title,
                         AssignedCourseIds = x.Courses,
                         AssignedCourses = courses
-                            .Where(c => x.Courses.Contains(c.EntityId))
+                            .Where(c => x.Courses.Contains(c.ExternalId))
                             .Select(c => $"{c.Code} {c.Title}"),
-                        RowClass = id is not null && id == x.EntityId
+                        RowClass = id is not null && id == x.ExternalId
                             ? "table-success"
                             : string.Empty
                     };
@@ -78,14 +78,14 @@ namespace ContosoUniversity.Services.Instructors.Queries
                 CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);
                 
                 viewModel.Courses = courses
-                    .Where(x => instructorCourseIds.Contains(x.EntityId))
+                    .Where(x => instructorCourseIds.Contains(x.ExternalId))
                     .Select(x => new CourseListItemViewModel
                     {
-                        Id = x.EntityId,
+                        Id = x.ExternalId,
                         CourseCode = x.Code,
                         Title = x.Title,
                         Department = departmentNames[x.DepartmentId],
-                        RowClass = courseExternalId is not null && courseExternalId == x.EntityId
+                        RowClass = courseExternalId is not null && courseExternalId == x.ExternalId
                             ? "table-success"
                             : string.Empty
                     }).ToList();

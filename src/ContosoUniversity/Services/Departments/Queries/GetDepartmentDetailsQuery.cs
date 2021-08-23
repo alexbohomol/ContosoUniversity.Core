@@ -51,7 +51,7 @@ namespace ContosoUniversity.Services.Departments.Queries
                 Budget = department.Budget,
                 StartDate = department.StartDate,
                 Administrator = fullname,
-                ExternalId = department.EntityId
+                ExternalId = department.ExternalId
             };
         }
     }

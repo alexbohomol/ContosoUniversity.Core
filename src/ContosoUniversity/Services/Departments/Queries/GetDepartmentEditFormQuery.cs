@@ -40,7 +40,7 @@ namespace ContosoUniversity.Services.Departments.Queries
                     Budget = department.Budget,
                     StartDate = department.StartDate,
                     AdministratorId = department.AdministratorId,
-                    ExternalId = department.EntityId,
+                    ExternalId = department.ExternalId,
                     // RowVersion = department.RowVersion,
                     InstructorsDropDown = instructorNames.ToSelectList(department.AdministratorId ?? default)
                 };

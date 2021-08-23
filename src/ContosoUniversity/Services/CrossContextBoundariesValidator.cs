@@ -37,7 +37,7 @@ namespace ContosoUniversity.Services
             IEnumerable<Course> courses)
         {
             var referencedCourseIds = instructors.SelectMany(x => x.Courses).ToHashSet();
-            var existingCourseIds = courses.Select(x => x.EntityId).ToHashSet();
+            var existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();
             var notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
 
             if (notFoundCourses.Any())
@@ -53,7 +53,7 @@ namespace ContosoUniversity.Services
             IEnumerable<Course> courses)
         {
             var referencedCourseIds = enrollments.Select(x => x.CourseId).ToHashSet();
-            var existingCourseIds = courses.Select(x => x.EntityId).ToHashSet();
+            var existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();
             var notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
 
             if (notFoundCourses.Any())

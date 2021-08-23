@@ -3,9 +3,9 @@
     using System;
     using System.ComponentModel.DataAnnotations;
 
-    using Data.Models;
+    using Domain;
 
-    public class Course : IExternalIdentifier
+    public class Course : IIdentifiable<Guid>
     {
         public int Id { get; set; }
 

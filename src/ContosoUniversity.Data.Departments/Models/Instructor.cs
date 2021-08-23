@@ -5,9 +5,9 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    using Data.Models;
+    using Domain;
 
-    public class Instructor : IExternalIdentifier
+    public class Instructor : IIdentifiable<Guid>
     {
         [DataType(DataType.Date)]
         public DateTime HireDate { get; set; }

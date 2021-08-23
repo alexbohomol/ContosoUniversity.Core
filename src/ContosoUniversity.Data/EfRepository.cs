@@ -11,12 +11,10 @@ namespace ContosoUniversity.Data
 
     using Microsoft.EntityFrameworkCore;
 
-    using Models;
-
     public abstract class EfRepository<TDomainEntity, TDataEntity> 
         : IRepository<TDomainEntity> 
             where TDomainEntity : class, IIdentifiable<Guid>
-            where TDataEntity : class, IExternalIdentifier, new()
+            where TDataEntity : class, IIdentifiable<Guid>, new()
     {
         private const string ErrMsgDbUpdateException = "Unable to save changes. Try again, and if the problem persists, see your system administrator.";
 
@@ -64,7 +62,9 @@ namespace ContosoUniversity.Data
         public async Task Save(TDomainEntity entity, CancellationToken cancellationToken = default)
         {
             var dataEntity = await DbQuery
-                .FirstOrDefaultAsync(x => x.ExternalId == entity.EntityId);
+                .FirstOrDefaultAsync(
+                    x => x.ExternalId == entity.ExternalId,
+                    cancellationToken);
             
             if (dataEntity == null)
             {

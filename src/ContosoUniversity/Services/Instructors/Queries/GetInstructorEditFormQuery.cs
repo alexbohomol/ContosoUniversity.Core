@@ -36,7 +36,7 @@ namespace ContosoUniversity.Services.Instructors.Queries
             
             return new EditInstructorForm
             {
-                ExternalId = instructor.EntityId,
+                ExternalId = instructor.ExternalId,
                 LastName = instructor.LastName,
                 FirstName = instructor.FirstName,
                 HireDate = instructor.HireDate,
