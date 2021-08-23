@@ -57,7 +57,7 @@ namespace ContosoUniversity.Services.Students.Queries
                     LastName = s.LastName,
                     FirstName = s.FirstName,
                     EnrollmentDate = s.EnrollmentDate,
-                    ExternalId = s.EntityId
+                    ExternalId = s.ExternalId
                 }).ToArray(),
                 PageInfo = pageInfo
             };

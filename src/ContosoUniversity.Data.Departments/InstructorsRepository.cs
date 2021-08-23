@@ -40,7 +40,7 @@ namespace ContosoUniversity.Data.Departments
             target.FirstMidName = source.FirstName;
             target.LastName = source.LastName;
             target.HireDate = source.HireDate;
-            target.ExternalId = source.EntityId;
+            target.ExternalId = source.ExternalId;
             
             target.CourseAssignments = source.Courses.Select(x => new CourseAssignment
             {

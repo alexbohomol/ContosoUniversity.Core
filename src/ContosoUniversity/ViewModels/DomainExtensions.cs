@@ -27,9 +27,9 @@ namespace ContosoUniversity.ViewModels
             return courses.Select(course => new AssignedCourseOption
             {
                 CourseCode = course.Code,
-                CourseExternalId = course.EntityId,
+                CourseExternalId = course.ExternalId,
                 Title = course.Title,
-                Assigned = instructorCourses?.Contains(course.EntityId) ?? false
+                Assigned = instructorCourses?.Contains(course.ExternalId) ?? false
             }).ToArray();
         }
     }

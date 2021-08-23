@@ -126,7 +126,7 @@ namespace ContosoUniversity.Data.Students
             model.LastName = entity.LastName;
             model.FirstMidName = entity.FirstName;
             model.EnrollmentDate = entity.EnrollmentDate;
-            model.ExternalId = entity.EntityId;
+            model.ExternalId = entity.ExternalId;
 
             Guid[] current = model.Enrollments.Select(x => x.CourseExternalId).ToArray();
             Guid[] domain = entity.Enrollments.CourseIds.ToArray();

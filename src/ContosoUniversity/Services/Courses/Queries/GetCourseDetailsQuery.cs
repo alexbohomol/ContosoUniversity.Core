@@ -42,7 +42,7 @@ namespace ContosoUniversity.Services.Courses.Queries
                 Title = course.Title,
                 Credits = course.Credits,
                 Department = department.Name,
-                Id = course.EntityId
+                Id = course.ExternalId
             };
         }
     }

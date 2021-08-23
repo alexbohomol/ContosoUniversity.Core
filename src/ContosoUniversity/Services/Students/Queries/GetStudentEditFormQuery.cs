@@ -33,7 +33,7 @@ namespace ContosoUniversity.Services.Students.Queries
                 LastName = student.LastName,
                 FirstName = student.FirstName,
                 EnrollmentDate = student.EnrollmentDate,
-                ExternalId = student.EntityId
+                ExternalId = student.ExternalId
             };
         }
     }

@@ -42,7 +42,7 @@ namespace ContosoUniversity.Services.Departments.Queries
                         ? instructorsNames[x.AdministratorId.Value] 
                         : string.Empty 
                     : string.Empty,
-                ExternalId = x.EntityId
+                ExternalId = x.ExternalId
             }).ToList();
         }
     }

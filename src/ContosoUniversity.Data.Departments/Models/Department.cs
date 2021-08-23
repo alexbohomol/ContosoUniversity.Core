@@ -4,9 +4,9 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    using Data.Models;
+    using Domain;
 
-    public class Department : IExternalIdentifier
+    public class Department : IIdentifiable<Guid>
     {
         public int Id { get; set; }
 

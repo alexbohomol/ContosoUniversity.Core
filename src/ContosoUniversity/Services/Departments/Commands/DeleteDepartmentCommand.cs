@@ -39,7 +39,7 @@ namespace ContosoUniversity.Services.Departments.Commands
             await _departmentsRepository.Remove(request.Id, cancellationToken);
 
             var relatedCoursesIds = (await _coursesRepository.GetByDepartmentId(request.Id, cancellationToken))
-                                    .Select(x => x.EntityId)
+                                    .Select(x => x.ExternalId)
                                     .ToArray();
             
             /*

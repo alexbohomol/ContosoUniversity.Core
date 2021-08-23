@@ -32,7 +32,7 @@ namespace ContosoUniversity.Services.Courses.Commands
             if (course == null)
                 throw new EntityNotFoundException(nameof(course), request.Id);
 
-            await _coursesRepository.Remove(course.EntityId, cancellationToken);
+            await _coursesRepository.Remove(course.ExternalId, cancellationToken);
 
             /*
              * remove related assignments and enrollments

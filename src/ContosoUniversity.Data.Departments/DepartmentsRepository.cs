@@ -66,7 +66,7 @@ namespace ContosoUniversity.Data.Departments
             dataEntity.Budget = domainEntity.Budget;
             dataEntity.StartDate = domainEntity.StartDate;
             // dataEntity.InstructorId = domainEntity.AdministratorId;
-            dataEntity.ExternalId = domainEntity.EntityId;
+            dataEntity.ExternalId = domainEntity.ExternalId;
 
             /*
              * TODO: git rid of Instructor entity reference

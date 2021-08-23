@@ -14,7 +14,7 @@ namespace ContosoUniversity.Services.Courses.Commands
     {
         public EditCourseCommand(Course course)
         {
-            Id = course.EntityId;
+            Id = course.ExternalId;
             Title = course.Title;
             Credits = course.Credits;
             DepartmentId = course.DepartmentId;

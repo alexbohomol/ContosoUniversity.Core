@@ -26,7 +26,7 @@ namespace ContosoUniversity.Services.Students.Commands
             if (student == null)
                 throw new EntityNotFoundException(nameof(student), request.Id);
 
-            await _studentsRepository.Remove(student.EntityId, cancellationToken);
+            await _studentsRepository.Remove(student.ExternalId, cancellationToken);
         }
     }
 }

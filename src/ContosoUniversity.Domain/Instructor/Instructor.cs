@@ -26,14 +26,14 @@ namespace ContosoUniversity.Domain.Instructor
             DateTime hireDate,
             IList<Guid> courses,
             OfficeAssignment office,
-            Guid entityId)
+            Guid externalId)
         {
             FirstName = firstName;
             LastName = lastName;
             HireDate = hireDate;
             Courses = courses;
             Office = office;
-            EntityId = entityId;
+            ExternalId = externalId;
         }
 
         public string FirstName { get; private set; }
@@ -46,7 +46,7 @@ namespace ContosoUniversity.Domain.Instructor
 
         public OfficeAssignment Office { get; set; }
 
-        public Guid EntityId { get; }
+        public Guid ExternalId { get; }
 
         public void UpdatePersonalInfo(string firstName, string lastName, DateTime hireDate)
         {

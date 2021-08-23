@@ -23,13 +23,13 @@ namespace ContosoUniversity.Domain.Department
             decimal budget, 
             DateTime startDate, 
             Guid? administratorId,
-            Guid entityId)
+            Guid externalId)
         {
             Name = name;
             Budget = budget;
             StartDate = startDate;
             AdministratorId = administratorId;
-            EntityId = entityId;
+            ExternalId = externalId;
         }
 
         public string Name { get; private set; }
@@ -40,7 +40,7 @@ namespace ContosoUniversity.Domain.Department
 
         public Guid? AdministratorId { get; private set; }
 
-        public Guid EntityId { get; }
+        public Guid ExternalId { get; }
 
         public void DisassociateAdministrator()
         {
