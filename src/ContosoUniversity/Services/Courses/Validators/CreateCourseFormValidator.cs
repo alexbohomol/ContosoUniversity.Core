@@ -12,7 +12,6 @@ namespace ContosoUniversity.Services.Courses.Validators
 
         public CreateCourseFormValidator()
         {
-            // POST model rules
             RuleFor(x => x.CourseCode)
                 .InclusiveBetween(CourseCode.MinValue, CourseCode.MaxValue)
                 .WithMessage(ErrMsgCourseCode);

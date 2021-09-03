@@ -12,7 +12,6 @@ namespace ContosoUniversity.Services.Courses.Validators
 
         public EditCourseFormValidator()
         {
-            // POST model rules
             RuleFor(x => x.Title)
                 .Length(3, 50)
                 .WithMessage(ErrMsgTitle);
