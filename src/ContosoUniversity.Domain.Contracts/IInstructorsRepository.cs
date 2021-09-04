@@ -10,6 +10,5 @@ namespace ContosoUniversity.Domain.Contracts
     public interface IInstructorsRepository : IRepository<Instructor>
     {
         Task<Dictionary<Guid, string>> GetInstructorNamesReference(CancellationToken cancellationToken = default);
-        Task<bool> Exists(Guid instructorId, CancellationToken cancellationToken = default);
     }
 }

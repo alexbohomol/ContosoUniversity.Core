@@ -10,7 +10,6 @@ namespace ContosoUniversity.Domain.Contracts
     public interface IDepartmentsRepository : IRepository<Department>
     {
         Task<Dictionary<Guid, string>> GetDepartmentNamesReference(CancellationToken cancellationToken = default);
-        Task<bool> Exists(Guid departmentId, CancellationToken cancellationToken = default);
         Task<Department[]> GetByAdministrator(Guid instructorId, CancellationToken cancellationToken = default);
     }
 }
