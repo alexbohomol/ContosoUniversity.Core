@@ -1,4 +1,4 @@
-﻿@model ContosoUniversity.ViewModels.Departments.DepartmentEditForm
+﻿@model ContosoUniversity.ViewModels.Departments.EditDepartmentForm
 
 @{
     ViewData["Title"] = "Edit";
@@ -25,12 +25,12 @@
                 <span asp-validation-for="Budget" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control"/>
+                <label class="control-label">Start Date</label>
+                <input asp-for="StartDate" type="date" class="form-control"/>
                 <span asp-validation-for="StartDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AdministratorId" class="control-label"></label>
+                <label class="control-label">Administrator</label>
                 <select asp-for="AdministratorId" class="form-control" asp-items="Model.InstructorsDropDown">
                     <option value="">-- Select Administrator --</option>
                 </select>

@@ -7,9 +7,9 @@ namespace ContosoUniversity.ViewModels.Departments
 
     using Services.Departments.Commands;
 
-    public class DepartmentEditForm : EditDepartmentCommand
+    public class EditDepartmentForm : EditDepartmentCommand
     {
-        public DepartmentEditForm(EditDepartmentCommand command, Dictionary<Guid,string> instructorNames)
+        public EditDepartmentForm(EditDepartmentCommand command, Dictionary<Guid,string> instructorNames)
         {
             Name = command.Name;
             Budget = command.Budget;
@@ -20,7 +20,7 @@ namespace ContosoUniversity.ViewModels.Departments
             InstructorsDropDown = instructorNames.ToSelectList(command.AdministratorId.GetValueOrDefault());
         }
 
-        public DepartmentEditForm()
+        public EditDepartmentForm()
         {
             
         }

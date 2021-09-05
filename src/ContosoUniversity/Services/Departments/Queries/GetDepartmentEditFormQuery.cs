@@ -11,9 +11,9 @@ namespace ContosoUniversity.Services.Departments.Queries
     using ViewModels;
     using ViewModels.Departments;
 
-    public record GetDepartmentEditFormQuery(Guid Id) : IRequest<DepartmentEditForm>;
+    public record GetDepartmentEditFormQuery(Guid Id) : IRequest<EditDepartmentForm>;
     
-    public class GetDepartmentEditFormQueryHandler : IRequestHandler<GetDepartmentEditFormQuery, DepartmentEditForm>
+    public class GetDepartmentEditFormQueryHandler : IRequestHandler<GetDepartmentEditFormQuery, EditDepartmentForm>
     {
         private readonly IInstructorsRepository _instructorsRepository;
         private readonly IDepartmentsRepository _departmentsRepository;
@@ -26,7 +26,7 @@ namespace ContosoUniversity.Services.Departments.Queries
             _departmentsRepository = departmentsRepository;
         }
         
-        public async Task<DepartmentEditForm> Handle(GetDepartmentEditFormQuery request, CancellationToken cancellationToken)
+        public async Task<EditDepartmentForm> Handle(GetDepartmentEditFormQuery request, CancellationToken cancellationToken)
         {
             var department = await _departmentsRepository.GetById(request.Id, cancellationToken);
 
@@ -34,7 +34,7 @@ namespace ContosoUniversity.Services.Departments.Queries
 
             return department == null
                 ? null
-                : new DepartmentEditForm
+                : new EditDepartmentForm
                 {
                     Name = department.Name,
                     Budget = department.Budget,
