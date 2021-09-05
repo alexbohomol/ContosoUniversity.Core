@@ -23,16 +23,15 @@ namespace ContosoUniversity.Services.Departments.Validators
                 x.Add(v => new EditDepartmentFormValidator());
             });
             
-            RuleFor(x => x.AdministratorId)
-                .MustAsync(BeAnExistingInstructor)
-                .WithMessage("Please select an existing instructor.");
+            When(x => x.AdministratorId.HasValue, () =>
+            {
+                RuleFor(x => x.AdministratorId)
+                    .MustAsync((guid, token) => BeAnExistingInstructor(guid.Value, token))
+                    .WithMessage("Please select an existing instructor.");
+            });
         }
 
-        private async Task<bool> BeAnExistingInstructor(Guid? administratorId, CancellationToken token) => 
-            administratorId switch
-            {
-                null => true,
-                _ => await _repository.Exists(administratorId.Value, token)
-            };
+        private async Task<bool> BeAnExistingInstructor(Guid administratorId, CancellationToken token) => 
+            await _repository.Exists(administratorId, token);
     }
 }
