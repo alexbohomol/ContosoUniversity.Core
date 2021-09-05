@@ -8,9 +8,7 @@ namespace ContosoUniversity.Services.Departments.Validators
     {
         public EditDepartmentFormValidator()
         {
-            RuleFor(x => x.Name)
-                .MinimumLength(3)
-                .MaximumLength(50);
+            RuleFor(x => x.Name).SatisfiesNameRequirements();
         }
     }
 }
