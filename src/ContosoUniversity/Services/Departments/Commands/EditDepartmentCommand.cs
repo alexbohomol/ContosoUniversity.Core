@@ -48,6 +48,8 @@ namespace ContosoUniversity.Services.Departments.Commands
         protected override async Task Handle(EditDepartmentCommand request, CancellationToken cancellationToken)
         {
             var department = await _departmentsRepository.GetById(request.ExternalId, cancellationToken);
+            if (department is null)
+                throw new EntityNotFoundException(nameof(department), request.ExternalId);
 
             department.UpdateGeneralInfo(request.Name, request.Budget, request.StartDate);
             

@@ -32,9 +32,8 @@ namespace ContosoUniversity.Services.Departments.Commands
         
         protected override async Task Handle(DeleteDepartmentCommand request, CancellationToken cancellationToken)
         {
-            var exists = await _departmentsRepository.Exists(request.Id, cancellationToken);
-            if (!exists)
-                throw new EntityNotFoundException(nameof(exists), request.Id);
+            if (!await _departmentsRepository.Exists(request.Id, cancellationToken))
+                throw new EntityNotFoundException("department", request.Id);
             
             await _departmentsRepository.Remove(request.Id, cancellationToken);
 
