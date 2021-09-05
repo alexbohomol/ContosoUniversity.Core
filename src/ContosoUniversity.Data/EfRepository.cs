@@ -39,6 +39,10 @@ namespace ContosoUniversity.Data
                 (dbQuery, relationProperty) => dbQuery.Include(relationProperty));
         }
         
+        public virtual async Task<bool> Exists(Guid entityId, CancellationToken cancellationToken = default) => 
+            await DbSet
+                .AnyAsync(x => x.ExternalId == entityId, cancellationToken);
+
         public virtual async Task<TDomainEntity> GetById(Guid entityId, CancellationToken cancellationToken = default)
         {
             var dataEntity = await DbQuery

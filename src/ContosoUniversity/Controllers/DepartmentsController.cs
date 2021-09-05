@@ -114,7 +114,7 @@
             if (!ModelState.IsValid)
             {
                 return View(
-                    new DepartmentEditForm(
+                    new EditDepartmentForm(
                         command,
                         await _instructorsRepository.GetInstructorNamesReference(cancellationToken)));
             }

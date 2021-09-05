@@ -39,9 +39,6 @@ namespace ContosoUniversity.Data.Departments
                x => x.ExternalId,
                x => x.Name,
                cancellationToken);
-
-        public Task<bool> Exists(Guid departmentId, CancellationToken cancellationToken = default) => DbSet
-            .AnyAsync(x => x.ExternalId == departmentId, cancellationToken);
         
         public async Task<Department[]> GetByAdministrator(Guid instructorId, CancellationToken cancellationToken = default)
         {
