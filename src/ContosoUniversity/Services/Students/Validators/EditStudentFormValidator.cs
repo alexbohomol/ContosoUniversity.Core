@@ -4,9 +4,9 @@ namespace ContosoUniversity.Services.Students.Validators
 
     using ViewModels.Students;
 
-    public class CreateStudentFormValidator : AbstractValidator<CreateStudentForm>
+    public class EditStudentFormValidator : AbstractValidator<EditStudentForm>
     {
-        public CreateStudentFormValidator()
+        public EditStudentFormValidator()
         {
             RuleFor(x => x.LastName).SatisfiesLastNameRequirements();
             RuleFor(x => x.FirstName).SatisfiesFirstNameRequirements();
