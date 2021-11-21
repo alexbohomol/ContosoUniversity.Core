@@ -1,8 +1,7 @@
-namespace ContosoUniversity.ViewModels.Students
-{
-    using Services.Students.Commands;
+namespace ContosoUniversity.ViewModels.Students;
 
-    public class EditStudentForm : EditStudentCommand
-    {
-    }
+using Services.Students.Commands;
+
+public class EditStudentForm : EditStudentCommand
+{
 }

@@ -1,6 +1,5 @@
-namespace ContosoUniversity.Domain.Student
-{
-    using System;
+namespace ContosoUniversity.Domain.Student;
 
-    public record EnrollmentDateGroup(DateTime EnrollmentDate, int StudentCount);
-}
+using System;
+
+public record EnrollmentDateGroup(DateTime EnrollmentDate, int StudentCount);

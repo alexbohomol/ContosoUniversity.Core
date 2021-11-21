@@ -1,12 +1,10 @@
-namespace ContosoUniversity.ViewModels.Students
+namespace ContosoUniversity.ViewModels.Students;
+
+using System.ComponentModel.DataAnnotations;
+
+public class EnrollmentViewModel
 {
-    using System.ComponentModel.DataAnnotations;
+    [Display(Name = "Course")] public string CourseTitle { get; init; }
 
-    public class EnrollmentViewModel
-    {
-        [Display(Name = "Course")]
-        public string CourseTitle { get; init; }
-
-        public string Grade { get; init; }
-    }
+    public string Grade { get; init; }
 }

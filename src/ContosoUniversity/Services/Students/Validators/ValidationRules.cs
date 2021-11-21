@@ -1,23 +1,26 @@
-namespace ContosoUniversity.Services.Students.Validators
+namespace ContosoUniversity.Services.Students.Validators;
+
+using FluentValidation;
+
+public static class ValidationRules
 {
-    using FluentValidation;
+    private const int NameMaxLength = 50;
+    private const string ErrMsgFirstNameExceedsLength = "First name cannot be longer than 50 characters.";
 
-    public static class ValidationRules
+    public static void SatisfiesLastNameRequirements<T>(this IRuleBuilder<T, string> rule)
     {
-        private const int NameMaxLength = 50;
-        private const string ErrMsgFirstNameExceedsLength = "First name cannot be longer than 50 characters.";
+        rule
+            .NotNull()
+            .NotEmpty()
+            .MaximumLength(NameMaxLength);
+    }
 
-        public static void SatisfiesLastNameRequirements<T>(this IRuleBuilder<T, string> rule) => 
-            rule
-                .NotNull()
-                .NotEmpty()
-                .MaximumLength(NameMaxLength);
-
-        public static void SatisfiesFirstNameRequirements<T>(this IRuleBuilder<T, string> rule) => 
-            rule
-                .NotNull()
-                .NotEmpty()
-                .MaximumLength(NameMaxLength)
-                .WithMessage(ErrMsgFirstNameExceedsLength);
+    public static void SatisfiesFirstNameRequirements<T>(this IRuleBuilder<T, string> rule)
+    {
+        rule
+            .NotNull()
+            .NotEmpty()
+            .MaximumLength(NameMaxLength)
+            .WithMessage(ErrMsgFirstNameExceedsLength);
     }
 }

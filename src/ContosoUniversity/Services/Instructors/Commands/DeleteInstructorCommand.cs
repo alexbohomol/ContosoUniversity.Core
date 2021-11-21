@@ -1,45 +1,44 @@
-namespace ContosoUniversity.Services.Instructors.Commands
+namespace ContosoUniversity.Services.Instructors.Commands;
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Domain.Contracts;
+using Domain.Contracts.Exceptions;
+using Domain.Department;
+
+using MediatR;
+
+public record DeleteInstructorCommand(Guid Id) : IRequest;
+
+public class DeleteInstructorCommandHandler : AsyncRequestHandler<DeleteInstructorCommand>
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
+    private readonly IDepartmentsRepository _departmentsRepository;
+    private readonly IInstructorsRepository _instructorsRepository;
 
-    using Domain.Contracts;
-    using Domain.Contracts.Exceptions;
-    using Domain.Department;
-
-    using MediatR;
-
-    public record DeleteInstructorCommand(Guid Id) : IRequest;
-    
-    public class DeleteInstructorCommandHandler : AsyncRequestHandler<DeleteInstructorCommand>
+    public DeleteInstructorCommandHandler(
+        IInstructorsRepository instructorsRepository,
+        IDepartmentsRepository departmentsRepository)
     {
-        private readonly IInstructorsRepository _instructorsRepository;
-        private readonly IDepartmentsRepository _departmentsRepository;
+        _instructorsRepository = instructorsRepository;
+        _departmentsRepository = departmentsRepository;
+    }
 
-        public DeleteInstructorCommandHandler(
-            IInstructorsRepository instructorsRepository, 
-            IDepartmentsRepository departmentsRepository)
-        {
-            _instructorsRepository = instructorsRepository;
-            _departmentsRepository = departmentsRepository;
-        }
-        
-        protected override async Task Handle(DeleteInstructorCommand request, CancellationToken cancellationToken)
-        {
-            if (!await _instructorsRepository.Exists(request.Id, cancellationToken))
-                throw new EntityNotFoundException("instructor", request.Id);
+    protected override async Task Handle(DeleteInstructorCommand request, CancellationToken cancellationToken)
+    {
+        if (!await _instructorsRepository.Exists(request.Id, cancellationToken))
+            throw new EntityNotFoundException("instructor", request.Id);
 
-            Department[] administratedDepartments = await _departmentsRepository.GetByAdministrator(
-                request.Id,
-                cancellationToken);
-            foreach (var department in administratedDepartments)
-            {
-                department.DisassociateAdministrator();
-                await _departmentsRepository.Save(department, cancellationToken);
-            }
-            
-            await _instructorsRepository.Remove(request.Id, cancellationToken);
+        Department[] administratedDepartments = await _departmentsRepository.GetByAdministrator(
+            request.Id,
+            cancellationToken);
+        foreach (Department department in administratedDepartments)
+        {
+            department.DisassociateAdministrator();
+            await _departmentsRepository.Save(department, cancellationToken);
         }
+
+        await _instructorsRepository.Remove(request.Id, cancellationToken);
     }
 }

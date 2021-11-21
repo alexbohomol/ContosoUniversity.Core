@@ -1,40 +1,40 @@
-namespace ContosoUniversity.Services.Students.Queries
+namespace ContosoUniversity.Services.Students.Queries;
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Domain.Contracts;
+using Domain.Contracts.Exceptions;
+using Domain.Student;
+
+using MediatR;
+
+using ViewModels.Students;
+
+public record GetStudentEditFormQuery(Guid Id) : IRequest<EditStudentForm>;
+
+public class GetStudentEditFormQueryHandler : IRequestHandler<GetStudentEditFormQuery, EditStudentForm>
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
+    private readonly IStudentsRepository _studentsRepository;
 
-    using Domain.Contracts;
-    using Domain.Contracts.Exceptions;
-
-    using MediatR;
-
-    using ViewModels.Students;
-
-    public record GetStudentEditFormQuery(Guid Id) : IRequest<EditStudentForm>;
-    
-    public class GetStudentEditFormQueryHandler : IRequestHandler<GetStudentEditFormQuery, EditStudentForm>
+    public GetStudentEditFormQueryHandler(IStudentsRepository studentsRepository)
     {
-        private readonly IStudentsRepository _studentsRepository;
+        _studentsRepository = studentsRepository;
+    }
 
-        public GetStudentEditFormQueryHandler(IStudentsRepository studentsRepository)
+    public async Task<EditStudentForm> Handle(GetStudentEditFormQuery request, CancellationToken cancellationToken)
+    {
+        Student student = await _studentsRepository.GetById(request.Id, cancellationToken);
+        if (student == null)
+            throw new EntityNotFoundException(nameof(student), request.Id);
+
+        return new EditStudentForm
         {
-            _studentsRepository = studentsRepository;
-        }
-
-        public async Task<EditStudentForm> Handle(GetStudentEditFormQuery request, CancellationToken cancellationToken)
-        {
-            var student = await _studentsRepository.GetById(request.Id, cancellationToken);
-            if (student == null)
-                throw new EntityNotFoundException(nameof(student), request.Id);
-
-            return new EditStudentForm
-            {
-                LastName = student.LastName,
-                FirstName = student.FirstName,
-                EnrollmentDate = student.EnrollmentDate,
-                ExternalId = student.ExternalId
-            };
-        }
+            LastName = student.LastName,
+            FirstName = student.FirstName,
+            EnrollmentDate = student.EnrollmentDate,
+            ExternalId = student.ExternalId
+        };
     }
 }

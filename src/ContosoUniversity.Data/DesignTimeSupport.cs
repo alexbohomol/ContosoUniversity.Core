@@ -1,15 +1,14 @@
-namespace ContosoUniversity.Data
+namespace ContosoUniversity.Data;
+
+using System.IO;
+
+using Microsoft.Extensions.Configuration;
+
+public static class DesignTimeSupport
 {
-    using System.IO;
-
-    using Microsoft.Extensions.Configuration;
-
-    public static class DesignTimeSupport
-    {
-        public static string ConnectionString => new ConfigurationBuilder()
-            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../ContosoUniversity"))
-            .AddJsonFile("appsettings.json")
-            .Build()
-            .GetConnectionString("DefaultConnection");
-    }
+    public static string ConnectionString => new ConfigurationBuilder()
+        .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../ContosoUniversity"))
+        .AddJsonFile("appsettings.json")
+        .Build()
+        .GetConnectionString("DefaultConnection");
 }

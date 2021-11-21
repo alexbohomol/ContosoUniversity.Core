@@ -1,40 +1,39 @@
-namespace ContosoUniversity.Services.Students.Commands
+namespace ContosoUniversity.Services.Students.Commands;
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Domain.Contracts;
+using Domain.Student;
+
+using MediatR;
+
+public class CreateStudentCommand : IRequest
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
+    public DateTime EnrollmentDate { get; set; }
+    public string LastName { get; set; }
+    public string FirstName { get; set; }
+}
 
-    using Domain.Contracts;
-    using Domain.Student;
+public class CreateStudentCommandHandler : AsyncRequestHandler<CreateStudentCommand>
+{
+    private readonly IStudentsRepository _repository;
 
-    using MediatR;
-
-    public class CreateStudentCommand : IRequest
+    public CreateStudentCommandHandler(IStudentsRepository repository)
     {
-        public DateTime EnrollmentDate { get; set; }
-        public string LastName { get; set; }
-        public string FirstName { get; set; }
+        _repository = repository;
     }
 
-    public class CreateStudentCommandHandler : AsyncRequestHandler<CreateStudentCommand>
+    protected override Task Handle(CreateStudentCommand request, CancellationToken cancellationToken)
     {
-        private readonly IStudentsRepository _repository;
-
-        public CreateStudentCommandHandler(IStudentsRepository repository)
-        {
-            _repository = repository;
-        }
-
-        protected override Task Handle(CreateStudentCommand request, CancellationToken cancellationToken)
-        {
-            return _repository.Save(
-                new Student(
-                    request.LastName,
-                    request.FirstName,
-                    request.EnrollmentDate,
-                    EnrollmentsCollection.Empty,
-                    Guid.NewGuid()),
-                cancellationToken);
-        }
+        return _repository.Save(
+            new Student(
+                request.LastName,
+                request.FirstName,
+                request.EnrollmentDate,
+                EnrollmentsCollection.Empty,
+                Guid.NewGuid()),
+            cancellationToken);
     }
 }

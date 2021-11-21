@@ -1,8 +1,7 @@
-namespace ContosoUniversity.ViewModels.Instructors
+namespace ContosoUniversity.ViewModels.Instructors;
+
+public class EnrolledStudentViewModel
 {
-    public class EnrolledStudentViewModel
-    {
-        public string StudentFullName { get; init; }
-        public string EnrollmentGrade { get; init; }
-    }
+    public string StudentFullName { get; init; }
+    public string EnrollmentGrade { get; init; }
 }

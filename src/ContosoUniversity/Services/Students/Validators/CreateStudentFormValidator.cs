@@ -1,15 +1,14 @@
-namespace ContosoUniversity.Services.Students.Validators
+namespace ContosoUniversity.Services.Students.Validators;
+
+using FluentValidation;
+
+using ViewModels.Students;
+
+public class CreateStudentFormValidator : AbstractValidator<CreateStudentForm>
 {
-    using FluentValidation;
-
-    using ViewModels.Students;
-
-    public class CreateStudentFormValidator : AbstractValidator<CreateStudentForm>
+    public CreateStudentFormValidator()
     {
-        public CreateStudentFormValidator()
-        {
-            RuleFor(x => x.LastName).SatisfiesLastNameRequirements();
-            RuleFor(x => x.FirstName).SatisfiesFirstNameRequirements();
-        }
+        RuleFor(x => x.LastName).SatisfiesLastNameRequirements();
+        RuleFor(x => x.FirstName).SatisfiesFirstNameRequirements();
     }
 }

@@ -1,13 +1,10 @@
-namespace ContosoUniversity.ViewModels.Instructors
+namespace ContosoUniversity.ViewModels.Instructors;
+
+using System.Collections.Generic;
+
+public class InstructorIndexViewModel
 {
-    using System.Collections.Generic;
-
-    using Data.Students.Models;
-
-    public class InstructorIndexViewModel
-    {
-        public IEnumerable<InstructorListItemViewModel> Instructors { get; set; }
-        public IEnumerable<CourseListItemViewModel> Courses { get; set; }
-        public IEnumerable<EnrolledStudentViewModel> Students { get; set; }
-    }
+    public IEnumerable<InstructorListItemViewModel> Instructors { get; set; }
+    public IEnumerable<CourseListItemViewModel> Courses { get; set; }
+    public IEnumerable<EnrolledStudentViewModel> Students { get; set; }
 }

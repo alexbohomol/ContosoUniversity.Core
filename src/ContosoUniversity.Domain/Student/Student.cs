@@ -1,56 +1,54 @@
-namespace ContosoUniversity.Domain.Student
+namespace ContosoUniversity.Domain.Student;
+
+using System;
+
+public class Student : IIdentifiable<Guid>
 {
-    using System;
-
-    public class Student : IIdentifiable<Guid>
+    public Student(
+        string lastName,
+        string firstName,
+        DateTime enrollmentDate,
+        EnrollmentsCollection enrollments,
+        Guid externalId)
     {
-        private readonly EnrollmentsCollection _enrollments;
+        LastName = lastName;
+        FirstName = firstName;
+        EnrollmentDate = enrollmentDate;
+        Enrollments = enrollments;
+        ExternalId = externalId;
+    }
 
-        public Student(
-            string lastName,
-            string firstName,
-            DateTime enrollmentDate,
-            EnrollmentsCollection enrollments,
-            Guid externalId)
-        {
-            LastName = lastName;
-            FirstName = firstName;
-            EnrollmentDate = enrollmentDate;
-            _enrollments = enrollments;
-            ExternalId = externalId;
-        }
+    public string LastName { get; private set; }
+    public string FirstName { get; private set; }
+    public DateTime EnrollmentDate { get; private set; }
+    public EnrollmentsCollection Enrollments { get; }
 
-        public string LastName { get; private set; }
-        public string FirstName { get; private set; }
-        public DateTime EnrollmentDate { get; private set; }
-        public EnrollmentsCollection Enrollments => _enrollments;
-        public Guid ExternalId { get; }
+    public Guid ExternalId { get; }
 
-        public void UpdatePersonInfo(string lastName, string firstName)
-        {
-            LastName = lastName;
-            FirstName = firstName;
-        }
+    public void UpdatePersonInfo(string lastName, string firstName)
+    {
+        LastName = lastName;
+        FirstName = firstName;
+    }
 
-        public void Enroll(DateTime enrollmentDate)
-        {
-            EnrollmentDate = enrollmentDate;
-        }
+    public void Enroll(DateTime enrollmentDate)
+    {
+        EnrollmentDate = enrollmentDate;
+    }
 
-        public void EnrollCourses(Enrollment[] enrollments)
-        {
-            /*
-             * TODO: next feature requirements
-             * - existing enrollment?
-             * - updated grade for the existing enrollment?
-             */
-            
-            _enrollments.AddEnrollments(enrollments);
-        }
+    public void EnrollCourses(Enrollment[] enrollments)
+    {
+        /*
+         * TODO: next feature requirements
+         * - existing enrollment?
+         * - updated grade for the existing enrollment?
+         */
 
-        public void WithdrawCourses(Guid[] courseIds)
-        {
-            _enrollments.RemoveEnrollments(courseIds);
-        }
+        Enrollments.AddEnrollments(enrollments);
+    }
+
+    public void WithdrawCourses(Guid[] courseIds)
+    {
+        Enrollments.RemoveEnrollments(courseIds);
     }
 }

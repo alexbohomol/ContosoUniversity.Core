@@ -1,12 +1,11 @@
-namespace ContosoUniversity.Data.Seed.Models
-{
-    using System;
+namespace ContosoUniversity.Data.Seed.Models;
 
-    internal class DepartmentSeedModel
-    {
-        public string Name { get; set; }
-        public int Budget { get; set; }
-        public DateTime StartDate { get; set; }
-        public string Administrator { get; set; }
-    }
+using System;
+
+internal class DepartmentSeedModel
+{
+    public string Name { get; set; }
+    public int Budget { get; set; }
+    public DateTime StartDate { get; set; }
+    public string Administrator { get; set; }
 }

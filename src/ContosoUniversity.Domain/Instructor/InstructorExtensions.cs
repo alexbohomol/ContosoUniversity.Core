@@ -1,7 +1,9 @@
-namespace ContosoUniversity.Domain.Instructor
+namespace ContosoUniversity.Domain.Instructor;
+
+public static class InstructorExtensions
 {
-    public static class InstructorExtensions
+    public static string FullName(this Instructor instructor)
     {
-        public static string FullName(this Instructor instructor) => $"{instructor.LastName}, {instructor.FirstName}"; 
+        return $"{instructor.LastName}, {instructor.FirstName}";
     }
 }

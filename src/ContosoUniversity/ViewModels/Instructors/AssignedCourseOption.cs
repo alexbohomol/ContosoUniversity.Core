@@ -1,12 +1,11 @@
-﻿namespace ContosoUniversity.ViewModels.Instructors
-{
-    using System;
+﻿namespace ContosoUniversity.ViewModels.Instructors;
 
-    public class AssignedCourseOption
-    {
-        public Guid CourseExternalId { get; set; }
-        public int CourseCode { get; set; }
-        public string Title { get; set; }
-        public bool Assigned { get; set; }
-    }
+using System;
+
+public class AssignedCourseOption
+{
+    public Guid CourseExternalId { get; set; }
+    public int CourseCode { get; set; }
+    public string Title { get; set; }
+    public bool Assigned { get; set; }
 }

@@ -1,8 +1,7 @@
-namespace ContosoUniversity.Data.Seed.Models
+namespace ContosoUniversity.Data.Seed.Models;
+
+internal class CourseAssignmentSeedModel
 {
-    internal class CourseAssignmentSeedModel
-    {
-        public string Instructor { get; set; }
-        public int Course { get; set; }
-    }
+    public string Instructor { get; set; }
+    public int Course { get; set; }
 }

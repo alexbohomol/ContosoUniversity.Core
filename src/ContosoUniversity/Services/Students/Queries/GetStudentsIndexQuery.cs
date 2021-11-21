@@ -1,66 +1,61 @@
-namespace ContosoUniversity.Services.Students.Queries
+namespace ContosoUniversity.Services.Students.Queries;
+
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Domain.Contracts;
+using Domain.Contracts.Paging;
+using Domain.Student;
+
+using MediatR;
+
+using ViewModels.Students;
+
+public class GetStudentsIndexQuery : IRequest<StudentIndexViewModel>
 {
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
+    public string SortOrder { get; set; }
+    public string CurrentFilter { get; set; }
+    public string SearchString { get; set; }
+    public int? PageNumber { get; set; }
+}
 
-    using Domain.Contracts;
-    using Domain.Contracts.Paging;
-    using Domain.Student;
+public class GetStudentsIndexQueryHandler : IRequestHandler<GetStudentsIndexQuery, StudentIndexViewModel>
+{
+    private readonly IStudentsRepository _studentsRepository;
 
-    using MediatR;
-
-    using ViewModels.Students;
-
-    public class GetStudentsIndexQuery : IRequest<StudentIndexViewModel>
+    public GetStudentsIndexQueryHandler(IStudentsRepository studentsRepository)
     {
-        public string SortOrder { get; set; }
-        public string CurrentFilter { get; set; }
-        public string SearchString { get; set; }
-        public int? PageNumber { get; set; }
+        _studentsRepository = studentsRepository;
     }
-    
-    public class GetStudentsIndexQueryHandler : IRequestHandler<GetStudentsIndexQuery, StudentIndexViewModel>
+
+    public async Task<StudentIndexViewModel> Handle(GetStudentsIndexQuery request, CancellationToken cancellationToken)
     {
-        private readonly IStudentsRepository _studentsRepository;
+        if (request.SearchString != null)
+            request.PageNumber = 1;
+        else
+            request.SearchString = request.CurrentFilter;
 
-        public GetStudentsIndexQueryHandler(IStudentsRepository studentsRepository)
+        (Student[] students, PageInfo pageInfo) = await _studentsRepository.Search(
+            new SearchRequest(request.SearchString),
+            new OrderRequest(request.SortOrder),
+            new PageRequest(request.PageNumber ?? 1, 3),
+            cancellationToken);
+
+        return new StudentIndexViewModel
         {
-            _studentsRepository = studentsRepository;
-        }
-        
-        public async Task<StudentIndexViewModel> Handle(GetStudentsIndexQuery request, CancellationToken cancellationToken)
-        {
-            if (request.SearchString != null)
+            CurrentSort = request.SortOrder,
+            NameSortParm = string.IsNullOrWhiteSpace(request.SortOrder) ? "name_desc" : string.Empty,
+            DateSortParm = request.SortOrder == "Date" ? "date_desc" : "Date",
+            CurrentFilter = request.SearchString,
+            Items = students.Select(s => new StudentListItemViewModel
             {
-                request.PageNumber = 1;
-            }
-            else
-            {
-                request.SearchString = request.CurrentFilter;
-            }
-
-            (Student[] students, PageInfo pageInfo) = await _studentsRepository.Search(
-                new SearchRequest(request.SearchString), 
-                new OrderRequest(request.SortOrder), 
-                new PageRequest(request.PageNumber ?? 1, PageSize: 3),
-                cancellationToken);
-
-            return new StudentIndexViewModel
-            {
-                CurrentSort = request.SortOrder,
-                NameSortParm = string.IsNullOrWhiteSpace(request.SortOrder) ? "name_desc" : string.Empty,
-                DateSortParm = request.SortOrder == "Date" ? "date_desc" : "Date",
-                CurrentFilter = request.SearchString,
-                Items = students.Select(s => new StudentListItemViewModel
-                {
-                    LastName = s.LastName,
-                    FirstName = s.FirstName,
-                    EnrollmentDate = s.EnrollmentDate,
-                    ExternalId = s.ExternalId
-                }).ToArray(),
-                PageInfo = pageInfo
-            };
-        }
+                LastName = s.LastName,
+                FirstName = s.FirstName,
+                EnrollmentDate = s.EnrollmentDate,
+                ExternalId = s.ExternalId
+            }).ToArray(),
+            PageInfo = pageInfo
+        };
     }
 }

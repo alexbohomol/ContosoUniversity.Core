@@ -1,34 +1,31 @@
-﻿namespace ContosoUniversity.Data.Departments.Models
+﻿namespace ContosoUniversity.Data.Departments.Models;
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+using Domain;
+
+public class Instructor : IIdentifiable<Guid>
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
+    [DataType(DataType.Date)] public DateTime HireDate { get; set; }
 
-    using Domain;
+    public ICollection<CourseAssignment> CourseAssignments { get; set; }
+    public OfficeAssignment OfficeAssignment { get; set; }
+    public int Id { get; set; }
 
-    public class Instructor : IIdentifiable<Guid>
-    {
-        [DataType(DataType.Date)]
-        public DateTime HireDate { get; set; }
+    [Required]
+    [StringLength(50)]
+    [Display(Name = "Last Name")]
+    public string LastName { get; set; }
 
-        public ICollection<CourseAssignment> CourseAssignments { get; set; }
-        public OfficeAssignment OfficeAssignment { get; set; }
-        public int Id { get; set; }
+    [Required]
+    [StringLength(50)]
+    [Column("FirstName")]
+    public string FirstMidName { get; set; }
 
-        [Required]
-        [StringLength(50)]
-        [Display(Name = "Last Name")]
-        public string LastName { get; set; }
+    [Display(Name = "Full Name")] public string FullName => LastName + ", " + FirstMidName;
 
-        [Required]
-        [StringLength(50)]
-        [Column("FirstName")]
-        public string FirstMidName { get; set; }
-
-        [Display(Name = "Full Name")]
-        public string FullName => LastName + ", " + FirstMidName;
-
-        public Guid ExternalId { get; set; }
-    }
+    public Guid ExternalId { get; set; }
 }

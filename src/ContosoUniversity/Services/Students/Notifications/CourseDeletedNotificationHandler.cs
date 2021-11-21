@@ -1,38 +1,37 @@
-namespace ContosoUniversity.Services.Students.Notifications
+namespace ContosoUniversity.Services.Students.Notifications;
+
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Courses.Notifications;
+
+using Domain.Contracts;
+using Domain.Student;
+
+using MediatR;
+
+public class CourseDeletedNotificationHandler : INotificationHandler<CourseDeletedNotification>
 {
-    using System;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
+    private readonly IStudentsRepository _studentsRepository;
 
-    using Courses.Notifications;
-
-    using Domain.Contracts;
-
-    using MediatR;
-
-    public class CourseDeletedNotificationHandler : INotificationHandler<CourseDeletedNotification>
+    public CourseDeletedNotificationHandler(IStudentsRepository studentsRepository)
     {
-        private readonly IStudentsRepository _studentsRepository;
+        _studentsRepository = studentsRepository;
+    }
 
-        public CourseDeletedNotificationHandler(IStudentsRepository studentsRepository)
-        {
-            _studentsRepository = studentsRepository;
-        }
+    public async Task Handle(CourseDeletedNotification notification, CancellationToken cancellationToken)
+    {
+        Guid[] courseIds = { notification.Id };
 
-        public async Task Handle(CourseDeletedNotification notification, CancellationToken cancellationToken)
-        {
-            Guid[] courseIds = { notification.Id };
-            
-            var enrolledStudents = await _studentsRepository.GetStudentsEnrolledForCourses(courseIds, cancellationToken);
-            if (enrolledStudents.Any())
+        Student[] enrolledStudents =
+            await _studentsRepository.GetStudentsEnrolledForCourses(courseIds, cancellationToken);
+        if (enrolledStudents.Any())
+            foreach (Student student in enrolledStudents)
             {
-                foreach (var student in enrolledStudents)
-                {
-                    student.WithdrawCourses(courseIds);
-                    await _studentsRepository.Save(student, cancellationToken);
-                }
+                student.WithdrawCourses(courseIds);
+                await _studentsRepository.Save(student, cancellationToken);
             }
-        }
     }
 }

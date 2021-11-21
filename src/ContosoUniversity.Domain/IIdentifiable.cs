@@ -1,7 +1,6 @@
-namespace ContosoUniversity.Domain
+namespace ContosoUniversity.Domain;
+
+public interface IIdentifiable<T> where T : struct
 {
-    public interface IIdentifiable<T> where T : struct
-    {
-        T ExternalId { get; }
-    }
+    T ExternalId { get; }
 }

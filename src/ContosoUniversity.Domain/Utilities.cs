@@ -1,10 +1,12 @@
-namespace ContosoUniversity.Domain
-{
-    using System;
-    using System.Collections.Generic;
+namespace ContosoUniversity.Domain;
 
-    public static class Utilities
+using System;
+using System.Collections.Generic;
+
+public static class Utilities
+{
+    public static string ToDisplayString(this IEnumerable<Guid> guids)
     {
-        public static string ToDisplayString(this IEnumerable<Guid> guids) => string.Join(", ", guids);
+        return string.Join(", ", guids);
     }
 }

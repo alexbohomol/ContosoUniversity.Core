@@ -6,20 +6,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation" Version="10.3.4" />
-        <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.4" />
-        <PackageReference Include="MediatR" Version="9.0.0" />
-        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+        <PackageReference Include="FluentValidation" Version="10.3.4"/>
+        <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.4"/>
+        <PackageReference Include="MediatR" Version="9.0.0"/>
+        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ContosoUniversity.Data.Departments\ContosoUniversity.Data.Departments.csproj" />
-        <ProjectReference Include="..\ContosoUniversity.Data.Seed\ContosoUniversity.Data.Seed.csproj" />
-        <ProjectReference Include="..\ContosoUniversity.Domain.Contracts\ContosoUniversity.Domain.Contracts.csproj" />
+        <ProjectReference Include="..\ContosoUniversity.Data.Departments\ContosoUniversity.Data.Departments.csproj"/>
+        <ProjectReference Include="..\ContosoUniversity.Data.Seed\ContosoUniversity.Data.Seed.csproj"/>
+        <ProjectReference Include="..\ContosoUniversity.Domain.Contracts\ContosoUniversity.Domain.Contracts.csproj"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <Folder Include="wwwroot\lib" />
+        <Folder Include="wwwroot\lib"/>
     </ItemGroup>
     <PropertyGroup>
         <GenerateRuntimeConfigurationFiles>True</GenerateRuntimeConfigurationFiles>

@@ -1,30 +1,29 @@
-namespace ContosoUniversity.Domain.Student
+namespace ContosoUniversity.Domain.Student;
+
+using System;
+
+public struct Enrollment
 {
-    using System;
+    private readonly Guid _courseId;
 
-    public struct Enrollment
+    public Enrollment(Guid courseId, Grade grade) : this()
     {
-        private readonly Guid _courseId;
-        
-        public Enrollment(Guid courseId, Grade grade) : this()
+        CourseId = courseId;
+        Grade = grade;
+    }
+
+    public Grade Grade { get; }
+
+    public Guid CourseId
+    {
+        get => _courseId;
+        private init
         {
-            CourseId = courseId;
-            Grade = grade;
-        }
+            if (value == default)
+                throw new ArgumentException(
+                    "Course Id cannot be of default value.");
 
-        public Grade Grade { get; }
-
-        public Guid CourseId
-        {
-            get => _courseId;
-            private init
-            {
-                if (value == default)
-                    throw new ArgumentException(
-                        "Course Id cannot be of default value.");
-
-                _courseId = value;
-            }
+            _courseId = value;
         }
     }
 }

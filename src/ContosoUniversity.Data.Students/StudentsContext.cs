@@ -1,24 +1,23 @@
-namespace ContosoUniversity.Data.Students
+namespace ContosoUniversity.Data.Students;
+
+using Microsoft.EntityFrameworkCore;
+
+using Models;
+
+public class StudentsContext : DbContext
 {
-    using Microsoft.EntityFrameworkCore;
+    private const string Schema = "std";
 
-    using Models;
-
-    public class StudentsContext : DbContext
+    public StudentsContext(DbContextOptions<StudentsContext> options) : base(options)
     {
-        private const string Schema = "std";
+    }
 
-        public StudentsContext(DbContextOptions<StudentsContext> options) : base(options)
-        {
-        }
+    public DbSet<Enrollment> Enrollments { get; set; }
+    public DbSet<Student> Students { get; set; }
 
-        public DbSet<Enrollment> Enrollments { get; set; }
-        public DbSet<Student> Students { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Enrollment>().ToTable("Enrollment", Schema);
-            modelBuilder.Entity<Student>().ToTable("Student", Schema);
-        }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Enrollment>().ToTable("Enrollment", Schema);
+        modelBuilder.Entity<Student>().ToTable("Student", Schema);
     }
 }

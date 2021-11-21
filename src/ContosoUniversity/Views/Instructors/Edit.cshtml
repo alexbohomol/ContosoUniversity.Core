@@ -1,4 +1,5 @@
-﻿@model ContosoUniversity.ViewModels.Instructors.EditInstructorForm
+﻿@using ContosoUniversity.ViewModels.Instructors
+@model ContosoUniversity.ViewModels.Instructors.EditInstructorForm
 
 @{
     ViewData["Title"] = "Edit";
@@ -38,9 +39,9 @@
                     <table>
                         <tr>
                         @{
-                            var cnt = 0;
+                            int cnt = 0;
 
-                            foreach (var course in Model.AssignedCourses)
+                            foreach (AssignedCourseOption course in Model.AssignedCourses)
                             {
                                 if (cnt++ % 3 == 0)
                                 {

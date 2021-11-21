@@ -1,56 +1,55 @@
-namespace ContosoUniversity.Services.Courses.Commands
+namespace ContosoUniversity.Services.Courses.Commands;
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Domain.Contracts;
+using Domain.Contracts.Exceptions;
+using Domain.Course;
+
+using MediatR;
+
+public class EditCourseCommand : IRequest
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
-
-    using Domain.Contracts;
-    using Domain.Contracts.Exceptions;
-    using Domain.Course;
-
-    using MediatR;
-
-    public class EditCourseCommand : IRequest
+    public EditCourseCommand(Course course)
     {
-        public EditCourseCommand(Course course)
-        {
-            Id = course.ExternalId;
-            Title = course.Title;
-            Credits = course.Credits;
-            DepartmentId = course.DepartmentId;
-        }
-
-        public EditCourseCommand()
-        {
-        }
-
-        public Guid Id { get; set; }
-        public string Title { get; set; }
-        public int Credits { get; set; }
-        public Guid DepartmentId { get; set; }
+        Id = course.ExternalId;
+        Title = course.Title;
+        Credits = course.Credits;
+        DepartmentId = course.DepartmentId;
     }
-    
-    public class EditCourseCommandHandler : AsyncRequestHandler<EditCourseCommand>
+
+    public EditCourseCommand()
     {
-        private readonly ICoursesRepository _coursesRepository;
+    }
 
-        public EditCourseCommandHandler(ICoursesRepository coursesRepository)
-        {
-            _coursesRepository = coursesRepository;
-        }
+    public Guid Id { get; set; }
+    public string Title { get; set; }
+    public int Credits { get; set; }
+    public Guid DepartmentId { get; set; }
+}
 
-        protected override async Task Handle(EditCourseCommand request, CancellationToken cancellationToken)
-        {
-            var course = await _coursesRepository.GetById(request.Id, cancellationToken);
-            if (course == null)
-                throw new EntityNotFoundException(nameof(course), request.Id);
+public class EditCourseCommandHandler : AsyncRequestHandler<EditCourseCommand>
+{
+    private readonly ICoursesRepository _coursesRepository;
 
-            course.Update(
-                request.Title,
-                request.Credits,
-                request.DepartmentId);
+    public EditCourseCommandHandler(ICoursesRepository coursesRepository)
+    {
+        _coursesRepository = coursesRepository;
+    }
 
-            await _coursesRepository.Save(course, cancellationToken);
-        }
+    protected override async Task Handle(EditCourseCommand request, CancellationToken cancellationToken)
+    {
+        Course course = await _coursesRepository.GetById(request.Id, cancellationToken);
+        if (course == null)
+            throw new EntityNotFoundException(nameof(course), request.Id);
+
+        course.Update(
+            request.Title,
+            request.Credits,
+            request.DepartmentId);
+
+        await _coursesRepository.Save(course, cancellationToken);
     }
 }
