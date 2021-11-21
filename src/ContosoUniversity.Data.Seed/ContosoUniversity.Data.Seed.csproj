@@ -5,14 +5,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ContosoUniversity.Data.Courses\ContosoUniversity.Data.Courses.csproj"/>
-        <ProjectReference Include="..\ContosoUniversity.Data.Departments\ContosoUniversity.Data.Departments.csproj"/>
-        <ProjectReference Include="..\ContosoUniversity.Data.Students\ContosoUniversity.Data.Students.csproj"/>
+        <ProjectReference Include="..\ContosoUniversity.Data.Courses\ContosoUniversity.Data.Courses.csproj" />
+        <ProjectReference Include="..\ContosoUniversity.Data.Departments\ContosoUniversity.Data.Departments.csproj" />
+        <ProjectReference Include="..\ContosoUniversity.Data.Students\ContosoUniversity.Data.Students.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
     </ItemGroup>
 
 </Project>
