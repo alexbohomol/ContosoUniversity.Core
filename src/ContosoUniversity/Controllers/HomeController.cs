@@ -1,48 +1,53 @@
-﻿namespace ContosoUniversity.Controllers
+﻿namespace ContosoUniversity.Controllers;
+
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Domain.Contracts;
+using Domain.Student;
+
+using Microsoft.AspNetCore.Mvc;
+
+using ViewModels;
+
+public class HomeController : Controller
 {
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
+    private readonly IStudentsRepository _repository;
 
-    using Domain.Contracts;
-
-    using Microsoft.AspNetCore.Mvc;
-
-    using ViewModels;
-    using ViewModels.Home;
-
-    public class HomeController : Controller
+    public HomeController(IStudentsRepository repository)
     {
-        private readonly IStudentsRepository _repository;
+        _repository = repository;
+    }
 
-        public HomeController(IStudentsRepository repository)
+    public IActionResult Index()
+    {
+        return View();
+    }
+
+    public async Task<ActionResult> About(CancellationToken cancellationToken)
+    {
+        EnrollmentDateGroup[] groups = await _repository.GetEnrollmentDateGroups(cancellationToken);
+
+        ViewModels.Home.EnrollmentDateGroup[] viewModels = groups.Select(x => new ViewModels.Home.EnrollmentDateGroup
         {
-            _repository = repository;
-        }
+            EnrollmentDate = x.EnrollmentDate,
+            StudentCount = x.StudentCount
+        }).ToArray();
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        return View(viewModels);
+    }
 
-        public async Task<ActionResult> About(CancellationToken cancellationToken)
-        {
-            var groups = await _repository.GetEnrollmentDateGroups(cancellationToken);
+    public IActionResult Privacy()
+    {
+        return View();
+    }
 
-            var viewModels = groups.Select(x => new EnrollmentDateGroup
-            {
-                EnrollmentDate = x.EnrollmentDate,
-                StudentCount = x.StudentCount
-            }).ToArray();
-            
-            return View(viewModels);
-        }
-
-        public IActionResult Privacy() => View();
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error() => View(new ErrorViewModel
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel
         {
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
         });

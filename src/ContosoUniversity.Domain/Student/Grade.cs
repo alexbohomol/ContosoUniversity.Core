@@ -1,12 +1,11 @@
-namespace ContosoUniversity.Domain.Student
+namespace ContosoUniversity.Domain.Student;
+
+public enum Grade
 {
-    public enum Grade
-    {
-        Undefined,
-        A,
-        B,
-        C,
-        D,
-        F
-    }
+    Undefined,
+    A,
+    B,
+    C,
+    D,
+    F
 }

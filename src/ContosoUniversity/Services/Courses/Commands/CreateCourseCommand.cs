@@ -1,40 +1,39 @@
-namespace ContosoUniversity.Services.Courses.Commands
+namespace ContosoUniversity.Services.Courses.Commands;
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Domain.Contracts;
+using Domain.Course;
+
+using MediatR;
+
+public class CreateCourseCommand : IRequest
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
+    public int CourseCode { get; set; }
+    public string Title { get; set; }
+    public int Credits { get; set; }
+    public Guid DepartmentId { get; set; }
+}
 
-    using Domain.Contracts;
-    using Domain.Course;
+public class CreateCourseCommandHandler : AsyncRequestHandler<CreateCourseCommand>
+{
+    private readonly ICoursesRepository _coursesRepository;
 
-    using MediatR;
-
-    public class CreateCourseCommand : IRequest
+    public CreateCourseCommandHandler(ICoursesRepository coursesRepository)
     {
-        public int CourseCode { get; set; }
-        public string Title { get; set; }
-        public int Credits { get; set; }
-        public Guid DepartmentId { get; set; }
+        _coursesRepository = coursesRepository;
     }
-    
-    public class CreateCourseCommandHandler : AsyncRequestHandler<CreateCourseCommand>
+
+    protected override Task Handle(CreateCourseCommand request, CancellationToken cancellationToken)
     {
-        private readonly ICoursesRepository _coursesRepository;
-
-        public CreateCourseCommandHandler(ICoursesRepository coursesRepository)
-        {
-            _coursesRepository = coursesRepository;
-        }
-
-        protected override Task Handle(CreateCourseCommand request, CancellationToken cancellationToken)
-        {
-            return _coursesRepository.Save(
-                new Course(
-                    request.CourseCode,
-                    request.Title,
-                    request.Credits,
-                    request.DepartmentId),
-                cancellationToken);
-        }
+        return _coursesRepository.Save(
+            new Course(
+                request.CourseCode,
+                request.Title,
+                request.Credits,
+                request.DepartmentId),
+            cancellationToken);
     }
 }

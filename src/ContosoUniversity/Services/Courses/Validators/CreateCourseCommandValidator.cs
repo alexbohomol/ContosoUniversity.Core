@@ -1,44 +1,44 @@
-namespace ContosoUniversity.Services.Courses.Validators
+namespace ContosoUniversity.Services.Courses.Validators;
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Commands;
+
+using Domain.Contracts;
+
+using FluentValidation;
+
+public class CreateCourseCommandValidator : AbstractValidator<CreateCourseCommand>
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
+    private readonly ICoursesRepository _coursesRepository;
+    private readonly IDepartmentsRepository _departmentsRepository;
 
-    using Commands;
-
-    using Domain.Contracts;
-
-    using FluentValidation;
-
-    public class CreateCourseCommandValidator : AbstractValidator<CreateCourseCommand>
+    public CreateCourseCommandValidator(
+        ICoursesRepository coursesRepository,
+        IDepartmentsRepository departmentsRepository)
     {
-        private readonly ICoursesRepository _coursesRepository;
-        private readonly IDepartmentsRepository _departmentsRepository;
+        _coursesRepository = coursesRepository;
+        _departmentsRepository = departmentsRepository;
 
-        public CreateCourseCommandValidator(
-            ICoursesRepository coursesRepository,
-            IDepartmentsRepository departmentsRepository)
-        {
-            _coursesRepository = coursesRepository;
-            _departmentsRepository = departmentsRepository;
+        RuleFor(x => x).SetInheritanceValidator(x => { x.Add(v => new CreateCourseFormValidator()); });
 
-            RuleFor(x => x).SetInheritanceValidator(x =>
-            {
-                x.Add(v => new CreateCourseFormValidator());
-            });
+        RuleFor(x => x.CourseCode)
+            .MustAsync(BeANewCourseCode)
+            .WithMessage("Please select a new course code.");
+        RuleFor(x => x.DepartmentId)
+            .MustAsync(BeAnExistingDepartment)
+            .WithMessage("Please select an existing department.");
+    }
 
-            RuleFor(x => x.CourseCode)
-                .MustAsync(BeANewCourseCode)
-                .WithMessage("Please select a new course code.");
-            RuleFor(x => x.DepartmentId)
-                .MustAsync(BeAnExistingDepartment)
-                .WithMessage("Please select an existing department.");
-        }
+    private async Task<bool> BeANewCourseCode(int courseCode, CancellationToken token)
+    {
+        return !await _coursesRepository.ExistsCourseCode(courseCode, token);
+    }
 
-        private async Task<bool> BeANewCourseCode(int courseCode, CancellationToken token) => 
-            !await _coursesRepository.ExistsCourseCode(courseCode, token);
-
-        private Task<bool> BeAnExistingDepartment(Guid departmentId, CancellationToken token) => 
-            _departmentsRepository.Exists(departmentId, token);
+    private Task<bool> BeAnExistingDepartment(Guid departmentId, CancellationToken token)
+    {
+        return _departmentsRepository.Exists(departmentId, token);
     }
 }

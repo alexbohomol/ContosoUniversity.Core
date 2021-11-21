@@ -1,26 +1,25 @@
-namespace ContosoUniversity.Services.Courses.Notifications
+namespace ContosoUniversity.Services.Courses.Notifications;
+
+using System.Threading;
+using System.Threading.Tasks;
+
+using Departments.Notifications;
+
+using Domain.Contracts;
+
+using MediatR;
+
+public class DepartmentDeletedNotificationHandler : INotificationHandler<DepartmentDeletedNotification>
 {
-    using System.Threading;
-    using System.Threading.Tasks;
+    private readonly ICoursesRepository _coursesRepository;
 
-    using Departments.Notifications;
-
-    using Domain.Contracts;
-
-    using MediatR;
-
-    public class DepartmentDeletedNotificationHandler : INotificationHandler<DepartmentDeletedNotification>
+    public DepartmentDeletedNotificationHandler(ICoursesRepository coursesRepository)
     {
-        private readonly ICoursesRepository _coursesRepository;
+        _coursesRepository = coursesRepository;
+    }
 
-        public DepartmentDeletedNotificationHandler(ICoursesRepository coursesRepository)
-        {
-            _coursesRepository = coursesRepository;
-        }
-        
-        public async Task Handle(DepartmentDeletedNotification notification, CancellationToken cancellationToken)
-        {
-            await _coursesRepository.Remove(notification.CourseIds, cancellationToken);
-        }
+    public async Task Handle(DepartmentDeletedNotification notification, CancellationToken cancellationToken)
+    {
+        await _coursesRepository.Remove(notification.CourseIds, cancellationToken);
     }
 }

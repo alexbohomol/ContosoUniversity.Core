@@ -1,36 +1,35 @@
-namespace ContosoUniversity.Services.Departments.Commands
+namespace ContosoUniversity.Services.Departments.Commands;
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Domain.Contracts;
+using Domain.Department;
+
+using MediatR;
+
+public class CreateDepartmentCommand : IRequest
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
+    public string Name { get; set; }
+    public decimal Budget { get; set; }
+    public DateTime StartDate { get; set; }
+    public Guid? AdministratorId { get; set; }
+}
 
-    using Domain.Contracts;
-    using Domain.Department;
+public class CreateDepartmentCommandHandler : AsyncRequestHandler<CreateDepartmentCommand>
+{
+    private readonly IDepartmentsRepository _departmentsRepository;
 
-    using MediatR;
-
-    public class CreateDepartmentCommand : IRequest
+    public CreateDepartmentCommandHandler(IDepartmentsRepository departmentsRepository)
     {
-        public string Name { get; set; }
-        public decimal Budget { get; set; }
-        public DateTime StartDate { get; set; }
-        public Guid? AdministratorId { get; set; }
+        _departmentsRepository = departmentsRepository;
     }
-    
-    public class CreateDepartmentCommandHandler : AsyncRequestHandler<CreateDepartmentCommand>
+
+    protected override async Task Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
     {
-        private readonly IDepartmentsRepository _departmentsRepository;
+        var department = new Department(request.Name, request.Budget, request.StartDate, request.AdministratorId);
 
-        public CreateDepartmentCommandHandler(IDepartmentsRepository departmentsRepository)
-        {
-            _departmentsRepository = departmentsRepository;
-        }
-        
-        protected override async Task Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
-        {
-            var department = new Department(request.Name, request.Budget, request.StartDate, request.AdministratorId);
-
-            await _departmentsRepository.Save(department, cancellationToken);
-        }
+        await _departmentsRepository.Save(department, cancellationToken);
     }
 }

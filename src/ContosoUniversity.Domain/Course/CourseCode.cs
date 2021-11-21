@@ -1,37 +1,39 @@
-namespace ContosoUniversity.Domain.Course
+namespace ContosoUniversity.Domain.Course;
+
+using System;
+
+public readonly struct CourseCode
 {
-    using System;
+    public const int MinValue = 1000;
+    public const int MaxValue = 9999;
 
-    public readonly struct CourseCode
+    private readonly int _code;
+
+    private CourseCode(int code)
     {
-        public const int MinValue = 1000;
-        public const int MaxValue = 9999;
+        if (code is < MinValue or > MaxValue)
+            throw new ArgumentOutOfRangeException(
+                nameof(code),
+                $"Provided value: {code}.");
 
-        private readonly int _code;
+        _code = code;
+    }
 
-        private CourseCode(int code)
-        {
-            if (code is < MinValue or > MaxValue)
-                throw new ArgumentOutOfRangeException(
-                    nameof(code),
-                    $"Provided value: {code}.");
+    /// <summary>
+    ///     https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/user-defined-conversion-operators
+    /// </summary>
+    public static implicit operator CourseCode(int code)
+    {
+        return new CourseCode(code);
+    }
 
-            _code = code;
-        }
+    public static implicit operator int(CourseCode code)
+    {
+        return code._code;
+    }
 
-        /// <summary>
-        ///     https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/user-defined-conversion-operators
-        /// </summary>
-        public static implicit operator CourseCode(int code)
-        {
-            return new(code);
-        }
-
-        public static implicit operator int(CourseCode code)
-        {
-            return code._code;
-        }
-
-        public override string ToString() => _code.ToString();
+    public override string ToString()
+    {
+        return _code.ToString();
     }
 }

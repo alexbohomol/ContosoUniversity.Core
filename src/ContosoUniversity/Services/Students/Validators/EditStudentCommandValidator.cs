@@ -1,18 +1,14 @@
-namespace ContosoUniversity.Services.Students.Validators
+namespace ContosoUniversity.Services.Students.Validators;
+
+using Commands;
+
+using FluentValidation;
+
+public class EditStudentCommandValidator : AbstractValidator<EditStudentCommand>
 {
-    using Commands;
-
-    using FluentValidation;
-
-    public class EditStudentCommandValidator : AbstractValidator<EditStudentCommand>
+    public EditStudentCommandValidator()
     {
-        public EditStudentCommandValidator()
-        {
-            RuleFor(x => x).SetInheritanceValidator(
-                x =>
-                {
-                    x.Add(new EditStudentFormValidator());
-                });
-        }
+        RuleFor(x => x).SetInheritanceValidator(
+            x => { x.Add(new EditStudentFormValidator()); });
     }
 }

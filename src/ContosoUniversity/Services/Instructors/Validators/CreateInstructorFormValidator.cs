@@ -1,16 +1,15 @@
-namespace ContosoUniversity.Services.Instructors.Validators
+namespace ContosoUniversity.Services.Instructors.Validators;
+
+using FluentValidation;
+
+using ViewModels.Instructors;
+
+public class CreateInstructorFormValidator : AbstractValidator<CreateInstructorForm>
 {
-    using FluentValidation;
-
-    using ViewModels.Instructors;
-
-    public class CreateInstructorFormValidator : AbstractValidator<CreateInstructorForm>
+    public CreateInstructorFormValidator()
     {
-        public CreateInstructorFormValidator()
-        {
-            RuleFor(x => x.LastName).SatisfiesLastNameRequirements();
-            RuleFor(x => x.FirstName).SatisfiesFirstNameRequirements();
-            RuleFor(x => x.Location).SatisfiesLocationRequirements();
-        }
+        RuleFor(x => x.LastName).SatisfiesLastNameRequirements();
+        RuleFor(x => x.FirstName).SatisfiesFirstNameRequirements();
+        RuleFor(x => x.Location).SatisfiesLocationRequirements();
     }
 }

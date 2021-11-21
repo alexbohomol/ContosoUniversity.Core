@@ -1,20 +1,19 @@
-namespace ContosoUniversity.Data.Courses
+namespace ContosoUniversity.Data.Courses;
+
+using Microsoft.EntityFrameworkCore;
+
+using Models;
+
+public class CoursesContext : DbContext
 {
-    using Microsoft.EntityFrameworkCore;
-
-    using Models;
-
-    public class CoursesContext : DbContext
+    public CoursesContext(DbContextOptions<CoursesContext> options) : base(options)
     {
-        public CoursesContext(DbContextOptions<CoursesContext> options) : base(options)
-        {
-        }
+    }
 
-        public DbSet<Course> Courses { get; set; }
+    public DbSet<Course> Courses { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Course>().ToTable("Course", "crs");
-        }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Course>().ToTable("Course", "crs");
     }
 }

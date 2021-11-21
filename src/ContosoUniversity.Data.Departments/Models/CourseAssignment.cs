@@ -1,10 +1,9 @@
-﻿namespace ContosoUniversity.Data.Departments.Models
-{
-    using System;
+﻿namespace ContosoUniversity.Data.Departments.Models;
 
-    public class CourseAssignment
-    {
-        public int InstructorId { get; set; }
-        public Guid CourseExternalId { get; set; }
-    }
+using System;
+
+public class CourseAssignment
+{
+    public int InstructorId { get; set; }
+    public Guid CourseExternalId { get; set; }
 }

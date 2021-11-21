@@ -1,14 +1,13 @@
-namespace ContosoUniversity.Services.Departments.Validators
+namespace ContosoUniversity.Services.Departments.Validators;
+
+using FluentValidation;
+
+using ViewModels.Departments;
+
+public class CreateDepartmentFormValidator : AbstractValidator<CreateDepartmentForm>
 {
-    using FluentValidation;
-
-    using ViewModels.Departments;
-
-    public class CreateDepartmentFormValidator : AbstractValidator<CreateDepartmentForm>
+    public CreateDepartmentFormValidator()
     {
-        public CreateDepartmentFormValidator()
-        {
-            RuleFor(x => x.Name).SatisfiesNameRequirements();
-        }
+        RuleFor(x => x.Name).SatisfiesNameRequirements();
     }
 }

@@ -1,8 +1,7 @@
-namespace ContosoUniversity.Services.Courses.Notifications
-{
-    using System;
+namespace ContosoUniversity.Services.Courses.Notifications;
 
-    using MediatR;
+using System;
 
-    public record CourseDeletedNotification(Guid Id) : INotification;
-}
+using MediatR;
+
+public record CourseDeletedNotification(Guid Id) : INotification;

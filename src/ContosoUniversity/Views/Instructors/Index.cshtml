@@ -1,4 +1,5 @@
-﻿@model ContosoUniversity.ViewModels.Instructors.InstructorIndexViewModel
+﻿@using ContosoUniversity.ViewModels.Instructors
+@model ContosoUniversity.ViewModels.Instructors.InstructorIndexViewModel
 
 @{
     ViewData["Title"] = "Instructors";
@@ -21,7 +22,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model.Instructors)
+    @foreach (InstructorListItemViewModel item in Model.Instructors)
     {
         <tr class="@item.RowClass">
             <td>
@@ -37,7 +38,7 @@
                 @Html.DisplayFor(modelItem => item.Office)
             </td>
             <td>
-                @foreach (var course in item.AssignedCourses)
+                @foreach (string course in item.AssignedCourses)
                 {
                     @course<br/>
                 }
@@ -64,11 +65,11 @@
             <th>Department</th>
         </tr>
 
-        @foreach (var item in Model.Courses)
+        @foreach (CourseListItemViewModel item in Model.Courses)
         {
             <tr class="@item.RowClass">
                 <td>
-                    @Html.ActionLink("Select", "Index", new {courseExternalId = item.Id})
+                    @Html.ActionLink("Select", "Index", new { courseExternalId = item.Id })
                 </td>
                 <td>
                     @item.CourseCode
@@ -95,7 +96,7 @@
             <th>Name</th>
             <th>Grade</th>
         </tr>
-        @foreach (var item in Model.Students)
+        @foreach (EnrolledStudentViewModel item in Model.Students)
         {
             <tr>
                 <td>

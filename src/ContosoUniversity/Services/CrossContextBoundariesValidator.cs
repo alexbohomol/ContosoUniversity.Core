@@ -1,64 +1,63 @@
-namespace ContosoUniversity.Services
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+namespace ContosoUniversity.Services;
 
-    using Domain;
-    using Domain.Course;
-    using Domain.Instructor;
-    using Domain.Student;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Domain;
+using Domain.Course;
+using Domain.Instructor;
+using Domain.Student;
+
+/// <summary>
+///     TODO: these checks should be implemented in domain/service layers later
+/// </summary>
+public static class CrossContextBoundariesValidator
+{
+    /// <summary>
+    ///     Ensure all assigned courses reference existing department records
+    /// </summary>
+    public static void EnsureCoursesReferenceTheExistingDepartments(
+        IEnumerable<Course> courses,
+        IEnumerable<Guid> existingDepartmentIds)
+    {
+        HashSet<Guid> referencedDepartmentIds = courses.Select(x => x.DepartmentId).ToHashSet();
+        Guid[] notFoundDepartments = referencedDepartmentIds.Except(existingDepartmentIds).ToArray();
+
+        if (notFoundDepartments.Any())
+            throw new Exception(
+                $"Unbound contexts inconsistency. Departments not found: {notFoundDepartments.ToDisplayString()}.");
+    }
 
     /// <summary>
-    ///     TODO: these checks should be implemented in domain/service layers later
+    ///     Ensure all assigned courses reference existing course records
     /// </summary>
-    public static class CrossContextBoundariesValidator
+    public static void EnsureInstructorsReferenceTheExistingCourses(
+        IEnumerable<Instructor> instructors,
+        IEnumerable<Course> courses)
     {
-        /// <summary>
-        ///     Ensure all assigned courses reference existing department records
-        /// </summary>
-        public static void EnsureCoursesReferenceTheExistingDepartments(
-            IEnumerable<Course> courses,
-            IEnumerable<Guid> existingDepartmentIds)
-        {
-            var referencedDepartmentIds = courses.Select(x => x.DepartmentId).ToHashSet();
-            var notFoundDepartments = referencedDepartmentIds.Except(existingDepartmentIds).ToArray();
+        HashSet<Guid> referencedCourseIds = instructors.SelectMany(x => x.Courses).ToHashSet();
+        HashSet<Guid> existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();
+        Guid[] notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
 
-            if (notFoundDepartments.Any())
-                throw new Exception(
-                    $"Unbound contexts inconsistency. Departments not found: {notFoundDepartments.ToDisplayString()}.");
-        }
+        if (notFoundCourses.Any())
+            throw new Exception(
+                $"Unbound contexts inconsistency. Course not found: {notFoundCourses.ToDisplayString()}.");
+    }
 
-        /// <summary>
-        ///     Ensure all assigned courses reference existing course records
-        /// </summary>
-        public static void EnsureInstructorsReferenceTheExistingCourses(
-            IEnumerable<Instructor> instructors,
-            IEnumerable<Course> courses)
-        {
-            var referencedCourseIds = instructors.SelectMany(x => x.Courses).ToHashSet();
-            var existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();
-            var notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
+    /// <summary>
+    ///     Ensure all enrollments reference existing course records
+    /// </summary>
+    public static void EnsureEnrollmentsReferenceTheExistingCourses(
+        IEnumerable<Enrollment> enrollments,
+        IEnumerable<Course> courses)
+    {
+        HashSet<Guid> referencedCourseIds = enrollments.Select(x => x.CourseId).ToHashSet();
+        HashSet<Guid> existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();
+        Guid[] notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
 
-            if (notFoundCourses.Any())
-                throw new Exception(
-                    $"Unbound contexts inconsistency. Course not found: {notFoundCourses.ToDisplayString()}.");
-        }
-
-        /// <summary>
-        ///     Ensure all enrollments reference existing course records
-        /// </summary>
-        public static void EnsureEnrollmentsReferenceTheExistingCourses(
-            IEnumerable<Enrollment> enrollments,
-            IEnumerable<Course> courses)
-        {
-            var referencedCourseIds = enrollments.Select(x => x.CourseId).ToHashSet();
-            var existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();
-            var notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
-
-            if (notFoundCourses.Any())
-                throw new Exception(
-                    $"Unbound contexts inconsistency. Course not found: {notFoundCourses.ToDisplayString()}.");
-        }
+        if (notFoundCourses.Any())
+            throw new Exception(
+                $"Unbound contexts inconsistency. Course not found: {notFoundCourses.ToDisplayString()}.");
     }
 }

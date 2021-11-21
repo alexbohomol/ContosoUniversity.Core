@@ -1,11 +1,10 @@
-namespace ContosoUniversity.Data.Seed.Models
-{
-    using System;
+namespace ContosoUniversity.Data.Seed.Models;
 
-    internal class StudentSeedModel
-    {
-        public DateTime EnrollmentDate { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-    }
+using System;
+
+internal class StudentSeedModel
+{
+    public DateTime EnrollmentDate { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
 }

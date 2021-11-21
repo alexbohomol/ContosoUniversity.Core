@@ -1,46 +1,45 @@
-namespace ContosoUniversity.Services.Instructors.Commands
+namespace ContosoUniversity.Services.Instructors.Commands;
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Domain.Contracts;
+using Domain.Instructor;
+
+using MediatR;
+
+public class CreateInstructorCommand : IRequest
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
+    public string LastName { get; set; }
+    public string FirstName { get; set; }
+    public DateTime HireDate { get; set; }
+    public Guid[] SelectedCourses { get; set; }
+    public string Location { get; set; }
 
-    using Domain.Contracts;
-    using Domain.Instructor;
+    public bool HasAssignedOffice => !string.IsNullOrWhiteSpace(Location);
+}
 
-    using MediatR;
+public class CreateInstructorCommandHandler : AsyncRequestHandler<CreateInstructorCommand>
+{
+    private readonly IInstructorsRepository _instructorsRepository;
 
-    public class CreateInstructorCommand : IRequest
+    public CreateInstructorCommandHandler(IInstructorsRepository instructorsRepository)
     {
-        public string LastName { get; set; }
-        public string FirstName { get; set; }
-        public DateTime HireDate { get; set; }
-        public Guid[] SelectedCourses { get; set; }
-        public string Location { get; set; }
-
-        public bool HasAssignedOffice => !string.IsNullOrWhiteSpace(Location);
+        _instructorsRepository = instructorsRepository;
     }
-    
-    public class CreateInstructorCommandHandler : AsyncRequestHandler<CreateInstructorCommand>
+
+    protected override async Task Handle(CreateInstructorCommand command, CancellationToken cancellationToken)
     {
-        private readonly IInstructorsRepository _instructorsRepository;
+        var instructor = new Instructor(
+            command.FirstName,
+            command.LastName,
+            command.HireDate,
+            command.SelectedCourses,
+            command.HasAssignedOffice
+                ? new OfficeAssignment(command.Location)
+                : null);
 
-        public CreateInstructorCommandHandler(IInstructorsRepository instructorsRepository)
-        {
-            _instructorsRepository = instructorsRepository;
-        }
-        
-        protected override async Task Handle(CreateInstructorCommand command, CancellationToken cancellationToken)
-        {
-            var instructor = new Instructor(
-                command.FirstName,
-                command.LastName,
-                command.HireDate,
-                command.SelectedCourses,
-                command.HasAssignedOffice
-                    ? new OfficeAssignment(command.Location)
-                    : null);
-
-            await _instructorsRepository.Save(instructor, cancellationToken);
-        }
+        await _instructorsRepository.Save(instructor, cancellationToken);
     }
 }

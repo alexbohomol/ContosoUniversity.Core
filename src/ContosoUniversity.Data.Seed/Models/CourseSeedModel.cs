@@ -1,10 +1,9 @@
-namespace ContosoUniversity.Data.Seed.Models
+namespace ContosoUniversity.Data.Seed.Models;
+
+internal class CourseSeedModel
 {
-    internal class CourseSeedModel
-    {
-        public int CourseCode { get; set; }
-        public string Title { get; set; }
-        public int Credits { get; set; }
-        public string Department { get; set; }
-    }
+    public int CourseCode { get; set; }
+    public string Title { get; set; }
+    public int Credits { get; set; }
+    public string Department { get; set; }
 }

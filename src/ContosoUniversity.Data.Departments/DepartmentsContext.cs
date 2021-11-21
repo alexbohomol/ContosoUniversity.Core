@@ -1,28 +1,27 @@
-﻿namespace ContosoUniversity.Data.Departments
+﻿namespace ContosoUniversity.Data.Departments;
+
+using Microsoft.EntityFrameworkCore;
+
+using Models;
+
+public class DepartmentsContext : DbContext
 {
-    using Microsoft.EntityFrameworkCore;
+    private const string Schema = "dpt";
 
-    using Models;
-
-    public class DepartmentsContext : DbContext
+    public DepartmentsContext(DbContextOptions<DepartmentsContext> options) : base(options)
     {
-        private const string Schema = "dpt";
+    }
 
-        public DepartmentsContext(DbContextOptions<DepartmentsContext> options) : base(options)
-        {
-        }
+    public DbSet<Department> Departments { get; set; }
+    public DbSet<Instructor> Instructors { get; set; }
+    public DbSet<CourseAssignment> CourseAssignments { get; set; }
 
-        public DbSet<Department> Departments { get; set; }
-        public DbSet<Instructor> Instructors { get; set; }
-        public DbSet<CourseAssignment> CourseAssignments { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Department>().ToTable("Department", Schema);
-            modelBuilder.Entity<Instructor>().ToTable("Instructor", Schema);
-            modelBuilder.Entity<OfficeAssignment>().ToTable("OfficeAssignment", Schema);
-            modelBuilder.Entity<CourseAssignment>().ToTable("CourseAssignment", Schema)
-                .HasKey(c => new {c.CourseExternalId, c.InstructorId});
-        }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Department>().ToTable("Department", Schema);
+        modelBuilder.Entity<Instructor>().ToTable("Instructor", Schema);
+        modelBuilder.Entity<OfficeAssignment>().ToTable("OfficeAssignment", Schema);
+        modelBuilder.Entity<CourseAssignment>().ToTable("CourseAssignment", Schema)
+            .HasKey(c => new { c.CourseExternalId, c.InstructorId });
     }
 }

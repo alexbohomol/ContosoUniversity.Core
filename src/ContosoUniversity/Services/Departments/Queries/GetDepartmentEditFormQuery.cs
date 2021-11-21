@@ -1,49 +1,52 @@
-namespace ContosoUniversity.Services.Departments.Queries
+namespace ContosoUniversity.Services.Departments.Queries;
+
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Domain.Contracts;
+using Domain.Department;
+
+using MediatR;
+
+using ViewModels;
+using ViewModels.Departments;
+
+public record GetDepartmentEditFormQuery(Guid Id) : IRequest<EditDepartmentForm>;
+
+public class GetDepartmentEditFormQueryHandler : IRequestHandler<GetDepartmentEditFormQuery, EditDepartmentForm>
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
+    private readonly IDepartmentsRepository _departmentsRepository;
+    private readonly IInstructorsRepository _instructorsRepository;
 
-    using Domain.Contracts;
-
-    using MediatR;
-
-    using ViewModels;
-    using ViewModels.Departments;
-
-    public record GetDepartmentEditFormQuery(Guid Id) : IRequest<EditDepartmentForm>;
-    
-    public class GetDepartmentEditFormQueryHandler : IRequestHandler<GetDepartmentEditFormQuery, EditDepartmentForm>
+    public GetDepartmentEditFormQueryHandler(
+        IInstructorsRepository instructorsRepository,
+        IDepartmentsRepository departmentsRepository)
     {
-        private readonly IInstructorsRepository _instructorsRepository;
-        private readonly IDepartmentsRepository _departmentsRepository;
+        _instructorsRepository = instructorsRepository;
+        _departmentsRepository = departmentsRepository;
+    }
 
-        public GetDepartmentEditFormQueryHandler(
-            IInstructorsRepository instructorsRepository,
-            IDepartmentsRepository departmentsRepository)
-        {
-            _instructorsRepository = instructorsRepository;
-            _departmentsRepository = departmentsRepository;
-        }
-        
-        public async Task<EditDepartmentForm> Handle(GetDepartmentEditFormQuery request, CancellationToken cancellationToken)
-        {
-            var department = await _departmentsRepository.GetById(request.Id, cancellationToken);
+    public async Task<EditDepartmentForm> Handle(GetDepartmentEditFormQuery request,
+        CancellationToken cancellationToken)
+    {
+        Department department = await _departmentsRepository.GetById(request.Id, cancellationToken);
 
-            var instructorNames = await _instructorsRepository.GetInstructorNamesReference(cancellationToken);
+        Dictionary<Guid, string> instructorNames =
+            await _instructorsRepository.GetInstructorNamesReference(cancellationToken);
 
-            return department == null
-                ? null
-                : new EditDepartmentForm
-                {
-                    Name = department.Name,
-                    Budget = department.Budget,
-                    StartDate = department.StartDate,
-                    AdministratorId = department.AdministratorId,
-                    ExternalId = department.ExternalId,
-                    // RowVersion = department.RowVersion,
-                    InstructorsDropDown = instructorNames.ToSelectList(department.AdministratorId ?? default)
-                };
-        }
+        return department == null
+            ? null
+            : new EditDepartmentForm
+            {
+                Name = department.Name,
+                Budget = department.Budget,
+                StartDate = department.StartDate,
+                AdministratorId = department.AdministratorId,
+                ExternalId = department.ExternalId,
+                // RowVersion = department.RowVersion,
+                InstructorsDropDown = instructorNames.ToSelectList(department.AdministratorId ?? default)
+            };
     }
 }

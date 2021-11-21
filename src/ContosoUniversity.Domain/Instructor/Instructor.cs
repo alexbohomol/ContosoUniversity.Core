@@ -1,58 +1,58 @@
-namespace ContosoUniversity.Domain.Instructor
+namespace ContosoUniversity.Domain.Instructor;
+
+using System;
+using System.Collections.Generic;
+
+public class Instructor : IIdentifiable<Guid>
 {
-    using System;
-    using System.Collections.Generic;
-
-    public class Instructor : IIdentifiable<Guid>
+    public Instructor(
+        string firstName,
+        string lastName,
+        DateTime hireDate,
+        IList<Guid> courses,
+        OfficeAssignment office)
+        : this(
+            firstName,
+            lastName,
+            hireDate,
+            courses,
+            office,
+            Guid.NewGuid())
     {
-        public Instructor(
-            string firstName,
-            string lastName,
-            DateTime hireDate,
-            IList<Guid> courses,
-            OfficeAssignment office)
-            : this(
-                firstName,
-                lastName,
-                hireDate,
-                courses,
-                office,
-                Guid.NewGuid())
-        { }
+    }
 
-        public Instructor(
-            string firstName, 
-            string lastName,
-            DateTime hireDate,
-            IList<Guid> courses,
-            OfficeAssignment office,
-            Guid externalId)
-        {
-            FirstName = firstName;
-            LastName = lastName;
-            HireDate = hireDate;
-            Courses = courses;
-            Office = office;
-            ExternalId = externalId;
-        }
+    public Instructor(
+        string firstName,
+        string lastName,
+        DateTime hireDate,
+        IList<Guid> courses,
+        OfficeAssignment office,
+        Guid externalId)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        HireDate = hireDate;
+        Courses = courses;
+        Office = office;
+        ExternalId = externalId;
+    }
 
-        public string FirstName { get; private set; }
+    public string FirstName { get; private set; }
 
-        public string LastName { get; private set; }
+    public string LastName { get; private set; }
 
-        public DateTime HireDate { get; private set; }
+    public DateTime HireDate { get; private set; }
 
-        public IList<Guid> Courses { get; set; }
+    public IList<Guid> Courses { get; set; }
 
-        public OfficeAssignment Office { get; set; }
+    public OfficeAssignment Office { get; set; }
 
-        public Guid ExternalId { get; }
+    public Guid ExternalId { get; }
 
-        public void UpdatePersonalInfo(string firstName, string lastName, DateTime hireDate)
-        {
-            FirstName = firstName;
-            LastName = lastName;
-            HireDate = hireDate;
-        }
+    public void UpdatePersonalInfo(string firstName, string lastName, DateTime hireDate)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        HireDate = hireDate;
     }
 }

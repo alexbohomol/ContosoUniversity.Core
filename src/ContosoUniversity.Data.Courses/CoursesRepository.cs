@@ -1,92 +1,93 @@
-namespace ContosoUniversity.Data.Courses
+namespace ContosoUniversity.Data.Courses;
+
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Domain.Contracts;
+using Domain.Contracts.Exceptions;
+using Domain.Course;
+
+using Extensions;
+
+using Microsoft.EntityFrameworkCore;
+
+public sealed class CoursesRepository : EfRepository<Course, Models.Course>, ICoursesRepository
 {
-    using System;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-
-    using Domain.Contracts;
-    using Domain.Contracts.Exceptions;
-    using Domain.Course;
-
-    using Extensions;
-
-    using Microsoft.EntityFrameworkCore;
-
-    public sealed class CoursesRepository : EfRepository<Course, Models.Course>, ICoursesRepository
+    public CoursesRepository(CoursesContext dbContext) : base(dbContext)
     {
-        public CoursesRepository(CoursesContext dbContext) : base(dbContext) { }
+    }
 
-        public async Task<Course[]> GetByDepartmentId(Guid departmentId, CancellationToken cancellationToken = default)
-        {
-            var courses = await DbQuery
-                .AsNoTracking()
-                .Where(x => x.DepartmentExternalId == departmentId)
-                .ToArrayAsync(cancellationToken);
-            
-            return courses.Select(ToDomainEntity).ToArray();
-        }
+    public async Task<Course[]> GetByDepartmentId(Guid departmentId, CancellationToken cancellationToken = default)
+    {
+        Models.Course[] courses = await DbQuery
+            .AsNoTracking()
+            .Where(x => x.DepartmentExternalId == departmentId)
+            .ToArrayAsync(cancellationToken);
 
-        public async Task Remove(Guid[] entityIds, CancellationToken cancellationToken = default)
-        {
-            var courses = await DbQuery
-                .Where(x => entityIds.Contains(x.ExternalId))
-                .ToArrayAsync(cancellationToken);
+        return courses.Select(ToDomainEntity).ToArray();
+    }
 
-            courses.Select(x => x.ExternalId).EnsureCollectionsEqual(
-                entityIds,
-                id => new EntityNotFoundException(nameof(courses), id));
+    public async Task Remove(Guid[] entityIds, CancellationToken cancellationToken = default)
+    {
+        Models.Course[] courses = await DbQuery
+            .Where(x => entityIds.Contains(x.ExternalId))
+            .ToArrayAsync(cancellationToken);
 
-            DbSet.RemoveRange(courses);
+        courses.Select(x => x.ExternalId).EnsureCollectionsEqual(
+            entityIds,
+            id => new EntityNotFoundException(nameof(courses), id));
 
-            await DbContext.SaveChangesAsync(cancellationToken);
-        }
+        DbSet.RemoveRange(courses);
 
-        public async Task<Course[]> GetByIds(Guid[] entityIds, CancellationToken cancellationToken = default)
-        {
-            var courses = await DbQuery
-                .AsNoTracking()
-                .Where(x => entityIds.Contains(x.ExternalId))
-                .ToArrayAsync(cancellationToken);
+        await DbContext.SaveChangesAsync(cancellationToken);
+    }
 
-            courses.Select(x => x.ExternalId).EnsureCollectionsEqual(
-                entityIds,
-                id => new EntityNotFoundException(nameof(courses), id));
+    public async Task<Course[]> GetByIds(Guid[] entityIds, CancellationToken cancellationToken = default)
+    {
+        Models.Course[] courses = await DbQuery
+            .AsNoTracking()
+            .Where(x => entityIds.Contains(x.ExternalId))
+            .ToArrayAsync(cancellationToken);
 
-            return courses.Select(ToDomainEntity).ToArray();
-        }
+        courses.Select(x => x.ExternalId).EnsureCollectionsEqual(
+            entityIds,
+            id => new EntityNotFoundException(nameof(courses), id));
 
-        public Task<bool> ExistsCourseCode(int courseCode, CancellationToken cancellationToken = default)
-        {
-            return DbQuery
-                .AsNoTracking()
-                .AnyAsync(x => x.CourseCode == courseCode, cancellationToken);
-        }
+        return courses.Select(ToDomainEntity).ToArray();
+    }
 
-        public Task<int> UpdateCourseCredits(int multiplier, CancellationToken cancellationToken = default)
-        {
-            return DbContext.Database
-                .ExecuteSqlInterpolatedAsync(
-                    $"UPDATE [crs].[Course] SET Credits = Credits * {multiplier}", cancellationToken);
-        }
+    public Task<bool> ExistsCourseCode(int courseCode, CancellationToken cancellationToken = default)
+    {
+        return DbQuery
+            .AsNoTracking()
+            .AnyAsync(x => x.CourseCode == courseCode, cancellationToken);
+    }
 
-        protected override Course ToDomainEntity(Models.Course dataModel)
-        {
-            return new(
-                dataModel.CourseCode,
-                dataModel.Title,
-                dataModel.Credits,
-                dataModel.DepartmentExternalId,
-                dataModel.ExternalId);
-        }
+    public Task<int> UpdateCourseCredits(int multiplier, CancellationToken cancellationToken = default)
+    {
+        return DbContext.Database
+            .ExecuteSqlInterpolatedAsync(
+                $"UPDATE [crs].[Course] SET Credits = Credits * {multiplier}", cancellationToken);
+    }
 
-        protected override void MapDomainEntityOntoDataEntity(Course entity, Models.Course model)
-        {
-            model.CourseCode = entity.Code;
-            model.Title = entity.Title;
-            model.Credits = entity.Credits;
-            model.DepartmentExternalId = entity.DepartmentId;
-            model.ExternalId = entity.ExternalId;
-        }
+    protected override Course ToDomainEntity(Models.Course dataModel)
+    {
+        return new Course(
+            dataModel.CourseCode,
+            dataModel.Title,
+            dataModel.Credits,
+            dataModel.DepartmentExternalId,
+            dataModel.ExternalId);
+    }
+
+    protected override void MapDomainEntityOntoDataEntity(Course entity, Models.Course model)
+    {
+        model.CourseCode = entity.Code;
+        model.Title = entity.Title;
+        model.Credits = entity.Credits;
+        model.DepartmentExternalId = entity.DepartmentId;
+        model.ExternalId = entity.ExternalId;
     }
 }

@@ -1,44 +1,43 @@
-namespace ContosoUniversity.Data.Students
+namespace ContosoUniversity.Data.Students;
+
+using System;
+
+using Domain.Student;
+
+internal static class ModelsExtensions
 {
-    using System;
-
-    using Domain.Student;
-
-    internal static class ModelsExtensions
+    public static Enrollment ToDomainEntity(this Models.Enrollment data)
     {
-        public static Enrollment ToDomainEntity(this Models.Enrollment data)
-        {
-            return new(
-                data.CourseExternalId,
-                data.Grade.ToDomainEntity());
-        }
+        return new Enrollment(
+            data.CourseExternalId,
+            data.Grade.ToDomainEntity());
+    }
 
-        private static Grade ToDomainEntity(this Models.Grade? grade)
+    private static Grade ToDomainEntity(this Models.Grade? grade)
+    {
+        return grade switch
         {
-            return grade switch
-            {
-                Models.Grade.A => Grade.A,
-                Models.Grade.B => Grade.B,
-                Models.Grade.C => Grade.C,
-                Models.Grade.D => Grade.D,
-                Models.Grade.F => Grade.F,
-                null => Grade.Undefined,
-                _ => throw new ArgumentOutOfRangeException(nameof(grade), grade, null)
-            };
-        }
+            Models.Grade.A => Grade.A,
+            Models.Grade.B => Grade.B,
+            Models.Grade.C => Grade.C,
+            Models.Grade.D => Grade.D,
+            Models.Grade.F => Grade.F,
+            null => Grade.Undefined,
+            _ => throw new ArgumentOutOfRangeException(nameof(grade), grade, null)
+        };
+    }
 
-        public static Models.Grade? ToDataModel(this Grade grade)
+    public static Models.Grade? ToDataModel(this Grade grade)
+    {
+        return grade switch
         {
-            return grade switch
-            {
-                Grade.A => Models.Grade.A,
-                Grade.B => Models.Grade.B,
-                Grade.C => Models.Grade.C,
-                Grade.D => Models.Grade.D,
-                Grade.F => Models.Grade.F,
-                Grade.Undefined => null,
-                _ => throw new ArgumentOutOfRangeException(nameof(grade), grade, null)
-            };
-        }
+            Grade.A => Models.Grade.A,
+            Grade.B => Models.Grade.B,
+            Grade.C => Models.Grade.C,
+            Grade.D => Models.Grade.D,
+            Grade.F => Models.Grade.F,
+            Grade.Undefined => null,
+            _ => throw new ArgumentOutOfRangeException(nameof(grade), grade, null)
+        };
     }
 }
