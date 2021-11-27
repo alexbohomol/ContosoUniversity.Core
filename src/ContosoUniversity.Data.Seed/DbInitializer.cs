@@ -36,8 +36,6 @@ public static class DbInitializer
 
             var departmentsContext = services.GetRequiredService<DepartmentsContext>();
             if (departmentsContext.Database.GetPendingMigrations().Any()) departmentsContext.Database.Migrate();
-
-            DbSeeder.EnsureInitialized(departmentsContext, coursesContext, studentsContext);
         }
         catch (Exception ex)
         {
