@@ -43,7 +43,7 @@ public static class DbInitializer
              * TODO: DI resolution failing
              */
             var logger = services.GetRequiredService<ILogger>();
-            logger.LogError(ex, "An error occurred while seeding the database");
+            logger.LogError(ex, "An error occurred while migrating the database");
         }
     }
 }
