@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
-using ContosoUniversity.Data.Seed;
+using ContosoUniversity.Data.Courses;
+using ContosoUniversity.Data.Departments;
+using ContosoUniversity.Data.Students;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
@@ -14,7 +16,9 @@ public static class Program
             .UseStartup<Startup>()
             .Build();
 
-        await host.EnsureDataLayer();
+        await host.EnsureCoursesSchema();
+        await host.EnsureStudentsSchema();
+        await host.EnsureDepartmentsSchema();
 
         await host.RunAsync();
     }
