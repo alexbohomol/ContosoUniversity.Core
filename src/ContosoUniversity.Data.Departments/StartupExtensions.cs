@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 public static class StartupExtensions
 {
-    public static void AddDepartmentsDataLayer(this IServiceCollection services, string connectionString)
+    public static void AddDepartmentsSchema(this IServiceCollection services, string connectionString)
     {
         services.AddDbContext<DepartmentsContext>(options => { options.UseSqlServer(connectionString); });
 

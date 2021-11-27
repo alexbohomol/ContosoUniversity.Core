@@ -34,10 +34,9 @@ public class Startup
             options.MinimumSameSitePolicy = SameSiteMode.None;
         });
 
-        string connectionString = Configuration.GetConnectionString("DefaultConnection");
-        services.AddCoursesDataLayer(connectionString);
-        services.AddStudentsDataLayer(connectionString);
-        services.AddDepartmentsDataLayer(connectionString);
+        services.AddCoursesSchema(Configuration.GetConnectionString("Courses"));
+        services.AddStudentsSchema(Configuration.GetConnectionString("Students"));
+        services.AddDepartmentsSchema(Configuration.GetConnectionString("Departments"));
 
         services
             .AddMvc()
