@@ -1,18 +1,15 @@
-namespace ContosoUniversity.Data.Seed;
-
 using System;
 using System.Linq;
-
-using Courses;
-
-using Departments;
-
+using System.Threading.Tasks;
+using ContosoUniversity.Data.Courses;
+using ContosoUniversity.Data.Departments;
+using ContosoUniversity.Data.Students;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-using Students;
+namespace ContosoUniversity.Data.Seed;
 
 public static class DbInitializer
 {
@@ -22,20 +19,23 @@ public static class DbInitializer
     ///     https://docs.microsoft.com/en-us/ef/core/managing-schemas/ensure-created
     ///     https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli#apply-migrations-at-runtime
     /// </summary>
-    public static void EnsureDataLayer(this IWebHost host)
+    public static async Task EnsureDataLayer(this IWebHost host)
     {
-        using IServiceScope scope = host.Services.CreateScope();
-        IServiceProvider services = scope.ServiceProvider;
+        using var scope = host.Services.CreateScope();
+        var services = scope.ServiceProvider;
         try
         {
             var coursesContext = services.GetRequiredService<CoursesContext>();
-            if (coursesContext.Database.GetPendingMigrations().Any()) coursesContext.Database.Migrate();
+            if ((await coursesContext.Database.GetPendingMigrationsAsync()).Any())
+                await coursesContext.Database.MigrateAsync();
 
             var studentsContext = services.GetRequiredService<StudentsContext>();
-            if (studentsContext.Database.GetPendingMigrations().Any()) studentsContext.Database.Migrate();
+            if ((await studentsContext.Database.GetPendingMigrationsAsync()).Any())
+                await studentsContext.Database.MigrateAsync();
 
             var departmentsContext = services.GetRequiredService<DepartmentsContext>();
-            if (departmentsContext.Database.GetPendingMigrations().Any()) departmentsContext.Database.Migrate();
+            if ((await departmentsContext.Database.GetPendingMigrationsAsync()).Any())
+                await departmentsContext.Database.MigrateAsync();
         }
         catch (Exception ex)
         {
