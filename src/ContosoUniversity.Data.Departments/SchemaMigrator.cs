@@ -1,12 +1,13 @@
+namespace ContosoUniversity.Data.Departments;
+
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
-namespace ContosoUniversity.Data.Departments;
 
 public static class SchemaMigrator
 {
@@ -18,13 +19,13 @@ public static class SchemaMigrator
     /// </summary>
     public static async Task EnsureDepartmentsSchema(this IWebHost host)
     {
-        using var scope = host.Services.CreateScope();
-        var services = scope.ServiceProvider;
+        using IServiceScope scope = host.Services.CreateScope();
+        IServiceProvider services = scope.ServiceProvider;
         try
         {
-            var departmentsContext = services.GetRequiredService<DepartmentsContext>();
-            if ((await departmentsContext.Database.GetPendingMigrationsAsync()).Any())
-                await departmentsContext.Database.MigrateAsync();
+            var context = services.GetRequiredService<DepartmentsContext>();
+            if ((await context.Database.GetPendingMigrationsAsync()).Any())
+                await context.Database.MigrateAsync();
         }
         catch (Exception ex)
         {

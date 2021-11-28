@@ -1,5 +1,4 @@
-﻿@using ContosoUniversity.ViewModels.Courses
-@model IEnumerable<ContosoUniversity.ViewModels.Courses.CourseListItemViewModel>
+﻿@model IEnumerable<ContosoUniversity.ViewModels.Courses.CourseListItemViewModel>
 
 @{
     ViewData["Title"] = "Courses";
@@ -29,7 +28,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (CourseListItemViewModel item in Model)
+    @foreach (var item in Model)
     {
         <tr>
             <td>
