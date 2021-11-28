@@ -1,22 +1,25 @@
-﻿namespace ContosoUniversity;
-
-using Data.Seed;
-
+﻿using System.Threading.Tasks;
+using ContosoUniversity.Data.Courses;
+using ContosoUniversity.Data.Departments;
+using ContosoUniversity.Data.Students;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-public class Program
-{
-    public static void Main(string[] args)
-    {
-        IWebHost host = CreateWebHostBuilder(args).Build();
-        host.EnsureDataLayer();
-        host.Run();
-    }
+namespace ContosoUniversity;
 
-    private static IWebHostBuilder CreateWebHostBuilder(string[] args)
+public static class Program
+{
+    public static async Task Main(string[] args)
     {
-        return WebHost.CreateDefaultBuilder(args)
-            .UseStartup<Startup>();
+        var host = WebHost
+            .CreateDefaultBuilder(args)
+            .UseStartup<Startup>()
+            .Build();
+
+        await host.EnsureCoursesSchema();
+        await host.EnsureStudentsSchema();
+        await host.EnsureDepartmentsSchema();
+
+        await host.RunAsync();
     }
 }
