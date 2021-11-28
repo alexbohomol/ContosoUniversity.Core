@@ -1,5 +1,4 @@
-﻿@using ContosoUniversity.ViewModels.Students
-@model ContosoUniversity.ViewModels.Students.StudentIndexViewModel
+﻿@model ContosoUniversity.ViewModels.Students.StudentIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -37,7 +36,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (StudentListItemViewModel item in Model.Items)
+    @foreach (var item in Model.Items)
     {
         <tr>
             <td>
@@ -60,8 +59,8 @@
 </table>
 
 @{
-    string prevDisabled = !Model.PageInfo.HasPreviousPage ? "disabled" : string.Empty;
-    string nextDisabled = !Model.PageInfo.HasNextPage ? "disabled" : string.Empty;
+    var prevDisabled = !Model.PageInfo.HasPreviousPage ? "disabled" : string.Empty;
+    var nextDisabled = !Model.PageInfo.HasNextPage ? "disabled" : string.Empty;
 }
 
 <a asp-action="Index"

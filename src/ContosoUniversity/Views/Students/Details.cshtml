@@ -1,5 +1,4 @@
-﻿@using ContosoUniversity.ViewModels.Students
-@model ContosoUniversity.ViewModels.Students.StudentDetailsViewModel
+﻿@model ContosoUniversity.ViewModels.Students.StudentDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -38,7 +37,7 @@
                     <th>Course Title</th>
                     <th>Grade</th>
                 </tr>
-                @foreach (EnrollmentViewModel item in Model.Enrollments)
+                @foreach (var item in Model.Enrollments)
                 {
                     <tr>
                         <td>

@@ -1,5 +1,4 @@
-﻿@using ContosoUniversity.ViewModels.Home
-@model IEnumerable<ContosoUniversity.ViewModels.Home.EnrollmentDateGroup>
+﻿@model IEnumerable<ContosoUniversity.ViewModels.Home.EnrollmentDateGroup>
 
 @{
     ViewData["Title"] = "Student Body Statistics";
@@ -17,7 +16,7 @@
         </th>
     </tr>
 
-    @foreach (EnrollmentDateGroup item in Model)
+    @foreach (var item in Model)
     {
         <tr>
             <td>

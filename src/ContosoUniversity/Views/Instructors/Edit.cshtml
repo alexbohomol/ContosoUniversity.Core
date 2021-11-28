@@ -39,9 +39,9 @@
                     <table>
                         <tr>
                         @{
-                            int cnt = 0;
+                            var cnt = 0;
 
-                            foreach (AssignedCourseOption course in Model.AssignedCourses)
+                            foreach (var course in Model.AssignedCourses)
                             {
                                 if (cnt++ % 3 == 0)
                                 {
