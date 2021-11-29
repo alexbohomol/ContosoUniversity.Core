@@ -1,8 +1,8 @@
 namespace ContosoUniversity.Data.Courses;
 
-using Microsoft.EntityFrameworkCore;
+using Domain.Course;
 
-using Models;
+using Microsoft.EntityFrameworkCore;
 
 public class CoursesContext : DbContext
 {
@@ -14,6 +14,8 @@ public class CoursesContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Course>().ToTable("Course", "crs");
+        modelBuilder.HasDefaultSchema("crs");
+
+        modelBuilder.ApplyConfiguration(new EntityTypeConfigurations());
     }
 }
