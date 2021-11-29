@@ -13,9 +13,9 @@ using Extensions;
 
 using Microsoft.EntityFrameworkCore;
 
-public class CoursesRepository2 : EfRepository<Course>, ICoursesRepository
+public class CoursesRepository : EfRepository<Course>, ICoursesRepository
 {
-    public CoursesRepository2(CoursesContext dbContext) : base(dbContext)
+    public CoursesRepository(CoursesContext dbContext) : base(dbContext)
     {
     }
 

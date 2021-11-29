@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Data.Courses;
+namespace ContosoUniversity.Data;
 
 using System;
 using System.Linq;
@@ -47,7 +47,7 @@ public abstract class EfRepository<TDomainEntity>
 
     public async Task Save(TDomainEntity entity, CancellationToken cancellationToken = default)
     {
-        TDomainEntity existing = DbContext.Find<TDomainEntity>(entity.ExternalId);
+        TDomainEntity existing = await DbContext.FindAsync<TDomainEntity>(entity.ExternalId);
         if (existing is null)
         {
             await DbSet.AddAsync(entity, cancellationToken);
@@ -62,10 +62,10 @@ public abstract class EfRepository<TDomainEntity>
 
     public async Task Remove(Guid entityId, CancellationToken cancellationToken = default)
     {
-        TDomainEntity entity = DbContext.Find<TDomainEntity>(entityId);
-        if (entity is not null)
+        TDomainEntity existing = await DbContext.FindAsync<TDomainEntity>(entityId);
+        if (existing is not null)
         {
-            DbSet.Remove(entity);
+            DbSet.Remove(existing);
             await DbContext.SaveChangesAsync(cancellationToken);
         }
     }
