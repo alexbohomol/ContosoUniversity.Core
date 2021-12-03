@@ -10,5 +10,5 @@ public static class DesignTimeSupport
         .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../ContosoUniversity"))
         .AddJsonFile("appsettings.json")
         .Build()
-        .GetConnectionString("DefaultConnection");
+        .GetConnectionString("Courses");
 }

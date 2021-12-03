@@ -29,7 +29,7 @@ public class CreateCourseCommandHandler : AsyncRequestHandler<CreateCourseComman
     protected override Task Handle(CreateCourseCommand request, CancellationToken cancellationToken)
     {
         return _coursesRepository.Save(
-            new Course(
+            Course.Create(
                 request.CourseCode,
                 request.Title,
                 request.Credits,

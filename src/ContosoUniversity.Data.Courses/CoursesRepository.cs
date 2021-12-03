@@ -33,8 +33,7 @@ public class CoursesRepository : EfRepository<Course>, ICoursesRepository
             .Where(x => x.DepartmentId == departmentId)
             .ToArrayAsync(cancellationToken);
     }
-    
-#warning Review the implementation and the use case itself
+
     public async Task Remove(Guid[] entityIds, CancellationToken cancellationToken = default)
     {
         Course[] courses = await DbQuery
@@ -49,11 +48,10 @@ public class CoursesRepository : EfRepository<Course>, ICoursesRepository
 
         await DbContext.SaveChangesAsync(cancellationToken);
     }
-    
-#warning Review the implementation and the use case itself
+
     public async Task<Course[]> GetByIds(Guid[] entityIds, CancellationToken cancellationToken = default)
     {
-        var courses = await DbQuery
+        Course[] courses = await DbQuery
             .AsNoTracking()
             .Where(x => entityIds.Contains(x.ExternalId))
             .ToArrayAsync(cancellationToken);

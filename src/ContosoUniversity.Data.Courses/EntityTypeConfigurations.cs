@@ -10,13 +10,13 @@ public class EntityTypeConfigurations : IEntityTypeConfiguration<Course>
     public void Configure(EntityTypeBuilder<Course> builder)
     {
         builder.Property<int>("Id");
-
         builder.HasKey("Id");
-        
+
         builder
             .Property(x => x.Code)
-            .HasConversion(x => x, x => x)
-            .HasColumnName("CourseCode");
+            .HasConversion(c => (int)c, i => i)
+            .HasColumnName("CourseCode")
+            .IsRequired();
 
         builder
             .Property(x => x.Title)
@@ -24,12 +24,15 @@ public class EntityTypeConfigurations : IEntityTypeConfiguration<Course>
 
         builder
             .Property(x => x.Credits)
-            .HasConversion(x => x, x => x);
+            .HasConversion(c => (int)c, i => i)
+            .IsRequired();
 
-        builder.Property(x => x.DepartmentId);
-        
+        builder
+            .Property(x => x.DepartmentId)
+            .HasColumnName("DepartmentExternalId");
+
         builder.Property(x => x.ExternalId);
-        
+
         builder.ToTable("Course", "crs");
     }
 }

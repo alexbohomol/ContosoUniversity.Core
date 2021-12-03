@@ -24,7 +24,7 @@ public abstract class EfRepository<TDomainEntity>
         DbSet = DbContext.Set<TDomainEntity>();
         DbQuery = DbSet;
     }
-    
+
     public async Task<bool> Exists(Guid entityId, CancellationToken cancellationToken = default)
     {
         return await DbSet
@@ -47,22 +47,18 @@ public abstract class EfRepository<TDomainEntity>
 
     public async Task Save(TDomainEntity entity, CancellationToken cancellationToken = default)
     {
-        TDomainEntity existing = await DbContext.FindAsync<TDomainEntity>(entity.ExternalId);
+        var existing = await DbContext.FindAsync<TDomainEntity>(entity.ExternalId);
         if (existing is null)
-        {
             await DbSet.AddAsync(entity, cancellationToken);
-        }
         else
-        {
             DbSet.Update(entity);
-        }
 
         await DbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task Remove(Guid entityId, CancellationToken cancellationToken = default)
     {
-        TDomainEntity existing = await DbContext.FindAsync<TDomainEntity>(entityId);
+        var existing = await DbContext.FindAsync<TDomainEntity>(entityId);
         if (existing is not null)
         {
             DbSet.Remove(existing);
