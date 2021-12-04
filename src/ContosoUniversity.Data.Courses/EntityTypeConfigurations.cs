@@ -9,8 +9,12 @@ public class EntityTypeConfigurations : IEntityTypeConfiguration<Course>
 {
     public void Configure(EntityTypeBuilder<Course> builder)
     {
-        builder.Property<int>("Id");
-        builder.HasKey("Id");
+        builder
+            .HasKey(x => x.ExternalId);
+
+        builder
+            .Property(x => x.ExternalId)
+            .HasColumnName("Id");
 
         builder
             .Property(x => x.Code)
@@ -20,7 +24,8 @@ public class EntityTypeConfigurations : IEntityTypeConfiguration<Course>
 
         builder
             .Property(x => x.Title)
-            .HasMaxLength(50);
+            .HasMaxLength(50)
+            .IsRequired();
 
         builder
             .Property(x => x.Credits)
@@ -28,10 +33,7 @@ public class EntityTypeConfigurations : IEntityTypeConfiguration<Course>
             .IsRequired();
 
         builder
-            .Property(x => x.DepartmentId)
-            .HasColumnName("DepartmentExternalId");
-
-        builder.Property(x => x.ExternalId);
+            .Property(x => x.DepartmentId);
 
         builder.ToTable("Course", "crs");
     }

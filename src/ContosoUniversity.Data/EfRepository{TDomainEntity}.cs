@@ -18,7 +18,7 @@ public abstract class EfRepository<TDomainEntity>
     protected readonly IQueryable<TDomainEntity> DbQuery;
     protected readonly DbSet<TDomainEntity> DbSet;
 
-    public EfRepository(DbContext dbContext)
+    protected EfRepository(DbContext dbContext)
     {
         DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         DbSet = DbContext.Set<TDomainEntity>();
@@ -27,22 +27,17 @@ public abstract class EfRepository<TDomainEntity>
 
     public async Task<bool> Exists(Guid entityId, CancellationToken cancellationToken = default)
     {
-        return await DbSet
-            .AnyAsync(x => x.ExternalId == entityId, cancellationToken);
+        return await DbSet.AnyAsync(x => x.ExternalId == entityId, cancellationToken);
     }
 
     public async Task<TDomainEntity> GetById(Guid entityId, CancellationToken cancellationToken = default)
     {
-        return await DbQuery
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ExternalId == entityId, cancellationToken);
+        return await DbQuery.FirstOrDefaultAsync(x => x.ExternalId == entityId, cancellationToken);
     }
 
     public async Task<TDomainEntity[]> GetAll(CancellationToken cancellationToken = default)
     {
-        return await DbQuery
-            .AsNoTracking()
-            .ToArrayAsync(cancellationToken);
+        return await DbQuery.ToArrayAsync(cancellationToken);
     }
 
     public async Task Save(TDomainEntity entity, CancellationToken cancellationToken = default)

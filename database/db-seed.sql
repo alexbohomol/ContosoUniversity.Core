@@ -1,19 +1,15 @@
 USE ContosoUniversity
 GO
 
-SET IDENTITY_INSERT [crs].[Course] ON
-GO
-INSERT INTO [crs].[Course] ([Id], [CourseCode], [Title], [Credits], [DepartmentExternalId], [ExternalId])
+INSERT INTO [crs].[Course] ([Id], [CourseCode], [Title], [Credits], [DepartmentId])
 VALUES
-    (1, 2042, 'Literature',     4, '377c186a-6782-4367-9246-e5fe4195a97c', '51f60b7d-fb0c-40eb-a74b-b2d90157afa0'),
-    (2, 2021, 'Composition',    3, '377c186a-6782-4367-9246-e5fe4195a97c', '7f4a2bf3-8623-4d4b-a555-7e1c18da1d31'),
-    (3, 3141, 'Trigonometry',   4, '72c0804d-b208-4e67-82ba-cf54dc93dcc8', '42153736-0a08-49ef-84a1-7718189945ca'),
-    (4, 1045, 'Calculus',       4, '72c0804d-b208-4e67-82ba-cf54dc93dcc8', 'f3e9966c-467b-4b99-90ca-a29bae85ca94'),
-    (5, 4041, 'Macroeconomics', 3, '31a130fe-b396-4bb8-88d3-26fa8778b4c6', '8ebb5543-371a-4c5b-a72b-09bc9f615e36'),
-    (6, 4022, 'Microeconomics', 3, '31a130fe-b396-4bb8-88d3-26fa8778b4c6', 'd53ffc3d-aa4e-41cf-8f0e-435c73889dcf'),
-    (7, 1050, 'Chemistry',      3, 'dab7e678-e3e7-4471-8282-96fe52e5c16f', '1a95b2f1-7f2c-41b4-befb-b0f9c6d991e4')
-GO
-SET IDENTITY_INSERT [crs].[Course] OFF
+    ('51f60b7d-fb0c-40eb-a74b-b2d90157afa0', 2042, 'Literature',     4, '377c186a-6782-4367-9246-e5fe4195a97c'),
+    ('7f4a2bf3-8623-4d4b-a555-7e1c18da1d31', 2021, 'Composition',    3, '377c186a-6782-4367-9246-e5fe4195a97c'),
+    ('42153736-0a08-49ef-84a1-7718189945ca', 3141, 'Trigonometry',   4, '72c0804d-b208-4e67-82ba-cf54dc93dcc8'),
+    ('f3e9966c-467b-4b99-90ca-a29bae85ca94', 1045, 'Calculus',       4, '72c0804d-b208-4e67-82ba-cf54dc93dcc8'),
+    ('8ebb5543-371a-4c5b-a72b-09bc9f615e36', 4041, 'Macroeconomics', 3, '31a130fe-b396-4bb8-88d3-26fa8778b4c6'),
+    ('d53ffc3d-aa4e-41cf-8f0e-435c73889dcf', 4022, 'Microeconomics', 3, '31a130fe-b396-4bb8-88d3-26fa8778b4c6'),
+    ('1a95b2f1-7f2c-41b4-befb-b0f9c6d991e4', 1050, 'Chemistry',      3, 'dab7e678-e3e7-4471-8282-96fe52e5c16f')
 GO
 
 SET IDENTITY_INSERT [dpt].[Instructor] ON

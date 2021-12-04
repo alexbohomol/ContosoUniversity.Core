@@ -25,11 +25,10 @@ namespace ContosoUniversity.Data.Courses.Migrations
 
             modelBuilder.Entity("ContosoUniversity.Domain.Course.Course", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("ExternalId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
 
                     b.Property<int>("Code")
                         .HasColumnType("int")
@@ -39,17 +38,14 @@ namespace ContosoUniversity.Data.Courses.Migrations
                         .HasColumnType("int");
 
                     b.Property<Guid>("DepartmentId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("DepartmentExternalId");
-
-                    b.Property<Guid>("ExternalId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ExternalId");
 
                     b.ToTable("Course", "crs");
                 });

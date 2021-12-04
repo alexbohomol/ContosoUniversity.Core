@@ -23,7 +23,7 @@ public abstract class EfRepository<TDomainEntity, TDataEntity>
     protected readonly IQueryable<TDataEntity> DbQuery;
     protected readonly DbSet<TDataEntity> DbSet;
 
-    protected EfRepository(DbContext dbContext)
+    private EfRepository(DbContext dbContext)
     {
         DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         DbSet = DbContext.Set<TDataEntity>();
