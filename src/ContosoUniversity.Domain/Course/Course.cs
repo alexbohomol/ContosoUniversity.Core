@@ -7,21 +7,11 @@ public class Course : IIdentifiable<Guid>
     private Guid _departmentId;
     private string _title;
 
-    public Course(
-        CourseCode code,
-        string title,
-        Credits credits,
-        Guid departmentId)
-        : this(
-            code,
-            title,
-            credits,
-            departmentId,
-            Guid.NewGuid())
+    private Course()
     {
     }
 
-    public Course(
+    private Course(
         CourseCode code,
         string title,
         Credits credits,
@@ -66,6 +56,11 @@ public class Course : IIdentifiable<Guid>
     }
 
     public Guid ExternalId { get; }
+
+    public static Course Create(CourseCode code, string title, Credits credits, Guid departmentId)
+    {
+        return new Course(code, title, credits, departmentId, Guid.NewGuid());
+    }
 
     public void Update(
         string title,

@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace ContosoUniversity.Data.Courses.Migrations
 {
     [DbContext(typeof(CoursesContext))]
@@ -15,34 +17,35 @@ namespace ContosoUniversity.Data.Courses.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.3")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasDefaultSchema("crs")
+                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            modelBuilder.Entity("ContosoUniversity.Data.Courses.Models.Course", b =>
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("ContosoUniversity.Domain.Course.Course", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("ExternalId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
 
-                    b.Property<int>("CourseCode")
-                        .HasColumnType("int");
+                    b.Property<int>("Code")
+                        .HasColumnType("int")
+                        .HasColumnName("CourseCode");
 
                     b.Property<int>("Credits")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("DepartmentExternalId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ExternalId")
+                    b.Property<Guid>("DepartmentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ExternalId");
 
                     b.ToTable("Course", "crs");
                 });
