@@ -10,6 +10,8 @@ using Student;
 
 public interface IStudentsRepository : IRwRepository<Student>, IRoRepository<Student>
 {
+    [Obsolete("Temporarily hides original `GetById` methods from both bases. Needed to support both bases in one implementation")]
+    new Task<Student> GetById(Guid entityId, CancellationToken cancellationToken = default);
     Task<EnrollmentDateGroup[]> GetEnrollmentDateGroups(CancellationToken cancellationToken = default);
     Task<Student[]> GetStudentsEnrolledForCourses(Guid[] courseIds, CancellationToken cancellationToken = default);
 

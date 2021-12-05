@@ -122,6 +122,11 @@ public abstract class EfRoRepository<TDomainEntity> : IRoRepository<TDomainEntit
         return await DbSet.AnyAsync(x => x.ExternalId == entityId, cancellationToken);
     }
 
+    public async Task<TDomainEntity> GetById(Guid entityId, CancellationToken cancellationToken = default)
+    {
+        return await DbQuery.FirstOrDefaultAsync(x => x.ExternalId == entityId, cancellationToken);
+    }
+
     public async Task<TDomainEntity[]> GetAll(CancellationToken cancellationToken = default)
     {
         return await DbQuery.ToArrayAsync(cancellationToken);
