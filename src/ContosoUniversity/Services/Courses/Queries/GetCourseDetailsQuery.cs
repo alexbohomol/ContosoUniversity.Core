@@ -17,11 +17,11 @@ public record GetCourseDetailsQuery(Guid Id) : IRequest<CourseDetailsViewModel>;
 
 public class GetCourseDetailsQueryHandler : IRequestHandler<GetCourseDetailsQuery, CourseDetailsViewModel>
 {
-    private readonly ICoursesRwRepository _coursesRepository;
+    private readonly ICoursesRoRepository _coursesRepository;
     private readonly IDepartmentsRepository _departmentsRepository;
 
     public GetCourseDetailsQueryHandler(
-        ICoursesRwRepository coursesRepository,
+        ICoursesRoRepository coursesRepository,
         IDepartmentsRepository departmentsRepository)
     {
         _coursesRepository = coursesRepository;
