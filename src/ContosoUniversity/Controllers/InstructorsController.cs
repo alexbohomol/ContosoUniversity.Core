@@ -19,11 +19,11 @@ using ViewModels.Instructors;
 
 public class InstructorsController : Controller
 {
-    private readonly ICoursesRepository _coursesRepository;
+    private readonly ICoursesRoRepository _coursesRepository;
     private readonly IMediator _mediator;
 
     public InstructorsController(
-        ICoursesRepository coursesRepository,
+        ICoursesRoRepository coursesRepository,
         IMediator mediator)
     {
         _coursesRepository = coursesRepository;

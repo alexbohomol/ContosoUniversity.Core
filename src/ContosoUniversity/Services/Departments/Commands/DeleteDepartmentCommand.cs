@@ -16,13 +16,13 @@ public record DeleteDepartmentCommand(Guid Id) : IRequest;
 
 public class DeleteDepartmentCommandHandler : AsyncRequestHandler<DeleteDepartmentCommand>
 {
-    private readonly ICoursesRepository _coursesRepository;
+    private readonly ICoursesRoRepository _coursesRepository;
     private readonly IDepartmentsRepository _departmentsRepository;
     private readonly IMediator _mediator;
 
     public DeleteDepartmentCommandHandler(
         IDepartmentsRepository departmentsRepository,
-        ICoursesRepository coursesRepository,
+        ICoursesRoRepository coursesRepository,
         IMediator mediator)
     {
         _departmentsRepository = departmentsRepository;

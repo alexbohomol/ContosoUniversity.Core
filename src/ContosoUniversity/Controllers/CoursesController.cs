@@ -18,13 +18,13 @@ using ViewModels.Courses;
 
 public class CoursesController : Controller
 {
-    private readonly ICoursesRepository _coursesRepository;
+    private readonly ICoursesRwRepository _coursesRepository;
     private readonly IDepartmentsRepository _departmentsRepository;
     private readonly IMediator _mediator;
 
     public CoursesController(
         IDepartmentsRepository departmentsRepository,
-        ICoursesRepository coursesRepository,
+        ICoursesRwRepository coursesRepository,
         IMediator mediator)
     {
         _departmentsRepository = departmentsRepository;
