@@ -12,7 +12,7 @@ using Domain.Contracts.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 public abstract class EfRepository<TDomainEntity, TDataEntity>
-    : IRepository<TDomainEntity>
+    : IRwRepository<TDomainEntity>, IRoRepository<TDomainEntity>
     where TDomainEntity : class, IIdentifiable<Guid>
     where TDataEntity : class, IIdentifiable<Guid>, new()
 {
@@ -46,6 +46,15 @@ public abstract class EfRepository<TDomainEntity, TDataEntity>
             .AnyAsync(x => x.ExternalId == entityId, cancellationToken);
     }
 
+    public virtual async Task<TDomainEntity[]> GetAll(CancellationToken cancellationToken = default)
+    {
+        TDataEntity[] dataEntities = await DbQuery
+            .AsNoTracking()
+            .ToArrayAsync(cancellationToken);
+
+        return dataEntities.Select(ToDomainEntity).ToArray();
+    }
+
     public virtual async Task<TDomainEntity> GetById(Guid entityId, CancellationToken cancellationToken = default)
     {
         TDataEntity dataEntity = await DbQuery
@@ -55,15 +64,6 @@ public abstract class EfRepository<TDomainEntity, TDataEntity>
         return dataEntity == null
             ? null
             : ToDomainEntity(dataEntity);
-    }
-
-    public virtual async Task<TDomainEntity[]> GetAll(CancellationToken cancellationToken = default)
-    {
-        TDataEntity[] dataEntities = await DbQuery
-            .AsNoTracking()
-            .ToArrayAsync(cancellationToken);
-
-        return dataEntities.Select(ToDomainEntity).ToArray();
     }
 
     public async Task Save(TDomainEntity entity, CancellationToken cancellationToken = default)

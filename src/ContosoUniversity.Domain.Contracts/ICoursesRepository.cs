@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Course;
 
-public interface ICoursesRepository : IRepository<Course>
+public interface ICoursesRepository : IRwRepository<Course>, IRoRepository<Course>
 {
     Task<int> UpdateCourseCredits(int multiplier, CancellationToken cancellationToken = default);
     Task<Course[]> GetByDepartmentId(Guid departmentId, CancellationToken cancellationToken = default);

@@ -11,7 +11,7 @@ using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 public abstract class EfRepository<TDomainEntity>
-    : IRepository<TDomainEntity>
+    : IRwRepository<TDomainEntity>, IRoRepository<TDomainEntity>
     where TDomainEntity : class, IIdentifiable<Guid>
 {
     protected readonly DbContext DbContext;
@@ -30,14 +30,14 @@ public abstract class EfRepository<TDomainEntity>
         return await DbSet.AnyAsync(x => x.ExternalId == entityId, cancellationToken);
     }
 
-    public async Task<TDomainEntity> GetById(Guid entityId, CancellationToken cancellationToken = default)
-    {
-        return await DbQuery.FirstOrDefaultAsync(x => x.ExternalId == entityId, cancellationToken);
-    }
-
     public async Task<TDomainEntity[]> GetAll(CancellationToken cancellationToken = default)
     {
         return await DbQuery.ToArrayAsync(cancellationToken);
+    }
+
+    public async Task<TDomainEntity> GetById(Guid entityId, CancellationToken cancellationToken = default)
+    {
+        return await DbQuery.FirstOrDefaultAsync(x => x.ExternalId == entityId, cancellationToken);
     }
 
     public async Task Save(TDomainEntity entity, CancellationToken cancellationToken = default)

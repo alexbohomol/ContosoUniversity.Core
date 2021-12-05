@@ -8,7 +8,7 @@ using Paging;
 
 using Student;
 
-public interface IStudentsRepository : IRepository<Student>
+public interface IStudentsRepository : IRwRepository<Student>, IRoRepository<Student>
 {
     Task<EnrollmentDateGroup[]> GetEnrollmentDateGroups(CancellationToken cancellationToken = default);
     Task<Student[]> GetStudentsEnrolledForCourses(Guid[] courseIds, CancellationToken cancellationToken = default);
