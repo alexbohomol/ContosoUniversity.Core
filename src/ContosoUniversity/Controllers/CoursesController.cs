@@ -18,17 +18,20 @@ using ViewModels.Courses;
 
 public class CoursesController : Controller
 {
-    private readonly ICoursesRepository _coursesRepository;
+    private readonly ICoursesRoRepository _coursesRoRepository;
+    private readonly ICoursesRwRepository _coursesRwRepository;
     private readonly IDepartmentsRepository _departmentsRepository;
     private readonly IMediator _mediator;
 
     public CoursesController(
         IDepartmentsRepository departmentsRepository,
-        ICoursesRepository coursesRepository,
+        ICoursesRoRepository coursesRoRepository,
+        ICoursesRwRepository coursesRwRepository,
         IMediator mediator)
     {
         _departmentsRepository = departmentsRepository;
-        _coursesRepository = coursesRepository;
+        _coursesRoRepository = coursesRoRepository;
+        _coursesRwRepository = coursesRwRepository;
         _mediator = mediator;
     }
 
@@ -95,7 +98,7 @@ public class CoursesController : Controller
 
         if (!ModelState.IsValid)
         {
-            Course course = await _coursesRepository.GetById(command.Id, cancellationToken);
+            Course course = await _coursesRoRepository.GetById(command.Id, cancellationToken);
 
             return View(
                 new CourseEditForm(
@@ -142,7 +145,7 @@ public class CoursesController : Controller
     public async Task<IActionResult> UpdateCourseCredits(int? multiplier, CancellationToken cancellationToken)
     {
         if (multiplier.HasValue)
-            ViewData["RowsAffected"] = await _coursesRepository.UpdateCourseCredits(
+            ViewData["RowsAffected"] = await _coursesRwRepository.UpdateCourseCredits(
                 multiplier.Value,
                 cancellationToken);
 

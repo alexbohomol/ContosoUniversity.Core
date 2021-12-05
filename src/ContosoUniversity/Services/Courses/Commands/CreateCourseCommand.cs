@@ -19,9 +19,9 @@ public class CreateCourseCommand : IRequest
 
 public class CreateCourseCommandHandler : AsyncRequestHandler<CreateCourseCommand>
 {
-    private readonly ICoursesRepository _coursesRepository;
+    private readonly ICoursesRwRepository _coursesRepository;
 
-    public CreateCourseCommandHandler(ICoursesRepository coursesRepository)
+    public CreateCourseCommandHandler(ICoursesRwRepository coursesRepository)
     {
         _coursesRepository = coursesRepository;
     }

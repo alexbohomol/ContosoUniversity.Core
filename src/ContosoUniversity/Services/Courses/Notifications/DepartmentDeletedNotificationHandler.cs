@@ -11,9 +11,9 @@ using MediatR;
 
 public class DepartmentDeletedNotificationHandler : INotificationHandler<DepartmentDeletedNotification>
 {
-    private readonly ICoursesRepository _coursesRepository;
+    private readonly ICoursesRwRepository _coursesRepository;
 
-    public DepartmentDeletedNotificationHandler(ICoursesRepository coursesRepository)
+    public DepartmentDeletedNotificationHandler(ICoursesRwRepository coursesRepository)
     {
         _coursesRepository = coursesRepository;
     }

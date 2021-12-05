@@ -20,7 +20,7 @@ public record GetInstructorsIndexQuery(Guid? Id, Guid? CourseExternalId) : IRequ
 
 public class GetInstructorsIndexQueryHandler : IRequestHandler<GetInstructorsIndexQuery, InstructorIndexViewModel>
 {
-    private readonly ICoursesRepository _coursesRepository;
+    private readonly ICoursesRoRepository _coursesRepository;
     private readonly IDepartmentsRepository _departmentsRepository;
     private readonly IInstructorsRepository _instructorsRepository;
     private readonly IStudentsRepository _studentsRepository;
@@ -28,7 +28,7 @@ public class GetInstructorsIndexQueryHandler : IRequestHandler<GetInstructorsInd
     public GetInstructorsIndexQueryHandler(
         IInstructorsRepository instructorsRepository,
         IDepartmentsRepository departmentsRepository,
-        ICoursesRepository coursesRepository,
+        ICoursesRoRepository coursesRepository,
         IStudentsRepository studentsRepository)
     {
         _instructorsRepository = instructorsRepository;

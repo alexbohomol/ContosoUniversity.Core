@@ -19,12 +19,12 @@ public record GetStudentDetailsQuery(Guid Id) : IRequest<StudentDetailsViewModel
 
 public class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQuery, StudentDetailsViewModel>
 {
-    private readonly ICoursesRepository _coursesRepository;
+    private readonly ICoursesRoRepository _coursesRepository;
     private readonly IStudentsRepository _studentsRepository;
 
     public GetStudentDetailsQueryHandler(
         IStudentsRepository studentsRepository,
-        ICoursesRepository coursesRepository)
+        ICoursesRoRepository coursesRepository)
     {
         _studentsRepository = studentsRepository;
         _coursesRepository = coursesRepository;

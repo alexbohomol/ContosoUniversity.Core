@@ -15,23 +15,26 @@ public record DeleteCourseCommand(Guid Id) : IRequest;
 
 public class DeleteCourseCommandHandler : AsyncRequestHandler<DeleteCourseCommand>
 {
-    private readonly ICoursesRepository _coursesRepository;
+    private readonly ICoursesRoRepository _coursesRoRepository;
+    private readonly ICoursesRwRepository _coursesRwRepository;
     private readonly IMediator _mediator;
 
     public DeleteCourseCommandHandler(
-        ICoursesRepository coursesRepository,
+        ICoursesRoRepository coursesRoRepository,
+        ICoursesRwRepository coursesRwRepository,
         IMediator mediator)
     {
-        _coursesRepository = coursesRepository;
+        _coursesRoRepository = coursesRoRepository;
+        _coursesRwRepository = coursesRwRepository;
         _mediator = mediator;
     }
 
     protected override async Task Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
     {
-        if (!await _coursesRepository.Exists(request.Id, cancellationToken))
+        if (!await _coursesRoRepository.Exists(request.Id, cancellationToken))
             throw new EntityNotFoundException("course", request.Id);
 
-        await _coursesRepository.Remove(request.Id, cancellationToken);
+        await _coursesRwRepository.Remove(request.Id, cancellationToken);
 
         /*
          * remove related assignments and enrollments

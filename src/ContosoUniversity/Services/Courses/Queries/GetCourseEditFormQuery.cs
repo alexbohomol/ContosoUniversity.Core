@@ -19,11 +19,11 @@ public record GetCourseEditFormQuery(Guid Id) : IRequest<CourseEditForm>;
 
 public class GetCourseEditFormQueryHandler : IRequestHandler<GetCourseEditFormQuery, CourseEditForm>
 {
-    private readonly ICoursesRepository _coursesRepository;
+    private readonly ICoursesRoRepository _coursesRepository;
     private readonly IDepartmentsRepository _departmentsRepository;
 
     public GetCourseEditFormQueryHandler(
-        ICoursesRepository coursesRepository,
+        ICoursesRoRepository coursesRepository,
         IDepartmentsRepository departmentsRepository)
     {
         _coursesRepository = coursesRepository;

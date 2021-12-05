@@ -17,11 +17,11 @@ public record GetCoursesIndexQuery : IRequest<List<CourseListItemViewModel>>;
 
 public class GetCoursesIndexQueryHandler : IRequestHandler<GetCoursesIndexQuery, List<CourseListItemViewModel>>
 {
-    private readonly ICoursesRepository _coursesRepository;
+    private readonly ICoursesRoRepository _coursesRepository;
     private readonly IDepartmentsRepository _departmentsRepository;
 
     public GetCoursesIndexQueryHandler(
-        ICoursesRepository coursesRepository,
+        ICoursesRoRepository coursesRepository,
         IDepartmentsRepository departmentsRepository)
     {
         _coursesRepository = coursesRepository;

@@ -32,9 +32,9 @@ public class EditCourseCommand : IRequest
 
 public class EditCourseCommandHandler : AsyncRequestHandler<EditCourseCommand>
 {
-    private readonly ICoursesRepository _coursesRepository;
+    private readonly ICoursesRwRepository _coursesRepository;
 
-    public EditCourseCommandHandler(ICoursesRepository coursesRepository)
+    public EditCourseCommandHandler(ICoursesRwRepository coursesRepository)
     {
         _coursesRepository = coursesRepository;
     }

@@ -17,12 +17,12 @@ public record GetInstructorEditFormQuery(Guid Id) : IRequest<EditInstructorForm>
 
 public class GetInstructorEditFormQueryHandler : IRequestHandler<GetInstructorEditFormQuery, EditInstructorForm>
 {
-    private readonly ICoursesRepository _coursesRepository;
+    private readonly ICoursesRoRepository _coursesRepository;
     private readonly IInstructorsRepository _instructorsRepository;
 
     public GetInstructorEditFormQueryHandler(
         IInstructorsRepository instructorsRepository,
-        ICoursesRepository coursesRepository)
+        ICoursesRoRepository coursesRepository)
     {
         _instructorsRepository = instructorsRepository;
         _coursesRepository = coursesRepository;
