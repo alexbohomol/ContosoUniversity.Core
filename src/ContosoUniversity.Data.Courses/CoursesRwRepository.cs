@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 
 public class CoursesRwRepository : EfRwRepository<Course>, ICoursesRwRepository
 {
-    public CoursesRwRepository(CoursesContext dbContext) : base(dbContext)
+    public CoursesRwRepository(CoursesRwContext dbContext) : base(dbContext)
     {
     }
 

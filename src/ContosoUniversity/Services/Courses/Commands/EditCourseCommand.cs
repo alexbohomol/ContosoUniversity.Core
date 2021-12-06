@@ -12,7 +12,7 @@ using MediatR;
 
 public class EditCourseCommand : IRequest
 {
-    public EditCourseCommand(Course course)
+    public EditCourseCommand(CourseReadModel course)
     {
         Id = course.ExternalId;
         Title = course.Title;

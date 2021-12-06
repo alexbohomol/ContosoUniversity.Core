@@ -2,9 +2,9 @@ namespace ContosoUniversity.Data.Courses;
 
 using Microsoft.EntityFrameworkCore;
 
-public class CoursesContext : DbContext
+public class CoursesRwContext : DbContext
 {
-    public CoursesContext(DbContextOptions<CoursesContext> options) : base(options)
+    public CoursesRwContext(DbContextOptions<CoursesRwContext> options) : base(options)
     {
     }
 
@@ -12,6 +12,6 @@ public class CoursesContext : DbContext
     {
         modelBuilder.HasDefaultSchema("crs");
 
-        modelBuilder.ApplyConfiguration(new EntityTypeConfigurations());
+        modelBuilder.ApplyConfiguration(new EntityTypeRwConfigurations());
     }
 }

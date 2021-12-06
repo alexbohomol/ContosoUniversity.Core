@@ -13,13 +13,14 @@ using Extensions;
 
 using Microsoft.EntityFrameworkCore;
 
-public class CoursesRoRepository : EfRoRepository<Course>, ICoursesRoRepository
+public class CoursesRoRepository : EfRoRepository<CourseReadModel>, ICoursesRoRepository
 {
-    public CoursesRoRepository(CoursesContext dbContext) : base(dbContext)
+    public CoursesRoRepository(CoursesRoContext dbContext) : base(dbContext)
     {
     }
 
-    public async Task<Course[]> GetByDepartmentId(Guid departmentId, CancellationToken cancellationToken = default)
+    public async Task<CourseReadModel[]> GetByDepartmentId(Guid departmentId,
+        CancellationToken cancellationToken = default)
     {
         return await DbQuery
             .AsNoTracking()
@@ -27,9 +28,9 @@ public class CoursesRoRepository : EfRoRepository<Course>, ICoursesRoRepository
             .ToArrayAsync(cancellationToken);
     }
 
-    public async Task<Course[]> GetByIds(Guid[] entityIds, CancellationToken cancellationToken = default)
+    public async Task<CourseReadModel[]> GetByIds(Guid[] entityIds, CancellationToken cancellationToken = default)
     {
-        Course[] courses = await DbQuery
+        CourseReadModel[] courses = await DbQuery
             .AsNoTracking()
             .Where(x => entityIds.Contains(x.ExternalId))
             .ToArrayAsync(cancellationToken);

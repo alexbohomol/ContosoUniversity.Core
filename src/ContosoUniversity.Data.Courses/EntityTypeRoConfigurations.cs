@@ -5,9 +5,9 @@ using Domain.Course;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-public class EntityTypeConfigurations : IEntityTypeConfiguration<Course>
+public class EntityTypeRoConfigurations : IEntityTypeConfiguration<CourseReadModel>
 {
-    public void Configure(EntityTypeBuilder<Course> builder)
+    public void Configure(EntityTypeBuilder<CourseReadModel> builder)
     {
         builder
             .HasKey(x => x.ExternalId);
@@ -18,19 +18,13 @@ public class EntityTypeConfigurations : IEntityTypeConfiguration<Course>
 
         builder
             .Property(x => x.Code)
-            .HasConversion(c => (int)c, i => i)
-            .HasColumnName("CourseCode")
-            .IsRequired();
+            .HasColumnName("CourseCode");
 
         builder
-            .Property(x => x.Title)
-            .HasMaxLength(50)
-            .IsRequired();
+            .Property(x => x.Title);
 
         builder
-            .Property(x => x.Credits)
-            .HasConversion(c => (int)c, i => i)
-            .IsRequired();
+            .Property(x => x.Credits);
 
         builder
             .Property(x => x.DepartmentId);

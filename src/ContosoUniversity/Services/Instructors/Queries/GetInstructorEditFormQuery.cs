@@ -35,7 +35,7 @@ public class GetInstructorEditFormQueryHandler : IRequestHandler<GetInstructorEd
         if (instructor is null)
             return null;
 
-        Course[] courses = await _coursesRepository.GetAll(cancellationToken);
+        CourseReadModel[] courses = await _coursesRepository.GetAll(cancellationToken);
 
         return new EditInstructorForm
         {

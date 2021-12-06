@@ -6,14 +6,14 @@ using Microsoft.EntityFrameworkCore.Design;
 /// <summary>
 ///     https://docs.microsoft.com/uk-ua/ef/core/cli/dbcontext-creation?tabs=dotnet-core-cli#from-a-design-time-factory
 /// </summary>
-public class CoursesContextDesignTime : IDesignTimeDbContextFactory<CoursesContext>
+public class CoursesContextDesignTime : IDesignTimeDbContextFactory<CoursesRwContext>
 {
-    public CoursesContext CreateDbContext(string[] args)
+    public CoursesRwContext CreateDbContext(string[] args)
     {
-        var optionsBuilder = new DbContextOptionsBuilder<CoursesContext>();
+        var optionsBuilder = new DbContextOptionsBuilder<CoursesRwContext>();
 
         optionsBuilder.UseSqlServer(DesignTimeSupport.ConnectionString);
 
-        return new CoursesContext(optionsBuilder.Options);
+        return new CoursesRwContext(optionsBuilder.Options);
     }
 }

@@ -47,7 +47,7 @@ public class GetInstructorsIndexQueryHandler : IRequestHandler<GetInstructorsInd
             .OrderBy(x => x.LastName)
             .ToArray();
 
-        Course[] courses = await _coursesRepository.GetAll(cancellationToken);
+        CourseReadModel[] courses = await _coursesRepository.GetAll(cancellationToken);
 
         CrossContextBoundariesValidator.EnsureInstructorsReferenceTheExistingCourses(instructors, courses);
 

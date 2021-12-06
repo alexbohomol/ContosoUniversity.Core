@@ -53,7 +53,7 @@ public class InstructorsController : Controller
 
     public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {
-        Course[] courses = await _coursesRepository.GetAll(cancellationToken);
+        CourseReadModel[] courses = await _coursesRepository.GetAll(cancellationToken);
 
         return View(new CreateInstructorForm
         {
@@ -70,7 +70,7 @@ public class InstructorsController : Controller
 
         if (!ModelState.IsValid)
         {
-            Course[] courses = await _coursesRepository.GetAll(cancellationToken);
+            CourseReadModel[] courses = await _coursesRepository.GetAll(cancellationToken);
 
             return View(
                 new CreateInstructorForm(
@@ -104,7 +104,7 @@ public class InstructorsController : Controller
 
         if (!ModelState.IsValid)
         {
-            Course[] courses = await _coursesRepository.GetAll(cancellationToken);
+            CourseReadModel[] courses = await _coursesRepository.GetAll(cancellationToken);
 
             return View(
                 new EditInstructorForm(

@@ -23,7 +23,7 @@ public static class SchemaMigrator
         IServiceProvider services = scope.ServiceProvider;
         try
         {
-            var context = services.GetRequiredService<CoursesContext>();
+            var context = services.GetRequiredService<CoursesRwContext>();
             if ((await context.Database.GetPendingMigrationsAsync()).Any())
                 await context.Database.MigrateAsync();
         }

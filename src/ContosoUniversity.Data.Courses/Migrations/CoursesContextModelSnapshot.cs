@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ContosoUniversity.Data.Courses.Migrations
 {
-    [DbContext(typeof(CoursesContext))]
+    [DbContext(typeof(CoursesRwContext))]
     partial class CoursesContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

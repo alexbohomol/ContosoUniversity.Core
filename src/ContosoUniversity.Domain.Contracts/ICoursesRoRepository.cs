@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 using Course;
 
-public interface ICoursesRoRepository : IRoRepository<Course>
+public interface ICoursesRoRepository : IRoRepository<CourseReadModel>
 {
-    Task<Course[]> GetByDepartmentId(Guid departmentId, CancellationToken cancellationToken = default);
-    Task<Course[]> GetByIds(Guid[] entityIds, CancellationToken cancellationToken = default);
+    Task<CourseReadModel[]> GetByDepartmentId(Guid departmentId, CancellationToken cancellationToken = default);
+    Task<CourseReadModel[]> GetByIds(Guid[] entityIds, CancellationToken cancellationToken = default);
     Task<bool> ExistsCourseCode(int courseCode, CancellationToken cancellationToken = default);
 }
