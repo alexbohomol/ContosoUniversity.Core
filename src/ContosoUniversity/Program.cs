@@ -2,7 +2,7 @@
 
 using System.Threading.Tasks;
 
-using Data.Courses;
+using Data.Courses.Writes;
 using Data.Departments;
 using Data.Students;
 

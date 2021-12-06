@@ -1,6 +1,7 @@
 ﻿namespace ContosoUniversity;
 
-using Data.Courses;
+using Data.Courses.Reads;
+using Data.Courses.Writes;
 using Data.Departments;
 using Data.Students;
 
@@ -34,7 +35,8 @@ public class Startup
             options.MinimumSameSitePolicy = SameSiteMode.None;
         });
 
-        services.AddCoursesSchema(Configuration.GetConnectionString("Courses"));
+        services.AddCoursesSchemaReads(Configuration.GetConnectionString("Courses"));
+        services.AddCoursesSchemaWrites(Configuration.GetConnectionString("Courses"));
         services.AddStudentsSchema(Configuration.GetConnectionString("Students"));
         services.AddDepartmentsSchema(Configuration.GetConnectionString("Departments"));
 

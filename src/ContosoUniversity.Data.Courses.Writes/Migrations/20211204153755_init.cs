@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ContosoUniversity.Data.Courses.Migrations
+namespace ContosoUniversity.Data.Courses.Writes.Migrations
 {
     public partial class init : Migration
     {

@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Data.Courses;
+namespace ContosoUniversity.Data.Courses.Writes;
 
 using System;
 using System.Linq;
@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
-using Writes;
 
 public static class SchemaMigrator
 {
