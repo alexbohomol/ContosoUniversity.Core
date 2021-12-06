@@ -13,9 +13,9 @@ using Extensions;
 
 using Microsoft.EntityFrameworkCore;
 
-public class CoursesRoRepository : EfRoRepository<CourseReadModel>, ICoursesRoRepository
+internal class ReadOnlyRepository : EfRoRepository<CourseReadModel>, ICoursesRoRepository
 {
-    public CoursesRoRepository(CoursesRoContext dbContext) : base(dbContext)
+    public ReadOnlyRepository(ReadOnlyContext dbContext) : base(dbContext)
     {
     }
 

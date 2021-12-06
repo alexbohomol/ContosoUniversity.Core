@@ -12,7 +12,7 @@ namespace ContosoUniversity.Data.Courses.Migrations
 {
     using Writes;
 
-    [DbContext(typeof(CoursesRwContext))]
+    [DbContext(typeof(ReadWriteContext))]
     partial class CoursesContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

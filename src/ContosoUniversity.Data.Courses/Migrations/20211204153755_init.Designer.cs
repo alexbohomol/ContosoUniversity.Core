@@ -13,7 +13,7 @@ namespace ContosoUniversity.Data.Courses.Migrations
 {
     using Writes;
 
-    [DbContext(typeof(CoursesRwContext))]
+    [DbContext(typeof(ReadWriteContext))]
     [Migration("20211204153755_init")]
     partial class init
     {

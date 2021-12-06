@@ -2,9 +2,9 @@ namespace ContosoUniversity.Data.Courses.Reads;
 
 using Microsoft.EntityFrameworkCore;
 
-public class CoursesRoContext : DbContext
+internal class ReadOnlyContext : DbContext
 {
-    public CoursesRoContext(DbContextOptions<CoursesRoContext> options) : base(options)
+    public ReadOnlyContext(DbContextOptions<ReadOnlyContext> options) : base(options)
     {
     }
 
@@ -12,6 +12,6 @@ public class CoursesRoContext : DbContext
     {
         modelBuilder.HasDefaultSchema("crs");
 
-        modelBuilder.ApplyConfiguration(new EntityTypeRoConfigurations());
+        modelBuilder.ApplyConfiguration(new EntityTypeConfigurations());
     }
 }

@@ -13,10 +13,10 @@ public static class StartupExtensions
 {
     public static void AddCoursesSchema(this IServiceCollection services, string connectionString)
     {
-        services.AddDbContext<CoursesRwContext>(options => { options.UseSqlServer(connectionString); });
-        services.AddDbContext<CoursesRoContext>(options => { options.UseSqlServer(connectionString); });
+        services.AddDbContext<ReadWriteContext>(options => { options.UseSqlServer(connectionString); });
+        services.AddDbContext<ReadOnlyContext>(options => { options.UseSqlServer(connectionString); });
 
-        services.AddScoped<ICoursesRoRepository, CoursesRoRepository>();
-        services.AddScoped<ICoursesRwRepository, CoursesRwRepository>();
+        services.AddScoped<ICoursesRoRepository, ReadOnlyRepository>();
+        services.AddScoped<ICoursesRwRepository, ReadWriteRepository>();
     }
 }

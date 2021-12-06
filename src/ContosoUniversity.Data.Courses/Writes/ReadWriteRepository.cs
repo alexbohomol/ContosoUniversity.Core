@@ -13,9 +13,9 @@ using Extensions;
 
 using Microsoft.EntityFrameworkCore;
 
-public class CoursesRwRepository : EfRwRepository<Course>, ICoursesRwRepository
+internal class ReadWriteRepository : EfRwRepository<Course>, ICoursesRwRepository
 {
-    public CoursesRwRepository(CoursesRwContext dbContext) : base(dbContext)
+    public ReadWriteRepository(ReadWriteContext dbContext) : base(dbContext)
     {
     }
 

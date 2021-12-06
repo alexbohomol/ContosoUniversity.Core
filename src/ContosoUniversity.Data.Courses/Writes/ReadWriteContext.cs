@@ -2,9 +2,9 @@ namespace ContosoUniversity.Data.Courses.Writes;
 
 using Microsoft.EntityFrameworkCore;
 
-public class CoursesRwContext : DbContext
+public class ReadWriteContext : DbContext
 {
-    public CoursesRwContext(DbContextOptions<CoursesRwContext> options) : base(options)
+    public ReadWriteContext(DbContextOptions<ReadWriteContext> options) : base(options)
     {
     }
 
@@ -12,6 +12,6 @@ public class CoursesRwContext : DbContext
     {
         modelBuilder.HasDefaultSchema("crs");
 
-        modelBuilder.ApplyConfiguration(new EntityTypeRwConfigurations());
+        modelBuilder.ApplyConfiguration(new EntityTypeConfigurations());
     }
 }

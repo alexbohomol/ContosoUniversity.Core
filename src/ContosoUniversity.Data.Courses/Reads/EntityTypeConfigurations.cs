@@ -5,7 +5,7 @@ using Domain.Course;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-public class EntityTypeRoConfigurations : IEntityTypeConfiguration<CourseReadModel>
+internal class EntityTypeConfigurations : IEntityTypeConfiguration<CourseReadModel>
 {
     public void Configure(EntityTypeBuilder<CourseReadModel> builder)
     {

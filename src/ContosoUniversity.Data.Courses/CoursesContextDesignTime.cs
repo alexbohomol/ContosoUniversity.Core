@@ -8,14 +8,14 @@ using Writes;
 /// <summary>
 ///     https://docs.microsoft.com/uk-ua/ef/core/cli/dbcontext-creation?tabs=dotnet-core-cli#from-a-design-time-factory
 /// </summary>
-public class CoursesContextDesignTime : IDesignTimeDbContextFactory<CoursesRwContext>
+public class CoursesContextDesignTime : IDesignTimeDbContextFactory<ReadWriteContext>
 {
-    public CoursesRwContext CreateDbContext(string[] args)
+    public ReadWriteContext CreateDbContext(string[] args)
     {
-        var optionsBuilder = new DbContextOptionsBuilder<CoursesRwContext>();
+        var optionsBuilder = new DbContextOptionsBuilder<ReadWriteContext>();
 
         optionsBuilder.UseSqlServer(DesignTimeSupport.ConnectionString);
 
-        return new CoursesRwContext(optionsBuilder.Options);
+        return new ReadWriteContext(optionsBuilder.Options);
     }
 }
