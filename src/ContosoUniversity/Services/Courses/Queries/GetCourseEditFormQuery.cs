@@ -32,7 +32,7 @@ public class GetCourseEditFormQueryHandler : IRequestHandler<GetCourseEditFormQu
 
     public async Task<CourseEditForm> Handle(GetCourseEditFormQuery request, CancellationToken cancellationToken)
     {
-        Course course = await _coursesRepository.GetById(request.Id, cancellationToken);
+        CourseReadModel course = await _coursesRepository.GetById(request.Id, cancellationToken);
         if (course == null)
             throw new EntityNotFoundException(nameof(course), request.Id);
 

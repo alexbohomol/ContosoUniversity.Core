@@ -18,7 +18,7 @@ public static class CrossContextBoundariesValidator
     ///     Ensure all assigned courses reference existing department records
     /// </summary>
     public static void EnsureCoursesReferenceTheExistingDepartments(
-        IEnumerable<Course> courses,
+        IEnumerable<CourseReadModel> courses,
         IEnumerable<Guid> existingDepartmentIds)
     {
         HashSet<Guid> referencedDepartmentIds = courses.Select(x => x.DepartmentId).ToHashSet();
@@ -34,7 +34,7 @@ public static class CrossContextBoundariesValidator
     /// </summary>
     public static void EnsureInstructorsReferenceTheExistingCourses(
         IEnumerable<Instructor> instructors,
-        IEnumerable<Course> courses)
+        IEnumerable<CourseReadModel> courses)
     {
         HashSet<Guid> referencedCourseIds = instructors.SelectMany(x => x.Courses).ToHashSet();
         HashSet<Guid> existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();
@@ -50,7 +50,7 @@ public static class CrossContextBoundariesValidator
     /// </summary>
     public static void EnsureEnrollmentsReferenceTheExistingCourses(
         IEnumerable<Enrollment> enrollments,
-        IEnumerable<Course> courses)
+        IEnumerable<CourseReadModel> courses)
     {
         HashSet<Guid> referencedCourseIds = enrollments.Select(x => x.CourseId).ToHashSet();
         HashSet<Guid> existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();

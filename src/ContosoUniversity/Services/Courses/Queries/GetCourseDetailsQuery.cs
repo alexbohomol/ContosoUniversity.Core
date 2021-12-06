@@ -30,7 +30,7 @@ public class GetCourseDetailsQueryHandler : IRequestHandler<GetCourseDetailsQuer
 
     public async Task<CourseDetailsViewModel> Handle(GetCourseDetailsQuery request, CancellationToken cancellationToken)
     {
-        Course course = await _coursesRepository.GetById(request.Id, cancellationToken);
+        CourseReadModel course = await _coursesRepository.GetById(request.Id, cancellationToken);
         if (course == null)
             throw new EntityNotFoundException(nameof(course), request.Id);
 

@@ -21,7 +21,7 @@ public static class DomainExtensions
     }
 
     public static AssignedCourseOption[] ToAssignedCourseOptions(
-        this IEnumerable<Course> courses,
+        this IEnumerable<CourseReadModel> courses,
         IEnumerable<Guid> instructorCourses = null)
     {
         return courses.Select(course => new AssignedCourseOption

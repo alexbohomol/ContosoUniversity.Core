@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Data.Courses;
+namespace ContosoUniversity.Data.Courses.Writes;
 
 using System;
 using System.Linq;
@@ -13,9 +13,9 @@ using Extensions;
 
 using Microsoft.EntityFrameworkCore;
 
-public class CoursesRwRepository : EfRwRepository<Course>, ICoursesRwRepository
+internal class ReadWriteRepository : EfRwRepository<Course>, ICoursesRwRepository
 {
-    public CoursesRwRepository(CoursesContext dbContext) : base(dbContext)
+    public ReadWriteRepository(ReadWriteContext dbContext) : base(dbContext)
     {
     }
 

@@ -13,7 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ContosoUniversity.Data.Courses\ContosoUniversity.Data.Courses.csproj"/>
+        <ProjectReference Include="..\ContosoUniversity.Data.Courses.Reads\ContosoUniversity.Data.Courses.Reads.csproj"/>
+        <ProjectReference Include="..\ContosoUniversity.Data.Courses.Writes\ContosoUniversity.Data.Courses.Writes.csproj"/>
         <ProjectReference Include="..\ContosoUniversity.Data.Departments\ContosoUniversity.Data.Departments.csproj"/>
         <ProjectReference Include="..\ContosoUniversity.Data.Students\ContosoUniversity.Data.Students.csproj"/>
         <ProjectReference Include="..\ContosoUniversity.Domain.Contracts\ContosoUniversity.Domain.Contracts.csproj"/>

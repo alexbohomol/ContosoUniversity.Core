@@ -1,11 +1,11 @@
-namespace ContosoUniversity.Data.Courses;
+namespace ContosoUniversity.Data.Courses.Writes;
 
 using Domain.Course;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-public class EntityTypeConfigurations : IEntityTypeConfiguration<Course>
+internal class EntityTypeConfigurations : IEntityTypeConfiguration<Course>
 {
     public void Configure(EntityTypeBuilder<Course> builder)
     {

@@ -1,10 +1,10 @@
-namespace ContosoUniversity.Data.Courses;
+namespace ContosoUniversity.Data.Courses.Writes;
 
 using Microsoft.EntityFrameworkCore;
 
-public class CoursesContext : DbContext
+public class ReadWriteContext : DbContext
 {
-    public CoursesContext(DbContextOptions<CoursesContext> options) : base(options)
+    public ReadWriteContext(DbContextOptions<ReadWriteContext> options) : base(options)
     {
     }
 

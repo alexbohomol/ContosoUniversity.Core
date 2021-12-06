@@ -31,7 +31,7 @@ public class GetCoursesIndexQueryHandler : IRequestHandler<GetCoursesIndexQuery,
     public async Task<List<CourseListItemViewModel>> Handle(GetCoursesIndexQuery request,
         CancellationToken cancellationToken)
     {
-        Course[] courses = await _coursesRepository.GetAll(cancellationToken);
+        CourseReadModel[] courses = await _coursesRepository.GetAll(cancellationToken);
 
         Dictionary<Guid, string> departmentNames =
             await _departmentsRepository.GetDepartmentNamesReference(cancellationToken);

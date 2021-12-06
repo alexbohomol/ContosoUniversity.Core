@@ -98,7 +98,7 @@ public class CoursesController : Controller
 
         if (!ModelState.IsValid)
         {
-            Course course = await _coursesRoRepository.GetById(command.Id, cancellationToken);
+            CourseReadModel course = await _coursesRoRepository.GetById(command.Id, cancellationToken);
 
             return View(
                 new CourseEditForm(

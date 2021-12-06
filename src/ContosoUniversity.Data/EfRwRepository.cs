@@ -10,29 +10,18 @@ using Domain.Contracts;
 
 using Microsoft.EntityFrameworkCore;
 
-public abstract class EfRepository<TDomainEntity>
-    : IRwRepository<TDomainEntity>, IRoRepository<TDomainEntity>
+public abstract class EfRwRepository<TDomainEntity> : IRwRepository<TDomainEntity>
     where TDomainEntity : class, IIdentifiable<Guid>
 {
     protected readonly DbContext DbContext;
     protected readonly IQueryable<TDomainEntity> DbQuery;
     protected readonly DbSet<TDomainEntity> DbSet;
 
-    protected EfRepository(DbContext dbContext)
+    protected EfRwRepository(DbContext dbContext)
     {
         DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         DbSet = DbContext.Set<TDomainEntity>();
         DbQuery = DbSet;
-    }
-
-    public async Task<bool> Exists(Guid entityId, CancellationToken cancellationToken = default)
-    {
-        return await DbSet.AnyAsync(x => x.ExternalId == entityId, cancellationToken);
-    }
-
-    public async Task<TDomainEntity[]> GetAll(CancellationToken cancellationToken = default)
-    {
-        return await DbQuery.ToArrayAsync(cancellationToken);
     }
 
     public async Task<TDomainEntity> GetById(Guid entityId, CancellationToken cancellationToken = default)
