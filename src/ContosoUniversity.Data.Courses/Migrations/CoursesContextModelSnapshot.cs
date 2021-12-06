@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ContosoUniversity.Data.Courses.Migrations
 {
+    using Writes;
+
     [DbContext(typeof(CoursesRwContext))]
     partial class CoursesContextModelSnapshot : ModelSnapshot
     {

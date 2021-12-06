@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ContosoUniversity.Data.Courses.Migrations
 {
+    using Writes;
+
     [DbContext(typeof(CoursesRwContext))]
     [Migration("20211204153755_init")]
     partial class init

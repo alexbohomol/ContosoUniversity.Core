@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Data.Courses;
+namespace ContosoUniversity.Data.Courses.Writes;
 
 using System;
 using System.Linq;
