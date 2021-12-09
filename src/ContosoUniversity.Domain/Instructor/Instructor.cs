@@ -5,36 +5,23 @@ using System.Collections.Generic;
 
 public class Instructor : IIdentifiable<Guid>
 {
-    public Instructor(
+    private Instructor(
         string firstName,
         string lastName,
         DateTime hireDate,
         IList<Guid> courses,
         OfficeAssignment office)
-        : this(
-            firstName,
-            lastName,
-            hireDate,
-            courses,
-            office,
-            Guid.NewGuid())
-    {
-    }
-
-    public Instructor(
-        string firstName,
-        string lastName,
-        DateTime hireDate,
-        IList<Guid> courses,
-        OfficeAssignment office,
-        Guid externalId)
     {
         FirstName = firstName;
         LastName = lastName;
         HireDate = hireDate;
         Courses = courses;
         Office = office;
-        ExternalId = externalId;
+        ExternalId = Guid.NewGuid();
+    }
+
+    private Instructor()
+    {
     }
 
     public string FirstName { get; private set; }
@@ -47,7 +34,19 @@ public class Instructor : IIdentifiable<Guid>
 
     public OfficeAssignment Office { get; set; }
 
+    public string FullName => $"{LastName}, {FirstName}";
+
     public Guid ExternalId { get; }
+
+    public static Instructor Create(
+        string firstName,
+        string lastName,
+        DateTime hireDate,
+        IList<Guid> courses,
+        OfficeAssignment office)
+    {
+        return new Instructor(firstName, lastName, hireDate, courses, office);
+    }
 
     public void UpdatePersonalInfo(string firstName, string lastName, DateTime hireDate)
     {

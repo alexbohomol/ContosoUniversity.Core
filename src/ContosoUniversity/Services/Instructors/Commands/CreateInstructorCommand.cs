@@ -31,7 +31,7 @@ public class CreateInstructorCommandHandler : AsyncRequestHandler<CreateInstruct
 
     protected override async Task Handle(CreateInstructorCommand command, CancellationToken cancellationToken)
     {
-        var instructor = new Instructor(
+        var instructor = Instructor.Create(
             command.FirstName,
             command.LastName,
             command.HireDate,

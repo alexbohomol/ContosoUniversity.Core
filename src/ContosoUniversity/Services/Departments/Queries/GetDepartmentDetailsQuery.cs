@@ -44,7 +44,7 @@ public class GetDepartmentDetailsQueryHandler : IRequestHandler<GetDepartmentDet
 
             if (administrator is null)
                 throw new EntityNotFoundException(nameof(administrator), department.AdministratorId.Value);
-            fullname = administrator.FullName();
+            fullname = administrator.FullName;
         }
 
         return new DepartmentDetailsViewModel
