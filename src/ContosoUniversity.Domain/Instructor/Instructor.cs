@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 public class Instructor : IIdentifiable<Guid>
 {
+    public const int FirstNameMaxLength = 50;
+    public const int LastNameMaxLength = 50;
+
     private Instructor(
         string firstName,
         string lastName,
@@ -31,6 +34,8 @@ public class Instructor : IIdentifiable<Guid>
     public DateTime HireDate { get; private set; }
 
     public IList<Guid> Courses { get; set; }
+
+    public IList<CourseAssignment> Assignments { get; set; }
 
     public OfficeAssignment Office { get; set; }
 

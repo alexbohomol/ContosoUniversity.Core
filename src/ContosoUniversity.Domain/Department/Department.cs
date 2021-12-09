@@ -4,6 +4,8 @@ using System;
 
 public class Department : IIdentifiable<Guid>
 {
+    public const int NameMaxLength = 50;
+
     private Department(
         string name,
         decimal budget,
@@ -15,6 +17,10 @@ public class Department : IIdentifiable<Guid>
         StartDate = startDate;
         AdministratorId = administratorId;
         ExternalId = Guid.NewGuid();
+    }
+
+    private Department()
+    {
     }
 
     public string Name { get; private set; }
