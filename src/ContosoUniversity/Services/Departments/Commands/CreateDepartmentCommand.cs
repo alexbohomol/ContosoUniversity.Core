@@ -28,7 +28,11 @@ public class CreateDepartmentCommandHandler : AsyncRequestHandler<CreateDepartme
 
     protected override async Task Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
     {
-        var department = new Department(request.Name, request.Budget, request.StartDate, request.AdministratorId);
+        var department = Department.Create(
+            request.Name,
+            request.Budget,
+            request.StartDate,
+            request.AdministratorId);
 
         await _departmentsRepository.Save(department, cancellationToken);
     }
