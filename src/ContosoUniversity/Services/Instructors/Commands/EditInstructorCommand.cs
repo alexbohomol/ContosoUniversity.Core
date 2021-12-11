@@ -40,7 +40,7 @@ public class EditInstructorCommandHandler : AsyncRequestHandler<EditInstructorCo
             throw new EntityNotFoundException(nameof(instructor), request.ExternalId);
 
         instructor.UpdatePersonalInfo(request.FirstName, request.LastName, request.HireDate);
-        instructor.Courses = request.SelectedCourses;
+        instructor.AssignCourses(request.SelectedCourses);
         instructor.Office = request.HasAssignedOffice
             ? new OfficeAssignment(request.Location)
             : null;

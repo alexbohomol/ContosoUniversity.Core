@@ -2,6 +2,7 @@ namespace ContosoUniversity.Domain.Instructor;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Instructor : IIdentifiable<Guid>
 {
@@ -12,13 +13,11 @@ public class Instructor : IIdentifiable<Guid>
         string firstName,
         string lastName,
         DateTime hireDate,
-        IList<Guid> courses,
         OfficeAssignment office)
     {
         FirstName = firstName;
         LastName = lastName;
         HireDate = hireDate;
-        Courses = courses;
         Office = office;
         ExternalId = Guid.NewGuid();
     }
@@ -33,9 +32,11 @@ public class Instructor : IIdentifiable<Guid>
 
     public DateTime HireDate { get; private set; }
 
-    public IList<Guid> Courses { get; set; }
+    public IList<Guid> Courses => Assignments
+        .Select(x => x.CourseId)
+        .ToList();
 
-    public IList<CourseAssignment> Assignments { get; set; }
+    public IList<CourseAssignment> Assignments { get; private set; }
 
     public OfficeAssignment Office { get; set; }
 
@@ -47,10 +48,9 @@ public class Instructor : IIdentifiable<Guid>
         string firstName,
         string lastName,
         DateTime hireDate,
-        IList<Guid> courses,
         OfficeAssignment office)
     {
-        return new Instructor(firstName, lastName, hireDate, courses, office);
+        return new Instructor(firstName, lastName, hireDate, office);
     }
 
     public void UpdatePersonalInfo(string firstName, string lastName, DateTime hireDate)
@@ -58,5 +58,12 @@ public class Instructor : IIdentifiable<Guid>
         FirstName = firstName;
         LastName = lastName;
         HireDate = hireDate;
+    }
+
+    public void AssignCourses(Guid[] courseIds)
+    {
+        Assignments = courseIds
+            .Select(x => new CourseAssignment(ExternalId, x))
+            .ToList();
     }
 }
