@@ -17,8 +17,9 @@ public class EntityTypeConfigurations :
     public void Configure(EntityTypeBuilder<CourseAssignment> builder)
     {
         builder.Property(x => x.InstructorId);
-        builder.HasKey(x => x.InstructorId);
         builder.Property(x => x.CourseId);
+
+        builder.HasKey(x => new { x.InstructorId, x.CourseId });
 
         builder.ToTable("CourseAssignment", DepartmentsContext.Schema);
     }
