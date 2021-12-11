@@ -12,7 +12,14 @@ using Microsoft.EntityFrameworkCore;
 
 public class InstructorsRepository : EfRepository<Instructor>, IInstructorsRepository
 {
-    public InstructorsRepository(DepartmentsContext dbContext) : base(dbContext)
+    public InstructorsRepository(DepartmentsContext dbContext)
+        : base(
+            dbContext,
+            new[]
+            {
+                nameof(Instructor.Assignments),
+                nameof(Instructor.Office)
+            })
     {
     }
 
