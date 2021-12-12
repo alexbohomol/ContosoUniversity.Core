@@ -21,13 +21,13 @@ public record GetInstructorsIndexQuery(Guid? Id, Guid? CourseExternalId) : IRequ
 public class GetInstructorsIndexQueryHandler : IRequestHandler<GetInstructorsIndexQuery, InstructorIndexViewModel>
 {
     private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IDepartmentsRepository _departmentsRepository;
+    private readonly IDepartmentsRoRepository _departmentsRepository;
     private readonly IInstructorsRepository _instructorsRepository;
     private readonly IStudentsRepository _studentsRepository;
 
     public GetInstructorsIndexQueryHandler(
         IInstructorsRepository instructorsRepository,
-        IDepartmentsRepository departmentsRepository,
+        IDepartmentsRoRepository departmentsRepository,
         ICoursesRoRepository coursesRepository,
         IStudentsRepository studentsRepository)
     {

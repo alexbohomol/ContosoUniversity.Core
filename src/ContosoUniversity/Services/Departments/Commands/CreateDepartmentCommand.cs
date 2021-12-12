@@ -19,9 +19,9 @@ public class CreateDepartmentCommand : IRequest
 
 public class CreateDepartmentCommandHandler : AsyncRequestHandler<CreateDepartmentCommand>
 {
-    private readonly IDepartmentsRepository _departmentsRepository;
+    private readonly IDepartmentsRwRepository _departmentsRepository;
 
-    public CreateDepartmentCommandHandler(IDepartmentsRepository departmentsRepository)
+    public CreateDepartmentCommandHandler(IDepartmentsRwRepository departmentsRepository)
     {
         _departmentsRepository = departmentsRepository;
     }

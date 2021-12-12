@@ -17,27 +17,30 @@ public record DeleteDepartmentCommand(Guid Id) : IRequest;
 public class DeleteDepartmentCommandHandler : AsyncRequestHandler<DeleteDepartmentCommand>
 {
     private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IDepartmentsRepository _departmentsRepository;
+    private readonly IDepartmentsRoRepository _departmentsRoRepository;
+    private readonly IDepartmentsRwRepository _departmentsRwRepository;
     private readonly IMediator _mediator;
 
     public DeleteDepartmentCommandHandler(
-        IDepartmentsRepository departmentsRepository,
+        IDepartmentsRwRepository departmentsRwRepository,
+        IDepartmentsRoRepository departmentsRoRepository,
         ICoursesRoRepository coursesRepository,
         IMediator mediator)
     {
-        _departmentsRepository = departmentsRepository;
+        _departmentsRwRepository = departmentsRwRepository;
+        _departmentsRoRepository = departmentsRoRepository;
         _coursesRepository = coursesRepository;
         _mediator = mediator;
     }
 
     protected override async Task Handle(DeleteDepartmentCommand request, CancellationToken cancellationToken)
     {
-        if (request is null) throw new ArgumentNullException(nameof(request));
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        if (!await _departmentsRepository.Exists(request.Id, cancellationToken))
+        if (!await _departmentsRoRepository.Exists(request.Id, cancellationToken))
             throw new EntityNotFoundException("department", request.Id);
 
-        await _departmentsRepository.Remove(request.Id, cancellationToken);
+        await _departmentsRwRepository.Remove(request.Id, cancellationToken);
 
         Guid[] relatedCoursesIds = (await _coursesRepository.GetByDepartmentId(request.Id, cancellationToken))
             .Select(x => x.ExternalId)

@@ -14,12 +14,12 @@ public record DeleteInstructorCommand(Guid Id) : IRequest;
 
 public class DeleteInstructorCommandHandler : AsyncRequestHandler<DeleteInstructorCommand>
 {
-    private readonly IDepartmentsRepository _departmentsRepository;
+    private readonly IDepartmentsRwRepository _departmentsRepository;
     private readonly IInstructorsRepository _instructorsRepository;
 
     public DeleteInstructorCommandHandler(
         IInstructorsRepository instructorsRepository,
-        IDepartmentsRepository departmentsRepository)
+        IDepartmentsRwRepository departmentsRepository)
     {
         _instructorsRepository = instructorsRepository;
         _departmentsRepository = departmentsRepository;

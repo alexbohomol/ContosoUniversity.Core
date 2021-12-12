@@ -17,12 +17,12 @@ public record GetDepartmentEditFormQuery(Guid Id) : IRequest<EditDepartmentForm>
 
 public class GetDepartmentEditFormQueryHandler : IRequestHandler<GetDepartmentEditFormQuery, EditDepartmentForm>
 {
-    private readonly IDepartmentsRepository _departmentsRepository;
+    private readonly IDepartmentsRoRepository _departmentsRepository;
     private readonly IInstructorsRepository _instructorsRepository;
 
     public GetDepartmentEditFormQueryHandler(
         IInstructorsRepository instructorsRepository,
-        IDepartmentsRepository departmentsRepository)
+        IDepartmentsRoRepository departmentsRepository)
     {
         _instructorsRepository = instructorsRepository;
         _departmentsRepository = departmentsRepository;

@@ -17,12 +17,12 @@ public record GetDepartmentDetailsQuery(Guid Id) : IRequest<DepartmentDetailsVie
 
 public class GetDepartmentDetailsQueryHandler : IRequestHandler<GetDepartmentDetailsQuery, DepartmentDetailsViewModel>
 {
-    private readonly IDepartmentsRepository _departmentsRepository;
+    private readonly IDepartmentsRoRepository _departmentsRepository;
     private readonly IInstructorsRepository _instructorsRepository;
 
     public GetDepartmentDetailsQueryHandler(
         IInstructorsRepository instructorsRepository,
-        IDepartmentsRepository departmentsRepository)
+        IDepartmentsRoRepository departmentsRepository)
     {
         _instructorsRepository = instructorsRepository;
         _departmentsRepository = departmentsRepository;

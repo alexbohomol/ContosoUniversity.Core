@@ -13,11 +13,11 @@ using FluentValidation;
 public class CreateCourseCommandValidator : AbstractValidator<CreateCourseCommand>
 {
     private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IDepartmentsRepository _departmentsRepository;
+    private readonly IDepartmentsRoRepository _departmentsRepository;
 
     public CreateCourseCommandValidator(
         ICoursesRoRepository coursesRepository,
-        IDepartmentsRepository departmentsRepository)
+        IDepartmentsRoRepository departmentsRepository)
     {
         _coursesRepository = coursesRepository;
         _departmentsRepository = departmentsRepository;

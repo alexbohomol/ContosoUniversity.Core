@@ -15,15 +15,15 @@ using ViewModels.Departments;
 
 public record GetDepartmentsIndexQuery : IRequest<IList<DepartmentListItemViewModel>>;
 
-public class
-    GetDepartmentsIndexQueryHandler : IRequestHandler<GetDepartmentsIndexQuery, IList<DepartmentListItemViewModel>>
+public class GetDepartmentsIndexQueryHandler
+    : IRequestHandler<GetDepartmentsIndexQuery, IList<DepartmentListItemViewModel>>
 {
-    private readonly IDepartmentsRepository _departmentsRepository;
+    private readonly IDepartmentsRoRepository _departmentsRepository;
     private readonly IInstructorsRepository _instructorsRepository;
 
     public GetDepartmentsIndexQueryHandler(
         IInstructorsRepository instructorsRepository,
-        IDepartmentsRepository departmentsRepository)
+        IDepartmentsRoRepository departmentsRepository)
     {
         _instructorsRepository = instructorsRepository;
         _departmentsRepository = departmentsRepository;
