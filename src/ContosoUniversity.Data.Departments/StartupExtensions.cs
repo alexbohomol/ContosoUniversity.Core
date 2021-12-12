@@ -11,9 +11,8 @@ public static class StartupExtensions
     {
         services.AddDbContext<DepartmentsContext>(options => { options.UseSqlServer(connectionString); });
 
-        services.AddScoped<IDepartmentsRepository, DepartmentsRepository>();
-        services.AddScoped<IDepartmentsRoRepository, DepartmentsRepository>();
-        services.AddScoped<IDepartmentsRwRepository, DepartmentsRepository>();
+        services.AddScoped<IDepartmentsRoRepository, DepartmentsRoRepository>();
+        services.AddScoped<IDepartmentsRwRepository, DepartmentsRwRepository>();
 
         services.AddScoped<IInstructorsRepository, InstructorsRepository>();
         services.AddScoped<IInstructorsRoRepository, InstructorsRepository>();

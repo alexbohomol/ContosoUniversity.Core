@@ -11,9 +11,9 @@ using Domain.Department;
 
 using Microsoft.EntityFrameworkCore;
 
-public class DepartmentsRepository : EfRepository<Department>, IDepartmentsRepository
+public class DepartmentsRoRepository : EfRoRepository<Department>, IDepartmentsRoRepository
 {
-    public DepartmentsRepository(DepartmentsContext dbContext) : base(dbContext)
+    public DepartmentsRoRepository(DepartmentsContext dbContext) : base(dbContext)
     {
     }
 
@@ -31,12 +31,5 @@ public class DepartmentsRepository : EfRepository<Department>, IDepartmentsRepos
                 x => x.ExternalId,
                 x => x.Name,
                 cancellationToken);
-    }
-
-    public Task<Department[]> GetByAdministrator(Guid instructorId, CancellationToken cancellationToken = default)
-    {
-        return DbSet
-            .Where(x => x.AdministratorId != null && x.AdministratorId == instructorId)
-            .ToArrayAsync(cancellationToken);
     }
 }
