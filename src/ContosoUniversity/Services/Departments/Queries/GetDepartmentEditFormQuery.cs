@@ -18,10 +18,10 @@ public record GetDepartmentEditFormQuery(Guid Id) : IRequest<EditDepartmentForm>
 public class GetDepartmentEditFormQueryHandler : IRequestHandler<GetDepartmentEditFormQuery, EditDepartmentForm>
 {
     private readonly IDepartmentsRoRepository _departmentsRepository;
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IInstructorsRoRepository _instructorsRepository;
 
     public GetDepartmentEditFormQueryHandler(
-        IInstructorsRepository instructorsRepository,
+        IInstructorsRoRepository instructorsRepository,
         IDepartmentsRoRepository departmentsRepository)
     {
         _instructorsRepository = instructorsRepository;

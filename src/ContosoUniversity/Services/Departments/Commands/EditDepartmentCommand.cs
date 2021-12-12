@@ -23,10 +23,10 @@ public class EditDepartmentCommand : IRequest
 public class EditDepartmentCommandHandler : AsyncRequestHandler<EditDepartmentCommand>
 {
     private readonly IDepartmentsRwRepository _departmentsRepository;
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IInstructorsRoRepository _instructorsRepository;
 
     public EditDepartmentCommandHandler(
-        IInstructorsRepository instructorsRepository,
+        IInstructorsRoRepository instructorsRepository,
         IDepartmentsRwRepository departmentsRepository)
     {
         _instructorsRepository = instructorsRepository;

@@ -18,10 +18,10 @@ public record GetDepartmentDetailsQuery(Guid Id) : IRequest<DepartmentDetailsVie
 public class GetDepartmentDetailsQueryHandler : IRequestHandler<GetDepartmentDetailsQuery, DepartmentDetailsViewModel>
 {
     private readonly IDepartmentsRoRepository _departmentsRepository;
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IInstructorsRoRepository _instructorsRepository;
 
     public GetDepartmentDetailsQueryHandler(
-        IInstructorsRepository instructorsRepository,
+        IInstructorsRoRepository instructorsRepository,
         IDepartmentsRoRepository departmentsRepository)
     {
         _instructorsRepository = instructorsRepository;

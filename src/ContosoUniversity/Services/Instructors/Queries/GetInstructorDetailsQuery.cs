@@ -16,9 +16,9 @@ public record GetInstructorDetailsQuery(Guid Id) : IRequest<InstructorDetailsVie
 
 public class GetInstructorDetailsQueryHandler : IRequestHandler<GetInstructorDetailsQuery, InstructorDetailsViewModel>
 {
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IInstructorsRoRepository _instructorsRepository;
 
-    public GetInstructorDetailsQueryHandler(IInstructorsRepository instructorsRepository)
+    public GetInstructorDetailsQueryHandler(IInstructorsRoRepository instructorsRepository)
     {
         _instructorsRepository = instructorsRepository;
     }

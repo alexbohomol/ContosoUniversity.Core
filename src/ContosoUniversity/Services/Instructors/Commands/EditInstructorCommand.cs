@@ -26,9 +26,9 @@ public class EditInstructorCommand : IRequest
 
 public class EditInstructorCommandHandler : AsyncRequestHandler<EditInstructorCommand>
 {
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IInstructorsRwRepository _instructorsRepository;
 
-    public EditInstructorCommandHandler(IInstructorsRepository instructorsRepository)
+    public EditInstructorCommandHandler(IInstructorsRwRepository instructorsRepository)
     {
         _instructorsRepository = instructorsRepository;
     }

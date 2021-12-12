@@ -15,19 +15,22 @@ public record DeleteInstructorCommand(Guid Id) : IRequest;
 public class DeleteInstructorCommandHandler : AsyncRequestHandler<DeleteInstructorCommand>
 {
     private readonly IDepartmentsRwRepository _departmentsRepository;
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IInstructorsRoRepository _instructorsRoRepository;
+    private readonly IInstructorsRwRepository _instructorsRwRepository;
 
     public DeleteInstructorCommandHandler(
-        IInstructorsRepository instructorsRepository,
+        IInstructorsRwRepository instructorsRwRepository,
+        IInstructorsRoRepository instructorsRoRepository,
         IDepartmentsRwRepository departmentsRepository)
     {
-        _instructorsRepository = instructorsRepository;
+        _instructorsRwRepository = instructorsRwRepository;
+        _instructorsRoRepository = instructorsRoRepository;
         _departmentsRepository = departmentsRepository;
     }
 
     protected override async Task Handle(DeleteInstructorCommand request, CancellationToken cancellationToken)
     {
-        if (!await _instructorsRepository.Exists(request.Id, cancellationToken))
+        if (!await _instructorsRoRepository.Exists(request.Id, cancellationToken))
             throw new EntityNotFoundException("instructor", request.Id);
 
         Department[] administratedDepartments = await _departmentsRepository.GetByAdministrator(
@@ -39,6 +42,6 @@ public class DeleteInstructorCommandHandler : AsyncRequestHandler<DeleteInstruct
             await _departmentsRepository.Save(department, cancellationToken);
         }
 
-        await _instructorsRepository.Remove(request.Id, cancellationToken);
+        await _instructorsRwRepository.Remove(request.Id, cancellationToken);
     }
 }

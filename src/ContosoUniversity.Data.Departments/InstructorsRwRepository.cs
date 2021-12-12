@@ -1,7 +1,12 @@
 namespace ContosoUniversity.Data.Departments;
 
+using System.Threading;
+using System.Threading.Tasks;
+
 using Domain.Contracts;
 using Domain.Instructor;
+
+using Microsoft.EntityFrameworkCore;
 
 public class InstructorsRwRepository : EfRwRepository<Instructor>, IInstructorsRwRepository
 {
@@ -14,5 +19,10 @@ public class InstructorsRwRepository : EfRwRepository<Instructor>, IInstructorsR
                 nameof(Instructor.Office)
             })
     {
+    }
+
+    public async Task<Instructor[]> GetAll(CancellationToken cancellationToken = default)
+    {
+        return await DbQuery.ToArrayAsync(cancellationToken);
     }
 }

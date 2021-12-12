@@ -22,11 +22,11 @@ public class GetInstructorsIndexQueryHandler : IRequestHandler<GetInstructorsInd
 {
     private readonly ICoursesRoRepository _coursesRepository;
     private readonly IDepartmentsRoRepository _departmentsRepository;
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IInstructorsRoRepository _instructorsRepository;
     private readonly IStudentsRepository _studentsRepository;
 
     public GetInstructorsIndexQueryHandler(
-        IInstructorsRepository instructorsRepository,
+        IInstructorsRoRepository instructorsRepository,
         IDepartmentsRoRepository departmentsRepository,
         ICoursesRoRepository coursesRepository,
         IStudentsRepository studentsRepository)

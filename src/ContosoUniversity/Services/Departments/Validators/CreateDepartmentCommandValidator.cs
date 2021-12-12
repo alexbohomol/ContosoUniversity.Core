@@ -12,9 +12,9 @@ using FluentValidation;
 
 public class CreateDepartmentCommandValidator : AbstractValidator<CreateDepartmentCommand>
 {
-    private readonly IInstructorsRepository _repository;
+    private readonly IInstructorsRoRepository _repository;
 
-    public CreateDepartmentCommandValidator(IInstructorsRepository repository)
+    public CreateDepartmentCommandValidator(IInstructorsRoRepository repository)
     {
         _repository = repository;
 

@@ -22,9 +22,9 @@ public class CreateInstructorCommand : IRequest
 
 public class CreateInstructorCommandHandler : AsyncRequestHandler<CreateInstructorCommand>
 {
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IInstructorsRwRepository _instructorsRepository;
 
-    public CreateInstructorCommandHandler(IInstructorsRepository instructorsRepository)
+    public CreateInstructorCommandHandler(IInstructorsRwRepository instructorsRepository)
     {
         _instructorsRepository = instructorsRepository;
     }

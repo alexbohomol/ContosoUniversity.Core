@@ -19,10 +19,10 @@ public class GetDepartmentsIndexQueryHandler
     : IRequestHandler<GetDepartmentsIndexQuery, IList<DepartmentListItemViewModel>>
 {
     private readonly IDepartmentsRoRepository _departmentsRepository;
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IInstructorsRoRepository _instructorsRepository;
 
     public GetDepartmentsIndexQueryHandler(
-        IInstructorsRepository instructorsRepository,
+        IInstructorsRoRepository instructorsRepository,
         IDepartmentsRoRepository departmentsRepository)
     {
         _instructorsRepository = instructorsRepository;
