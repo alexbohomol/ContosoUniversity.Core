@@ -24,6 +24,16 @@ public abstract class EfRoRepository<TReadModel> : IRoRepository<TReadModel>
         DbQuery = DbSet;
     }
 
+    /// <summary>
+    ///     https://gist.github.com/oneillci/3205384
+    /// </summary>
+    protected EfRoRepository(DbContext dbContext, string[] defaultIncludes) : this(dbContext)
+    {
+        DbQuery = defaultIncludes.Aggregate(
+            DbQuery,
+            (dbQuery, relationProperty) => dbQuery.Include(relationProperty));
+    }
+
     public async Task<bool> Exists(Guid entityId, CancellationToken cancellationToken = default)
     {
         return await DbSet.AnyAsync(x => x.ExternalId == entityId, cancellationToken);

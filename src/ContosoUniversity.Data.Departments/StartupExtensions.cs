@@ -14,8 +14,7 @@ public static class StartupExtensions
         services.AddScoped<IDepartmentsRoRepository, DepartmentsRoRepository>();
         services.AddScoped<IDepartmentsRwRepository, DepartmentsRwRepository>();
 
-        services.AddScoped<IInstructorsRepository, InstructorsRepository>();
-        services.AddScoped<IInstructorsRoRepository, InstructorsRepository>();
-        services.AddScoped<IInstructorsRwRepository, InstructorsRepository>();
+        services.AddScoped<IInstructorsRoRepository, InstructorsRoRepository>();
+        services.AddScoped<IInstructorsRwRepository, InstructorsRwRepository>();
     }
 }

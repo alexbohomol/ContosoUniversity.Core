@@ -11,9 +11,9 @@ using Domain.Instructor;
 
 using Microsoft.EntityFrameworkCore;
 
-public class InstructorsRepository : EfRepository<Instructor>, IInstructorsRepository
+public class InstructorsRoRepository : EfRoRepository<Instructor>, IInstructorsRoRepository
 {
-    public InstructorsRepository(DepartmentsContext dbContext)
+    public InstructorsRoRepository(DepartmentsContext dbContext)
         : base(
             dbContext,
             new[]
