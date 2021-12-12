@@ -2,6 +2,7 @@ namespace ContosoUniversity.Data.Departments;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,6 +28,11 @@ public class InstructorsRepository : EfRepository<Instructor>, IInstructorsRepos
     {
         return DbSet
             .AsNoTracking()
+            .Select(x => new
+            {
+                x.ExternalId,
+                FullName = $"{x.LastName}, {x.FirstName}"
+            })
             .ToDictionaryAsync(
                 x => x.ExternalId,
                 x => x.FullName,

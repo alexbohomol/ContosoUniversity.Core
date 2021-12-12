@@ -21,6 +21,11 @@ public class DepartmentsRepository : EfRepository<Department>, IDepartmentsRepos
     {
         return DbSet
             .AsNoTracking()
+            .Select(x => new
+            {
+                x.ExternalId,
+                x.Name
+            })
             .OrderBy(x => x.Name)
             .ToDictionaryAsync(
                 x => x.ExternalId,
@@ -31,7 +36,6 @@ public class DepartmentsRepository : EfRepository<Department>, IDepartmentsRepos
     public Task<Department[]> GetByAdministrator(Guid instructorId, CancellationToken cancellationToken = default)
     {
         return DbSet
-            .AsNoTracking()
             .Where(x => x.AdministratorId != null && x.AdministratorId == instructorId)
             .ToArrayAsync(cancellationToken);
     }
