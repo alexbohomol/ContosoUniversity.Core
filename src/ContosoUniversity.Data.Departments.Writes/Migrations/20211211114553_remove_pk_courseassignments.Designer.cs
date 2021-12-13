@@ -4,18 +4,18 @@ using ContosoUniversity.Data.Departments;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ContosoUniversity.Data.Departments.Migrations
+namespace ContosoUniversity.Data.Departments.Writes.Migrations
 {
-    using Writes;
-
     [DbContext(typeof(ReadWriteContext))]
-    partial class DepartmentsContextModelSnapshot : ModelSnapshot
+    [Migration("20211211114553_remove_pk_courseassignments")]
+    partial class remove_pk_courseassignments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

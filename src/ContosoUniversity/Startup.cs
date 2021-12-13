@@ -2,7 +2,8 @@
 
 using Data.Courses.Reads;
 using Data.Courses.Writes;
-using Data.Departments;
+using Data.Departments.Reads;
+using Data.Departments.Writes;
 using Data.Students;
 
 using FluentValidation.AspNetCore;

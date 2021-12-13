@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace ContosoUniversity.Data.Departments.Migrations
+namespace ContosoUniversity.Data.Departments.Writes.Migrations
 {
     public partial class remove_pk_courseassignments : Migration
     {

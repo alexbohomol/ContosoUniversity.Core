@@ -8,9 +8,9 @@ using Domain.Instructor;
 
 using Microsoft.EntityFrameworkCore;
 
-internal class InstructorsRwRepository : EfRwRepository<Instructor>, IInstructorsRwRepository
+internal class InstructorsReadWriteRepository : EfRwRepository<Instructor>, IInstructorsRwRepository
 {
-    public InstructorsRwRepository(ReadWriteContext dbContext)
+    public InstructorsReadWriteRepository(ReadWriteContext dbContext)
         : base(
             dbContext,
             new[]

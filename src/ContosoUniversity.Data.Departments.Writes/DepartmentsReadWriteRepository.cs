@@ -10,9 +10,9 @@ using Domain.Department;
 
 using Microsoft.EntityFrameworkCore;
 
-internal class DepartmentsRwRepository : EfRwRepository<Department>, IDepartmentsRwRepository
+internal class DepartmentsReadWriteRepository : EfRwRepository<Department>, IDepartmentsRwRepository
 {
-    public DepartmentsRwRepository(ReadWriteContext dbContext) : base(dbContext)
+    public DepartmentsReadWriteRepository(ReadWriteContext dbContext) : base(dbContext)
     {
     }
 
