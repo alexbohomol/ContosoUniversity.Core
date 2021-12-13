@@ -38,7 +38,8 @@ public class Startup
         services.AddCoursesSchemaReads(Configuration.GetConnectionString("Courses"));
         services.AddCoursesSchemaWrites(Configuration.GetConnectionString("Courses"));
         services.AddStudentsSchema(Configuration.GetConnectionString("Students"));
-        services.AddDepartmentsSchema(Configuration.GetConnectionString("Departments"));
+        services.AddDepartmentsSchemaReads(Configuration.GetConnectionString("Departments"));
+        services.AddDepartmentsSchemaWrites(Configuration.GetConnectionString("Departments"));
 
         services
             .AddMvc()

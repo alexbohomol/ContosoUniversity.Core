@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Data.Departments;
+namespace ContosoUniversity.Data.Departments.Writes;
 
 using System;
 using System.Linq;
@@ -10,9 +10,9 @@ using Domain.Department;
 
 using Microsoft.EntityFrameworkCore;
 
-public class DepartmentsRwRepository : EfRwRepository<Department>, IDepartmentsRwRepository
+internal class DepartmentsRwRepository : EfRwRepository<Department>, IDepartmentsRwRepository
 {
-    public DepartmentsRwRepository(DepartmentsContext dbContext) : base(dbContext)
+    public DepartmentsRwRepository(ReadWriteContext dbContext) : base(dbContext)
     {
     }
 

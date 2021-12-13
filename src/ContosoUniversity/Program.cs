@@ -3,7 +3,7 @@
 using System.Threading.Tasks;
 
 using Data.Courses.Writes;
-using Data.Departments;
+using Data.Departments.Writes;
 using Data.Students;
 
 using Microsoft.AspNetCore;

@@ -1,15 +1,15 @@
-﻿namespace ContosoUniversity.Data.Departments;
+﻿namespace ContosoUniversity.Data.Departments.Writes;
 
 using Domain.Department;
 using Domain.Instructor;
 
 using Microsoft.EntityFrameworkCore;
 
-public class DepartmentsContext : DbContext
+public class ReadWriteContext : DbContext
 {
     public const string Schema = "dpt";
 
-    public DepartmentsContext(DbContextOptions<DepartmentsContext> options) : base(options)
+    public ReadWriteContext(DbContextOptions<ReadWriteContext> options) : base(options)
     {
     }
 

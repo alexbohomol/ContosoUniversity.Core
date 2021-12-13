@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Data.Departments;
+namespace ContosoUniversity.Data.Departments.Reads;
 
 using System;
 
@@ -8,7 +8,7 @@ using Domain.Instructor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-public class EntityTypeConfigurations :
+internal class EntityTypeConfigurations :
     IEntityTypeConfiguration<Instructor>,
     IEntityTypeConfiguration<Department>,
     IEntityTypeConfiguration<CourseAssignment>,
@@ -21,7 +21,7 @@ public class EntityTypeConfigurations :
 
         builder.HasKey(x => new { x.InstructorId, x.CourseId });
 
-        builder.ToTable("CourseAssignment", DepartmentsContext.Schema);
+        builder.ToTable("CourseAssignment", ReadOnlyContext.Schema);
     }
 
     public void Configure(EntityTypeBuilder<Department> builder)
@@ -51,7 +51,7 @@ public class EntityTypeConfigurations :
             .Property(x => x.AdministratorId)
             .HasColumnName("InstructorId");
 
-        builder.ToTable("Department", DepartmentsContext.Schema);
+        builder.ToTable("Department", ReadOnlyContext.Schema);
     }
 
     public void Configure(EntityTypeBuilder<Instructor> builder)
@@ -89,7 +89,7 @@ public class EntityTypeConfigurations :
             .WithOne()
             .HasForeignKey("OfficeAssignment");
 
-        builder.ToTable("Instructor", DepartmentsContext.Schema);
+        builder.ToTable("Instructor", ReadOnlyContext.Schema);
     }
 
     public void Configure(EntityTypeBuilder<OfficeAssignment> builder)
@@ -102,6 +102,6 @@ public class EntityTypeConfigurations :
             .HasMaxLength(OfficeAssignment.TitleMaxLength)
             .IsRequired();
 
-        builder.ToTable("OfficeAssignment", DepartmentsContext.Schema);
+        builder.ToTable("OfficeAssignment", ReadOnlyContext.Schema);
     }
 }

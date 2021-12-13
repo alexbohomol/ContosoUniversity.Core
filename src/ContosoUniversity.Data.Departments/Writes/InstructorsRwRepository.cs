@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Data.Departments;
+namespace ContosoUniversity.Data.Departments.Writes;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,9 +8,9 @@ using Domain.Instructor;
 
 using Microsoft.EntityFrameworkCore;
 
-public class InstructorsRwRepository : EfRwRepository<Instructor>, IInstructorsRwRepository
+internal class InstructorsRwRepository : EfRwRepository<Instructor>, IInstructorsRwRepository
 {
-    public InstructorsRwRepository(DepartmentsContext dbContext)
+    public InstructorsRwRepository(ReadWriteContext dbContext)
         : base(
             dbContext,
             new[]

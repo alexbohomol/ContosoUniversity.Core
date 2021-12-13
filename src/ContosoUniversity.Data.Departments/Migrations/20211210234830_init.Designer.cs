@@ -11,7 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ContosoUniversity.Data.Departments.Migrations
 {
-    [DbContext(typeof(DepartmentsContext))]
+    using Writes;
+
+    [DbContext(typeof(ReadWriteContext))]
     [Migration("20211210234830_init")]
     partial class init
     {

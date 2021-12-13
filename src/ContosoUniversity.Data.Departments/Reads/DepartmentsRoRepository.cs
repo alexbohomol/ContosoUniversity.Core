@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Data.Departments;
+namespace ContosoUniversity.Data.Departments.Reads;
 
 using System;
 using System.Collections.Generic;
@@ -11,9 +11,9 @@ using Domain.Department;
 
 using Microsoft.EntityFrameworkCore;
 
-public class DepartmentsRoRepository : EfRoRepository<Department>, IDepartmentsRoRepository
+internal class DepartmentsRoRepository : EfRoRepository<Department>, IDepartmentsRoRepository
 {
-    public DepartmentsRoRepository(DepartmentsContext dbContext) : base(dbContext)
+    public DepartmentsRoRepository(ReadOnlyContext dbContext) : base(dbContext)
     {
     }
 
