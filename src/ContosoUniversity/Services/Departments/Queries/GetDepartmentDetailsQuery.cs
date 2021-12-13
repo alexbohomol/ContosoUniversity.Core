@@ -38,7 +38,7 @@ public class GetDepartmentDetailsQueryHandler : IRequestHandler<GetDepartmentDet
         string fullname = string.Empty;
         if (department.AdministratorId.HasValue)
         {
-            Instructor administrator = await _instructorsRepository.GetById(
+            InstructorReadModel administrator = await _instructorsRepository.GetById(
                 department.AdministratorId.Value,
                 cancellationToken);
 

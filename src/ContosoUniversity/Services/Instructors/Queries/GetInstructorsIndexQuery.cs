@@ -43,7 +43,7 @@ public class GetInstructorsIndexQueryHandler : IRequestHandler<GetInstructorsInd
         Guid? id = request.Id;
         Guid? courseExternalId = request.CourseExternalId;
 
-        Instructor[] instructors = (await _instructorsRepository.GetAll(cancellationToken))
+        InstructorReadModel[] instructors = (await _instructorsRepository.GetAll(cancellationToken))
             .OrderBy(x => x.LastName)
             .ToArray();
 
@@ -61,7 +61,7 @@ public class GetInstructorsIndexQueryHandler : IRequestHandler<GetInstructorsInd
                     FirstName = x.FirstName,
                     LastName = x.LastName,
                     HireDate = x.HireDate,
-                    Office = x.Office?.Title,
+                    Office = x.Office,
                     AssignedCourseIds = x.Courses,
                     AssignedCourses = courses
                         .Where(c => x.Courses.Contains(c.ExternalId))

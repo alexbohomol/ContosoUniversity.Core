@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 using Instructor;
 
-public interface IInstructorsRoRepository : IRoRepository<Instructor>
+public interface IInstructorsRoRepository : IRoRepository<InstructorReadModel>
 {
     Task<Dictionary<Guid, string>> GetInstructorNamesReference(CancellationToken cancellationToken = default);
 }

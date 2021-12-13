@@ -26,7 +26,7 @@ public class GetInstructorDetailsQueryHandler : IRequestHandler<GetInstructorDet
     public async Task<InstructorDetailsViewModel> Handle(GetInstructorDetailsQuery request,
         CancellationToken cancellationToken)
     {
-        Instructor instructor = await _instructorsRepository.GetById(request.Id, cancellationToken);
+        InstructorReadModel instructor = await _instructorsRepository.GetById(request.Id, cancellationToken);
         if (instructor == null)
             throw new EntityNotFoundException(nameof(instructor), request.Id);
 

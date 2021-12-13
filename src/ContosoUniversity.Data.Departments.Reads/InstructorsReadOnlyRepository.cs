@@ -11,16 +11,9 @@ using Domain.Instructor;
 
 using Microsoft.EntityFrameworkCore;
 
-internal class InstructorsReadOnlyRepository : EfRoRepository<Instructor>, IInstructorsRoRepository
+internal class InstructorsReadOnlyRepository : EfRoRepository<InstructorReadModel>, IInstructorsRoRepository
 {
-    public InstructorsReadOnlyRepository(ReadOnlyContext dbContext)
-        : base(
-            dbContext,
-            new[]
-            {
-                nameof(Instructor.Assignments),
-                nameof(Instructor.Office)
-            })
+    public InstructorsReadOnlyRepository(ReadOnlyContext dbContext) : base(dbContext)
     {
     }
 

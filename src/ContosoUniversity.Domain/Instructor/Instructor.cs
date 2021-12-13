@@ -40,8 +40,6 @@ public class Instructor : IIdentifiable<Guid>
 
     public OfficeAssignment Office { get; set; }
 
-    public string FullName => $"{LastName}, {FirstName}";
-
     public Guid ExternalId { get; }
 
     public static Instructor Create(

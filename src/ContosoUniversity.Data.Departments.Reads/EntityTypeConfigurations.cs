@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 internal class EntityTypeConfigurations :
-    IEntityTypeConfiguration<Instructor>,
+    IEntityTypeConfiguration<InstructorReadModel>,
     IEntityTypeConfiguration<DepartmentReadModel>,
     IEntityTypeConfiguration<CourseAssignment>,
     IEntityTypeConfiguration<OfficeAssignment>
@@ -33,14 +33,9 @@ internal class EntityTypeConfigurations :
             .Property(x => x.ExternalId)
             .HasColumnName("Id");
 
-        builder
-            .Property(x => x.Name);
-
-        builder
-            .Property(x => x.Budget);
-
-        builder
-            .Property(x => x.StartDate);
+        builder.Property(x => x.Name);
+        builder.Property(x => x.Budget);
+        builder.Property(x => x.StartDate);
 
         builder
             .Property(x => x.AdministratorId)
@@ -49,7 +44,7 @@ internal class EntityTypeConfigurations :
         builder.ToTable("Department", ReadOnlyContext.Schema);
     }
 
-    public void Configure(EntityTypeBuilder<Instructor> builder)
+    public void Configure(EntityTypeBuilder<InstructorReadModel> builder)
     {
         builder
             .HasKey(x => x.ExternalId);
@@ -58,31 +53,23 @@ internal class EntityTypeConfigurations :
             .Property(x => x.ExternalId)
             .HasColumnName("Id");
 
-        builder
-            .Property(x => x.FirstName)
-            .HasMaxLength(Instructor.FirstNameMaxLength)
-            .IsRequired();
+        builder.Property(x => x.FirstName);
+        builder.Property(x => x.LastName);
+        builder.Property(x => x.HireDate);
 
         builder
-            .Property(x => x.LastName)
-            .HasMaxLength(Instructor.LastNameMaxLength)
-            .IsRequired();
-
-        builder
-            .Property(x => x.HireDate)
-            .IsRequired();
-
-        builder.Ignore(x => x.Courses);
-
-        builder
-            .HasMany(x => x.Assignments)
+            .HasMany(typeof(CourseAssignment), "_courseAssignments")
             .WithOne()
             .HasForeignKey("InstructorId");
 
+        builder.Navigation("_courseAssignments").AutoInclude();
+
         builder
-            .HasOne(x => x.Office)
+            .HasOne(typeof(OfficeAssignment), "_officeAssignment")
             .WithOne()
             .HasForeignKey("OfficeAssignment");
+
+        builder.Navigation("_officeAssignment").AutoInclude();
 
         builder.ToTable("Instructor", ReadOnlyContext.Schema);
     }
