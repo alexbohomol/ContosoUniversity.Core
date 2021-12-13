@@ -34,7 +34,7 @@ public class GetCourseDetailsQueryHandler : IRequestHandler<GetCourseDetailsQuer
         if (course == null)
             throw new EntityNotFoundException(nameof(course), request.Id);
 
-        Department department = await _departmentsRepository.GetById(course.DepartmentId, cancellationToken);
+        DepartmentReadModel department = await _departmentsRepository.GetById(course.DepartmentId, cancellationToken);
         if (department == null)
             throw new EntityNotFoundException(nameof(department), course.DepartmentId);
 

@@ -20,6 +20,6 @@ internal class ReadOnlyContext : DbContext
         modelBuilder.ApplyConfiguration<OfficeAssignment>(new EntityTypeConfigurations());
         modelBuilder.ApplyConfiguration<CourseAssignment>(new EntityTypeConfigurations());
         modelBuilder.ApplyConfiguration<Instructor>(new EntityTypeConfigurations());
-        modelBuilder.ApplyConfiguration<Department>(new EntityTypeConfigurations());
+        modelBuilder.ApplyConfiguration<DepartmentReadModel>(new EntityTypeConfigurations());
     }
 }

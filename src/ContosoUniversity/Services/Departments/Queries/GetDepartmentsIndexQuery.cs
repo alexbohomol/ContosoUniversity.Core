@@ -32,7 +32,8 @@ public class GetDepartmentsIndexQueryHandler
     public async Task<IList<DepartmentListItemViewModel>> Handle(GetDepartmentsIndexQuery request,
         CancellationToken cancellationToken)
     {
-        Department[] departments = await _departmentsRepository.GetAll(cancellationToken);
+#warning This is potential place to introduce view in scope of dpt-schema. Instructors names can be included in read model,
+        DepartmentReadModel[] departments = await _departmentsRepository.GetAll(cancellationToken);
 
         Dictionary<Guid, string> instructorsNames =
             await _instructorsRepository.GetInstructorNamesReference(cancellationToken);

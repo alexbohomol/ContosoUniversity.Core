@@ -31,7 +31,7 @@ public class GetDepartmentEditFormQueryHandler : IRequestHandler<GetDepartmentEd
     public async Task<EditDepartmentForm> Handle(GetDepartmentEditFormQuery request,
         CancellationToken cancellationToken)
     {
-        Department department = await _departmentsRepository.GetById(request.Id, cancellationToken);
+        DepartmentReadModel department = await _departmentsRepository.GetById(request.Id, cancellationToken);
 
         Dictionary<Guid, string> instructorNames =
             await _instructorsRepository.GetInstructorNamesReference(cancellationToken);

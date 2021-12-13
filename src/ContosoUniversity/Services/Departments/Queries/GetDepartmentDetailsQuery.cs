@@ -31,7 +31,7 @@ public class GetDepartmentDetailsQueryHandler : IRequestHandler<GetDepartmentDet
     public async Task<DepartmentDetailsViewModel> Handle(GetDepartmentDetailsQuery request,
         CancellationToken cancellationToken)
     {
-        Department department = await _departmentsRepository.GetById(request.Id, cancellationToken);
+        DepartmentReadModel department = await _departmentsRepository.GetById(request.Id, cancellationToken);
         if (department is null)
             throw new EntityNotFoundException(nameof(department), request.Id);
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 using Department;
 
-public interface IDepartmentsRoRepository : IRoRepository<Department>
+public interface IDepartmentsRoRepository : IRoRepository<DepartmentReadModel>
 {
     Task<Dictionary<Guid, string>> GetDepartmentNamesReference(CancellationToken cancellationToken = default);
 }

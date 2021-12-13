@@ -11,7 +11,7 @@ using Domain.Department;
 
 using Microsoft.EntityFrameworkCore;
 
-internal class DepartmentsReadOnlyRepository : EfRoRepository<Department>, IDepartmentsRoRepository
+internal class DepartmentsReadOnlyRepository : EfRoRepository<DepartmentReadModel>, IDepartmentsRoRepository
 {
     public DepartmentsReadOnlyRepository(ReadOnlyContext dbContext) : base(dbContext)
     {

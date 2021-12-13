@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 internal class EntityTypeConfigurations :
     IEntityTypeConfiguration<Instructor>,
-    IEntityTypeConfiguration<Department>,
+    IEntityTypeConfiguration<DepartmentReadModel>,
     IEntityTypeConfiguration<CourseAssignment>,
     IEntityTypeConfiguration<OfficeAssignment>
 {
@@ -24,7 +24,7 @@ internal class EntityTypeConfigurations :
         builder.ToTable("CourseAssignment", ReadOnlyContext.Schema);
     }
 
-    public void Configure(EntityTypeBuilder<Department> builder)
+    public void Configure(EntityTypeBuilder<DepartmentReadModel> builder)
     {
         builder
             .HasKey(x => x.ExternalId);
@@ -34,18 +34,13 @@ internal class EntityTypeConfigurations :
             .HasColumnName("Id");
 
         builder
-            .Property(x => x.Name)
-            .HasMaxLength(Department.NameMaxLength)
-            .IsRequired();
+            .Property(x => x.Name);
 
         builder
-            .Property(x => x.Budget)
-            .HasColumnType("money")
-            .IsRequired();
+            .Property(x => x.Budget);
 
         builder
-            .Property(x => x.StartDate)
-            .IsRequired();
+            .Property(x => x.StartDate);
 
         builder
             .Property(x => x.AdministratorId)
