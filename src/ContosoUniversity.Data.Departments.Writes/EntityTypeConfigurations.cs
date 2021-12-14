@@ -85,11 +85,11 @@ internal class EntityTypeConfigurations :
         builder.Navigation("_courseAssignments").AutoInclude();
 
         builder
-            .HasOne(x => x.Office)
+            .HasOne(typeof(OfficeAssignment), "_officeAssignment")
             .WithOne()
             .HasForeignKey("OfficeAssignment");
 
-        builder.Navigation(x => x.Office).AutoInclude();
+        builder.Navigation("_officeAssignment").AutoInclude();
 
         builder.ToTable("Instructor", ReadWriteContext.Schema);
     }

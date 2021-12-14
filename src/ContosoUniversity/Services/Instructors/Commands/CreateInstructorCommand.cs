@@ -34,12 +34,14 @@ public class CreateInstructorCommandHandler : AsyncRequestHandler<CreateInstruct
         var instructor = Instructor.Create(
             command.FirstName,
             command.LastName,
-            command.HireDate,
-            command.HasAssignedOffice
-                ? new OfficeAssignment(command.Location)
-                : null);
+            command.HireDate);
 
         instructor.AssignCourses(command.SelectedCourses);
+
+        if (command.HasAssignedOffice)
+            instructor.AssignOffice(new OfficeAssignment(command.Location));
+        else
+            instructor.ResetOffice();
 
         await _instructorsRepository.Save(instructor, cancellationToken);
     }

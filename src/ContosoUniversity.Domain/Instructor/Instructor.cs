@@ -10,17 +10,16 @@ public class Instructor : IIdentifiable<Guid>
     public const int LastNameMaxLength = 50;
 
     private readonly List<CourseAssignment> _courseAssignments = new();
+    private OfficeAssignment _officeAssignment;
 
     private Instructor(
         string firstName,
         string lastName,
-        DateTime hireDate,
-        OfficeAssignment office)
+        DateTime hireDate)
     {
         FirstName = firstName;
         LastName = lastName;
         HireDate = hireDate;
-        Office = office;
         ExternalId = Guid.NewGuid();
     }
 
@@ -33,8 +32,6 @@ public class Instructor : IIdentifiable<Guid>
     public string LastName { get; private set; }
 
     public DateTime HireDate { get; private set; }
-
-    public OfficeAssignment Office { get; set; }
 
     public Guid ExternalId { get; }
 
@@ -58,10 +55,9 @@ public class Instructor : IIdentifiable<Guid>
     public static Instructor Create(
         string firstName,
         string lastName,
-        DateTime hireDate,
-        OfficeAssignment office)
+        DateTime hireDate)
     {
-        return new Instructor(firstName, lastName, hireDate, office);
+        return new Instructor(firstName, lastName, hireDate);
     }
 
     public void UpdatePersonalInfo(string firstName, string lastName, DateTime hireDate)
@@ -116,11 +112,11 @@ public class Instructor : IIdentifiable<Guid>
     {
         ArgumentNullException.ThrowIfNull(officeAssignment, nameof(officeAssignment));
 
-        Office = officeAssignment;
+        _officeAssignment = officeAssignment;
     }
 
     public void ResetOffice()
     {
-        Office = null;
+        _officeAssignment = null;
     }
 }
