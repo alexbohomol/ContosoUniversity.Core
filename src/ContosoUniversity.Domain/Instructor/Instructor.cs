@@ -111,4 +111,16 @@ public class Instructor : IIdentifiable<Guid>
         //     if (!courseIds.Contains(courseId)) ResetCourseAssignment(courseId);
         // }
     }
+
+    public void AssignOffice(OfficeAssignment officeAssignment)
+    {
+        ArgumentNullException.ThrowIfNull(officeAssignment, nameof(officeAssignment));
+
+        Office = officeAssignment;
+    }
+
+    public void ResetOffice()
+    {
+        Office = null;
+    }
 }
