@@ -9,7 +9,7 @@ public class Instructor : IIdentifiable<Guid>
     public const int FirstNameMaxLength = 50;
     public const int LastNameMaxLength = 50;
 
-    private List<CourseAssignment> _courseAssignments = new();
+    private readonly List<CourseAssignment> _courseAssignments = new();
 
     private Instructor(
         string firstName,
@@ -34,13 +34,26 @@ public class Instructor : IIdentifiable<Guid>
 
     public DateTime HireDate { get; private set; }
 
-    public IList<Guid> Courses => _courseAssignments?
-        .Select(x => x.CourseId)
-        .ToList();
-
     public OfficeAssignment Office { get; set; }
 
     public Guid ExternalId { get; }
+
+    [Obsolete("Will be denounced after introducing specific query later")]
+    public bool HasCourseAssigned(Guid courseId)
+    {
+        return _courseAssignments.Select(x => x.CourseId).Contains(courseId);
+    }
+
+    public void ResetCourseAssignment(Guid courseId)
+    {
+        if (HasCourseAssigned(courseId))
+        {
+            CourseAssignment assignment = _courseAssignments.First(x => x.CourseId == courseId);
+            _courseAssignments.Remove(assignment);
+
+            // publish event here: course assignment was reset
+        }
+    }
 
     public static Instructor Create(
         string firstName,
@@ -58,10 +71,44 @@ public class Instructor : IIdentifiable<Guid>
         HireDate = hireDate;
     }
 
+    [Obsolete("Should be split into 'ResetAssignments' and 'AssignCourses' to control from outside")]
     public void AssignCourses(Guid[] courseIds)
     {
-        _courseAssignments = courseIds
-            .Select(x => new CourseAssignment(ExternalId, x))
-            .ToList();
+        if (courseIds is null || !courseIds.Any())
+        {
+            _courseAssignments.Clear();
+            return;
+        }
+
+#warning Dirty trick to be refined later
+        _courseAssignments.Clear();
+        _courseAssignments.AddRange(courseIds.Select(x => new CourseAssignment(
+            ExternalId,
+            x)));
+
+        /*
+         * Sudo-code to refine later
+         */
+
+        /*
+         * Add newly assigned courses
+         */
+        // foreach (Guid courseId in courseIds)
+        // {
+        //     if (!HasCourseAssigned(courseId))
+        //     {
+        //         _courseAssignments.Add(new CourseAssignment(ExternalId, courseId));
+        //         
+        //         // publish event here: assigned to course
+        //     }
+        // }
+
+        /*
+         * Remove courses that were reset
+         */
+        // foreach (Guid courseId in _courseAssignments.Select(x => x.CourseId))
+        // {
+        //     if (!courseIds.Contains(courseId)) ResetCourseAssignment(courseId);
+        // }
     }
 }

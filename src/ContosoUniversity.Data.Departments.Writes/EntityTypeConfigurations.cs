@@ -77,8 +77,6 @@ internal class EntityTypeConfigurations :
             .Property(x => x.HireDate)
             .IsRequired();
 
-        builder.Ignore(x => x.Courses);
-
         builder
             .HasMany(typeof(CourseAssignment), "_courseAssignments")
             .WithOne()
