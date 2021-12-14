@@ -36,16 +36,22 @@ public abstract class EfRoRepository<TReadModel> : IRoRepository<TReadModel>
 
     public async Task<bool> Exists(Guid entityId, CancellationToken cancellationToken = default)
     {
-        return await DbSet.AnyAsync(x => x.ExternalId == entityId, cancellationToken);
+        return await DbSet
+            .AsNoTracking()
+            .AnyAsync(x => x.ExternalId == entityId, cancellationToken);
     }
 
     public async Task<TReadModel> GetById(Guid entityId, CancellationToken cancellationToken = default)
     {
-        return await DbQuery.FirstOrDefaultAsync(x => x.ExternalId == entityId, cancellationToken);
+        return await DbQuery
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.ExternalId == entityId, cancellationToken);
     }
 
     public async Task<TReadModel[]> GetAll(CancellationToken cancellationToken = default)
     {
-        return await DbQuery.ToArrayAsync(cancellationToken);
+        return await DbQuery
+            .AsNoTracking()
+            .ToArrayAsync(cancellationToken);
     }
 }
