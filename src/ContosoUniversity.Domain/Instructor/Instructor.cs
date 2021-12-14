@@ -9,6 +9,8 @@ public class Instructor : IIdentifiable<Guid>
     public const int FirstNameMaxLength = 50;
     public const int LastNameMaxLength = 50;
 
+    private List<CourseAssignment> _courseAssignments = new();
+
     private Instructor(
         string firstName,
         string lastName,
@@ -32,11 +34,9 @@ public class Instructor : IIdentifiable<Guid>
 
     public DateTime HireDate { get; private set; }
 
-    public IList<Guid> Courses => Assignments
+    public IList<Guid> Courses => _courseAssignments?
         .Select(x => x.CourseId)
         .ToList();
-
-    public IList<CourseAssignment> Assignments { get; private set; }
 
     public OfficeAssignment Office { get; set; }
 
@@ -60,7 +60,7 @@ public class Instructor : IIdentifiable<Guid>
 
     public void AssignCourses(Guid[] courseIds)
     {
-        Assignments = courseIds
+        _courseAssignments = courseIds
             .Select(x => new CourseAssignment(ExternalId, x))
             .ToList();
     }

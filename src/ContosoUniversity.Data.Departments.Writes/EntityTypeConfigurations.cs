@@ -80,14 +80,18 @@ internal class EntityTypeConfigurations :
         builder.Ignore(x => x.Courses);
 
         builder
-            .HasMany(x => x.Assignments)
+            .HasMany(typeof(CourseAssignment), "_courseAssignments")
             .WithOne()
             .HasForeignKey("InstructorId");
+
+        builder.Navigation("_courseAssignments").AutoInclude();
 
         builder
             .HasOne(x => x.Office)
             .WithOne()
             .HasForeignKey("OfficeAssignment");
+
+        builder.Navigation(x => x.Office).AutoInclude();
 
         builder.ToTable("Instructor", ReadWriteContext.Schema);
     }

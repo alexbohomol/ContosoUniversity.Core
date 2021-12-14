@@ -10,14 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 internal class InstructorsReadWriteRepository : EfRwRepository<Instructor>, IInstructorsRwRepository
 {
-    public InstructorsReadWriteRepository(ReadWriteContext dbContext)
-        : base(
-            dbContext,
-            new[]
-            {
-                nameof(Instructor.Assignments),
-                nameof(Instructor.Office)
-            })
+    public InstructorsReadWriteRepository(ReadWriteContext dbContext) : base(dbContext)
     {
     }
 
