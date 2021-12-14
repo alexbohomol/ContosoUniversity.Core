@@ -16,9 +16,9 @@ public record GetInstructorDetailsQuery(Guid Id) : IRequest<InstructorDetailsVie
 
 public class GetInstructorDetailsQueryHandler : IRequestHandler<GetInstructorDetailsQuery, InstructorDetailsViewModel>
 {
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IInstructorsRoRepository _instructorsRepository;
 
-    public GetInstructorDetailsQueryHandler(IInstructorsRepository instructorsRepository)
+    public GetInstructorDetailsQueryHandler(IInstructorsRoRepository instructorsRepository)
     {
         _instructorsRepository = instructorsRepository;
     }
@@ -26,7 +26,7 @@ public class GetInstructorDetailsQueryHandler : IRequestHandler<GetInstructorDet
     public async Task<InstructorDetailsViewModel> Handle(GetInstructorDetailsQuery request,
         CancellationToken cancellationToken)
     {
-        Instructor instructor = await _instructorsRepository.GetById(request.Id, cancellationToken);
+        InstructorReadModel instructor = await _instructorsRepository.GetById(request.Id, cancellationToken);
         if (instructor == null)
             throw new EntityNotFoundException(nameof(instructor), request.Id);
 

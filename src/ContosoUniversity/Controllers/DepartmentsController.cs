@@ -19,11 +19,11 @@ using ViewModels.Departments;
 
 public class DepartmentsController : Controller
 {
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IInstructorsRoRepository _instructorsRepository;
     private readonly IMediator _mediator;
 
     public DepartmentsController(
-        IInstructorsRepository instructorsRepository,
+        IInstructorsRoRepository instructorsRepository,
         IMediator mediator)
     {
         _instructorsRepository = instructorsRepository;

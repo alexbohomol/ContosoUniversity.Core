@@ -18,11 +18,11 @@ public record GetCourseDetailsQuery(Guid Id) : IRequest<CourseDetailsViewModel>;
 public class GetCourseDetailsQueryHandler : IRequestHandler<GetCourseDetailsQuery, CourseDetailsViewModel>
 {
     private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IDepartmentsRepository _departmentsRepository;
+    private readonly IDepartmentsRoRepository _departmentsRepository;
 
     public GetCourseDetailsQueryHandler(
         ICoursesRoRepository coursesRepository,
-        IDepartmentsRepository departmentsRepository)
+        IDepartmentsRoRepository departmentsRepository)
     {
         _coursesRepository = coursesRepository;
         _departmentsRepository = departmentsRepository;
@@ -34,7 +34,7 @@ public class GetCourseDetailsQueryHandler : IRequestHandler<GetCourseDetailsQuer
         if (course == null)
             throw new EntityNotFoundException(nameof(course), request.Id);
 
-        Department department = await _departmentsRepository.GetById(course.DepartmentId, cancellationToken);
+        DepartmentReadModel department = await _departmentsRepository.GetById(course.DepartmentId, cancellationToken);
         if (department == null)
             throw new EntityNotFoundException(nameof(department), course.DepartmentId);
 

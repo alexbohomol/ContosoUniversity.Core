@@ -20,11 +20,11 @@ public class CoursesController : Controller
 {
     private readonly ICoursesRoRepository _coursesRoRepository;
     private readonly ICoursesRwRepository _coursesRwRepository;
-    private readonly IDepartmentsRepository _departmentsRepository;
+    private readonly IDepartmentsRoRepository _departmentsRepository;
     private readonly IMediator _mediator;
 
     public CoursesController(
-        IDepartmentsRepository departmentsRepository,
+        IDepartmentsRoRepository departmentsRepository,
         ICoursesRoRepository coursesRoRepository,
         ICoursesRwRepository coursesRwRepository,
         IMediator mediator)

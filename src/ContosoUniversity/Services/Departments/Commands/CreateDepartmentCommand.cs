@@ -19,16 +19,20 @@ public class CreateDepartmentCommand : IRequest
 
 public class CreateDepartmentCommandHandler : AsyncRequestHandler<CreateDepartmentCommand>
 {
-    private readonly IDepartmentsRepository _departmentsRepository;
+    private readonly IDepartmentsRwRepository _departmentsRepository;
 
-    public CreateDepartmentCommandHandler(IDepartmentsRepository departmentsRepository)
+    public CreateDepartmentCommandHandler(IDepartmentsRwRepository departmentsRepository)
     {
         _departmentsRepository = departmentsRepository;
     }
 
     protected override async Task Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
     {
-        var department = new Department(request.Name, request.Budget, request.StartDate, request.AdministratorId);
+        var department = Department.Create(
+            request.Name,
+            request.Budget,
+            request.StartDate,
+            request.AdministratorId);
 
         await _departmentsRepository.Save(department, cancellationToken);
     }

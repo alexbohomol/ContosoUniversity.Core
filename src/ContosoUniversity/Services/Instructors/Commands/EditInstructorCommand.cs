@@ -26,9 +26,9 @@ public class EditInstructorCommand : IRequest
 
 public class EditInstructorCommandHandler : AsyncRequestHandler<EditInstructorCommand>
 {
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IInstructorsRwRepository _instructorsRepository;
 
-    public EditInstructorCommandHandler(IInstructorsRepository instructorsRepository)
+    public EditInstructorCommandHandler(IInstructorsRwRepository instructorsRepository)
     {
         _instructorsRepository = instructorsRepository;
     }
@@ -40,10 +40,13 @@ public class EditInstructorCommandHandler : AsyncRequestHandler<EditInstructorCo
             throw new EntityNotFoundException(nameof(instructor), request.ExternalId);
 
         instructor.UpdatePersonalInfo(request.FirstName, request.LastName, request.HireDate);
-        instructor.Courses = request.SelectedCourses;
-        instructor.Office = request.HasAssignedOffice
-            ? new OfficeAssignment(request.Location)
-            : null;
+
+        instructor.AssignCourses(request.SelectedCourses);
+
+        if (request.HasAssignedOffice)
+            instructor.AssignOffice(new OfficeAssignment(request.Location));
+        else
+            instructor.ResetOffice();
 
         await _instructorsRepository.Save(instructor, cancellationToken);
     }

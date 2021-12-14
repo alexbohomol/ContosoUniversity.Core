@@ -2,7 +2,8 @@
 
 using Data.Courses.Reads;
 using Data.Courses.Writes;
-using Data.Departments;
+using Data.Departments.Reads;
+using Data.Departments.Writes;
 using Data.Students;
 
 using FluentValidation.AspNetCore;
@@ -38,7 +39,8 @@ public class Startup
         services.AddCoursesSchemaReads(Configuration.GetConnectionString("Courses"));
         services.AddCoursesSchemaWrites(Configuration.GetConnectionString("Courses"));
         services.AddStudentsSchema(Configuration.GetConnectionString("Students"));
-        services.AddDepartmentsSchema(Configuration.GetConnectionString("Departments"));
+        services.AddDepartmentsSchemaReads(Configuration.GetConnectionString("Departments"));
+        services.AddDepartmentsSchemaWrites(Configuration.GetConnectionString("Departments"));
 
         services
             .AddMvc()

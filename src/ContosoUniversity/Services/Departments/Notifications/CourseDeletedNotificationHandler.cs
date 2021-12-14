@@ -1,6 +1,6 @@
 namespace ContosoUniversity.Services.Departments.Notifications;
 
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,21 +14,22 @@ using MediatR;
 
 public class CourseDeletedNotificationHandler : INotificationHandler<CourseDeletedNotification>
 {
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IInstructorsRwRepository _instructorsRepository;
 
-    public CourseDeletedNotificationHandler(IInstructorsRepository instructorsRepository)
+    public CourseDeletedNotificationHandler(IInstructorsRwRepository instructorsRepository)
     {
         _instructorsRepository = instructorsRepository;
     }
 
     public async Task Handle(CourseDeletedNotification notification, CancellationToken cancellationToken)
     {
-        IEnumerable<Instructor> instructors = (await _instructorsRepository.GetAll(cancellationToken))
-            .Where(x => x.Courses.Contains(notification.Id));
+        ArgumentNullException.ThrowIfNull(notification, nameof(notification));
 
-        foreach (Instructor instructor in instructors)
+        Instructor[] instructors = await _instructorsRepository.GetAll(cancellationToken);
+
+        foreach (Instructor instructor in instructors.Where(x => x.HasCourseAssigned(notification.Id)))
         {
-            instructor.Courses.Remove(notification.Id);
+            instructor.ResetCourseAssignment(notification.Id);
             await _instructorsRepository.Save(instructor, cancellationToken);
         }
     }

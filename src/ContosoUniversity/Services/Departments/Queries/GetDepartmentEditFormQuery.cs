@@ -17,12 +17,12 @@ public record GetDepartmentEditFormQuery(Guid Id) : IRequest<EditDepartmentForm>
 
 public class GetDepartmentEditFormQueryHandler : IRequestHandler<GetDepartmentEditFormQuery, EditDepartmentForm>
 {
-    private readonly IDepartmentsRepository _departmentsRepository;
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IDepartmentsRoRepository _departmentsRepository;
+    private readonly IInstructorsRoRepository _instructorsRepository;
 
     public GetDepartmentEditFormQueryHandler(
-        IInstructorsRepository instructorsRepository,
-        IDepartmentsRepository departmentsRepository)
+        IInstructorsRoRepository instructorsRepository,
+        IDepartmentsRoRepository departmentsRepository)
     {
         _instructorsRepository = instructorsRepository;
         _departmentsRepository = departmentsRepository;
@@ -31,7 +31,7 @@ public class GetDepartmentEditFormQueryHandler : IRequestHandler<GetDepartmentEd
     public async Task<EditDepartmentForm> Handle(GetDepartmentEditFormQuery request,
         CancellationToken cancellationToken)
     {
-        Department department = await _departmentsRepository.GetById(request.Id, cancellationToken);
+        DepartmentReadModel department = await _departmentsRepository.GetById(request.Id, cancellationToken);
 
         Dictionary<Guid, string> instructorNames =
             await _instructorsRepository.GetInstructorNamesReference(cancellationToken);

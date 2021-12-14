@@ -17,12 +17,12 @@ public record GetDepartmentDetailsQuery(Guid Id) : IRequest<DepartmentDetailsVie
 
 public class GetDepartmentDetailsQueryHandler : IRequestHandler<GetDepartmentDetailsQuery, DepartmentDetailsViewModel>
 {
-    private readonly IDepartmentsRepository _departmentsRepository;
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IDepartmentsRoRepository _departmentsRepository;
+    private readonly IInstructorsRoRepository _instructorsRepository;
 
     public GetDepartmentDetailsQueryHandler(
-        IInstructorsRepository instructorsRepository,
-        IDepartmentsRepository departmentsRepository)
+        IInstructorsRoRepository instructorsRepository,
+        IDepartmentsRoRepository departmentsRepository)
     {
         _instructorsRepository = instructorsRepository;
         _departmentsRepository = departmentsRepository;
@@ -31,20 +31,20 @@ public class GetDepartmentDetailsQueryHandler : IRequestHandler<GetDepartmentDet
     public async Task<DepartmentDetailsViewModel> Handle(GetDepartmentDetailsQuery request,
         CancellationToken cancellationToken)
     {
-        Department department = await _departmentsRepository.GetById(request.Id, cancellationToken);
+        DepartmentReadModel department = await _departmentsRepository.GetById(request.Id, cancellationToken);
         if (department is null)
             throw new EntityNotFoundException(nameof(department), request.Id);
 
         string fullname = string.Empty;
         if (department.AdministratorId.HasValue)
         {
-            Instructor administrator = await _instructorsRepository.GetById(
+            InstructorReadModel administrator = await _instructorsRepository.GetById(
                 department.AdministratorId.Value,
                 cancellationToken);
 
             if (administrator is null)
                 throw new EntityNotFoundException(nameof(administrator), department.AdministratorId.Value);
-            fullname = administrator.FullName();
+            fullname = administrator.FullName;
         }
 
         return new DepartmentDetailsViewModel

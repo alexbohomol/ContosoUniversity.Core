@@ -12,9 +12,9 @@ using FluentValidation;
 
 public class EditCourseCommandValidator : AbstractValidator<EditCourseCommand>
 {
-    private readonly IDepartmentsRepository _departmentsRepository;
+    private readonly IDepartmentsRoRepository _departmentsRepository;
 
-    public EditCourseCommandValidator(IDepartmentsRepository departmentsRepository)
+    public EditCourseCommandValidator(IDepartmentsRoRepository departmentsRepository)
     {
         _departmentsRepository = departmentsRepository;
 

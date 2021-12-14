@@ -22,23 +22,26 @@ public class CreateInstructorCommand : IRequest
 
 public class CreateInstructorCommandHandler : AsyncRequestHandler<CreateInstructorCommand>
 {
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IInstructorsRwRepository _instructorsRepository;
 
-    public CreateInstructorCommandHandler(IInstructorsRepository instructorsRepository)
+    public CreateInstructorCommandHandler(IInstructorsRwRepository instructorsRepository)
     {
         _instructorsRepository = instructorsRepository;
     }
 
     protected override async Task Handle(CreateInstructorCommand command, CancellationToken cancellationToken)
     {
-        var instructor = new Instructor(
+        var instructor = Instructor.Create(
             command.FirstName,
             command.LastName,
-            command.HireDate,
-            command.SelectedCourses,
-            command.HasAssignedOffice
-                ? new OfficeAssignment(command.Location)
-                : null);
+            command.HireDate);
+
+        instructor.AssignCourses(command.SelectedCourses);
+
+        if (command.HasAssignedOffice)
+            instructor.AssignOffice(new OfficeAssignment(command.Location));
+        else
+            instructor.ResetOffice();
 
         await _instructorsRepository.Save(instructor, cancellationToken);
     }

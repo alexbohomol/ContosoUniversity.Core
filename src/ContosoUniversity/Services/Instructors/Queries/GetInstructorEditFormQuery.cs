@@ -18,10 +18,10 @@ public record GetInstructorEditFormQuery(Guid Id) : IRequest<EditInstructorForm>
 public class GetInstructorEditFormQueryHandler : IRequestHandler<GetInstructorEditFormQuery, EditInstructorForm>
 {
     private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IInstructorsRoRepository _instructorsRepository;
 
     public GetInstructorEditFormQueryHandler(
-        IInstructorsRepository instructorsRepository,
+        IInstructorsRoRepository instructorsRepository,
         ICoursesRoRepository coursesRepository)
     {
         _instructorsRepository = instructorsRepository;
@@ -31,7 +31,7 @@ public class GetInstructorEditFormQueryHandler : IRequestHandler<GetInstructorEd
     public async Task<EditInstructorForm> Handle(GetInstructorEditFormQuery request,
         CancellationToken cancellationToken)
     {
-        Instructor instructor = await _instructorsRepository.GetById(request.Id, cancellationToken);
+        InstructorReadModel instructor = await _instructorsRepository.GetById(request.Id, cancellationToken);
         if (instructor is null)
             return null;
 
@@ -43,7 +43,7 @@ public class GetInstructorEditFormQueryHandler : IRequestHandler<GetInstructorEd
             LastName = instructor.LastName,
             FirstName = instructor.FirstName,
             HireDate = instructor.HireDate,
-            Location = instructor.Office?.Title,
+            Location = instructor.Office,
             AssignedCourses = courses.ToAssignedCourseOptions(instructor.Courses)
         };
     }

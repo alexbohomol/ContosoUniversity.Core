@@ -15,15 +15,15 @@ using ViewModels.Departments;
 
 public record GetDepartmentsIndexQuery : IRequest<IList<DepartmentListItemViewModel>>;
 
-public class
-    GetDepartmentsIndexQueryHandler : IRequestHandler<GetDepartmentsIndexQuery, IList<DepartmentListItemViewModel>>
+public class GetDepartmentsIndexQueryHandler
+    : IRequestHandler<GetDepartmentsIndexQuery, IList<DepartmentListItemViewModel>>
 {
-    private readonly IDepartmentsRepository _departmentsRepository;
-    private readonly IInstructorsRepository _instructorsRepository;
+    private readonly IDepartmentsRoRepository _departmentsRepository;
+    private readonly IInstructorsRoRepository _instructorsRepository;
 
     public GetDepartmentsIndexQueryHandler(
-        IInstructorsRepository instructorsRepository,
-        IDepartmentsRepository departmentsRepository)
+        IInstructorsRoRepository instructorsRepository,
+        IDepartmentsRoRepository departmentsRepository)
     {
         _instructorsRepository = instructorsRepository;
         _departmentsRepository = departmentsRepository;
@@ -32,7 +32,8 @@ public class
     public async Task<IList<DepartmentListItemViewModel>> Handle(GetDepartmentsIndexQuery request,
         CancellationToken cancellationToken)
     {
-        Department[] departments = await _departmentsRepository.GetAll(cancellationToken);
+#warning This is potential place to introduce view in scope of dpt-schema. Instructors names can be included in read model,
+        DepartmentReadModel[] departments = await _departmentsRepository.GetAll(cancellationToken);
 
         Dictionary<Guid, string> instructorsNames =
             await _instructorsRepository.GetInstructorNamesReference(cancellationToken);

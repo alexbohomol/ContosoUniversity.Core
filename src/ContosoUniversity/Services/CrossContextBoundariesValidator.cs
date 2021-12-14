@@ -33,7 +33,7 @@ public static class CrossContextBoundariesValidator
     ///     Ensure all assigned courses reference existing course records
     /// </summary>
     public static void EnsureInstructorsReferenceTheExistingCourses(
-        IEnumerable<Instructor> instructors,
+        InstructorReadModel[] instructors,
         IEnumerable<CourseReadModel> courses)
     {
         HashSet<Guid> referencedCourseIds = instructors.SelectMany(x => x.Courses).ToHashSet();

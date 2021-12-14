@@ -12,42 +12,40 @@ VALUES
     ('1a95b2f1-7f2c-41b4-befb-b0f9c6d991e4', 1050, 'Chemistry',      3, 'dab7e678-e3e7-4471-8282-96fe52e5c16f')
 GO
 
-SET IDENTITY_INSERT [dpt].[Instructor] ON
-GO
-INSERT INTO [dpt].[Instructor] ([Id], [HireDate], [LastName], [FirstName], [ExternalId])
+INSERT INTO [dpt].[Instructor] ([HireDate], [LastName], [FirstName], [Id])
 VALUES
-    (1, '2004-02-12 00:00:00.0000000', 'Zheng',       'Roger',   'deb90ed8-3622-40f6-8b30-8006cd8cb44a'),
-    (2, '2001-01-15 00:00:00.0000000', 'Kapoor',      'Candace', '46020553-4c58-4cca-a41f-afa84c29212f'),
-    (3, '1998-07-01 00:00:00.0000000', 'Harui',       'Roger',   '43f2feeb-5aae-4a57-b38c-b2e1c1a7b294'),
-    (4, '2002-07-06 00:00:00.0000000', 'Fakhouri',    'Fadi',    '0ae7bff6-fdad-45a2-9d24-2cb060fdb3eb'),
-    (5, '1995-03-11 00:00:00.0000000', 'Abercrombie', 'Kim',     'd07964d7-466d-48e8-b517-2cad010b12ff')
-GO
-SET IDENTITY_INSERT [dpt].[Instructor] OFF
+    ('2004-02-12', 'Zheng',       'Roger',   'deb90ed8-3622-40f6-8b30-8006cd8cb44a'),
+    ('2001-01-15', 'Kapoor',      'Candace', '46020553-4c58-4cca-a41f-afa84c29212f'),
+    ('1998-07-01', 'Harui',       'Roger',   '43f2feeb-5aae-4a57-b38c-b2e1c1a7b294'),
+    ('2002-07-06', 'Fakhouri',    'Fadi',    '0ae7bff6-fdad-45a2-9d24-2cb060fdb3eb'),
+    ('1995-03-11', 'Abercrombie', 'Kim',     'd07964d7-466d-48e8-b517-2cad010b12ff')
 GO
 
-SET IDENTITY_INSERT [dpt].[Department] ON
-GO
-INSERT INTO [dpt].[Department] ([Id], [Name], [Budget], [StartDate], [InstructorId], [ExternalId])
+INSERT INTO [dpt].[Department] ([Name], [Budget], [StartDate], [InstructorId], [Id])
 VALUES
-    -- (1, 'Temp',        0.0000,      CAST(N'2021-02-13' AS DateTime2), NULL, 'eea6f36d-6211-460d-89f9-b760d08f2f9b'),
-    (1, 'Economics',   100000.0000,	CAST(N'2007-09-01' AS DateTime2), 2, '31a130fe-b396-4bb8-88d3-26fa8778b4c6'),
-    (2, 'Engineering', 350000.0000,	CAST(N'2007-09-01' AS DateTime2), 3, 'dab7e678-e3e7-4471-8282-96fe52e5c16f'),
-    (3, 'Mathematics', 100000.0000,	CAST(N'2007-09-01' AS DateTime2), 4, '72c0804d-b208-4e67-82ba-cf54dc93dcc8'),
-    (4, 'English',     350000.0000,	CAST(N'2007-09-01' AS DateTime2), 5, '377c186a-6782-4367-9246-e5fe4195a97c')
-GO
-SET IDENTITY_INSERT [dpt].[Department] OFF
+    ('Economics',   100000.0000,	N'2007-09-01', '46020553-4c58-4cca-a41f-afa84c29212f', '31a130fe-b396-4bb8-88d3-26fa8778b4c6'),
+    ('Engineering', 350000.0000,	N'2007-09-01', '43f2feeb-5aae-4a57-b38c-b2e1c1a7b294', 'dab7e678-e3e7-4471-8282-96fe52e5c16f'),
+    ('Mathematics', 100000.0000,	N'2007-09-01', '0ae7bff6-fdad-45a2-9d24-2cb060fdb3eb', '72c0804d-b208-4e67-82ba-cf54dc93dcc8'),
+    ('English',     350000.0000,	N'2007-09-01', 'd07964d7-466d-48e8-b517-2cad010b12ff', '377c186a-6782-4367-9246-e5fe4195a97c')
 GO
 
-INSERT INTO [dpt].[CourseAssignment] ([InstructorId], [CourseExternalId])
+INSERT INTO [dpt].[OfficeAssignment] ([InstructorId], [Title])
 VALUES
-    (1, '8ebb5543-371a-4c5b-a72b-09bc9f615e36'),
-    (1, 'd53ffc3d-aa4e-41cf-8f0e-435c73889dcf'),
-    (2, '1a95b2f1-7f2c-41b4-befb-b0f9c6d991e4'),
-    (3, '42153736-0a08-49ef-84a1-7718189945ca'),
-    (3, '1a95b2f1-7f2c-41b4-befb-b0f9c6d991e4'),
-    (4, 'f3e9966c-467b-4b99-90ca-a29bae85ca94'),
-    (5, '7f4a2bf3-8623-4d4b-a555-7e1c18da1d31'),
-    (5, '51f60b7d-fb0c-40eb-a74b-b2d90157afa0')
+    ('46020553-4c58-4cca-a41f-afa84c29212f', 'Thompson 304'),
+    ('43f2feeb-5aae-4a57-b38c-b2e1c1a7b294', 'Gowan 27'),
+    ('0ae7bff6-fdad-45a2-9d24-2cb060fdb3eb', 'Smith 17')
+GO
+
+INSERT INTO [dpt].[CourseAssignment] ([InstructorId], [CourseId])
+VALUES
+    ('deb90ed8-3622-40f6-8b30-8006cd8cb44a', '8ebb5543-371a-4c5b-a72b-09bc9f615e36'),
+    ('deb90ed8-3622-40f6-8b30-8006cd8cb44a', 'd53ffc3d-aa4e-41cf-8f0e-435c73889dcf'),
+    ('46020553-4c58-4cca-a41f-afa84c29212f', '1a95b2f1-7f2c-41b4-befb-b0f9c6d991e4'),
+    ('43f2feeb-5aae-4a57-b38c-b2e1c1a7b294', '42153736-0a08-49ef-84a1-7718189945ca'),
+    ('43f2feeb-5aae-4a57-b38c-b2e1c1a7b294', '1a95b2f1-7f2c-41b4-befb-b0f9c6d991e4'),
+    ('0ae7bff6-fdad-45a2-9d24-2cb060fdb3eb', 'f3e9966c-467b-4b99-90ca-a29bae85ca94'),
+    ('d07964d7-466d-48e8-b517-2cad010b12ff', '7f4a2bf3-8623-4d4b-a555-7e1c18da1d31'),
+    ('d07964d7-466d-48e8-b517-2cad010b12ff', '51f60b7d-fb0c-40eb-a74b-b2d90157afa0')
 GO
 
 SET IDENTITY_INSERT [std].[Student] ON

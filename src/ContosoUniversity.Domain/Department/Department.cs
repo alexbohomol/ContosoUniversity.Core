@@ -4,32 +4,23 @@ using System;
 
 public class Department : IIdentifiable<Guid>
 {
-    public Department(
+    public const int NameMaxLength = 50;
+
+    private Department(
         string name,
         decimal budget,
         DateTime startDate,
         Guid? administratorId)
-        : this(
-            name,
-            budget,
-            startDate,
-            administratorId,
-            Guid.NewGuid())
-    {
-    }
-
-    public Department(
-        string name,
-        decimal budget,
-        DateTime startDate,
-        Guid? administratorId,
-        Guid externalId)
     {
         Name = name;
         Budget = budget;
         StartDate = startDate;
         AdministratorId = administratorId;
-        ExternalId = externalId;
+        ExternalId = Guid.NewGuid();
+    }
+
+    private Department()
+    {
     }
 
     public string Name { get; private set; }
@@ -41,6 +32,11 @@ public class Department : IIdentifiable<Guid>
     public Guid? AdministratorId { get; private set; }
 
     public Guid ExternalId { get; }
+
+    public static Department Create(string name, decimal budget, DateTime startDate, Guid? administratorId)
+    {
+        return new Department(name, budget, startDate, administratorId);
+    }
 
     public void DisassociateAdministrator()
     {
