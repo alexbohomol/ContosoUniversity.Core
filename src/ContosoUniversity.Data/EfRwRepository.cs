@@ -24,16 +24,6 @@ public abstract class EfRwRepository<TDomainEntity> : IRwRepository<TDomainEntit
         DbQuery = DbSet;
     }
 
-    /// <summary>
-    ///     https://gist.github.com/oneillci/3205384
-    /// </summary>
-    protected EfRwRepository(DbContext dbContext, string[] defaultIncludes) : this(dbContext)
-    {
-        DbQuery = defaultIncludes.Aggregate(
-            DbQuery,
-            (dbQuery, relationProperty) => dbQuery.Include(relationProperty));
-    }
-
     public async Task<TDomainEntity> GetById(Guid entityId, CancellationToken cancellationToken = default)
     {
         return await DbQuery.FirstOrDefaultAsync(x => x.ExternalId == entityId, cancellationToken);
