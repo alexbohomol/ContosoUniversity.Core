@@ -29,7 +29,9 @@ public class DepartmentDeletedNotificationHandler : INotificationHandler<Departm
 
         foreach (Student student in students)
         {
-            Guid[] withdrawIds = notification.CourseIds.Intersect(student.Enrollments.CourseIds).ToArray();
+            Guid[] withdrawIds = notification.CourseIds
+                .Intersect(student.Enrollments.Select(x => x.CourseId))
+                .ToArray();
             student.WithdrawCourses(withdrawIds);
             await _studentsRepository.Save(student, cancellationToken);
         }

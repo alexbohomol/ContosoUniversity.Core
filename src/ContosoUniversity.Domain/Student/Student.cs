@@ -1,9 +1,14 @@
 namespace ContosoUniversity.Domain.Student;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public class Student : IIdentifiable<Guid>
 {
+    public const int FirstNameMaxLength = 50;
+    public const int LastNameMaxLength = 50;
+
     private Student(
         string lastName,
         string firstName,
@@ -12,7 +17,7 @@ public class Student : IIdentifiable<Guid>
         LastName = lastName;
         FirstName = firstName;
         EnrollmentDate = enrollmentDate;
-        Enrollments = EnrollmentsCollection.Empty;
+        Enrollments = new List<Enrollment>();
         ExternalId = Guid.NewGuid();
     }
 
@@ -23,7 +28,7 @@ public class Student : IIdentifiable<Guid>
     public string LastName { get; private set; }
     public string FirstName { get; private set; }
     public DateTime EnrollmentDate { get; private set; }
-    public EnrollmentsCollection Enrollments { get; }
+    public List<Enrollment> Enrollments { get; }
 
     public Guid ExternalId { get; }
 
@@ -57,11 +62,11 @@ public class Student : IIdentifiable<Guid>
          * - updated grade for the existing enrollment?
          */
 
-        Enrollments.AddEnrollments(enrollments);
+        Enrollments.AddRange(enrollments);
     }
 
     public void WithdrawCourses(Guid[] courseIds)
     {
-        Enrollments.RemoveEnrollments(courseIds);
+        Enrollments.RemoveAll(x => courseIds.Contains(x.CourseId));
     }
 }

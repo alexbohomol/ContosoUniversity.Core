@@ -112,7 +112,10 @@ public class GetInstructorsIndexQueryHandler : IRequestHandler<GetInstructorsInd
             viewModel.Students = students.Select(x => new EnrolledStudentViewModel
             {
                 StudentFullName = x.FullName(),
-                EnrollmentGrade = x.Enrollments[courseExternalId.Value].Grade.ToDisplayString()
+                EnrollmentGrade = x.Enrollments
+                    .Single(e => e.CourseId == courseExternalId.Value)
+                    .Grade
+                    .ToDisplayString()
             });
         }
 

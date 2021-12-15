@@ -37,7 +37,7 @@ public class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQu
         if (student == null)
             throw new EntityNotFoundException(nameof(student), request.Id);
 
-        Guid[] coursesIds = student.Enrollments.CourseIds.ToArray();
+        Guid[] coursesIds = student.Enrollments.Select(x => x.CourseId).ToArray();
 
         Dictionary<Guid, string> courseTitles = (await _coursesRepository.GetByIds(coursesIds, cancellationToken))
             .ToDictionary(x => x.ExternalId, x => x.Title);

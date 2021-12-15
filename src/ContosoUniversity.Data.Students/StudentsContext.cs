@@ -1,10 +1,12 @@
 namespace ContosoUniversity.Data.Students;
 
+using Domain.Student;
+
 using Microsoft.EntityFrameworkCore;
 
 public class StudentsContext : DbContext
 {
-    private const string Schema = "std";
+    public const string Schema = "std";
 
     public StudentsContext(DbContextOptions<StudentsContext> options) : base(options)
     {
@@ -13,5 +15,8 @@ public class StudentsContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema(Schema);
+
+        modelBuilder.ApplyConfiguration<Enrollment>(new EntityTypeConfigurations());
+        modelBuilder.ApplyConfiguration<Student>(new EntityTypeConfigurations());
     }
 }
