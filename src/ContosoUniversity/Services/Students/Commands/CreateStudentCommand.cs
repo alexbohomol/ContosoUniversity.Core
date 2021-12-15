@@ -27,13 +27,10 @@ public class CreateStudentCommandHandler : AsyncRequestHandler<CreateStudentComm
 
     protected override Task Handle(CreateStudentCommand request, CancellationToken cancellationToken)
     {
-        return _repository.Save(
-            new Student(
+        return _repository.Save(Student.Create(
                 request.LastName,
                 request.FirstName,
-                request.EnrollmentDate,
-                EnrollmentsCollection.Empty,
-                Guid.NewGuid()),
+                request.EnrollmentDate),
             cancellationToken);
     }
 }
