@@ -13,14 +13,12 @@ using Domain.Student;
 
 using Microsoft.EntityFrameworkCore;
 
-using Enrollment = Models.Enrollment;
-
-public sealed class StudentsRepository : EfRepository<Student, Models.Student>, IStudentsRepository
+public sealed class StudentsRepository : EfRepository<Student>, IStudentsRepository
 {
     public StudentsRepository(StudentsContext dbContext)
         : base(
             dbContext,
-            new[] { nameof(StudentsContext.Enrollments) })
+            new[] { "Enrollments" })
     {
     }
 
@@ -59,12 +57,10 @@ public sealed class StudentsRepository : EfRepository<Student, Models.Student>, 
     public async Task<Student[]> GetStudentsEnrolledForCourses(Guid[] courseIds,
         CancellationToken cancellationToken = default)
     {
-        Models.Student[] students = await DbQuery
+        return await DbQuery
             .AsNoTracking()
-            .Where(x => x.Enrollments.Select(e => e.CourseExternalId).Any(id => courseIds.Contains(id)))
+            .Where(x => x.Enrollments.Select(e => e.CourseId).Any(id => courseIds.Contains(id)))
             .ToArrayAsync(cancellationToken);
-
-        return students.Select(ToDomainEntity).ToArray();
     }
 
     public async Task<PagedResult<Student>> Search(
@@ -76,11 +72,11 @@ public sealed class StudentsRepository : EfRepository<Student, Models.Student>, 
         /*
          * TODO: here we don't need default includes in DbQuery
          */
-        IQueryable<Models.Student> searchQuery = DbQuery;
+        IQueryable<Student> searchQuery = DbQuery;
         searchQuery = ApplySearch(searchQuery, searchRequest);
         searchQuery = ApplyOrder(searchQuery, orderRequest);
 
-        (Models.Student[] students, PageInfo pageInfo) = await searchQuery
+        (Student[] students, PageInfo pageInfo) = await searchQuery
             .AsNoTracking()
             .ToPageAsync(pageRequest, cancellationToken);
 
@@ -88,20 +84,20 @@ public sealed class StudentsRepository : EfRepository<Student, Models.Student>, 
          * TODO: here we don't need default aggregated .ToDomainEntity()
          */
         return new PagedResult<Student>(
-            students.Select(ToDomainEntity).ToArray(),
+            students,
             pageInfo);
     }
 
-    private IQueryable<Models.Student> ApplySearch(IQueryable<Models.Student> source, SearchRequest request)
+    private IQueryable<Student> ApplySearch(IQueryable<Student> source, SearchRequest request)
     {
         return string.IsNullOrEmpty(request.SearchString)
             ? source
             : source.Where(
                 s => s.LastName.Contains(request.SearchString)
-                     || s.FirstMidName.Contains(request.SearchString));
+                     || s.FirstName.Contains(request.SearchString));
     }
 
-    private IQueryable<Models.Student> ApplyOrder(IQueryable<Models.Student> source, OrderRequest request)
+    private IQueryable<Student> ApplyOrder(IQueryable<Student> source, OrderRequest request)
     {
         return request.SortOrder switch
         {
@@ -110,53 +106,5 @@ public sealed class StudentsRepository : EfRepository<Student, Models.Student>, 
             "date_desc" => source.OrderByDescending(s => s.EnrollmentDate),
             _ => source.OrderBy(s => s.LastName)
         };
-    }
-
-    protected override Student ToDomainEntity(Models.Student data)
-    {
-        return new Student(
-            data.LastName,
-            data.FirstMidName,
-            data.EnrollmentDate,
-            EnrollmentsCollection.From(data.Enrollments.Select(x => x.ToDomainEntity())),
-            data.ExternalId);
-    }
-
-    protected override void MapDomainEntityOntoDataEntity(Student entity, Models.Student model)
-    {
-        model.LastName = entity.LastName;
-        model.FirstMidName = entity.FirstName;
-        model.EnrollmentDate = entity.EnrollmentDate;
-        model.ExternalId = entity.ExternalId;
-
-        Guid[] current = model.Enrollments.Select(x => x.CourseExternalId).ToArray();
-        Guid[] domain = entity.Enrollments.CourseIds.ToArray();
-
-        /*
-         * TODO: next feature requirements
-         * - what if grade was changed for the existing course?
-         */
-        if (current.SequenceEqual(domain)) return;
-
-        Guid[] toBeDeleted = current.Except(domain).ToArray();
-        if (toBeDeleted.Any())
-            foreach (Guid courseId in toBeDeleted)
-            {
-                Enrollment enrollment = model.Enrollments.Single(x => x.CourseExternalId == courseId);
-                model.Enrollments.Remove(enrollment);
-            }
-
-        /*
-         * TODO: next feature requirements
-         * - enrolling students for courses
-         */
-        Guid[] toBeAdded = domain.Except(current).ToArray();
-        if (toBeAdded.Any())
-            foreach (Guid courseId in toBeAdded)
-                model.Enrollments.Add(new Enrollment
-                {
-                    CourseExternalId = courseId,
-                    Grade = entity.Enrollments[courseId].Grade.ToDataModel()
-                });
     }
 }
