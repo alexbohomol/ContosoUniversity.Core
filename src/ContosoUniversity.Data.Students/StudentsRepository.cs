@@ -15,10 +15,7 @@ using Microsoft.EntityFrameworkCore;
 
 public sealed class StudentsRepository : EfRepository<Student>, IStudentsRepository
 {
-    public StudentsRepository(StudentsContext dbContext)
-        : base(
-            dbContext,
-            new[] { "Enrollments" })
+    public StudentsRepository(StudentsContext dbContext) : base(dbContext)
     {
     }
 
@@ -58,7 +55,6 @@ public sealed class StudentsRepository : EfRepository<Student>, IStudentsReposit
         CancellationToken cancellationToken = default)
     {
         return await DbQuery
-            .AsNoTracking()
             .Where(x => x.Enrollments.Select(e => e.CourseId).Any(id => courseIds.Contains(id)))
             .ToArrayAsync(cancellationToken);
     }
