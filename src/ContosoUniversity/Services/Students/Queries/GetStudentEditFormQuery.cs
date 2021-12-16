@@ -16,9 +16,9 @@ public record GetStudentEditFormQuery(Guid Id) : IRequest<EditStudentForm>;
 
 public class GetStudentEditFormQueryHandler : IRequestHandler<GetStudentEditFormQuery, EditStudentForm>
 {
-    private readonly IStudentsRepository _studentsRepository;
+    private readonly IStudentsRoRepository _studentsRepository;
 
-    public GetStudentEditFormQueryHandler(IStudentsRepository studentsRepository)
+    public GetStudentEditFormQueryHandler(IStudentsRoRepository studentsRepository)
     {
         _studentsRepository = studentsRepository;
     }

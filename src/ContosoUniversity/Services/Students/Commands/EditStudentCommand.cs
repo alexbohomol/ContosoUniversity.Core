@@ -33,9 +33,9 @@ public class EditStudentCommand : IRequest
 
 public class EditStudentCommandHandler : AsyncRequestHandler<EditStudentCommand>
 {
-    private readonly IStudentsRepository _studentsRepository;
+    private readonly IStudentsRwRepository _studentsRepository;
 
-    public EditStudentCommandHandler(IStudentsRepository studentsRepository)
+    public EditStudentCommandHandler(IStudentsRwRepository studentsRepository)
     {
         _studentsRepository = studentsRepository;
     }

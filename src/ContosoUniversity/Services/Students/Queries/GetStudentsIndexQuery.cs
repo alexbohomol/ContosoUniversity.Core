@@ -22,9 +22,9 @@ public class GetStudentsIndexQuery : IRequest<StudentIndexViewModel>
 
 public class GetStudentsIndexQueryHandler : IRequestHandler<GetStudentsIndexQuery, StudentIndexViewModel>
 {
-    private readonly IStudentsRepository _studentsRepository;
+    private readonly IStudentsRoRepository _studentsRepository;
 
-    public GetStudentsIndexQueryHandler(IStudentsRepository studentsRepository)
+    public GetStudentsIndexQueryHandler(IStudentsRoRepository studentsRepository)
     {
         _studentsRepository = studentsRepository;
     }

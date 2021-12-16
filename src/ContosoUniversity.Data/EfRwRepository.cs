@@ -24,6 +24,12 @@ public abstract class EfRwRepository<TDomainEntity> : IRwRepository<TDomainEntit
         DbQuery = DbSet;
     }
 
+    public async Task<bool> Exists(Guid entityId, CancellationToken cancellationToken = default)
+    {
+        return await DbSet
+            .AnyAsync(x => x.ExternalId == entityId, cancellationToken);
+    }
+
     public async Task<TDomainEntity> GetById(Guid entityId, CancellationToken cancellationToken = default)
     {
         return await DbQuery.FirstOrDefaultAsync(x => x.ExternalId == entityId, cancellationToken);

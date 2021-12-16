@@ -14,9 +14,9 @@ using ViewModels;
 
 public class HomeController : Controller
 {
-    private readonly IStudentsRepository _repository;
+    private readonly IStudentsRoRepository _repository;
 
-    public HomeController(IStudentsRepository repository)
+    public HomeController(IStudentsRoRepository repository)
     {
         _repository = repository;
     }

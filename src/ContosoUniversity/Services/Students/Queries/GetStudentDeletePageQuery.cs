@@ -16,9 +16,9 @@ public record GetStudentDeletePageQuery(Guid Id) : IRequest<StudentDeletePageVie
 
 public class GetStudentDeletePageQueryHandler : IRequestHandler<GetStudentDeletePageQuery, StudentDeletePageViewModel>
 {
-    private readonly IStudentsRepository _studentsRepository;
+    private readonly IStudentsRoRepository _studentsRepository;
 
-    public GetStudentDeletePageQueryHandler(IStudentsRepository studentsRepository)
+    public GetStudentDeletePageQueryHandler(IStudentsRoRepository studentsRepository)
     {
         _studentsRepository = studentsRepository;
     }

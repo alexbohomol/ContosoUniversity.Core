@@ -13,9 +13,9 @@ public record DeleteStudentCommand(Guid Id) : IRequest;
 
 public class DeleteStudentCommandHandler : AsyncRequestHandler<DeleteStudentCommand>
 {
-    private readonly IStudentsRepository _studentsRepository;
+    private readonly IStudentsRwRepository _studentsRepository;
 
-    public DeleteStudentCommandHandler(IStudentsRepository studentsRepository)
+    public DeleteStudentCommandHandler(IStudentsRwRepository studentsRepository)
     {
         _studentsRepository = studentsRepository;
     }

@@ -18,9 +18,9 @@ public class CreateStudentCommand : IRequest
 
 public class CreateStudentCommandHandler : AsyncRequestHandler<CreateStudentCommand>
 {
-    private readonly IStudentsRepository _repository;
+    private readonly IStudentsRwRepository _repository;
 
-    public CreateStudentCommandHandler(IStudentsRepository repository)
+    public CreateStudentCommandHandler(IStudentsRwRepository repository)
     {
         _repository = repository;
     }
