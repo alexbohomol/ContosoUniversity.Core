@@ -13,9 +13,9 @@ using Domain.Student;
 
 using Microsoft.EntityFrameworkCore;
 
-public sealed class StudentsRepository : EfRepository<Student>, IStudentsRepository
+internal sealed class ReadOnlyRepository : EfRoRepository<Student>, IStudentsRoRepository
 {
-    public StudentsRepository(StudentsContext dbContext) : base(dbContext)
+    public ReadOnlyRepository(StudentsContext dbContext) : base(dbContext)
     {
     }
 
@@ -55,6 +55,7 @@ public sealed class StudentsRepository : EfRepository<Student>, IStudentsReposit
         CancellationToken cancellationToken = default)
     {
         return await DbQuery
+            .AsNoTracking()
             .Where(x => x.Enrollments.Select(e => e.CourseId).Any(id => courseIds.Contains(id)))
             .ToArrayAsync(cancellationToken);
     }
@@ -76,9 +77,6 @@ public sealed class StudentsRepository : EfRepository<Student>, IStudentsReposit
             .AsNoTracking()
             .ToPageAsync(pageRequest, cancellationToken);
 
-        /*
-         * TODO: here we don't need default aggregated .ToDomainEntity()
-         */
         return new PagedResult<Student>(
             students,
             pageInfo);
