@@ -63,7 +63,7 @@ GO
 INSERT INTO [std].[Enrollment] ([StudentId], [Grade], [CourseId])
 VALUES
     ('19470df6-3c71-4781-b33b-20e8826fe142',  1,    'd53ffc3d-aa4e-41cf-8f0e-435c73889dcf'),
-    -- ('19470df6-3c71-4781-b33b-20e8826fe142',  NULL, '1a95b2f1-7f2c-41b4-befb-b0f9c6d991e4'),
+    ('19470df6-3c71-4781-b33b-20e8826fe142',  NULL, '1a95b2f1-7f2c-41b4-befb-b0f9c6d991e4'),
     ('df921e0d-99de-4108-8adf-c38ee8691dcd',  1,    '7f4a2bf3-8623-4d4b-a555-7e1c18da1d31'),
     ('df921e0d-99de-4108-8adf-c38ee8691dcd',  1,    '42153736-0a08-49ef-84a1-7718189945ca'),
     ('df921e0d-99de-4108-8adf-c38ee8691dcd',  1,    'f3e9966c-467b-4b99-90ca-a29bae85ca94'),
