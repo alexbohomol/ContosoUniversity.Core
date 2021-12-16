@@ -4,18 +4,16 @@ using ContosoUniversity.Data.Students;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ContosoUniversity.Data.Students.Migrations
+namespace ContosoUniversity.Data.Students.Writes.Migrations
 {
-    [DbContext(typeof(StudentsContext))]
-    [Migration("20211216181657_enable_grade_nullability")]
-    partial class enable_grade_nullability
+    [DbContext(typeof(ReadWriteContext))]
+    partial class StudentsContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

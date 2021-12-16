@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace ContosoUniversity.Data.Students.Migrations
+namespace ContosoUniversity.Data.Students.Writes.Migrations
 {
     public partial class enable_grade_nullability : Migration
     {

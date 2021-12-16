@@ -1,11 +1,11 @@
-namespace ContosoUniversity.Data.Students;
+namespace ContosoUniversity.Data.Students.Writes;
 
 using Domain.Student;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-public class EntityTypeConfigurations :
+internal class EntityTypeConfigurations :
     IEntityTypeConfiguration<Enrollment>,
     IEntityTypeConfiguration<Student>
 {
@@ -17,7 +17,7 @@ public class EntityTypeConfigurations :
 
         builder.HasKey(x => new { x.StudentId, x.CourseId });
 
-        builder.ToTable("Enrollment", StudentsContext.Schema);
+        builder.ToTable("Enrollment", ReadWriteContext.Schema);
     }
 
     public void Configure(EntityTypeBuilder<Student> builder)
@@ -50,6 +50,6 @@ public class EntityTypeConfigurations :
 
         builder.Navigation(x => x.Enrollments).AutoInclude();
 
-        builder.ToTable("Student", StudentsContext.Schema);
+        builder.ToTable("Student", ReadWriteContext.Schema);
     }
 }

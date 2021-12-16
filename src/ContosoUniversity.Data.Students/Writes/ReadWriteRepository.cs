@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Data.Students;
+namespace ContosoUniversity.Data.Students.Writes;
 
 using System;
 using System.Linq;
@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 internal sealed class ReadWriteRepository : EfRwRepository<Student>, IStudentsRwRepository
 {
-    public ReadWriteRepository(StudentsContext dbContext) : base(dbContext)
+    public ReadWriteRepository(ReadWriteContext dbContext) : base(dbContext)
     {
     }
 

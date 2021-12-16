@@ -12,6 +12,7 @@ public interface IStudentsRoRepository : IRoRepository<Student>
 {
     Task<Student[]> GetStudentsEnrolledForCourses(Guid[] courseIds, CancellationToken cancellationToken = default);
     Task<EnrollmentDateGroup[]> GetEnrollmentDateGroups(CancellationToken cancellationToken = default);
+
     Task<PagedResult<Student>> Search(
         SearchRequest searchRequest,
         OrderRequest orderRequest,

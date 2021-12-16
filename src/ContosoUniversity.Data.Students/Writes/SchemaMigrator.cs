@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Data.Students;
+namespace ContosoUniversity.Data.Students.Writes;
 
 using System;
 using System.Linq;
@@ -23,7 +23,7 @@ public static class SchemaMigrator
         IServiceProvider services = scope.ServiceProvider;
         try
         {
-            var context = services.GetRequiredService<StudentsContext>();
+            var context = services.GetRequiredService<ReadWriteContext>();
             if ((await context.Database.GetPendingMigrationsAsync()).Any())
                 await context.Database.MigrateAsync();
         }

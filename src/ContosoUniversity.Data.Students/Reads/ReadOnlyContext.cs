@@ -1,14 +1,14 @@
-namespace ContosoUniversity.Data.Students;
+namespace ContosoUniversity.Data.Students.Reads;
 
 using Domain.Student;
 
 using Microsoft.EntityFrameworkCore;
 
-public class StudentsContext : DbContext
+internal class ReadOnlyContext : DbContext
 {
     public const string Schema = "std";
 
-    public StudentsContext(DbContextOptions<StudentsContext> options) : base(options)
+    public ReadOnlyContext(DbContextOptions<ReadOnlyContext> options) : base(options)
     {
     }
 

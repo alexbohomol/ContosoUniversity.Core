@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 using Data.Courses.Writes;
 using Data.Departments.Writes;
-using Data.Students;
+using Data.Students.Writes;
 
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;

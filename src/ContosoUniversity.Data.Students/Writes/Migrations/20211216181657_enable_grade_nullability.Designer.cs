@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ContosoUniversity.Data.Students.Migrations
+namespace ContosoUniversity.Data.Students.Writes.Migrations
 {
-    [DbContext(typeof(StudentsContext))]
-    [Migration("20211215202621_init")]
-    partial class init
+    [DbContext(typeof(ReadWriteContext))]
+    [Migration("20211216181657_enable_grade_nullability")]
+    partial class enable_grade_nullability
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,7 +33,7 @@ namespace ContosoUniversity.Data.Students.Migrations
                     b.Property<Guid>("CourseId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Grade")
+                    b.Property<int?>("Grade")
                         .HasColumnType("int");
 
                     b.HasKey("StudentId", "CourseId");

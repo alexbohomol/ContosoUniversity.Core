@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Data.Students;
+namespace ContosoUniversity.Data.Students.Reads;
 
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 
 internal sealed class ReadOnlyRepository : EfRoRepository<Student>, IStudentsRoRepository
 {
-    public ReadOnlyRepository(StudentsContext dbContext) : base(dbContext)
+    public ReadOnlyRepository(ReadOnlyContext dbContext) : base(dbContext)
     {
     }
 
