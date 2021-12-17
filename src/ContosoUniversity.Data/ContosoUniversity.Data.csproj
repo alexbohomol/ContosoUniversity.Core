@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ContosoUniversity.Domain.Contracts\ContosoUniversity.Domain.Contracts.csproj"/>
+        <ProjectReference Include="..\ContosoUniversity.Application\ContosoUniversity.Application.csproj"/>
     </ItemGroup>
 
 </Project>
