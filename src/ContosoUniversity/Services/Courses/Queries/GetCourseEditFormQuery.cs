@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Application;
+using Application.Exceptions;
+
 using Commands;
 
-using Domain.Contracts;
-using Domain.Contracts.Exceptions;
 using Domain.Course;
 
 using MediatR;

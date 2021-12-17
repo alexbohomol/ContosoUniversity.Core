@@ -3,9 +3,9 @@ namespace ContosoUniversity.Services.Courses.Notifications;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Departments.Notifications;
+using Application;
 
-using Domain.Contracts;
+using Departments.Notifications;
 
 using MediatR;
 

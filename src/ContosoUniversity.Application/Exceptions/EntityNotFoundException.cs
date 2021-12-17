@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Domain.Contracts.Exceptions;
+namespace ContosoUniversity.Application.Exceptions;
 
 using System;
 using System.Runtime.Serialization;

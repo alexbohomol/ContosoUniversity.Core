@@ -6,8 +6,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Domain.Contracts;
-using Domain.Contracts.Exceptions;
+using Application;
+using Application.Exceptions;
+
 using Domain.Student;
 
 using MediatR;

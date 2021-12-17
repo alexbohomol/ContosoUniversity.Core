@@ -1,6 +1,6 @@
 namespace ContosoUniversity.ViewModels.Students;
 
-using Domain.Contracts.Paging;
+using Application.Paging;
 
 public class StudentIndexViewModel
 {

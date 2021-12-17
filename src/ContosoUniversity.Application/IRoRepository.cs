@@ -1,8 +1,10 @@
-namespace ContosoUniversity.Domain.Contracts;
+namespace ContosoUniversity.Application;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Domain;
 
 public interface IRoRepository<TReadModel> where TReadModel : IIdentifiable<Guid>
 {

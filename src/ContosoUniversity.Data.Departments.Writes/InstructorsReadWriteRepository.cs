@@ -3,7 +3,8 @@ namespace ContosoUniversity.Data.Departments.Writes;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Domain.Contracts;
+using Application;
+
 using Domain.Instructor;
 
 using Microsoft.EntityFrameworkCore;

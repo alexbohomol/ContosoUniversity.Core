@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Domain.Contracts;
+using Application;
 
 using MediatR;
 

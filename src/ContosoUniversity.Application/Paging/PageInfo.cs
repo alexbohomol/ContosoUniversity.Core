@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Domain.Contracts.Paging;
+namespace ContosoUniversity.Application.Paging;
 
 using System;
 

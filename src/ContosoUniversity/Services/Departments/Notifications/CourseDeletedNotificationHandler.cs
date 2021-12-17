@@ -5,9 +5,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Application;
+
 using Courses.Notifications;
 
-using Domain.Contracts;
 using Domain.Instructor;
 
 using MediatR;

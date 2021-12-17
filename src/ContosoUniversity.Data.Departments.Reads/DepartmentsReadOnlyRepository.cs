@@ -6,7 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Domain.Contracts;
+using Application;
+
 using Domain.Department;
 
 using Microsoft.EntityFrameworkCore;

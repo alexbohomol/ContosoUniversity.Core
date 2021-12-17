@@ -7,8 +7,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Domain.Contracts;
-using Domain.Contracts.Paging;
+using Application;
+using Application.Paging;
+
 using Domain.Student;
 
 using Microsoft.EntityFrameworkCore;

@@ -4,7 +4,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Domain.Contracts;
+using Application;
+
 using Domain.Course;
 using Domain.Instructor;
 

@@ -1,10 +1,10 @@
-namespace ContosoUniversity.Domain.Contracts;
+namespace ContosoUniversity.Application;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Instructor;
+using Domain.Instructor;
 
 public interface IInstructorsRwRepository : IRwRepository<Instructor>
 {

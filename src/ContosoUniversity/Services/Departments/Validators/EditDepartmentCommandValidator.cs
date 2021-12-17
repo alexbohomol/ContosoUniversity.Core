@@ -4,9 +4,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Commands;
+using Application;
 
-using Domain.Contracts;
+using Commands;
 
 using FluentValidation;
 

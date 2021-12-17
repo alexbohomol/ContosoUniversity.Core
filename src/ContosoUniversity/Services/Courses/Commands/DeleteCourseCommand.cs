@@ -4,8 +4,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Domain.Contracts;
-using Domain.Contracts.Exceptions;
+using Application;
+using Application.Exceptions;
 
 using MediatR;
 

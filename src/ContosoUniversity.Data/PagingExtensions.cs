@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Domain.Contracts.Paging;
+using Application.Paging;
 
 using Microsoft.EntityFrameworkCore;
 
