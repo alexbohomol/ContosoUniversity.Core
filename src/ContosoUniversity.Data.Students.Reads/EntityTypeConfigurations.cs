@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 internal class EntityTypeConfigurations :
     IEntityTypeConfiguration<Enrollment>,
-    IEntityTypeConfiguration<Student>
+    IEntityTypeConfiguration<StudentReadModel>
 {
     public void Configure(EntityTypeBuilder<Enrollment> builder)
     {
@@ -20,7 +20,7 @@ internal class EntityTypeConfigurations :
         builder.ToTable("Enrollment", ReadOnlyContext.Schema);
     }
 
-    public void Configure(EntityTypeBuilder<Student> builder)
+    public void Configure(EntityTypeBuilder<StudentReadModel> builder)
     {
         builder
             .HasKey(x => x.ExternalId);
@@ -29,19 +29,9 @@ internal class EntityTypeConfigurations :
             .Property(x => x.ExternalId)
             .HasColumnName("Id");
 
-        builder
-            .Property(x => x.LastName)
-            .HasMaxLength(Student.LastNameMaxLength)
-            .IsRequired();
-
-        builder
-            .Property(x => x.FirstName)
-            .HasMaxLength(Student.FirstNameMaxLength)
-            .IsRequired();
-
-        builder
-            .Property(x => x.EnrollmentDate)
-            .IsRequired();
+        builder.Property(x => x.LastName);
+        builder.Property(x => x.FirstName);
+        builder.Property(x => x.EnrollmentDate);
 
         builder
             .HasMany(x => x.Enrollments)

@@ -33,7 +33,7 @@ public class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQu
     public async Task<StudentDetailsViewModel> Handle(GetStudentDetailsQuery request,
         CancellationToken cancellationToken)
     {
-        Student student = await _studentsRepository.GetById(request.Id, cancellationToken);
+        StudentReadModel student = await _studentsRepository.GetById(request.Id, cancellationToken);
         if (student == null)
             throw new EntityNotFoundException(nameof(student), request.Id);
 

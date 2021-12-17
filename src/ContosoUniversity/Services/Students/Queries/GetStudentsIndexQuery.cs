@@ -36,7 +36,7 @@ public class GetStudentsIndexQueryHandler : IRequestHandler<GetStudentsIndexQuer
         else
             request.SearchString = request.CurrentFilter;
 
-        (Student[] students, PageInfo pageInfo) = await _studentsRepository.Search(
+        (StudentReadModel[] students, PageInfo pageInfo) = await _studentsRepository.Search(
             new SearchRequest(request.SearchString),
             new OrderRequest(request.SortOrder),
             new PageRequest(request.PageNumber ?? 1, 3),

@@ -17,6 +17,6 @@ internal class ReadOnlyContext : DbContext
         modelBuilder.HasDefaultSchema(Schema);
 
         modelBuilder.ApplyConfiguration<Enrollment>(new EntityTypeConfigurations());
-        modelBuilder.ApplyConfiguration<Student>(new EntityTypeConfigurations());
+        modelBuilder.ApplyConfiguration<StudentReadModel>(new EntityTypeConfigurations());
     }
 }

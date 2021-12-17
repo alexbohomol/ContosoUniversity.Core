@@ -98,7 +98,7 @@ public class GetInstructorsIndexQueryHandler : IRequestHandler<GetInstructorsInd
 
         if (courseExternalId is not null)
         {
-            Student[] students = await _studentsRepository.GetStudentsEnrolledForCourses(
+            StudentReadModel[] students = await _studentsRepository.GetStudentsEnrolledForCourses(
                 new[]
                 {
                     courseExternalId.Value
@@ -111,7 +111,7 @@ public class GetInstructorsIndexQueryHandler : IRequestHandler<GetInstructorsInd
 
             viewModel.Students = students.Select(x => new EnrolledStudentViewModel
             {
-                StudentFullName = x.FullName(),
+                StudentFullName = x.FullName,
                 EnrollmentGrade = x.Enrollments
                     .Single(e => e.CourseId == courseExternalId.Value)
                     .Grade

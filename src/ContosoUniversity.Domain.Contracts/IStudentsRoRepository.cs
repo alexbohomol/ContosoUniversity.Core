@@ -8,12 +8,15 @@ using Paging;
 
 using Student;
 
-public interface IStudentsRoRepository : IRoRepository<Student>
+public interface IStudentsRoRepository : IRoRepository<StudentReadModel>
 {
-    Task<Student[]> GetStudentsEnrolledForCourses(Guid[] courseIds, CancellationToken cancellationToken = default);
+    Task<StudentReadModel[]> GetStudentsEnrolledForCourses(
+        Guid[] courseIds,
+        CancellationToken cancellationToken = default);
+
     Task<EnrollmentDateGroup[]> GetEnrollmentDateGroups(CancellationToken cancellationToken = default);
 
-    Task<PagedResult<Student>> Search(
+    Task<PagedResult<StudentReadModel>> Search(
         SearchRequest searchRequest,
         OrderRequest orderRequest,
         PageRequest pageRequest,
