@@ -16,9 +16,9 @@ public record GetStudentDeletePageQuery(Guid Id) : IRequest<StudentDeletePageVie
 
 public class GetStudentDeletePageQueryHandler : IRequestHandler<GetStudentDeletePageQuery, StudentDeletePageViewModel>
 {
-    private readonly IStudentsRepository _studentsRepository;
+    private readonly IStudentsRoRepository _studentsRepository;
 
-    public GetStudentDeletePageQueryHandler(IStudentsRepository studentsRepository)
+    public GetStudentDeletePageQueryHandler(IStudentsRoRepository studentsRepository)
     {
         _studentsRepository = studentsRepository;
     }
@@ -26,7 +26,7 @@ public class GetStudentDeletePageQueryHandler : IRequestHandler<GetStudentDelete
     public async Task<StudentDeletePageViewModel> Handle(GetStudentDeletePageQuery request,
         CancellationToken cancellationToken)
     {
-        Student student = await _studentsRepository.GetById(request.Id, cancellationToken);
+        StudentReadModel student = await _studentsRepository.GetById(request.Id, cancellationToken);
         if (student == null)
             throw new EntityNotFoundException(nameof(student), request.Id);
 

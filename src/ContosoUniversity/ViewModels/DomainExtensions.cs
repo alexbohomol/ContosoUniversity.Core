@@ -11,13 +11,9 @@ using Instructors;
 
 public static class DomainExtensions
 {
-    public static string ToDisplayString(this Grade grade)
+    public static string ToDisplayString(this Grade? grade)
     {
-        return grade switch
-        {
-            Grade.Undefined => "No grade",
-            var regular => regular.ToString()
-        };
+        return grade.HasValue ? grade.ToString() : "No grade";
     }
 
     public static AssignedCourseOption[] ToAssignedCourseOptions(

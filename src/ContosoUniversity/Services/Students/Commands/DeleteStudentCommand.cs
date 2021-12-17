@@ -13,18 +13,22 @@ public record DeleteStudentCommand(Guid Id) : IRequest;
 
 public class DeleteStudentCommandHandler : AsyncRequestHandler<DeleteStudentCommand>
 {
-    private readonly IStudentsRepository _studentsRepository;
+    private readonly IStudentsRoRepository _studentsRoRepository;
+    private readonly IStudentsRwRepository _studentsRwRepository;
 
-    public DeleteStudentCommandHandler(IStudentsRepository studentsRepository)
+    public DeleteStudentCommandHandler(
+        IStudentsRoRepository studentsRoRepository,
+        IStudentsRwRepository studentsRwRepository)
     {
-        _studentsRepository = studentsRepository;
+        _studentsRoRepository = studentsRoRepository;
+        _studentsRwRepository = studentsRwRepository;
     }
 
     protected override async Task Handle(DeleteStudentCommand request, CancellationToken cancellationToken)
     {
-        if (!await _studentsRepository.Exists(request.Id, cancellationToken))
+        if (!await _studentsRoRepository.Exists(request.Id, cancellationToken))
             throw new EntityNotFoundException("student", request.Id);
 
-        await _studentsRepository.Remove(request.Id, cancellationToken);
+        await _studentsRwRepository.Remove(request.Id, cancellationToken);
     }
 }

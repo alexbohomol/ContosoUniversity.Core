@@ -20,10 +20,10 @@ public record GetStudentDetailsQuery(Guid Id) : IRequest<StudentDetailsViewModel
 public class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQuery, StudentDetailsViewModel>
 {
     private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IStudentsRepository _studentsRepository;
+    private readonly IStudentsRoRepository _studentsRepository;
 
     public GetStudentDetailsQueryHandler(
-        IStudentsRepository studentsRepository,
+        IStudentsRoRepository studentsRepository,
         ICoursesRoRepository coursesRepository)
     {
         _studentsRepository = studentsRepository;
@@ -33,11 +33,11 @@ public class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQu
     public async Task<StudentDetailsViewModel> Handle(GetStudentDetailsQuery request,
         CancellationToken cancellationToken)
     {
-        Student student = await _studentsRepository.GetById(request.Id, cancellationToken);
+        StudentReadModel student = await _studentsRepository.GetById(request.Id, cancellationToken);
         if (student == null)
             throw new EntityNotFoundException(nameof(student), request.Id);
 
-        Guid[] coursesIds = student.Enrollments.CourseIds.ToArray();
+        Guid[] coursesIds = student.Enrollments.Select(x => x.CourseId).ToArray();
 
         Dictionary<Guid, string> courseTitles = (await _coursesRepository.GetByIds(coursesIds, cancellationToken))
             .ToDictionary(x => x.ExternalId, x => x.Title);

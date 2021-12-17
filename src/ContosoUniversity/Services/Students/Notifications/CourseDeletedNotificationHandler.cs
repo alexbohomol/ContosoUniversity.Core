@@ -14,9 +14,9 @@ using MediatR;
 
 public class CourseDeletedNotificationHandler : INotificationHandler<CourseDeletedNotification>
 {
-    private readonly IStudentsRepository _studentsRepository;
+    private readonly IStudentsRwRepository _studentsRepository;
 
-    public CourseDeletedNotificationHandler(IStudentsRepository studentsRepository)
+    public CourseDeletedNotificationHandler(IStudentsRwRepository studentsRepository)
     {
         _studentsRepository = studentsRepository;
     }
@@ -25,8 +25,9 @@ public class CourseDeletedNotificationHandler : INotificationHandler<CourseDelet
     {
         Guid[] courseIds = { notification.Id };
 
-        Student[] enrolledStudents =
-            await _studentsRepository.GetStudentsEnrolledForCourses(courseIds, cancellationToken);
+        Student[] enrolledStudents = await _studentsRepository
+            .GetStudentsEnrolledForCourses(courseIds, cancellationToken);
+
         if (enrolledStudents.Any())
             foreach (Student student in enrolledStudents)
             {

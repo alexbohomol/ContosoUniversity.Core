@@ -16,16 +16,16 @@ public record GetStudentEditFormQuery(Guid Id) : IRequest<EditStudentForm>;
 
 public class GetStudentEditFormQueryHandler : IRequestHandler<GetStudentEditFormQuery, EditStudentForm>
 {
-    private readonly IStudentsRepository _studentsRepository;
+    private readonly IStudentsRoRepository _studentsRepository;
 
-    public GetStudentEditFormQueryHandler(IStudentsRepository studentsRepository)
+    public GetStudentEditFormQueryHandler(IStudentsRoRepository studentsRepository)
     {
         _studentsRepository = studentsRepository;
     }
 
     public async Task<EditStudentForm> Handle(GetStudentEditFormQuery request, CancellationToken cancellationToken)
     {
-        Student student = await _studentsRepository.GetById(request.Id, cancellationToken);
+        StudentReadModel student = await _studentsRepository.GetById(request.Id, cancellationToken);
         if (student == null)
             throw new EntityNotFoundException(nameof(student), request.Id);
 

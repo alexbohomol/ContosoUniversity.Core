@@ -22,9 +22,9 @@ public class GetStudentsIndexQuery : IRequest<StudentIndexViewModel>
 
 public class GetStudentsIndexQueryHandler : IRequestHandler<GetStudentsIndexQuery, StudentIndexViewModel>
 {
-    private readonly IStudentsRepository _studentsRepository;
+    private readonly IStudentsRoRepository _studentsRepository;
 
-    public GetStudentsIndexQueryHandler(IStudentsRepository studentsRepository)
+    public GetStudentsIndexQueryHandler(IStudentsRoRepository studentsRepository)
     {
         _studentsRepository = studentsRepository;
     }
@@ -36,7 +36,7 @@ public class GetStudentsIndexQueryHandler : IRequestHandler<GetStudentsIndexQuer
         else
             request.SearchString = request.CurrentFilter;
 
-        (Student[] students, PageInfo pageInfo) = await _studentsRepository.Search(
+        (StudentReadModel[] students, PageInfo pageInfo) = await _studentsRepository.Search(
             new SearchRequest(request.SearchString),
             new OrderRequest(request.SortOrder),
             new PageRequest(request.PageNumber ?? 1, 3),

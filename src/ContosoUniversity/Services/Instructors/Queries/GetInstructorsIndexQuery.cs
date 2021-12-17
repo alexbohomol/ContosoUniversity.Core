@@ -23,13 +23,13 @@ public class GetInstructorsIndexQueryHandler : IRequestHandler<GetInstructorsInd
     private readonly ICoursesRoRepository _coursesRepository;
     private readonly IDepartmentsRoRepository _departmentsRepository;
     private readonly IInstructorsRoRepository _instructorsRepository;
-    private readonly IStudentsRepository _studentsRepository;
+    private readonly IStudentsRoRepository _studentsRepository;
 
     public GetInstructorsIndexQueryHandler(
         IInstructorsRoRepository instructorsRepository,
         IDepartmentsRoRepository departmentsRepository,
         ICoursesRoRepository coursesRepository,
-        IStudentsRepository studentsRepository)
+        IStudentsRoRepository studentsRepository)
     {
         _instructorsRepository = instructorsRepository;
         _departmentsRepository = departmentsRepository;
@@ -98,7 +98,7 @@ public class GetInstructorsIndexQueryHandler : IRequestHandler<GetInstructorsInd
 
         if (courseExternalId is not null)
         {
-            Student[] students = await _studentsRepository.GetStudentsEnrolledForCourses(
+            StudentReadModel[] students = await _studentsRepository.GetStudentsEnrolledForCourses(
                 new[]
                 {
                     courseExternalId.Value
@@ -111,8 +111,11 @@ public class GetInstructorsIndexQueryHandler : IRequestHandler<GetInstructorsInd
 
             viewModel.Students = students.Select(x => new EnrolledStudentViewModel
             {
-                StudentFullName = x.FullName(),
-                EnrollmentGrade = x.Enrollments[courseExternalId.Value].Grade.ToDisplayString()
+                StudentFullName = x.FullName,
+                EnrollmentGrade = x.Enrollments
+                    .Single(e => e.CourseId == courseExternalId.Value)
+                    .Grade
+                    .ToDisplayString()
             });
         }
 
