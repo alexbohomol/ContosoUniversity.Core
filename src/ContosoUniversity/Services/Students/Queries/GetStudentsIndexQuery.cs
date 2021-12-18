@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application;
-using Application.Paging;
+using Application.Contracts;
+using Application.Contracts.Paging;
 
 using Domain.Student;
 

@@ -3,7 +3,7 @@ namespace ContosoUniversity.Data.Departments.Writes;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application;
+using Application.Contracts;
 
 using Domain.Instructor;
 

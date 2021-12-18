@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application;
+using Application.Contracts;
 
 using Domain.Course;
 using Domain.Instructor;
