@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.ReadModels;
-using Application.Contracts.Repositories;
+using Application.Contracts.Repositories.ReadOnly;
+using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Exceptions;
 
 using Commands;
@@ -32,7 +32,7 @@ public class GetCourseEditFormQueryHandler : IRequestHandler<GetCourseEditFormQu
 
     public async Task<CourseEditForm> Handle(GetCourseEditFormQuery request, CancellationToken cancellationToken)
     {
-        CourseReadModel course = await _coursesRepository.GetById(request.Id, cancellationToken);
+        Course course = await _coursesRepository.GetById(request.Id, cancellationToken);
         if (course == null)
             throw new EntityNotFoundException(nameof(course), request.Id);
 

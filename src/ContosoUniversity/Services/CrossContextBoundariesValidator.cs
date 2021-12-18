@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Application.Contracts.ReadModels;
+using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using Domain;
 using Domain.Student;
@@ -18,7 +18,7 @@ public static class CrossContextBoundariesValidator
     ///     Ensure all assigned courses reference existing department records
     /// </summary>
     public static void EnsureCoursesReferenceTheExistingDepartments(
-        IEnumerable<CourseReadModel> courses,
+        IEnumerable<Course> courses,
         IEnumerable<Guid> existingDepartmentIds)
     {
         HashSet<Guid> referencedDepartmentIds = courses.Select(x => x.DepartmentId).ToHashSet();
@@ -33,8 +33,8 @@ public static class CrossContextBoundariesValidator
     ///     Ensure all assigned courses reference existing course records
     /// </summary>
     public static void EnsureInstructorsReferenceTheExistingCourses(
-        InstructorReadModel[] instructors,
-        IEnumerable<CourseReadModel> courses)
+        Instructor[] instructors,
+        IEnumerable<Course> courses)
     {
         HashSet<Guid> referencedCourseIds = instructors.SelectMany(x => x.Courses).ToHashSet();
         HashSet<Guid> existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();
@@ -50,7 +50,7 @@ public static class CrossContextBoundariesValidator
     /// </summary>
     public static void EnsureEnrollmentsReferenceTheExistingCourses(
         IEnumerable<Enrollment> enrollments,
-        IEnumerable<CourseReadModel> courses)
+        IEnumerable<Course> courses)
     {
         HashSet<Guid> referencedCourseIds = enrollments.Select(x => x.CourseId).ToHashSet();
         HashSet<Guid> existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();

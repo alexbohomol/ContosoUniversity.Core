@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Application.Contracts.ReadModels;
+namespace ContosoUniversity.Application.Contracts.Repositories.ReadOnly.Projections;
 
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using Domain;
 using Domain.Instructor;
 
-public record InstructorReadModel(
+public record Instructor(
     string FirstName,
     string LastName,
     DateTime HireDate,

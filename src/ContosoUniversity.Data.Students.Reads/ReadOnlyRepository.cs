@@ -7,13 +7,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Paging;
-using Application.Contracts.ReadModels;
-using Application.Contracts.Repositories;
+using Application.Contracts.Repositories.ReadOnly;
+using Application.Contracts.Repositories.ReadOnly.Paging;
+using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using Microsoft.EntityFrameworkCore;
 
-internal sealed class ReadOnlyRepository : EfRoRepository<StudentReadModel>, IStudentsRoRepository
+internal sealed class ReadOnlyRepository : EfRoRepository<Student>, IStudentsRoRepository
 {
     public ReadOnlyRepository(ReadOnlyContext dbContext) : base(dbContext)
     {
@@ -51,7 +51,7 @@ internal sealed class ReadOnlyRepository : EfRoRepository<StudentReadModel>, ISt
         return groups.ToArray();
     }
 
-    public async Task<StudentReadModel[]> GetStudentsEnrolledForCourses(Guid[] courseIds,
+    public async Task<Student[]> GetStudentsEnrolledForCourses(Guid[] courseIds,
         CancellationToken cancellationToken = default)
     {
         return await DbQuery
@@ -60,7 +60,7 @@ internal sealed class ReadOnlyRepository : EfRoRepository<StudentReadModel>, ISt
             .ToArrayAsync(cancellationToken);
     }
 
-    public async Task<PagedResult<StudentReadModel>> Search(
+    public async Task<PagedResult<Student>> Search(
         SearchRequest searchRequest,
         OrderRequest orderRequest,
         PageRequest pageRequest,
@@ -69,20 +69,20 @@ internal sealed class ReadOnlyRepository : EfRoRepository<StudentReadModel>, ISt
         /*
          * TODO: here we don't need default includes in DbQuery
          */
-        IQueryable<StudentReadModel> searchQuery = DbQuery;
+        IQueryable<Student> searchQuery = DbQuery;
         searchQuery = ApplySearch(searchQuery, searchRequest);
         searchQuery = ApplyOrder(searchQuery, orderRequest);
 
-        (StudentReadModel[] students, PageInfo pageInfo) = await searchQuery
+        (Student[] students, PageInfo pageInfo) = await searchQuery
             .AsNoTracking()
             .ToPageAsync(pageRequest, cancellationToken);
 
-        return new PagedResult<StudentReadModel>(
+        return new PagedResult<Student>(
             students,
             pageInfo);
     }
 
-    private IQueryable<StudentReadModel> ApplySearch(IQueryable<StudentReadModel> source, SearchRequest request)
+    private IQueryable<Student> ApplySearch(IQueryable<Student> source, SearchRequest request)
     {
         return string.IsNullOrEmpty(request.SearchString)
             ? source
@@ -91,7 +91,7 @@ internal sealed class ReadOnlyRepository : EfRoRepository<StudentReadModel>, ISt
                      || s.FirstName.Contains(request.SearchString));
     }
 
-    private IQueryable<StudentReadModel> ApplyOrder(IQueryable<StudentReadModel> source, OrderRequest request)
+    private IQueryable<Student> ApplyOrder(IQueryable<Student> source, OrderRequest request)
     {
         return request.SortOrder switch
         {

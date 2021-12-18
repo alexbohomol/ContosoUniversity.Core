@@ -1,10 +1,10 @@
-namespace ContosoUniversity.Application.Contracts.ReadModels;
+namespace ContosoUniversity.Application.Contracts.Repositories.ReadOnly.Projections;
 
 using System;
 
 using Domain;
 
-public record DepartmentReadModel(
+public record Department(
     string Name,
     decimal Budget,
     DateTime StartDate,

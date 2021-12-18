@@ -4,8 +4,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.ReadModels;
-using Application.Contracts.Repositories;
+using Application.Contracts.Repositories.ReadOnly;
+using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Exceptions;
 
 using MediatR;
@@ -30,14 +30,14 @@ public class GetDepartmentDetailsQueryHandler : IRequestHandler<GetDepartmentDet
     public async Task<DepartmentDetailsViewModel> Handle(GetDepartmentDetailsQuery request,
         CancellationToken cancellationToken)
     {
-        DepartmentReadModel department = await _departmentsRepository.GetById(request.Id, cancellationToken);
+        Department department = await _departmentsRepository.GetById(request.Id, cancellationToken);
         if (department is null)
             throw new EntityNotFoundException(nameof(department), request.Id);
 
         string fullname = string.Empty;
         if (department.AdministratorId.HasValue)
         {
-            InstructorReadModel administrator = await _instructorsRepository.GetById(
+            Instructor administrator = await _instructorsRepository.GetById(
                 department.AdministratorId.Value,
                 cancellationToken);
 

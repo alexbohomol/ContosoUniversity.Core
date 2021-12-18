@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Application.Contracts.ReadModels;
+namespace ContosoUniversity.Application.Contracts.Repositories.ReadOnly.Projections;
 
 using System;
 

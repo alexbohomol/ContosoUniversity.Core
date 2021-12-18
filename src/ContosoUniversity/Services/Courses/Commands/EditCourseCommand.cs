@@ -4,17 +4,15 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.ReadModels;
-using Application.Contracts.Repositories;
+using Application.Contracts.Repositories.ReadOnly.Projections;
+using Application.Contracts.Repositories.ReadWrite;
 using Application.Exceptions;
-
-using Domain.Course;
 
 using MediatR;
 
 public class EditCourseCommand : IRequest
 {
-    public EditCourseCommand(CourseReadModel course)
+    public EditCourseCommand(Course course)
     {
         Id = course.ExternalId;
         Title = course.Title;
@@ -43,7 +41,7 @@ public class EditCourseCommandHandler : AsyncRequestHandler<EditCourseCommand>
 
     protected override async Task Handle(EditCourseCommand request, CancellationToken cancellationToken)
     {
-        Course course = await _coursesRepository.GetById(request.Id, cancellationToken);
+        Domain.Course.Course course = await _coursesRepository.GetById(request.Id, cancellationToken);
         if (course == null)
             throw new EntityNotFoundException(nameof(course), request.Id);
 

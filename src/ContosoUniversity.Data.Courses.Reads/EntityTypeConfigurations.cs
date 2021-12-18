@@ -1,13 +1,13 @@
 namespace ContosoUniversity.Data.Courses.Reads;
 
-using Application.Contracts.ReadModels;
+using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-internal class EntityTypeConfigurations : IEntityTypeConfiguration<CourseReadModel>
+internal class EntityTypeConfigurations : IEntityTypeConfiguration<Course>
 {
-    public void Configure(EntityTypeBuilder<CourseReadModel> builder)
+    public void Configure(EntityTypeBuilder<Course> builder)
     {
         builder
             .HasKey(x => x.ExternalId);

@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Application.Contracts.ReadModels;
+namespace ContosoUniversity.Application.Contracts.Repositories.ReadOnly.Projections;
 
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Domain;
 using Domain.Student;
 
-public record StudentReadModel(
+public record Student(
     string LastName,
     string FirstName,
     DateTime EnrollmentDate,

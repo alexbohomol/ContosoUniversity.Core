@@ -6,8 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.ReadModels;
-using Application.Contracts.Repositories;
+using Application.Contracts.Repositories.ReadOnly;
+using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using MediatR;
 
@@ -33,7 +33,7 @@ public class GetDepartmentsIndexQueryHandler
         CancellationToken cancellationToken)
     {
 #warning This is potential place to introduce view in scope of dpt-schema. Instructors names can be included in read model,
-        DepartmentReadModel[] departments = await _departmentsRepository.GetAll(cancellationToken);
+        Department[] departments = await _departmentsRepository.GetAll(cancellationToken);
 
         Dictionary<Guid, string> instructorsNames =
             await _instructorsRepository.GetInstructorNamesReference(cancellationToken);

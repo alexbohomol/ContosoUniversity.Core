@@ -6,8 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.ReadModels;
-using Application.Contracts.Repositories;
+using Application.Contracts.Repositories.ReadOnly;
+using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using MediatR;
 
@@ -31,7 +31,7 @@ public class GetCoursesIndexQueryHandler : IRequestHandler<GetCoursesIndexQuery,
     public async Task<List<CourseListItemViewModel>> Handle(GetCoursesIndexQuery request,
         CancellationToken cancellationToken)
     {
-        CourseReadModel[] courses = await _coursesRepository.GetAll(cancellationToken);
+        Course[] courses = await _coursesRepository.GetAll(cancellationToken);
 
         Dictionary<Guid, string> departmentNames =
             await _departmentsRepository.GetDepartmentNamesReference(cancellationToken);

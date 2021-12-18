@@ -4,8 +4,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.ReadModels;
-using Application.Contracts.Repositories;
+using Application.Contracts.Repositories.ReadOnly;
+using Application.Contracts.Repositories.ReadOnly.Projections;
+using Application.Contracts.Repositories.ReadWrite;
 
 using MediatR;
 
@@ -98,7 +99,7 @@ public class CoursesController : Controller
 
         if (!ModelState.IsValid)
         {
-            CourseReadModel course = await _coursesRoRepository.GetById(command.Id, cancellationToken);
+            Course course = await _coursesRoRepository.GetById(command.Id, cancellationToken);
 
             return View(
                 new CourseEditForm(

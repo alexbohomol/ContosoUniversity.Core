@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Application.Contracts.ReadModels;
+using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using Domain.Student;
 
@@ -18,7 +18,7 @@ public static class DomainExtensions
     }
 
     public static AssignedCourseOption[] ToAssignedCourseOptions(
-        this IEnumerable<CourseReadModel> courses,
+        this IEnumerable<Course> courses,
         IEnumerable<Guid> instructorCourses = null)
     {
         return courses.Select(course => new AssignedCourseOption

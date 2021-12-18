@@ -4,8 +4,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.ReadModels;
-using Application.Contracts.Repositories;
+using Application.Contracts.Repositories.ReadOnly;
+using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using MediatR;
 
@@ -30,11 +30,11 @@ public class GetInstructorEditFormQueryHandler : IRequestHandler<GetInstructorEd
     public async Task<EditInstructorForm> Handle(GetInstructorEditFormQuery request,
         CancellationToken cancellationToken)
     {
-        InstructorReadModel instructor = await _instructorsRepository.GetById(request.Id, cancellationToken);
+        Instructor instructor = await _instructorsRepository.GetById(request.Id, cancellationToken);
         if (instructor is null)
             return null;
 
-        CourseReadModel[] courses = await _coursesRepository.GetAll(cancellationToken);
+        Course[] courses = await _coursesRepository.GetAll(cancellationToken);
 
         return new EditInstructorForm
         {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Paging;
-using Application.Contracts.ReadModels;
-using Application.Contracts.Repositories;
+using Application.Contracts.Repositories.ReadOnly;
+using Application.Contracts.Repositories.ReadOnly.Paging;
+using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using MediatR;
 
@@ -36,7 +36,7 @@ public class GetStudentsIndexQueryHandler : IRequestHandler<GetStudentsIndexQuer
         else
             request.SearchString = request.CurrentFilter;
 
-        (StudentReadModel[] students, PageInfo pageInfo) = await _studentsRepository.Search(
+        (Student[] students, PageInfo pageInfo) = await _studentsRepository.Search(
             new SearchRequest(request.SearchString),
             new OrderRequest(request.SortOrder),
             new PageRequest(request.PageNumber ?? 1, 3),

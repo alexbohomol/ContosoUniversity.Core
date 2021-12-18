@@ -6,8 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.ReadModels;
-using Application.Contracts.Repositories;
+using Application.Contracts.Repositories.ReadOnly;
+using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using MediatR;
 
@@ -41,11 +41,11 @@ public class GetInstructorsIndexQueryHandler : IRequestHandler<GetInstructorsInd
         Guid? id = request.Id;
         Guid? courseExternalId = request.CourseExternalId;
 
-        InstructorReadModel[] instructors = (await _instructorsRepository.GetAll(cancellationToken))
+        Instructor[] instructors = (await _instructorsRepository.GetAll(cancellationToken))
             .OrderBy(x => x.LastName)
             .ToArray();
 
-        CourseReadModel[] courses = await _coursesRepository.GetAll(cancellationToken);
+        Course[] courses = await _coursesRepository.GetAll(cancellationToken);
 
         CrossContextBoundariesValidator.EnsureInstructorsReferenceTheExistingCourses(instructors, courses);
 
@@ -96,7 +96,7 @@ public class GetInstructorsIndexQueryHandler : IRequestHandler<GetInstructorsInd
 
         if (courseExternalId is not null)
         {
-            StudentReadModel[] students = await _studentsRepository.GetStudentsEnrolledForCourses(
+            Student[] students = await _studentsRepository.GetStudentsEnrolledForCourses(
                 new[]
                 {
                     courseExternalId.Value

@@ -4,8 +4,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.ReadModels;
-using Application.Contracts.Repositories;
+using Application.Contracts.Repositories.ReadOnly;
+using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Exceptions;
 
 using MediatR;
@@ -26,7 +26,7 @@ public class GetInstructorDetailsQueryHandler : IRequestHandler<GetInstructorDet
     public async Task<InstructorDetailsViewModel> Handle(GetInstructorDetailsQuery request,
         CancellationToken cancellationToken)
     {
-        InstructorReadModel instructor = await _instructorsRepository.GetById(request.Id, cancellationToken);
+        Instructor instructor = await _instructorsRepository.GetById(request.Id, cancellationToken);
         if (instructor == null)
             throw new EntityNotFoundException(nameof(instructor), request.Id);
 

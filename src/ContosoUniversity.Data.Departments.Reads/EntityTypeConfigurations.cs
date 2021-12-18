@@ -2,16 +2,18 @@ namespace ContosoUniversity.Data.Departments.Reads;
 
 using System;
 
-using Application.Contracts.ReadModels;
+using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using Domain.Instructor;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+using Instructor = Application.Contracts.Repositories.ReadOnly.Projections.Instructor;
+
 internal class EntityTypeConfigurations :
-    IEntityTypeConfiguration<InstructorReadModel>,
-    IEntityTypeConfiguration<DepartmentReadModel>,
+    IEntityTypeConfiguration<Instructor>,
+    IEntityTypeConfiguration<Department>,
     IEntityTypeConfiguration<CourseAssignment>,
     IEntityTypeConfiguration<OfficeAssignment>
 {
@@ -25,7 +27,7 @@ internal class EntityTypeConfigurations :
         builder.ToTable("CourseAssignment", ReadOnlyContext.Schema);
     }
 
-    public void Configure(EntityTypeBuilder<DepartmentReadModel> builder)
+    public void Configure(EntityTypeBuilder<Department> builder)
     {
         builder
             .HasKey(x => x.ExternalId);
@@ -45,7 +47,7 @@ internal class EntityTypeConfigurations :
         builder.ToTable("Department", ReadOnlyContext.Schema);
     }
 
-    public void Configure(EntityTypeBuilder<InstructorReadModel> builder)
+    public void Configure(EntityTypeBuilder<Instructor> builder)
     {
         builder
             .HasKey(x => x.ExternalId);

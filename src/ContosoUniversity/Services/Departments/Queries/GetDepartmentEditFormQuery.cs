@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.ReadModels;
-using Application.Contracts.Repositories;
+using Application.Contracts.Repositories.ReadOnly;
+using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using MediatR;
 
@@ -31,7 +31,7 @@ public class GetDepartmentEditFormQueryHandler : IRequestHandler<GetDepartmentEd
     public async Task<EditDepartmentForm> Handle(GetDepartmentEditFormQuery request,
         CancellationToken cancellationToken)
     {
-        DepartmentReadModel department = await _departmentsRepository.GetById(request.Id, cancellationToken);
+        Department department = await _departmentsRepository.GetById(request.Id, cancellationToken);
 
         Dictionary<Guid, string> instructorNames =
             await _instructorsRepository.GetInstructorNamesReference(cancellationToken);

@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Application.Contracts.Repositories;
+namespace ContosoUniversity.Application.Contracts.Repositories.ReadOnly;
 
 using System;
 using System.Threading;
@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 using Paging;
 
-using ReadModels;
+using Projections;
 
-public interface IStudentsRoRepository : IRoRepository<StudentReadModel>
+public interface IStudentsRoRepository : IRoRepository<Student>
 {
-    Task<StudentReadModel[]> GetStudentsEnrolledForCourses(
+    Task<Student[]> GetStudentsEnrolledForCourses(
         Guid[] courseIds,
         CancellationToken cancellationToken = default);
 
     Task<EnrollmentDateGroup[]> GetEnrollmentDateGroups(CancellationToken cancellationToken = default);
 
-    Task<PagedResult<StudentReadModel>> Search(
+    Task<PagedResult<Student>> Search(
         SearchRequest searchRequest,
         OrderRequest orderRequest,
         PageRequest pageRequest,
