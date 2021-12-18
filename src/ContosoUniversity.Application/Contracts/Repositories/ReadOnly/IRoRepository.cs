@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 using Domain;
 
-public interface IRoRepository<TReadModel> where TReadModel : IIdentifiable<Guid>
+public interface IRoRepository<TProjection> where TProjection : IIdentifiable<Guid>
 {
     Task<bool> Exists(Guid entityId, CancellationToken cancellationToken = default);
-    Task<TReadModel> GetById(Guid entityId, CancellationToken cancellationToken = default);
-    Task<TReadModel[]> GetAll(CancellationToken cancellationToken = default);
+    Task<TProjection> GetById(Guid entityId, CancellationToken cancellationToken = default);
+    Task<TProjection[]> GetAll(CancellationToken cancellationToken = default);
 }

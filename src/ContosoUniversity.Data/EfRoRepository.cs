@@ -11,17 +11,17 @@ using Domain;
 
 using Microsoft.EntityFrameworkCore;
 
-public abstract class EfRoRepository<TReadModel> : IRoRepository<TReadModel>
-    where TReadModel : class, IIdentifiable<Guid>
+public abstract class EfRoRepository<TProjection> : IRoRepository<TProjection>
+    where TProjection : class, IIdentifiable<Guid>
 {
     protected readonly DbContext DbContext;
-    protected readonly IQueryable<TReadModel> DbQuery;
-    protected readonly DbSet<TReadModel> DbSet;
+    protected readonly IQueryable<TProjection> DbQuery;
+    protected readonly DbSet<TProjection> DbSet;
 
     protected EfRoRepository(DbContext dbContext)
     {
         DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-        DbSet = DbContext.Set<TReadModel>();
+        DbSet = DbContext.Set<TProjection>();
         DbQuery = DbSet;
     }
 
@@ -32,14 +32,14 @@ public abstract class EfRoRepository<TReadModel> : IRoRepository<TReadModel>
             .AnyAsync(x => x.ExternalId == entityId, cancellationToken);
     }
 
-    public async Task<TReadModel> GetById(Guid entityId, CancellationToken cancellationToken = default)
+    public async Task<TProjection> GetById(Guid entityId, CancellationToken cancellationToken = default)
     {
         return await DbQuery
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.ExternalId == entityId, cancellationToken);
     }
 
-    public async Task<TReadModel[]> GetAll(CancellationToken cancellationToken = default)
+    public async Task<TProjection[]> GetAll(CancellationToken cancellationToken = default)
     {
         return await DbQuery
             .AsNoTracking()
