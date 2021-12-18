@@ -1,6 +1,8 @@
 ﻿namespace ContosoUniversity.Controllers;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,19 +40,30 @@ public class CoursesController : Controller
 
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        return View(await _mediator.Send(new GetCoursesIndexQuery(), cancellationToken));
+        (Course[] courses, Dictionary<Guid, string> departmentsReference) = await _mediator.Send(
+            new GetCoursesIndexQuery(),
+            cancellationToken);
+
+        return View(courses.Select(x => new CourseListItemViewModel
+        {
+            CourseCode = x.Code,
+            Title = x.Title,
+            Credits = x.Credits,
+            Department = departmentsReference[x.DepartmentId],
+            Id = x.ExternalId
+        }));
     }
 
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null) return BadRequest();
 
-        CourseDetailsViewModel result = await _mediator.Send(
+        (Course course, Department department) = await _mediator.Send(
             new GetCourseDetailsQuery(id.Value),
             cancellationToken);
 
-        return result is not null
-            ? View(result)
+        return course is not null
+            ? View(new CourseDetailsViewModel(course, department))
             : NotFound();
     }
 
@@ -82,12 +95,15 @@ public class CoursesController : Controller
     {
         if (id is null) return BadRequest();
 
-        CourseEditForm result = await _mediator.Send(
+        (Course course, Dictionary<Guid, string> departmentsReference) = await _mediator.Send(
             new GetCourseEditFormQuery(id.Value),
             cancellationToken);
 
-        return result is not null
-            ? View(result)
+        return course is not null
+            ? View(new CourseEditForm(
+                new EditCourseCommand(course),
+                course.Code,
+                departmentsReference))
             : NotFound();
     }
 
@@ -117,12 +133,12 @@ public class CoursesController : Controller
     {
         if (id is null) return BadRequest();
 
-        CourseDetailsViewModel result = await _mediator.Send(
+        (Course course, Department department) = await _mediator.Send(
             new GetCourseDetailsQuery(id.Value),
             cancellationToken);
 
-        return result is not null
-            ? View(result)
+        return course is not null
+            ? View(new CourseDetailsViewModel(course, department))
             : NotFound();
     }
 

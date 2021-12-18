@@ -2,7 +2,6 @@ namespace ContosoUniversity.Services.Courses.Queries;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,11 +10,13 @@ using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using MediatR;
 
-using ViewModels.Courses;
+public record GetCoursesIndexQuery : IRequest<GetCoursesIndexQueryResult>;
 
-public record GetCoursesIndexQuery : IRequest<List<CourseListItemViewModel>>;
+public record GetCoursesIndexQueryResult(
+    Course[] Courses,
+    Dictionary<Guid, string> DepartmentsReference);
 
-public class GetCoursesIndexQueryHandler : IRequestHandler<GetCoursesIndexQuery, List<CourseListItemViewModel>>
+public class GetCoursesIndexQueryHandler : IRequestHandler<GetCoursesIndexQuery, GetCoursesIndexQueryResult>
 {
     private readonly ICoursesRoRepository _coursesRepository;
     private readonly IDepartmentsRoRepository _departmentsRepository;
@@ -28,23 +29,19 @@ public class GetCoursesIndexQueryHandler : IRequestHandler<GetCoursesIndexQuery,
         _departmentsRepository = departmentsRepository;
     }
 
-    public async Task<List<CourseListItemViewModel>> Handle(GetCoursesIndexQuery request,
+    public async Task<GetCoursesIndexQueryResult> Handle(
+        GetCoursesIndexQuery request,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+
         Course[] courses = await _coursesRepository.GetAll(cancellationToken);
 
-        Dictionary<Guid, string> departmentNames =
-            await _departmentsRepository.GetDepartmentNamesReference(cancellationToken);
+        Dictionary<Guid, string> departmentNames = await _departmentsRepository
+            .GetDepartmentNamesReference(cancellationToken);
 
         CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);
 
-        return courses.Select(x => new CourseListItemViewModel
-        {
-            CourseCode = x.Code,
-            Title = x.Title,
-            Credits = x.Credits,
-            Department = departmentNames[x.DepartmentId],
-            Id = x.ExternalId
-        }).ToList();
+        return new GetCoursesIndexQueryResult(courses, departmentNames);
     }
 }

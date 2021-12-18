@@ -10,11 +10,11 @@ using Application.Exceptions;
 
 using MediatR;
 
-using ViewModels.Courses;
+public record GetCourseDetailsQuery(Guid Id) : IRequest<GetCourseDetailsQueryResult>;
 
-public record GetCourseDetailsQuery(Guid Id) : IRequest<CourseDetailsViewModel>;
+public record GetCourseDetailsQueryResult(Course Course, Department Department);
 
-public class GetCourseDetailsQueryHandler : IRequestHandler<GetCourseDetailsQuery, CourseDetailsViewModel>
+public class GetCourseDetailsQueryHandler : IRequestHandler<GetCourseDetailsQuery, GetCourseDetailsQueryResult>
 {
     private readonly ICoursesRoRepository _coursesRepository;
     private readonly IDepartmentsRoRepository _departmentsRepository;
@@ -27,8 +27,12 @@ public class GetCourseDetailsQueryHandler : IRequestHandler<GetCourseDetailsQuer
         _departmentsRepository = departmentsRepository;
     }
 
-    public async Task<CourseDetailsViewModel> Handle(GetCourseDetailsQuery request, CancellationToken cancellationToken)
+    public async Task<GetCourseDetailsQueryResult> Handle(
+        GetCourseDetailsQuery request,
+        CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+
         Course course = await _coursesRepository.GetById(request.Id, cancellationToken);
         if (course == null)
             throw new EntityNotFoundException(nameof(course), request.Id);
@@ -37,13 +41,6 @@ public class GetCourseDetailsQueryHandler : IRequestHandler<GetCourseDetailsQuer
         if (department == null)
             throw new EntityNotFoundException(nameof(department), course.DepartmentId);
 
-        return new CourseDetailsViewModel
-        {
-            CourseCode = course.Code,
-            Title = course.Title,
-            Credits = course.Credits,
-            Department = department.Name,
-            Id = course.ExternalId
-        };
+        return new GetCourseDetailsQueryResult(course, department);
     }
 }
