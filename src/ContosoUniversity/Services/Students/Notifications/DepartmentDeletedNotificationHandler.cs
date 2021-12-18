@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts;
+using Application.Contracts.Repositories;
 
 using Departments.Notifications;
 

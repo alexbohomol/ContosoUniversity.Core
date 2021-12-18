@@ -4,10 +4,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts;
-
-using Domain.Course;
-using Domain.Instructor;
+using Application.Contracts.ReadModels;
+using Application.Contracts.Repositories;
 
 using MediatR;
 

@@ -1,6 +1,6 @@
 namespace ContosoUniversity.Data.Courses.Reads;
 
-using Application.Contracts;
+using Application.Contracts.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

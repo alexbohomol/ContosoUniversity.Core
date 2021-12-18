@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Domain.Student;
+namespace ContosoUniversity.Application.Contracts.ReadModels;
 
 using System;
 

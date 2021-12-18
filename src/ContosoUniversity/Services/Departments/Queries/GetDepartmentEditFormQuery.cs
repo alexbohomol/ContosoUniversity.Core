@@ -5,9 +5,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts;
-
-using Domain.Department;
+using Application.Contracts.ReadModels;
+using Application.Contracts.Repositories;
 
 using MediatR;
 

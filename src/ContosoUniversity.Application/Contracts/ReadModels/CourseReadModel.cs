@@ -1,6 +1,8 @@
-namespace ContosoUniversity.Domain.Course;
+namespace ContosoUniversity.Application.Contracts.ReadModels;
 
 using System;
+
+using Domain;
 
 public record CourseReadModel(
     int Code,

@@ -7,10 +7,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts;
 using Application.Contracts.Paging;
-
-using Domain.Student;
+using Application.Contracts.ReadModels;
+using Application.Contracts.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 

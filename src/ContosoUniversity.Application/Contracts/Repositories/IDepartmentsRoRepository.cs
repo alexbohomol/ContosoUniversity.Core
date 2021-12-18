@@ -1,11 +1,11 @@
-namespace ContosoUniversity.Application.Contracts;
+namespace ContosoUniversity.Application.Contracts.Repositories;
 
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Domain.Department;
+using ReadModels;
 
 public interface IDepartmentsRoRepository : IRoRepository<DepartmentReadModel>
 {

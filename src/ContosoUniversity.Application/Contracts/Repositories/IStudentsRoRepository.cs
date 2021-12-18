@@ -1,12 +1,12 @@
-namespace ContosoUniversity.Application.Contracts;
+namespace ContosoUniversity.Application.Contracts.Repositories;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Domain.Student;
-
 using Paging;
+
+using ReadModels;
 
 public interface IStudentsRoRepository : IRoRepository<StudentReadModel>
 {

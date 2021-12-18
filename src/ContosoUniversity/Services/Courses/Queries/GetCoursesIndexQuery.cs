@@ -6,9 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts;
-
-using Domain.Course;
+using Application.Contracts.ReadModels;
+using Application.Contracts.Repositories;
 
 using MediatR;
 

@@ -4,7 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Domain.Course;
+using Application.Contracts.ReadModels;
+
 using Domain.Student;
 
 using Instructors;

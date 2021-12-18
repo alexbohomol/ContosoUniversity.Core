@@ -1,6 +1,6 @@
 namespace ContosoUniversity.Data.Courses.Reads;
 
-using Domain.Course;
+using Application.Contracts.ReadModels;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

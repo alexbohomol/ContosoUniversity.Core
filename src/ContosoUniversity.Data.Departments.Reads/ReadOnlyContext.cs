@@ -1,6 +1,7 @@
 namespace ContosoUniversity.Data.Departments.Reads;
 
-using Domain.Department;
+using Application.Contracts.ReadModels;
+
 using Domain.Instructor;
 
 using Microsoft.EntityFrameworkCore;

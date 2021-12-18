@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts;
+using Application.Contracts.Repositories;
 using Application.Exceptions;
 
 using Domain.Student;

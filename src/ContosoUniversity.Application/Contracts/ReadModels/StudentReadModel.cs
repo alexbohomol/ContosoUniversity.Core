@@ -1,7 +1,10 @@
-namespace ContosoUniversity.Domain.Student;
+namespace ContosoUniversity.Application.Contracts.ReadModels;
 
 using System;
 using System.Collections.Generic;
+
+using Domain;
+using Domain.Student;
 
 public record StudentReadModel(
     string LastName,

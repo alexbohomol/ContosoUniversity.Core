@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Application.Contracts.ReadModels;
+
 using Domain;
-using Domain.Course;
-using Domain.Instructor;
 using Domain.Student;
 
 /// <summary>

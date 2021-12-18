@@ -1,5 +1,7 @@
 namespace ContosoUniversity.Data.Students.Reads;
 
+using Application.Contracts.ReadModels;
+
 using Domain.Student;
 
 using Microsoft.EntityFrameworkCore;

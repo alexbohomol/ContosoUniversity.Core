@@ -1,6 +1,8 @@
-namespace ContosoUniversity.Domain.Department;
+namespace ContosoUniversity.Application.Contracts.ReadModels;
 
 using System;
+
+using Domain;
 
 public record DepartmentReadModel(
     string Name,

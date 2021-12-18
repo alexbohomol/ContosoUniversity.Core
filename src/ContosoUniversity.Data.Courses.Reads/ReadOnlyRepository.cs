@@ -5,10 +5,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts;
+using Application.Contracts.ReadModels;
+using Application.Contracts.Repositories;
 using Application.Exceptions;
-
-using Domain.Course;
 
 using Extensions;
 

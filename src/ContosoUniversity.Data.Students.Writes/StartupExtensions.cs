@@ -1,6 +1,6 @@
 namespace ContosoUniversity.Data.Students.Writes;
 
-using Application.Contracts;
+using Application.Contracts.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
