@@ -18,7 +18,9 @@ public class EditCourseCommandValidator : AbstractValidator<EditCourseCommand>
     {
         _departmentsRepository = departmentsRepository;
 
-        RuleFor(x => x).SetInheritanceValidator(x => { x.Add(v => new EditCourseFormValidator()); });
+        RuleFor(x => x.Title).SatisfiesTitleRequirements();
+        RuleFor(x => x.Credits).SatisfiesCreditsRequirements();
+        RuleFor(x => x.DepartmentId).Required();
 
         RuleFor(x => x.DepartmentId)
             .MustAsync(BeAnExistingDepartment)

@@ -18,7 +18,7 @@ public class CreateDepartmentCommandValidator : AbstractValidator<CreateDepartme
     {
         _repository = repository;
 
-        RuleFor(x => x).SetInheritanceValidator(x => { x.Add(v => new CreateDepartmentFormValidator()); });
+        RuleFor(x => x.Name).SatisfiesNameRequirements();
 
         When(x => x.AdministratorId.HasValue, () =>
         {

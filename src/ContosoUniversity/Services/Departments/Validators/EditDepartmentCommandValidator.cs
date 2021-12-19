@@ -18,7 +18,7 @@ public class EditDepartmentCommandValidator : AbstractValidator<EditDepartmentCo
     {
         _repository = repository;
 
-        RuleFor(x => x).SetInheritanceValidator(x => { x.Add(v => new EditDepartmentFormValidator()); });
+        RuleFor(x => x.Name).SatisfiesNameRequirements();
 
         When(x => x.AdministratorId.HasValue, () =>
         {

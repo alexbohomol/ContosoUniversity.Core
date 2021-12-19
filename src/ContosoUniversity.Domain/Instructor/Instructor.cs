@@ -8,6 +8,7 @@ public class Instructor : IIdentifiable<Guid>
 {
     public const int FirstNameMaxLength = 50;
     public const int LastNameMaxLength = 50;
+    public const int LastNameMinLength = 1;
 
     private readonly List<CourseAssignment> _courseAssignments = new();
     private OfficeAssignment _officeAssignment;

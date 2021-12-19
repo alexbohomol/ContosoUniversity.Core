@@ -4,6 +4,7 @@ using System;
 
 public class Department : IIdentifiable<Guid>
 {
+    public const int NameMinLength = 3;
     public const int NameMaxLength = 50;
 
     private Department(

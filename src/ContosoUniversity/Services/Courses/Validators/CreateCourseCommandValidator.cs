@@ -22,7 +22,10 @@ public class CreateCourseCommandValidator : AbstractValidator<CreateCourseComman
         _coursesRepository = coursesRepository;
         _departmentsRepository = departmentsRepository;
 
-        RuleFor(x => x).SetInheritanceValidator(x => { x.Add(v => new CreateCourseFormValidator()); });
+        RuleFor(x => x.CourseCode).SatisfiesCourseCodeRequirements();
+        RuleFor(x => x.Title).SatisfiesTitleRequirements();
+        RuleFor(x => x.Credits).SatisfiesCreditsRequirements();
+        RuleFor(x => x.DepartmentId).Required();
 
         RuleFor(x => x.CourseCode)
             .MustAsync(BeANewCourseCode)

@@ -8,7 +8,9 @@ public class EditInstructorCommandValidator : AbstractValidator<EditInstructorCo
 {
     public EditInstructorCommandValidator()
     {
-        RuleFor(x => x).SetInheritanceValidator(x => { x.Add(new EditInstructorFormValidator()); });
+        RuleFor(x => x.LastName).SatisfiesLastNameRequirements();
+        RuleFor(x => x.FirstName).SatisfiesFirstNameRequirements();
+        RuleFor(x => x.Location).SatisfiesLocationRequirements();
 
         RuleFor(x => x.ExternalId).NotEmpty();
     }

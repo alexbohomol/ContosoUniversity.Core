@@ -8,7 +8,7 @@ public class EditStudentCommandValidator : AbstractValidator<EditStudentCommand>
 {
     public EditStudentCommandValidator()
     {
-        RuleFor(x => x).SetInheritanceValidator(
-            x => { x.Add(new EditStudentFormValidator()); });
+        RuleFor(x => x.LastName).SatisfiesLastNameRequirements();
+        RuleFor(x => x.FirstName).SatisfiesFirstNameRequirements();
     }
 }

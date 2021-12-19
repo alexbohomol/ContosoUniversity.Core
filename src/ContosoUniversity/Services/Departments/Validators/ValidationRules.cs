@@ -1,5 +1,7 @@
 namespace ContosoUniversity.Services.Departments.Validators;
 
+using Domain.Department;
+
 using FluentValidation;
 
 /// <summary>
@@ -9,7 +11,6 @@ public static class ValidationRules
 {
     public static void SatisfiesNameRequirements<T>(this IRuleBuilder<T, string> rule)
     {
-        rule
-            .Length(3, 50);
+        rule.Length(Department.NameMinLength, Department.NameMaxLength);
     }
 }

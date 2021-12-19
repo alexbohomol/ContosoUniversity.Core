@@ -1,6 +1,8 @@
-namespace ContosoUniversity.Services.Courses.Validators;
+namespace ContosoUniversity.Validators;
 
 using FluentValidation;
+
+using Services.Courses.Validators;
 
 using ViewModels.Courses;
 
