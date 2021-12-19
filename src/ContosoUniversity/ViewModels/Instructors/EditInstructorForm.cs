@@ -2,6 +2,8 @@ namespace ContosoUniversity.ViewModels.Instructors;
 
 using System.ComponentModel.DataAnnotations;
 
+using Application.Contracts.Repositories.ReadOnly.Projections;
+
 using Services.Instructors.Commands;
 
 public class EditInstructorForm : EditInstructorCommand
@@ -21,5 +23,15 @@ public class EditInstructorForm : EditInstructorCommand
     {
     }
 
-    [Display(Name = "Assigned Courses")] public AssignedCourseOption[] AssignedCourses { get; set; }
+    public EditInstructorForm(Instructor instructor, Course[] courses)
+    {
+        ExternalId = instructor.ExternalId;
+        LastName = instructor.LastName;
+        FirstName = instructor.FirstName;
+        HireDate = instructor.HireDate;
+        Location = instructor.Office;
+        AssignedCourses = courses.ToAssignedCourseOptions(instructor.Courses);
+    }
+
+    [Display(Name = "Assigned Courses")] public AssignedCourseOption[] AssignedCourses { get; }
 }

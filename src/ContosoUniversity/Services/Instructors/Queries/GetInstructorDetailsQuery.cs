@@ -10,11 +10,9 @@ using Application.Exceptions;
 
 using MediatR;
 
-using ViewModels.Instructors;
+public record GetInstructorDetailsQuery(Guid Id) : IRequest<Instructor>;
 
-public record GetInstructorDetailsQuery(Guid Id) : IRequest<InstructorDetailsViewModel>;
-
-public class GetInstructorDetailsQueryHandler : IRequestHandler<GetInstructorDetailsQuery, InstructorDetailsViewModel>
+public class GetInstructorDetailsQueryHandler : IRequestHandler<GetInstructorDetailsQuery, Instructor>
 {
     private readonly IInstructorsRoRepository _instructorsRepository;
 
@@ -23,19 +21,16 @@ public class GetInstructorDetailsQueryHandler : IRequestHandler<GetInstructorDet
         _instructorsRepository = instructorsRepository;
     }
 
-    public async Task<InstructorDetailsViewModel> Handle(GetInstructorDetailsQuery request,
+    public async Task<Instructor> Handle(
+        GetInstructorDetailsQuery request,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+
         Instructor instructor = await _instructorsRepository.GetById(request.Id, cancellationToken);
         if (instructor == null)
             throw new EntityNotFoundException(nameof(instructor), request.Id);
 
-        return new InstructorDetailsViewModel
-        {
-            LastName = instructor.LastName,
-            FirstName = instructor.FirstName,
-            HireDate = instructor.HireDate,
-            ExternalId = instructor.ExternalId
-        };
+        return instructor;
     }
 }

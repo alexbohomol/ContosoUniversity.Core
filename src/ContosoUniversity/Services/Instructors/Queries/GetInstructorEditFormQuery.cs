@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 using Application.Contracts.Repositories.ReadOnly;
 using Application.Contracts.Repositories.ReadOnly.Projections;
+using Application.Exceptions;
 
 using MediatR;
 
-using ViewModels;
-using ViewModels.Instructors;
+public record GetInstructorEditFormQuery(Guid Id) : IRequest<GetInstructorEditFormQueryResult>;
 
-public record GetInstructorEditFormQuery(Guid Id) : IRequest<EditInstructorForm>;
+public record GetInstructorEditFormQueryResult(Instructor Instructor, Course[] Courses);
 
-public class GetInstructorEditFormQueryHandler : IRequestHandler<GetInstructorEditFormQuery, EditInstructorForm>
+public class GetInstructorEditFormQueryHandler :
+    IRequestHandler<GetInstructorEditFormQuery, GetInstructorEditFormQueryResult>
 {
     private readonly ICoursesRoRepository _coursesRepository;
     private readonly IInstructorsRoRepository _instructorsRepository;
@@ -27,23 +28,18 @@ public class GetInstructorEditFormQueryHandler : IRequestHandler<GetInstructorEd
         _coursesRepository = coursesRepository;
     }
 
-    public async Task<EditInstructorForm> Handle(GetInstructorEditFormQuery request,
+    public async Task<GetInstructorEditFormQueryResult> Handle(
+        GetInstructorEditFormQuery request,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+
         Instructor instructor = await _instructorsRepository.GetById(request.Id, cancellationToken);
-        if (instructor is null)
-            return null;
+        if (instructor == null)
+            throw new EntityNotFoundException(nameof(instructor), request.Id);
 
         Course[] courses = await _coursesRepository.GetAll(cancellationToken);
 
-        return new EditInstructorForm
-        {
-            ExternalId = instructor.ExternalId,
-            LastName = instructor.LastName,
-            FirstName = instructor.FirstName,
-            HireDate = instructor.HireDate,
-            Location = instructor.Office,
-            AssignedCourses = courses.ToAssignedCourseOptions(instructor.Courses)
-        };
+        return new GetInstructorEditFormQueryResult(instructor, courses);
     }
 }
