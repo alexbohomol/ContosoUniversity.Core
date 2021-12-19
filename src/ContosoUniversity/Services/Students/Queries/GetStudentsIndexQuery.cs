@@ -1,6 +1,6 @@
 namespace ContosoUniversity.Services.Students.Queries;
 
-using System.Linq;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,9 +10,7 @@ using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using MediatR;
 
-using ViewModels.Students;
-
-public class GetStudentsIndexQuery : IRequest<StudentIndexViewModel>
+public class GetStudentsIndexQuery : IRequest<GetStudentsIndexQueryResult>
 {
     public string SortOrder { get; set; }
     public string CurrentFilter { get; set; }
@@ -20,7 +18,11 @@ public class GetStudentsIndexQuery : IRequest<StudentIndexViewModel>
     public int? PageNumber { get; set; }
 }
 
-public class GetStudentsIndexQueryHandler : IRequestHandler<GetStudentsIndexQuery, StudentIndexViewModel>
+public record GetStudentsIndexQueryResult(
+    PageInfo PageInfo,
+    Student[] Students);
+
+public class GetStudentsIndexQueryHandler : IRequestHandler<GetStudentsIndexQuery, GetStudentsIndexQueryResult>
 {
     private readonly IStudentsRoRepository _studentsRepository;
 
@@ -29,12 +31,11 @@ public class GetStudentsIndexQueryHandler : IRequestHandler<GetStudentsIndexQuer
         _studentsRepository = studentsRepository;
     }
 
-    public async Task<StudentIndexViewModel> Handle(GetStudentsIndexQuery request, CancellationToken cancellationToken)
+    public async Task<GetStudentsIndexQueryResult> Handle(
+        GetStudentsIndexQuery request,
+        CancellationToken cancellationToken)
     {
-        if (request.SearchString != null)
-            request.PageNumber = 1;
-        else
-            request.SearchString = request.CurrentFilter;
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
 
         (Student[] students, PageInfo pageInfo) = await _studentsRepository.Search(
             new SearchRequest(request.SearchString),
@@ -42,20 +43,6 @@ public class GetStudentsIndexQueryHandler : IRequestHandler<GetStudentsIndexQuer
             new PageRequest(request.PageNumber ?? 1, 3),
             cancellationToken);
 
-        return new StudentIndexViewModel
-        {
-            CurrentSort = request.SortOrder,
-            NameSortParm = string.IsNullOrWhiteSpace(request.SortOrder) ? "name_desc" : string.Empty,
-            DateSortParm = request.SortOrder == "Date" ? "date_desc" : "Date",
-            CurrentFilter = request.SearchString,
-            Items = students.Select(s => new StudentListItemViewModel
-            {
-                LastName = s.LastName,
-                FirstName = s.FirstName,
-                EnrollmentDate = s.EnrollmentDate,
-                ExternalId = s.ExternalId
-            }).ToArray(),
-            PageInfo = pageInfo
-        };
+        return new GetStudentsIndexQueryResult(pageInfo, students);
     }
 }

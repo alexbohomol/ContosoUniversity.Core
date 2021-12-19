@@ -1,13 +1,41 @@
 namespace ContosoUniversity.ViewModels.Students;
 
+using System;
+using System.Linq;
+
 using Application.Contracts.Repositories.ReadOnly.Paging;
+using Application.Contracts.Repositories.ReadOnly.Projections;
+
+using Services.Students.Queries;
 
 public class StudentIndexViewModel
 {
-    public string CurrentSort { get; init; }
-    public string NameSortParm { get; init; }
-    public string DateSortParm { get; init; }
-    public string CurrentFilter { get; init; }
-    public StudentListItemViewModel[] Items { get; init; }
-    public PageInfo PageInfo { get; init; }
+    public StudentIndexViewModel(GetStudentsIndexQuery request, PageInfo pageInfo, Student[] students)
+    {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentNullException.ThrowIfNull(pageInfo, nameof(pageInfo));
+        ArgumentNullException.ThrowIfNull(students, nameof(students));
+
+        CurrentSort = request.SortOrder;
+        NameSortParm = string.IsNullOrWhiteSpace(request.SortOrder) ? "name_desc" : string.Empty;
+        DateSortParm = request.SortOrder == "Date" ? "date_desc" : "Date";
+        CurrentFilter = request.SearchString;
+
+        Items = students.Select(s => new StudentListItemViewModel
+        {
+            LastName = s.LastName,
+            FirstName = s.FirstName,
+            EnrollmentDate = s.EnrollmentDate,
+            ExternalId = s.ExternalId
+        }).ToArray();
+
+        PageInfo = pageInfo;
+    }
+
+    public string CurrentSort { get; }
+    public string NameSortParm { get; }
+    public string DateSortParm { get; }
+    public string CurrentFilter { get; }
+    public StudentListItemViewModel[] Items { get; }
+    public PageInfo PageInfo { get; }
 }

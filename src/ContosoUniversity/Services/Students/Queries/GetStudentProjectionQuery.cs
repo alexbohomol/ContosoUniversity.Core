@@ -10,32 +10,25 @@ using Application.Exceptions;
 
 using MediatR;
 
-using ViewModels.Students;
+public record GetStudentProjectionQuery(Guid Id) : IRequest<Student>;
 
-public record GetStudentDeletePageQuery(Guid Id) : IRequest<StudentDeletePageViewModel>;
-
-public class GetStudentDeletePageQueryHandler : IRequestHandler<GetStudentDeletePageQuery, StudentDeletePageViewModel>
+public class GetStudentEditFormQueryHandler : IRequestHandler<GetStudentProjectionQuery, Student>
 {
     private readonly IStudentsRoRepository _studentsRepository;
 
-    public GetStudentDeletePageQueryHandler(IStudentsRoRepository studentsRepository)
+    public GetStudentEditFormQueryHandler(IStudentsRoRepository studentsRepository)
     {
         _studentsRepository = studentsRepository;
     }
 
-    public async Task<StudentDeletePageViewModel> Handle(GetStudentDeletePageQuery request,
+    public async Task<Student> Handle(
+        GetStudentProjectionQuery request,
         CancellationToken cancellationToken)
     {
         Student student = await _studentsRepository.GetById(request.Id, cancellationToken);
         if (student == null)
             throw new EntityNotFoundException(nameof(student), request.Id);
 
-        return new StudentDeletePageViewModel
-        {
-            LastName = student.LastName,
-            FirstMidName = student.FirstName,
-            EnrollmentDate = student.EnrollmentDate,
-            ExternalId = student.ExternalId
-        };
+        return student;
     }
 }

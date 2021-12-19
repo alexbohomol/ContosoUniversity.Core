@@ -12,12 +12,13 @@ using Application.Exceptions;
 
 using MediatR;
 
-using ViewModels;
-using ViewModels.Students;
+public record GetStudentDetailsQuery(Guid Id) : IRequest<GetStudentDetailsQueryResult>;
 
-public record GetStudentDetailsQuery(Guid Id) : IRequest<StudentDetailsViewModel>;
+public record GetStudentDetailsQueryResult(
+    Student Student,
+    Dictionary<Guid, string> CourseTitles);
 
-public class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQuery, StudentDetailsViewModel>
+public class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQuery, GetStudentDetailsQueryResult>
 {
     private readonly ICoursesRoRepository _coursesRepository;
     private readonly IStudentsRoRepository _studentsRepository;
@@ -30,29 +31,22 @@ public class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQu
         _coursesRepository = coursesRepository;
     }
 
-    public async Task<StudentDetailsViewModel> Handle(GetStudentDetailsQuery request,
+    public async Task<GetStudentDetailsQueryResult> Handle(
+        GetStudentDetailsQuery request,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+
         Student student = await _studentsRepository.GetById(request.Id, cancellationToken);
         if (student == null)
             throw new EntityNotFoundException(nameof(student), request.Id);
 
         Guid[] coursesIds = student.Enrollments.Select(x => x.CourseId).ToArray();
 
-        Dictionary<Guid, string> courseTitles = (await _coursesRepository.GetByIds(coursesIds, cancellationToken))
-            .ToDictionary(x => x.ExternalId, x => x.Title);
+#warning This can be converted into reference for course titles
+        Course[] courses = await _coursesRepository.GetByIds(coursesIds, cancellationToken);
+        Dictionary<Guid, string> courseTitles = courses.ToDictionary(x => x.ExternalId, x => x.Title);
 
-        return new StudentDetailsViewModel
-        {
-            LastName = student.LastName,
-            FirstMidName = student.FirstName,
-            EnrollmentDate = student.EnrollmentDate,
-            ExternalId = student.ExternalId,
-            Enrollments = student.Enrollments.Select(x => new EnrollmentViewModel
-            {
-                CourseTitle = courseTitles[x.CourseId],
-                Grade = x.Grade.ToDisplayString()
-            }).ToArray()
-        };
+        return new GetStudentDetailsQueryResult(student, courseTitles);
     }
 }

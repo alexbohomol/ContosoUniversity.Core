@@ -1,8 +1,12 @@
 ﻿namespace ContosoUniversity.Controllers;
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Application.Contracts.Repositories.ReadOnly.Paging;
+using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using MediatR;
 
@@ -24,22 +28,26 @@ public class StudentsController : Controller
 
     public async Task<IActionResult> Index(GetStudentsIndexQuery request, CancellationToken cancellationToken)
     {
-        return View(
-            await _mediator.Send(
-                request,
-                cancellationToken));
+        if (request.SearchString != null)
+            request.PageNumber = 1;
+        else
+            request.SearchString = request.CurrentFilter;
+
+        (PageInfo pageInfo, Student[] students) = await _mediator.Send(request, cancellationToken);
+
+        return View(new StudentIndexViewModel(request, pageInfo, students));
     }
 
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
         if (id == null) return NotFound();
 
-        StudentDetailsViewModel result = await _mediator.Send(
+        (Student student, Dictionary<Guid, string> courseTitles) = await _mediator.Send(
             new GetStudentDetailsQuery(id.Value),
             cancellationToken);
 
-        return result is not null
-            ? View(result)
+        return student is not null
+            ? View(new StudentDetailsViewModel(student, courseTitles))
             : NotFound();
     }
 
@@ -66,12 +74,12 @@ public class StudentsController : Controller
     {
         if (id is null) return BadRequest();
 
-        EditStudentForm result = await _mediator.Send(
-            new GetStudentEditFormQuery(id.Value),
+        Student student = await _mediator.Send(
+            new GetStudentProjectionQuery(id.Value),
             cancellationToken);
 
-        return result is not null
-            ? View(result)
+        return student is not null
+            ? View(new EditStudentForm(student))
             : NotFound();
     }
 
@@ -92,12 +100,12 @@ public class StudentsController : Controller
     {
         if (id is null) return BadRequest();
 
-        StudentDeletePageViewModel result = await _mediator.Send(
-            new GetStudentDeletePageQuery(id.Value),
+        Student student = await _mediator.Send(
+            new GetStudentProjectionQuery(id.Value),
             cancellationToken);
 
-        return result is not null
-            ? View(result)
+        return student is not null
+            ? View(new StudentDeletePageViewModel(student))
             : NotFound();
     }
 
