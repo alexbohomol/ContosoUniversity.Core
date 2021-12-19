@@ -3,6 +3,8 @@ namespace ContosoUniversity.ViewModels.Departments;
 using System;
 using System.Collections.Generic;
 
+using Application.Contracts.Repositories.ReadOnly.Projections;
+
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 using Services.Departments.Commands;
@@ -24,5 +26,19 @@ public class EditDepartmentForm : EditDepartmentCommand
     {
     }
 
-    public SelectList InstructorsDropDown { get; set; }
+    public EditDepartmentForm(Department department, Dictionary<Guid, string> instructorsReference)
+    {
+        ArgumentNullException.ThrowIfNull(department, nameof(department));
+        ArgumentNullException.ThrowIfNull(instructorsReference, nameof(instructorsReference));
+
+        Name = department.Name;
+        Budget = department.Budget;
+        StartDate = department.StartDate;
+        AdministratorId = department.AdministratorId;
+        ExternalId = department.ExternalId;
+        // RowVersion = department.RowVersion,
+        InstructorsDropDown = instructorsReference.ToSelectList(department.AdministratorId ?? default);
+    }
+
+    public SelectList InstructorsDropDown { get; }
 }

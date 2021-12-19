@@ -7,15 +7,18 @@ using System.Threading.Tasks;
 
 using Application.Contracts.Repositories.ReadOnly;
 using Application.Contracts.Repositories.ReadOnly.Projections;
+using Application.Exceptions;
 
 using MediatR;
 
-using ViewModels;
-using ViewModels.Departments;
+public record GetDepartmentEditFormQuery(Guid Id) : IRequest<GetDepartmentEditFormQueryResult>;
 
-public record GetDepartmentEditFormQuery(Guid Id) : IRequest<EditDepartmentForm>;
+public record GetDepartmentEditFormQueryResult(
+    Department Department,
+    Dictionary<Guid, string> InstructorsReference);
 
-public class GetDepartmentEditFormQueryHandler : IRequestHandler<GetDepartmentEditFormQuery, EditDepartmentForm>
+public class GetDepartmentEditFormQueryHandler :
+    IRequestHandler<GetDepartmentEditFormQuery, GetDepartmentEditFormQueryResult>
 {
     private readonly IDepartmentsRoRepository _departmentsRepository;
     private readonly IInstructorsRoRepository _instructorsRepository;
@@ -28,25 +31,19 @@ public class GetDepartmentEditFormQueryHandler : IRequestHandler<GetDepartmentEd
         _departmentsRepository = departmentsRepository;
     }
 
-    public async Task<EditDepartmentForm> Handle(GetDepartmentEditFormQuery request,
+    public async Task<GetDepartmentEditFormQueryResult> Handle(
+        GetDepartmentEditFormQuery request,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+
         Department department = await _departmentsRepository.GetById(request.Id, cancellationToken);
+        if (department is null)
+            throw new EntityNotFoundException(nameof(department));
 
-        Dictionary<Guid, string> instructorNames =
-            await _instructorsRepository.GetInstructorNamesReference(cancellationToken);
+        Dictionary<Guid, string> instructorNames = await _instructorsRepository
+            .GetInstructorNamesReference(cancellationToken);
 
-        return department == null
-            ? null
-            : new EditDepartmentForm
-            {
-                Name = department.Name,
-                Budget = department.Budget,
-                StartDate = department.StartDate,
-                AdministratorId = department.AdministratorId,
-                ExternalId = department.ExternalId,
-                // RowVersion = department.RowVersion,
-                InstructorsDropDown = instructorNames.ToSelectList(department.AdministratorId ?? default)
-            };
+        return new GetDepartmentEditFormQueryResult(department, instructorNames);
     }
 }

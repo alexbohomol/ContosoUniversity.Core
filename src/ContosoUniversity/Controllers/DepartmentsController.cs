@@ -2,10 +2,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Application.Contracts.Repositories.ReadOnly;
+using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using MediatR;
 
@@ -32,22 +34,23 @@ public class DepartmentsController : Controller
 
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        return View(
-            await _mediator.Send(
-                new GetDepartmentsIndexQuery(),
-                cancellationToken));
+        (Department[] departments, Dictionary<Guid, string> instructorsReference) = await _mediator.Send(
+            new GetDepartmentsIndexQuery(),
+            cancellationToken);
+
+        return View(departments.Select(x => new DepartmentListItemViewModel(x, instructorsReference)));
     }
 
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
-        if (id == null) return NotFound();
+        if (id is null) return BadRequest();
 
-        DepartmentDetailsViewModel result = await _mediator.Send(
+        (Department department, string instructorName) = await _mediator.Send(
             new GetDepartmentDetailsQuery(id.Value),
             cancellationToken);
 
-        return result is not null
-            ? View(result)
+        return department is not null
+            ? View(new DepartmentDetailsViewModel(department, instructorName))
             : NotFound();
     }
 
@@ -84,12 +87,12 @@ public class DepartmentsController : Controller
     {
         if (id is null) return BadRequest();
 
-        EditDepartmentForm result = await _mediator.Send(
+        (Department department, Dictionary<Guid, string> instructorsReference) = await _mediator.Send(
             new GetDepartmentEditFormQuery(id.Value),
             cancellationToken);
 
-        return result is not null
-            ? View(result)
+        return department is not null
+            ? View(new EditDepartmentForm(department, instructorsReference))
             : NotFound();
     }
 
@@ -114,12 +117,12 @@ public class DepartmentsController : Controller
     {
         if (id is null) return BadRequest();
 
-        DepartmentDetailsViewModel result = await _mediator.Send(
+        (Department department, string instructorName) = await _mediator.Send(
             new GetDepartmentDetailsQuery(id.Value),
             cancellationToken);
 
-        return result is not null
-            ? View(result)
+        return department is not null
+            ? View(new DepartmentDetailsViewModel(department, instructorName))
             : NotFound();
     }
 

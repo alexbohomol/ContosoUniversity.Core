@@ -2,7 +2,6 @@ namespace ContosoUniversity.Services.Departments.Queries;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,12 +10,14 @@ using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using MediatR;
 
-using ViewModels.Departments;
+public record GetDepartmentsIndexQuery : IRequest<GetDepartmentsIndexQueryResult>;
 
-public record GetDepartmentsIndexQuery : IRequest<IList<DepartmentListItemViewModel>>;
+public record GetDepartmentsIndexQueryResult(
+    Department[] Departments,
+    Dictionary<Guid, string> InstructorsReference);
 
-public class GetDepartmentsIndexQueryHandler
-    : IRequestHandler<GetDepartmentsIndexQuery, IList<DepartmentListItemViewModel>>
+public class GetDepartmentsIndexQueryHandler :
+    IRequestHandler<GetDepartmentsIndexQuery, GetDepartmentsIndexQueryResult>
 {
     private readonly IDepartmentsRoRepository _departmentsRepository;
     private readonly IInstructorsRoRepository _instructorsRepository;
@@ -29,26 +30,18 @@ public class GetDepartmentsIndexQueryHandler
         _departmentsRepository = departmentsRepository;
     }
 
-    public async Task<IList<DepartmentListItemViewModel>> Handle(GetDepartmentsIndexQuery request,
+    public async Task<GetDepartmentsIndexQueryResult> Handle(
+        GetDepartmentsIndexQuery request,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+
 #warning This is potential place to introduce view in scope of dpt-schema. Instructors names can be included in read model,
         Department[] departments = await _departmentsRepository.GetAll(cancellationToken);
 
-        Dictionary<Guid, string> instructorsNames =
-            await _instructorsRepository.GetInstructorNamesReference(cancellationToken);
+        Dictionary<Guid, string> instructorsReference = await _instructorsRepository
+            .GetInstructorNamesReference(cancellationToken);
 
-        return departments.Select(x => new DepartmentListItemViewModel
-        {
-            Name = x.Name,
-            Budget = x.Budget,
-            StartDate = x.StartDate,
-            Administrator = x.AdministratorId.HasValue
-                ? instructorsNames.ContainsKey(x.AdministratorId.Value)
-                    ? instructorsNames[x.AdministratorId.Value]
-                    : string.Empty
-                : string.Empty,
-            ExternalId = x.ExternalId
-        }).ToList();
+        return new GetDepartmentsIndexQueryResult(departments, instructorsReference);
     }
 }
