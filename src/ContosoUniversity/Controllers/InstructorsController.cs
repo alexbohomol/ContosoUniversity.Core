@@ -8,14 +8,13 @@ using System.Threading.Tasks;
 
 using Application.Contracts.Repositories.ReadOnly;
 using Application.Contracts.Repositories.ReadOnly.Projections;
+using Application.Services;
+using Application.Services.Instructors.Commands;
+using Application.Services.Instructors.Queries;
 
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
-
-using Services;
-using Services.Instructors.Commands;
-using Services.Instructors.Queries;
 
 using ViewModels;
 using ViewModels.Instructors;

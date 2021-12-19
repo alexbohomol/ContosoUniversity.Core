@@ -9,13 +9,12 @@ using System.Threading.Tasks;
 using Application.Contracts.Repositories.ReadOnly;
 using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Contracts.Repositories.ReadWrite;
+using Application.Services.Courses.Commands;
+using Application.Services.Courses.Queries;
 
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
-
-using Services.Courses.Commands;
-using Services.Courses.Queries;
 
 using ViewModels.Courses;
 

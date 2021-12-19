@@ -7,13 +7,12 @@ using System.Threading.Tasks;
 
 using Application.Contracts.Repositories.ReadOnly.Paging;
 using Application.Contracts.Repositories.ReadOnly.Projections;
+using Application.Services.Students.Commands;
+using Application.Services.Students.Queries;
 
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
-
-using Services.Students.Commands;
-using Services.Students.Queries;
 
 using ViewModels.Students;
 

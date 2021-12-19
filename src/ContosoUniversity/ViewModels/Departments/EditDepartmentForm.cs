@@ -4,10 +4,9 @@ using System;
 using System.Collections.Generic;
 
 using Application.Contracts.Repositories.ReadOnly.Projections;
+using Application.Services.Departments.Commands;
 
 using Microsoft.AspNetCore.Mvc.Rendering;
-
-using Services.Departments.Commands;
 
 public class EditDepartmentForm : EditDepartmentCommand
 {

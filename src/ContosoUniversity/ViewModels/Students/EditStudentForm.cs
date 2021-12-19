@@ -3,8 +3,7 @@ namespace ContosoUniversity.ViewModels.Students;
 using System;
 
 using Application.Contracts.Repositories.ReadOnly.Projections;
-
-using Services.Students.Commands;
+using Application.Services.Students.Commands;
 
 public class EditStudentForm : EditStudentCommand
 {

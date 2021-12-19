@@ -3,9 +3,9 @@ namespace ContosoUniversity.ViewModels.Courses;
 using System;
 using System.Collections.Generic;
 
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Application.Services.Courses.Commands;
 
-using Services.Courses.Commands;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 public class CourseEditForm : EditCourseCommand
 {

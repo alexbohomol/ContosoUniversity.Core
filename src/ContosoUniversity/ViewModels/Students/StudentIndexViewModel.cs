@@ -5,8 +5,7 @@ using System.Linq;
 
 using Application.Contracts.Repositories.ReadOnly.Paging;
 using Application.Contracts.Repositories.ReadOnly.Projections;
-
-using Services.Students.Queries;
+using Application.Services.Students.Queries;
 
 public class StudentIndexViewModel
 {
