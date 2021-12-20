@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity", "src\ContosoUniversity\ContosoUniversity.csproj", "{419F0D67-0192-40F1-BCDC-8B02AD8709A6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Data", "src\ContosoUniversity.Data\ContosoUniversity.Data.csproj", "{13CC66B8-A2C5-4017-99BA-B0348552ED70}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Domain", "src\ContosoUniversity.Domain\ContosoUniversity.Domain.csproj", "{D20B0BA9-54BB-4E3D-A580-447AF01BD1A2}"
@@ -27,16 +25,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Data.Stud
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Application", "src\ContosoUniversity.Application\ContosoUniversity.Application.csproj", "{CE31CFE3-08AE-4E3B-8CCC-291D4CD4B620}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Mvc", "src\ContosoUniversity.Mvc\ContosoUniversity.Mvc.csproj", "{5A765486-59ED-4F5B-9D18-9DB8C6B862EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{419F0D67-0192-40F1-BCDC-8B02AD8709A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{419F0D67-0192-40F1-BCDC-8B02AD8709A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{419F0D67-0192-40F1-BCDC-8B02AD8709A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{419F0D67-0192-40F1-BCDC-8B02AD8709A6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{13CC66B8-A2C5-4017-99BA-B0348552ED70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{13CC66B8-A2C5-4017-99BA-B0348552ED70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13CC66B8-A2C5-4017-99BA-B0348552ED70}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -73,6 +69,10 @@ Global
 		{CE31CFE3-08AE-4E3B-8CCC-291D4CD4B620}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE31CFE3-08AE-4E3B-8CCC-291D4CD4B620}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE31CFE3-08AE-4E3B-8CCC-291D4CD4B620}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A765486-59ED-4F5B-9D18-9DB8C6B862EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A765486-59ED-4F5B-9D18-9DB8C6B862EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A765486-59ED-4F5B-9D18-9DB8C6B862EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A765486-59ED-4F5B-9D18-9DB8C6B862EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,7 +81,6 @@ Global
 		SolutionGuid = {25EE7684-1816-4E36-8E1A-77AD612F86F8}
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{419F0D67-0192-40F1-BCDC-8B02AD8709A6} = {E4EA226A-2BCD-4BEE-844C-0429AC749000}
 		{13CC66B8-A2C5-4017-99BA-B0348552ED70} = {E4EA226A-2BCD-4BEE-844C-0429AC749000}
 		{D20B0BA9-54BB-4E3D-A580-447AF01BD1A2} = {E4EA226A-2BCD-4BEE-844C-0429AC749000}
 		{155D0847-6358-456F-8D04-A957FEB23097} = {E4EA226A-2BCD-4BEE-844C-0429AC749000}
@@ -91,5 +90,6 @@ Global
 		{9B39B759-6CBF-4E43-981E-AB20447355A3} = {E4EA226A-2BCD-4BEE-844C-0429AC749000}
 		{DA9CEE9A-1102-4005-BF7D-D13C57530386} = {E4EA226A-2BCD-4BEE-844C-0429AC749000}
 		{CE31CFE3-08AE-4E3B-8CCC-291D4CD4B620} = {E4EA226A-2BCD-4BEE-844C-0429AC749000}
+		{5A765486-59ED-4F5B-9D18-9DB8C6B862EF} = {E4EA226A-2BCD-4BEE-844C-0429AC749000}
 	EndGlobalSection
 EndGlobal
