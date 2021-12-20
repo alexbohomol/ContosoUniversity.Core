@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <UserSecretsId>83b28d1d-d1e5-4eac-a0c5-8ec8f44cac7a</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.4"/>
+        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ContosoUniversity.Data.Courses.Reads\ContosoUniversity.Data.Courses.Reads.csproj"/>
+        <ProjectReference Include="..\ContosoUniversity.Data.Courses.Writes\ContosoUniversity.Data.Courses.Writes.csproj"/>
+        <ProjectReference Include="..\ContosoUniversity.Data.Departments.Reads\ContosoUniversity.Data.Departments.Reads.csproj"/>
+        <ProjectReference Include="..\ContosoUniversity.Data.Departments.Writes\ContosoUniversity.Data.Departments.Writes.csproj"/>
+        <ProjectReference Include="..\ContosoUniversity.Data.Students.Reads\ContosoUniversity.Data.Students.Reads.csproj"/>
+        <ProjectReference Include="..\ContosoUniversity.Data.Students.Writes\ContosoUniversity.Data.Students.Writes.csproj"/>
+        <ProjectReference Include="..\ContosoUniversity.Application\ContosoUniversity.Application.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="wwwroot\lib"/>
+    </ItemGroup>
+    <PropertyGroup>
+        <GenerateRuntimeConfigurationFiles>True</GenerateRuntimeConfigurationFiles>
+    </PropertyGroup>
+
+</Project>

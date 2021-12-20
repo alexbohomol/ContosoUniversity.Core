@@ -4,6 +4,8 @@ using Domain.Student;
 
 using Microsoft.EntityFrameworkCore;
 
+using Student = Application.Contracts.Repositories.ReadOnly.Projections.Student;
+
 internal class ReadOnlyContext : DbContext
 {
     public const string Schema = "std";
@@ -17,6 +19,6 @@ internal class ReadOnlyContext : DbContext
         modelBuilder.HasDefaultSchema(Schema);
 
         modelBuilder.ApplyConfiguration<Enrollment>(new EntityTypeConfigurations());
-        modelBuilder.ApplyConfiguration<StudentReadModel>(new EntityTypeConfigurations());
+        modelBuilder.ApplyConfiguration<Student>(new EntityTypeConfigurations());
     }
 }

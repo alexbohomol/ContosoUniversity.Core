@@ -6,12 +6,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Domain.Contracts;
-using Domain.Department;
+using Application.Contracts.Repositories.ReadOnly;
+using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using Microsoft.EntityFrameworkCore;
 
-internal class DepartmentsReadOnlyRepository : EfRoRepository<DepartmentReadModel>, IDepartmentsRoRepository
+internal class DepartmentsReadOnlyRepository : EfRoRepository<Department>, IDepartmentsRoRepository
 {
     public DepartmentsReadOnlyRepository(ReadOnlyContext dbContext) : base(dbContext)
     {

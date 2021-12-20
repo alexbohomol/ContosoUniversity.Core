@@ -1,9 +1,12 @@
 namespace ContosoUniversity.Data.Departments.Reads;
 
-using Domain.Department;
+using Application.Contracts.Repositories.ReadOnly.Projections;
+
 using Domain.Instructor;
 
 using Microsoft.EntityFrameworkCore;
+
+using Instructor = Application.Contracts.Repositories.ReadOnly.Projections.Instructor;
 
 internal class ReadOnlyContext : DbContext
 {
@@ -19,7 +22,7 @@ internal class ReadOnlyContext : DbContext
 
         modelBuilder.ApplyConfiguration<OfficeAssignment>(new EntityTypeConfigurations());
         modelBuilder.ApplyConfiguration<CourseAssignment>(new EntityTypeConfigurations());
-        modelBuilder.ApplyConfiguration<InstructorReadModel>(new EntityTypeConfigurations());
-        modelBuilder.ApplyConfiguration<DepartmentReadModel>(new EntityTypeConfigurations());
+        modelBuilder.ApplyConfiguration<Instructor>(new EntityTypeConfigurations());
+        modelBuilder.ApplyConfiguration<Department>(new EntityTypeConfigurations());
     }
 }

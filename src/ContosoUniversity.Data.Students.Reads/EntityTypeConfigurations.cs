@@ -5,9 +5,11 @@ using Domain.Student;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+using Student = Application.Contracts.Repositories.ReadOnly.Projections.Student;
+
 internal class EntityTypeConfigurations :
     IEntityTypeConfiguration<Enrollment>,
-    IEntityTypeConfiguration<StudentReadModel>
+    IEntityTypeConfiguration<Student>
 {
     public void Configure(EntityTypeBuilder<Enrollment> builder)
     {
@@ -20,7 +22,7 @@ internal class EntityTypeConfigurations :
         builder.ToTable("Enrollment", ReadOnlyContext.Schema);
     }
 
-    public void Configure(EntityTypeBuilder<StudentReadModel> builder)
+    public void Configure(EntityTypeBuilder<Student> builder)
     {
         builder
             .HasKey(x => x.ExternalId);

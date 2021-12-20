@@ -4,6 +4,9 @@ using System;
 
 public class Course : IIdentifiable<Guid>
 {
+    public const int TitleMinLength = 3;
+    public const int TitleMaxLength = 50;
+
     private Guid _departmentId;
     private string _title;
 

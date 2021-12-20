@@ -5,8 +5,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Domain.Contracts;
-using Domain.Contracts.Exceptions;
+using Application.Contracts.Repositories.ReadWrite;
+using Application.Exceptions;
+
 using Domain.Course;
 
 using Extensions;

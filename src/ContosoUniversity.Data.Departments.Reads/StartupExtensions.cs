@@ -1,6 +1,6 @@
 namespace ContosoUniversity.Data.Departments.Reads;
 
-using Domain.Contracts;
+using Application.Contracts.Repositories.ReadOnly;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
