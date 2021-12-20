@@ -1,5 +1,7 @@
 ﻿namespace ContosoUniversity;
 
+using Application;
+
 using Data.Courses.Reads;
 using Data.Courses.Writes;
 using Data.Departments.Reads;
@@ -46,9 +48,13 @@ public class Startup
 
         services
             .AddMvc()
-            .AddFluentValidation(fv => { fv.RegisterValidatorsFromAssembly(typeof(Startup).Assembly); });
+            .AddFluentValidation(fv =>
+            {
+                fv.RegisterValidatorsFromAssembly(typeof(Startup).Assembly);
+                fv.RegisterValidatorsFromAssembly(typeof(IApplicationLayerMarker).Assembly);
+            });
 
-        services.AddMediatR(typeof(Startup));
+        services.AddMediatR(typeof(IApplicationLayerMarker).Assembly);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
