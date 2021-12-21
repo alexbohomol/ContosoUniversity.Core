@@ -59,17 +59,17 @@ public class Instructor : IIdentifiable<Guid>
         HireDate = hireDate;
     }
 
-    [Obsolete("Should be split into 'ResetAssignments' and 'AssignCourses' to control from outside")]
+    public void ResetCourseAssignments()
+    {
+        if (CourseAssignments.Any()) CourseAssignments.Clear();
+    }
+
     public void AssignCourses(Guid[] courseIds)
     {
-        if (courseIds is null || !courseIds.Any())
-        {
-            CourseAssignments.Clear();
-            return;
-        }
+        ArgumentNullException.ThrowIfNull(courseIds, nameof(courseIds));
 
 #warning Dirty trick to be refined later
-        CourseAssignments.Clear();
+        ResetCourseAssignments();
         CourseAssignments.AddRange(courseIds.Select(x => new CourseAssignment(
             ExternalId,
             x)));

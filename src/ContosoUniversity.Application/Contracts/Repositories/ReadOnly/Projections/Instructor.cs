@@ -13,13 +13,11 @@ public record Instructor(
     DateTime HireDate,
     Guid ExternalId) : IIdentifiable<Guid>
 {
-    public IList<Guid> Courses => _courseAssignments?
+    public Guid[] Courses => _courseAssignments?
         .Select(x => x.CourseId)
-        .ToList();
+        .ToArray();
 
     public string Office => _officeAssignment?.Title;
-
-    public string FullName => $"{LastName}, {FirstName}";
 
 #pragma warning disable CS0649
     private IList<CourseAssignment> _courseAssignments;
