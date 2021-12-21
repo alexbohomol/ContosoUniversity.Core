@@ -10,7 +10,6 @@ public class Instructor : IIdentifiable<Guid>
     public const int LastNameMaxLength = 50;
     public const int LastNameMinLength = 1;
 
-    private readonly List<CourseAssignment> _courseAssignments = new();
     private OfficeAssignment _officeAssignment;
 
     private Instructor(
@@ -34,23 +33,15 @@ public class Instructor : IIdentifiable<Guid>
 
     public DateTime HireDate { get; private set; }
 
-    public Guid ExternalId { get; }
+    public List<CourseAssignment> CourseAssignments { get; } = new();
 
-    [Obsolete("Will be denounced after introducing specific query later")]
-    public bool HasCourseAssigned(Guid courseId)
-    {
-        return _courseAssignments.Select(x => x.CourseId).Contains(courseId);
-    }
+    public Guid ExternalId { get; }
 
     public void ResetCourseAssignment(Guid courseId)
     {
-        if (HasCourseAssigned(courseId))
-        {
-            CourseAssignment assignment = _courseAssignments.First(x => x.CourseId == courseId);
-            _courseAssignments.Remove(assignment);
-
-            // publish event here: course assignment was reset
-        }
+        CourseAssignment assignment = CourseAssignments.FirstOrDefault(x => x.CourseId == courseId);
+        if (assignment is not null)
+            CourseAssignments.Remove(assignment); // publish event here: course assignment was reset
     }
 
     public static Instructor Create(
@@ -73,13 +64,13 @@ public class Instructor : IIdentifiable<Guid>
     {
         if (courseIds is null || !courseIds.Any())
         {
-            _courseAssignments.Clear();
+            CourseAssignments.Clear();
             return;
         }
 
 #warning Dirty trick to be refined later
-        _courseAssignments.Clear();
-        _courseAssignments.AddRange(courseIds.Select(x => new CourseAssignment(
+        CourseAssignments.Clear();
+        CourseAssignments.AddRange(courseIds.Select(x => new CourseAssignment(
             ExternalId,
             x)));
 

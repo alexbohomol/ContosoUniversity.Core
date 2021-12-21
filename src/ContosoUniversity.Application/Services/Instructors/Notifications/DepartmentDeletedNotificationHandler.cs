@@ -1,8 +1,6 @@
 namespace ContosoUniversity.Application.Services.Instructors.Notifications;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,16 +25,12 @@ public class DepartmentDeletedNotificationHandler : INotificationHandler<Departm
     {
         ArgumentNullException.ThrowIfNull(notification, nameof(notification));
 
-        Instructor[] instructors = await _instructorsRepository.GetAll(cancellationToken);
+        Instructor[] instructors = await _instructorsRepository.GetAllAssignedToCourses(
+            notification.CourseIds,
+            cancellationToken);
 
-        IEnumerable<Instructor> assignedInstructors = instructors
-            .Where(x => notification.CourseIds.Any(c => x.HasCourseAssigned(c)));
-
-        foreach (Instructor instructor in assignedInstructors)
+        foreach (Instructor instructor in instructors)
         {
-            /*
-             * Consider sending command here
-             */
             foreach (Guid courseId in notification.CourseIds) instructor.ResetCourseAssignment(courseId);
 
             await _instructorsRepository.Save(instructor, cancellationToken);

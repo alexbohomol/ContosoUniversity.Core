@@ -1,5 +1,7 @@
 namespace ContosoUniversity.Data.Departments.Writes;
 
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,8 +17,12 @@ internal class InstructorsReadWriteRepository : EfRwRepository<Instructor>, IIns
     {
     }
 
-    public async Task<Instructor[]> GetAll(CancellationToken cancellationToken = default)
+    public async Task<Instructor[]> GetAllAssignedToCourses(
+        Guid[] courseIds,
+        CancellationToken cancellationToken = default)
     {
-        return await DbQuery.ToArrayAsync(cancellationToken);
+        return await DbQuery
+            .Where(x => x.CourseAssignments.Select(e => e.CourseId).Any(id => courseIds.Contains(id)))
+            .ToArrayAsync(cancellationToken);
     }
 }
