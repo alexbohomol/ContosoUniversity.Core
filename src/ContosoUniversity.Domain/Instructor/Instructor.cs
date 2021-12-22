@@ -68,36 +68,21 @@ public class Instructor : IIdentifiable<Guid>
     {
         ArgumentNullException.ThrowIfNull(courseIds, nameof(courseIds));
 
-#warning Dirty trick to be refined later
-        ResetCourseAssignments();
-        CourseAssignments.AddRange(courseIds.Select(x => new CourseAssignment(
-            ExternalId,
-            x)));
-
-        /*
-         * Sudo-code to refine later
-         */
-
         /*
          * Add newly assigned courses
          */
-        // foreach (Guid courseId in courseIds)
-        // {
-        //     if (!HasCourseAssigned(courseId))
-        //     {
-        //         _courseAssignments.Add(new CourseAssignment(ExternalId, courseId));
-        //         
-        //         // publish event here: assigned to course
-        //     }
-        // }
+        foreach (Guid courseId in courseIds)
+            if (CourseAssignments.All(x => x.CourseId != courseId))
+                CourseAssignments.Add(
+                    new CourseAssignment(ExternalId, courseId)); // publish event here: assigned to course
 
         /*
          * Remove courses that were reset
          */
-        // foreach (Guid courseId in _courseAssignments.Select(x => x.CourseId))
-        // {
-        //     if (!courseIds.Contains(courseId)) ResetCourseAssignment(courseId);
-        // }
+        Guid[] availableAssignments = CourseAssignments.Select(x => x.CourseId).ToArray();
+        foreach (Guid courseId in availableAssignments)
+            if (!courseIds.Contains(courseId))
+                ResetCourseAssignment(courseId); // publish event here: dis-assigned from course
     }
 
     public void AssignOffice(OfficeAssignment officeAssignment)
