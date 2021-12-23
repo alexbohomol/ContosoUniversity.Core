@@ -78,11 +78,11 @@ internal class EntityTypeConfigurations :
             .IsRequired();
 
         builder
-            .HasMany(typeof(CourseAssignment), "_courseAssignments")
+            .HasMany(x => x.CourseAssignments)
             .WithOne()
             .HasForeignKey("InstructorId");
 
-        builder.Navigation("_courseAssignments").AutoInclude();
+        builder.Navigation(x => x.CourseAssignments).AutoInclude();
 
         builder
             .HasOne(typeof(OfficeAssignment), "_officeAssignment")

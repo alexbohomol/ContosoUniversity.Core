@@ -1,6 +1,7 @@
 namespace ContosoUniversity.Application.Services.Instructors.Commands;
 
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,6 +25,7 @@ public class EditInstructorCommand : IRequest
     public string Location { get; set; }
 
     public bool HasAssignedOffice => !string.IsNullOrWhiteSpace(Location);
+    public bool HasAssignedCourses => SelectedCourses is not null && SelectedCourses.Any();
 }
 
 public class EditInstructorCommandHandler : AsyncRequestHandler<EditInstructorCommand>
@@ -43,7 +45,10 @@ public class EditInstructorCommandHandler : AsyncRequestHandler<EditInstructorCo
 
         instructor.UpdatePersonalInfo(request.FirstName, request.LastName, request.HireDate);
 
-        instructor.AssignCourses(request.SelectedCourses);
+        if (request.HasAssignedCourses)
+            instructor.AssignCourses(request.SelectedCourses);
+        else
+            instructor.ResetCourseAssignments();
 
         if (request.HasAssignedOffice)
             instructor.AssignOffice(new OfficeAssignment(request.Location));
