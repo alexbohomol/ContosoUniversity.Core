@@ -26,10 +26,10 @@ public class GetStudentEditFormQueryHandler : IRequestHandler<GetStudentProjecti
         GetStudentProjectionQuery request,
         CancellationToken cancellationToken)
     {
-        Student student = await _studentsRepository.GetById(request.Id, cancellationToken);
-        if (student == null)
-            throw new EntityNotFoundException(nameof(student), request.Id);
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        return student;
+        Student student = await _studentsRepository.GetById(request.Id, cancellationToken);
+
+        return student ?? throw new EntityNotFoundException(nameof(student), request.Id);
     }
 }

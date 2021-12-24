@@ -45,7 +45,7 @@ public class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQu
         Guid[] coursesIds = student.Enrollments.Select(x => x.CourseId).ToArray();
 
         Dictionary<Guid, string> courseTitles = await _coursesRepository
-            .GetCourseNamesReference(coursesIds, cancellationToken);
+            .GetCourseTitlesReference(coursesIds, cancellationToken);
 
         Guid[] notFoundCourseIds = coursesIds.Except(courseTitles.Keys).ToArray();
         if (notFoundCourseIds.Any())

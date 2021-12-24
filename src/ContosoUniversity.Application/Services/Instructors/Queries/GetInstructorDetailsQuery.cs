@@ -29,9 +29,7 @@ public class GetInstructorDetailsQueryHandler : IRequestHandler<GetInstructorDet
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
         Instructor instructor = await _instructorsRepository.GetById(request.Id, cancellationToken);
-        if (instructor == null)
-            throw new EntityNotFoundException(nameof(instructor), request.Id);
 
-        return instructor;
+        return instructor ?? throw new EntityNotFoundException(nameof(instructor), request.Id);
     }
 }

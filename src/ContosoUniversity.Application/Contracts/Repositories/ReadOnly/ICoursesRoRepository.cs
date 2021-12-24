@@ -11,7 +11,7 @@ public interface ICoursesRoRepository : IRoRepository<Course>
 {
     Task<Course[]> GetByDepartmentId(Guid departmentId, CancellationToken cancellationToken = default);
 
-    Task<Dictionary<Guid, string>> GetCourseNamesReference(
+    Task<Dictionary<Guid, string>> GetCourseTitlesReference(
         Guid[] entityIds,
         CancellationToken cancellationToken = default);
 

@@ -26,7 +26,7 @@ internal class ReadOnlyRepository : EfRoRepository<Course>, ICoursesRoRepository
             .ToArrayAsync(cancellationToken);
     }
 
-    public async Task<Dictionary<Guid, string>> GetCourseNamesReference(
+    public async Task<Dictionary<Guid, string>> GetCourseTitlesReference(
         Guid[] entityIds,
         CancellationToken cancellationToken = default)
     {
