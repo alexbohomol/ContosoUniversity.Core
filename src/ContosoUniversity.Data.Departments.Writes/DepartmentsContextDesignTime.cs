@@ -2,6 +2,7 @@ namespace ContosoUniversity.Data.Departments.Writes;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
 /// <summary>
 ///     https://docs.microsoft.com/uk-ua/ef/core/cli/dbcontext-creation?tabs=dotnet-core-cli#from-a-design-time-factory
@@ -12,7 +13,9 @@ public class DepartmentsContextDesignTime : IDesignTimeDbContextFactory<ReadWrit
     {
         var optionsBuilder = new DbContextOptionsBuilder<ReadWriteContext>();
 
-        optionsBuilder.UseSqlServer(DesignTimeSupport.ConnectionString);
+        optionsBuilder.UseSqlServer(DesignTimeSupport
+            .ConfigurationRoot
+            .GetConnectionString("Departments"));
 
         return new ReadWriteContext(optionsBuilder.Options);
     }

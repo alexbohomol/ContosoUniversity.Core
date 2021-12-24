@@ -6,9 +6,8 @@ using Microsoft.Extensions.Configuration;
 
 public static class DesignTimeSupport
 {
-    public static string ConnectionString => new ConfigurationBuilder()
-        .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../ContosoUniversity"))
-        .AddJsonFile("appsettings.json")
-        .Build()
-        .GetConnectionString("Courses");
+    public static IConfigurationRoot ConfigurationRoot => new ConfigurationBuilder()
+        .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../ContosoUniversity.Mvc"))
+        .AddJsonFile("appsettings.Development.json")
+        .Build();
 }
