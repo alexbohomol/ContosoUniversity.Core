@@ -9,4 +9,11 @@ public record Department(
     decimal Budget,
     DateTime StartDate,
     Guid? AdministratorId,
-    Guid ExternalId) : IIdentifiable<Guid>;
+    string AdministratorLastName,
+    string AdministratorFirstName,
+    Guid ExternalId) : IIdentifiable<Guid>
+{
+    public string AdministratorFullName => AdministratorId.HasValue
+        ? $"{AdministratorLastName}, {AdministratorFirstName}"
+        : string.Empty;
+}

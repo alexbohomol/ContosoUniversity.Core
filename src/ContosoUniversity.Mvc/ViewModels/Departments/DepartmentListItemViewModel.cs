@@ -1,26 +1,20 @@
 namespace ContosoUniversity.Mvc.ViewModels.Departments;
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 using Application.Contracts.Repositories.ReadOnly.Projections;
 
 public class DepartmentListItemViewModel
 {
-    public DepartmentListItemViewModel(Department department, Dictionary<Guid, string> instructorsReference)
+    public DepartmentListItemViewModel(Department department)
     {
         ArgumentNullException.ThrowIfNull(department, nameof(department));
-        ArgumentNullException.ThrowIfNull(instructorsReference, nameof(instructorsReference));
 
         Name = department.Name;
         Budget = department.Budget;
         StartDate = department.StartDate;
-        Administrator = department.AdministratorId.HasValue
-            ? instructorsReference.ContainsKey(department.AdministratorId.Value)
-                ? instructorsReference[department.AdministratorId.Value]
-                : string.Empty
-            : string.Empty;
+        Administrator = department.AdministratorFullName;
         ExternalId = department.ExternalId;
     }
 

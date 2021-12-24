@@ -44,7 +44,7 @@ internal class EntityTypeConfigurations :
             .Property(x => x.AdministratorId)
             .HasColumnName("InstructorId");
 
-        builder.ToTable("Department", ReadOnlyContext.Schema);
+        builder.ToView("DepartmentProjection", ReadOnlyContext.Schema);
     }
 
     public void Configure(EntityTypeBuilder<Instructor> builder)

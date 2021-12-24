@@ -1,7 +1,6 @@
 namespace ContosoUniversity.Application.Services.Departments.Queries;
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,38 +9,23 @@ using Contracts.Repositories.ReadOnly.Projections;
 
 using MediatR;
 
-public record GetDepartmentsIndexQuery : IRequest<GetDepartmentsIndexQueryResult>;
+public record GetDepartmentsIndexQuery : IRequest<Department[]>;
 
-public record GetDepartmentsIndexQueryResult(
-    Department[] Departments,
-    Dictionary<Guid, string> InstructorsReference);
-
-public class GetDepartmentsIndexQueryHandler :
-    IRequestHandler<GetDepartmentsIndexQuery, GetDepartmentsIndexQueryResult>
+public class GetDepartmentsIndexQueryHandler : IRequestHandler<GetDepartmentsIndexQuery, Department[]>
 {
     private readonly IDepartmentsRoRepository _departmentsRepository;
-    private readonly IInstructorsRoRepository _instructorsRepository;
 
-    public GetDepartmentsIndexQueryHandler(
-        IInstructorsRoRepository instructorsRepository,
-        IDepartmentsRoRepository departmentsRepository)
+    public GetDepartmentsIndexQueryHandler(IDepartmentsRoRepository departmentsRepository)
     {
-        _instructorsRepository = instructorsRepository;
         _departmentsRepository = departmentsRepository;
     }
 
-    public async Task<GetDepartmentsIndexQueryResult> Handle(
+    public async Task<Department[]> Handle(
         GetDepartmentsIndexQuery request,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-#warning This is potential place to introduce view in scope of dpt-schema. Instructors names can be included in read model,
-        Department[] departments = await _departmentsRepository.GetAll(cancellationToken);
-
-        Dictionary<Guid, string> instructorsReference = await _instructorsRepository
-            .GetInstructorNamesReference(cancellationToken);
-
-        return new GetDepartmentsIndexQueryResult(departments, instructorsReference);
+        return await _departmentsRepository.GetAll(cancellationToken);
     }
 }

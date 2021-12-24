@@ -7,12 +7,14 @@ using Application.Contracts.Repositories.ReadOnly.Projections;
 
 public class DepartmentDetailsViewModel
 {
-    public DepartmentDetailsViewModel(Department department, string instructorName)
+    public DepartmentDetailsViewModel(Department department)
     {
+        ArgumentNullException.ThrowIfNull(department, nameof(department));
+
         Name = department.Name;
         Budget = department.Budget;
         StartDate = department.StartDate;
-        Administrator = instructorName;
+        Administrator = department.AdministratorFullName;
         ExternalId = department.ExternalId;
     }
 
