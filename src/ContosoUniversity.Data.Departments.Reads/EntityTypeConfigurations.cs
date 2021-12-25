@@ -39,10 +39,7 @@ internal class EntityTypeConfigurations :
         builder.Property(x => x.Name);
         builder.Property(x => x.Budget);
         builder.Property(x => x.StartDate);
-
-        builder
-            .Property(x => x.AdministratorId)
-            .HasColumnName("InstructorId");
+        builder.Property(x => x.AdministratorId);
 
         builder.ToView("DepartmentProjection", ReadOnlyContext.Schema);
     }

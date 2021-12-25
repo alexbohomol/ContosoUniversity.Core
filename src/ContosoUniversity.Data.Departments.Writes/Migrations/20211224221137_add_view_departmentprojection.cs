@@ -12,7 +12,7 @@ namespace ContosoUniversity.Data.Departments.Writes.Migrations
 CREATE VIEW [{ReadWriteContext.Schema}].[DepartmentProjection] AS
 SELECT 
   [d].[Id], 
-  [d].[InstructorId], 
+  [d].[InstructorId] AS [AdministratorId], 
   [d].[Budget], 
   [d].[Name], 
   [d].[StartDate], 
