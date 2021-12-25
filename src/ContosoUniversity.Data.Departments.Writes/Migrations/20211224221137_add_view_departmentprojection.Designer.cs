@@ -4,6 +4,7 @@ using ContosoUniversity.Data.Departments.Writes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ContosoUniversity.Data.Departments.Writes.Migrations
 {
     [DbContext(typeof(ReadWriteContext))]
-    partial class DepartmentsContextModelSnapshot : ModelSnapshot
+    [Migration("20211224221137_add_view_departmentprojection")]
+    partial class add_view_departmentprojection
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,15 +1,13 @@
 namespace ContosoUniversity.Data.Courses.Reads;
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Application.Contracts.Repositories.ReadOnly;
 using Application.Contracts.Repositories.ReadOnly.Projections;
-using Application.Exceptions;
-
-using Extensions;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -28,18 +26,22 @@ internal class ReadOnlyRepository : EfRoRepository<Course>, ICoursesRoRepository
             .ToArrayAsync(cancellationToken);
     }
 
-    public async Task<Course[]> GetByIds(Guid[] entityIds, CancellationToken cancellationToken = default)
+    public async Task<Dictionary<Guid, string>> GetCourseTitlesReference(
+        Guid[] entityIds,
+        CancellationToken cancellationToken = default)
     {
-        Course[] courses = await DbQuery
+        return await DbQuery
             .AsNoTracking()
+            .Select(x => new
+            {
+                x.ExternalId,
+                x.Title
+            })
             .Where(x => entityIds.Contains(x.ExternalId))
-            .ToArrayAsync(cancellationToken);
-
-        courses.Select(x => x.ExternalId).EnsureCollectionsEqual(
-            entityIds,
-            id => new EntityNotFoundException(nameof(courses), id));
-
-        return courses.ToArray();
+            .ToDictionaryAsync(
+                x => x.ExternalId,
+                x => x.Title,
+                cancellationToken);
     }
 
     public Task<bool> ExistsCourseCode(int courseCode, CancellationToken cancellationToken = default)

@@ -44,9 +44,13 @@ public class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQu
 
         Guid[] coursesIds = student.Enrollments.Select(x => x.CourseId).ToArray();
 
-#warning This can be converted into reference for course titles
-        Course[] courses = await _coursesRepository.GetByIds(coursesIds, cancellationToken);
-        Dictionary<Guid, string> courseTitles = courses.ToDictionary(x => x.ExternalId, x => x.Title);
+        Dictionary<Guid, string> courseTitles = await _coursesRepository
+            .GetCourseTitlesReference(coursesIds, cancellationToken);
+
+        Guid[] notFoundCourseIds = coursesIds.Except(courseTitles.Keys).ToArray();
+        if (notFoundCourseIds.Any())
+            throw new AggregateException(notFoundCourseIds
+                .Select(x => new EntityNotFoundException("course", x)));
 
         return new GetStudentDetailsQueryResult(student, courseTitles);
     }

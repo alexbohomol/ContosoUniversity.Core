@@ -33,23 +33,23 @@ public class DepartmentsController : Controller
 
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        (Department[] departments, Dictionary<Guid, string> instructorsReference) = await _mediator.Send(
+        Department[] departments = await _mediator.Send(
             new GetDepartmentsIndexQuery(),
             cancellationToken);
 
-        return View(departments.Select(x => new DepartmentListItemViewModel(x, instructorsReference)));
+        return View(departments.Select(x => new DepartmentListItemViewModel(x)));
     }
 
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null) return BadRequest();
 
-        (Department department, string instructorName) = await _mediator.Send(
+        Department department = await _mediator.Send(
             new GetDepartmentDetailsQuery(id.Value),
             cancellationToken);
 
         return department is not null
-            ? View(new DepartmentDetailsViewModel(department, instructorName))
+            ? View(new DepartmentDetailsViewModel(department))
             : NotFound();
     }
 
@@ -116,12 +116,12 @@ public class DepartmentsController : Controller
     {
         if (id is null) return BadRequest();
 
-        (Department department, string instructorName) = await _mediator.Send(
+        Department department = await _mediator.Send(
             new GetDepartmentDetailsQuery(id.Value),
             cancellationToken);
 
         return department is not null
-            ? View(new DepartmentDetailsViewModel(department, instructorName))
+            ? View(new DepartmentDetailsViewModel(department))
             : NotFound();
     }
 
