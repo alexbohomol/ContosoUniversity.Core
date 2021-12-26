@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Mvc", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Domain.Tests", "test\ContosoUniversity.Domain.Tests\ContosoUniversity.Domain.Tests.csproj", "{79BB4F68-4F4A-4DB3-B519-43586E784762}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Mvc.IntegrationTests", "test\ContosoUniversity.Mvc.IntegrationTests\ContosoUniversity.Mvc.IntegrationTests.csproj", "{C8C79C10-F824-483C-88DF-667DD0949D0E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{79BB4F68-4F4A-4DB3-B519-43586E784762}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79BB4F68-4F4A-4DB3-B519-43586E784762}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79BB4F68-4F4A-4DB3-B519-43586E784762}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8C79C10-F824-483C-88DF-667DD0949D0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8C79C10-F824-483C-88DF-667DD0949D0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8C79C10-F824-483C-88DF-667DD0949D0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8C79C10-F824-483C-88DF-667DD0949D0E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,5 +104,6 @@ Global
 		{CE31CFE3-08AE-4E3B-8CCC-291D4CD4B620} = {E4EA226A-2BCD-4BEE-844C-0429AC749000}
 		{5A765486-59ED-4F5B-9D18-9DB8C6B862EF} = {E4EA226A-2BCD-4BEE-844C-0429AC749000}
 		{79BB4F68-4F4A-4DB3-B519-43586E784762} = {EC6B66B1-FF12-4934-992F-7E578831904D}
+		{C8C79C10-F824-483C-88DF-667DD0949D0E} = {EC6B66B1-FF12-4934-992F-7E578831904D}
 	EndGlobalSection
 EndGlobal
