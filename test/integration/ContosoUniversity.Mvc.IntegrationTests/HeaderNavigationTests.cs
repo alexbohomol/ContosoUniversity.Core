@@ -16,7 +16,7 @@ public class HeaderNavigationTests : IClassFixture<WebApplicationFactory<Program
 
     public HeaderNavigationTests(WebApplicationFactory<Program> factory)
     {
-        factory.ClientOptions.BaseAddress = new Uri("http://localhost:5000");
+        factory.ClientOptions.BaseAddress = new Uri("https://localhost:5001");
         _httpClient = factory.CreateClient();
     }
 
