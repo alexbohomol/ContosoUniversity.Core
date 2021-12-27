@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Mvc.Integ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Domain.Tests", "test\unit\ContosoUniversity.Domain.Tests\ContosoUniversity.Domain.Tests.csproj", "{528A7D8C-9F2B-454A-8E24-F40AA8D82F17}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "e2e", "e2e", "{9A8A315F-D321-4729-B8E9-08283046CF98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.AcceptanceTests", "test\e2e\ContosoUniversity.AcceptanceTests\ContosoUniversity.AcceptanceTests.csproj", "{AD8D36CB-F094-42C2-BC54-2E4636D277FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +93,10 @@ Global
 		{528A7D8C-9F2B-454A-8E24-F40AA8D82F17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{528A7D8C-9F2B-454A-8E24-F40AA8D82F17}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{528A7D8C-9F2B-454A-8E24-F40AA8D82F17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD8D36CB-F094-42C2-BC54-2E4636D277FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD8D36CB-F094-42C2-BC54-2E4636D277FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD8D36CB-F094-42C2-BC54-2E4636D277FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD8D36CB-F094-42C2-BC54-2E4636D277FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,5 +119,7 @@ Global
 		{4CF332CE-8472-45C6-8D43-76A6ABDB8485} = {EC6B66B1-FF12-4934-992F-7E578831904D}
 		{0CEA6DD9-9CAA-41DB-B8C8-2E1123773CA9} = {42293EC1-EA5A-4BDF-A35F-3F74D78940A5}
 		{528A7D8C-9F2B-454A-8E24-F40AA8D82F17} = {4CF332CE-8472-45C6-8D43-76A6ABDB8485}
+		{9A8A315F-D321-4729-B8E9-08283046CF98} = {EC6B66B1-FF12-4934-992F-7E578831904D}
+		{AD8D36CB-F094-42C2-BC54-2E4636D277FD} = {9A8A315F-D321-4729-B8E9-08283046CF98}
 	EndGlobalSection
 EndGlobal
