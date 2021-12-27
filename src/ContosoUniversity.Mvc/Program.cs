@@ -86,9 +86,9 @@ public class Program
                 "{controller=Home}/{action=Index}/{id?}");
         });
 
-        // await host.EnsureCoursesSchema();
-        // await host.EnsureStudentsSchema();
-        // await host.EnsureDepartmentsSchema();
+        await services.EnsureCoursesSchema();
+        await services.EnsureStudentsSchema();
+        await services.EnsureDepartmentsSchema();
 
         await app.RunAsync();
     }
