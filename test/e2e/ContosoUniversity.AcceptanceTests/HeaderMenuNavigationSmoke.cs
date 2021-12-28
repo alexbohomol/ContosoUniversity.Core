@@ -14,6 +14,7 @@ public class HeaderMenuNavigationSmoke : PageTest
 {
     private const string SiteUrl = "https://localhost:5001";
 
+    [Ignore("we will play further with SpecFlow-based E2E testing")]
     [Test]
     [TestCase($"{SiteUrl}/", "Home Page - Contoso University")]
     [TestCase($"{SiteUrl}/Home", "Home Page - Contoso University")]
