@@ -46,14 +46,4 @@ public class ContosoUniversityPage : PageObject
     {
         await Page.ClickAsync("a.nav-link[href='/Departments']");
     }
-
-    public bool IsAtRoute(string route)
-    {
-        return Page.Url == $"{PagePath}{route}";
-    }
-
-    public async Task<bool> HasTitle(string title)
-    {
-        return await Page.TitleAsync() == title;
-    }
 }

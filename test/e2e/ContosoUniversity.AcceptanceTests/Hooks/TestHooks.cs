@@ -13,8 +13,8 @@ using TechTalk.SpecFlow;
 [Binding]
 public class TestHooks
 {
-    [BeforeFeature]
-    public static async Task BeforeScenario(IObjectContainer container)
+    [BeforeTestRun]
+    public static async Task BeforeTestRun(IObjectContainer container)
     {
         IPlaywright playwright = await Playwright.CreateAsync();
         IBrowser browser = await playwright.Chromium.LaunchAsync(); //new BrowserTypeLaunchOptions
@@ -22,14 +22,28 @@ public class TestHooks
         //     Headless = false,
         //     SlowMo = 2000
         // });
-        var page = new ContosoUniversityPage(browser);
         container.RegisterInstanceAs(playwright);
         container.RegisterInstanceAs(browser);
-        container.RegisterInstanceAs(page);
     }
 
-    [AfterFeature]
-    public static async Task AfterScenario(IObjectContainer container)
+    [BeforeFeature("Navigation")]
+    public static void BeforeFeatureNavigation(IObjectContainer container)
+    {
+        container.RegisterInstanceAs(
+            new ContosoUniversityPage(
+                container.Resolve<IBrowser>()));
+    }
+
+    [BeforeFeature("Courses")]
+    public static void BeforeFeatureCourses(IObjectContainer container)
+    {
+        container.RegisterInstanceAs(
+            new CoursesAreaPage(
+                container.Resolve<IBrowser>()));
+    }
+
+    [AfterTestRun]
+    public static async Task AfterTestRun(IObjectContainer container)
     {
         var browser = container.Resolve<IBrowser>();
         await browser.CloseAsync();
