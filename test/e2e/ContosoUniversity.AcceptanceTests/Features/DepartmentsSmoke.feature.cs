@@ -20,25 +20,25 @@ namespace ContosoUniversity.AcceptanceTests.Features
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.9.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Courses functionality")]
-    [NUnit.Framework.CategoryAttribute("Courses")]
-    public partial class CoursesFunctionalityFeature
+    [NUnit.Framework.DescriptionAttribute("Departments functionality")]
+    [NUnit.Framework.CategoryAttribute("Departments")]
+    public partial class DepartmentsFunctionalityFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private string[] _featureTags = new string[] {
-                "Courses"};
+                "Departments"};
         
-#line 1 "CoursesSmoke.feature"
+#line 1 "DepartmentsSmoke.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Courses functionality", "Smoke test", ProgrammingLanguage.CSharp, new string[] {
-                        "Courses"});
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Departments functionality", "Smoke test", ProgrammingLanguage.CSharp, new string[] {
+                        "Departments"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -77,12 +77,12 @@ namespace ContosoUniversity.AcceptanceTests.Features
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("01_ User is able to view the full list of courses")]
-        public virtual void _01_UserIsAbleToViewTheFullListOfCourses()
+        [NUnit.Framework.DescriptionAttribute("01_ User is able to view the full list of departments")]
+        public virtual void _01_UserIsAbleToViewTheFullListOfDepartments()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("01_ User is able to view the full list of courses", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("01_ User is able to view the full list of departments", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 5
     this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -104,66 +104,51 @@ namespace ContosoUniversity.AcceptanceTests.Features
             {
                 this.ScenarioStart();
 #line 6
-        testRunner.Given("user is on the Courses area landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+        testRunner.Given("user is on the Departments area landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Course Code",
-                            "Title",
-                            "Credits",
-                            "Department"});
-                table1.AddRow(new string[] {
-                            "4041",
-                            "Macroeconomics",
-                            "3",
-                            "Economics"});
-                table1.AddRow(new string[] {
-                            "4022",
-                            "Microeconomics",
-                            "3",
-                            "Economics"});
-                table1.AddRow(new string[] {
-                            "3141",
-                            "Trigonometry",
-                            "4",
-                            "Mathematics"});
-                table1.AddRow(new string[] {
-                            "2021",
-                            "Composition",
-                            "3",
-                            "English"});
-                table1.AddRow(new string[] {
-                            "1045",
-                            "Calculus",
-                            "4",
-                            "Mathematics"});
-                table1.AddRow(new string[] {
-                            "1050",
-                            "Chemistry",
-                            "3",
-                            "Engineering"});
-                table1.AddRow(new string[] {
-                            "2042",
-                            "Literature",
-                            "4",
-                            "English"});
+                TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Name",
+                            "Budget",
+                            "Start Date",
+                            "Administrator"});
+                table8.AddRow(new string[] {
+                            "Economics",
+                            "¤100,000.00",
+                            "2007-09-01",
+                            "Kapoor, Candace"});
+                table8.AddRow(new string[] {
+                            "Engineering",
+                            "¤350,000.00",
+                            "2007-09-01",
+                            "Harui, Roger"});
+                table8.AddRow(new string[] {
+                            "Mathematics",
+                            "¤100,000.00",
+                            "2007-09-01",
+                            "Fakhouri, Fadi"});
+                table8.AddRow(new string[] {
+                            "English",
+                            "¤350,000.00",
+                            "2007-09-01",
+                            "Abercrombie, Kim"});
 #line 7
-        testRunner.Then("user is able to view the following list of courses", ((string)(null)), table1, "Then ");
+        testRunner.Then("user is able to view the following list of departments", ((string)(null)), table8, "Then ");
 #line hidden
-#line 16
-        testRunner.And("the page title is \"Courses - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 13
+        testRunner.And("the page title is \"Departments - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("02_ User can navigate to \"Create Course\" page")]
-        public virtual void _02_UserCanNavigateToCreateCoursePage()
+        [NUnit.Framework.DescriptionAttribute("02_ User can navigate to \"Create Department\" page")]
+        public virtual void _02_UserCanNavigateToCreateDepartmentPage()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("02_ User can navigate to \"Create Course\" page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 18
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("02_ User can navigate to \"Create Department\" page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 15
     this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -183,16 +168,16 @@ namespace ContosoUniversity.AcceptanceTests.Features
             else
             {
                 this.ScenarioStart();
-#line 19
-        testRunner.Given("user is on the Courses area landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 16
+        testRunner.Given("user is on the Departments area landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 20
+#line 17
         testRunner.When("user clicks \"Create New\" link", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 21
+#line 18
         testRunner.Then("the \"/Create\" page opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 22
+#line 19
         testRunner.And("the page title is \"Create - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -200,13 +185,13 @@ namespace ContosoUniversity.AcceptanceTests.Features
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("03_ User can create new Course")]
-        public virtual void _03_UserCanCreateNewCourse()
+        [NUnit.Framework.DescriptionAttribute("03_ User can create new Department")]
+        public virtual void _03_UserCanCreateNewDepartment()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("03_ User can create new Course", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 24
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("03_ User can create new Department", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 21
     this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -226,49 +211,49 @@ namespace ContosoUniversity.AcceptanceTests.Features
             else
             {
                 this.ScenarioStart();
-#line 25
+#line 22
         testRunner.Given("user is on the \"/Create\" page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Course Code",
-                            "Title",
-                            "Credits",
-                            "Department"});
-                table2.AddRow(new string[] {
-                            "1010",
-                            "Computers",
-                            "5",
-                            "Engineering"});
+                TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Name",
+                            "Budget",
+                            "Start Date",
+                            "Administrator"});
+                table9.AddRow(new string[] {
+                            "Informatics",
+                            "¤1,000,000.00",
+                            "2021-09-01",
+                            "Zheng, Roger"});
+#line 23
+        testRunner.When("user enters following details on form", ((string)(null)), table9, "When ");
+#line hidden
 #line 26
-        testRunner.When("user enters following details on form", ((string)(null)), table2, "When ");
+        testRunner.And("user submits the form", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 27
+        testRunner.Then("user is redirected to the Departments area landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 28
+        testRunner.And("the page title is \"Departments - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 29
-        testRunner.And("user submits the form", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+        testRunner.And("user is able to view the full list of departments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 30
-        testRunner.Then("user is redirected to the Courses area landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-#line 31
-        testRunner.And("the page title is \"Courses - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 32
-        testRunner.And("user is able to view the full list of courses", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 33
-        testRunner.And("including the course just submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+        testRunner.And("including the department just submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("04_ User can navigate to \"Course Details\" page")]
-        public virtual void _04_UserCanNavigateToCourseDetailsPage()
+        [NUnit.Framework.DescriptionAttribute("04_ User can navigate to \"Department Details\" page")]
+        public virtual void _04_UserCanNavigateToDepartmentDetailsPage()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("04_ User can navigate to \"Course Details\" page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 35
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("04_ User can navigate to \"Department Details\" page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 32
     this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -288,43 +273,43 @@ namespace ContosoUniversity.AcceptanceTests.Features
             else
             {
                 this.ScenarioStart();
-#line 36
-        testRunner.Given("user is on the Courses area landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 33
+        testRunner.Given("user is on the Departments area landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 37
-        testRunner.When("user clicks \"Details\" link for course \"1010\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 34
+        testRunner.When("user clicks \"Details\" link for department \"Informatics\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 38
+#line 35
         testRunner.Then("the \"/Details\" page with identifier opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 39
+#line 36
         testRunner.And("the page title is \"Details - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Course Code",
-                            "Title",
-                            "Credits",
-                            "Department"});
-                table3.AddRow(new string[] {
-                            "1010",
-                            "Computers",
-                            "5",
-                            "Engineering"});
-#line 40
-        testRunner.And("user is able to see the following details on course", ((string)(null)), table3, "And ");
+                TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Name",
+                            "Budget",
+                            "Start Date",
+                            "Administrator"});
+                table10.AddRow(new string[] {
+                            "Informatics",
+                            "¤1,000,000.00",
+                            "2021-09-01",
+                            "Zheng, Roger"});
+#line 37
+        testRunner.And("user is able to see the following details on department", ((string)(null)), table10, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("05_ User can navigate to \"Edit Course\" page")]
-        public virtual void _05_UserCanNavigateToEditCoursePage()
+        [NUnit.Framework.DescriptionAttribute("05_ User can navigate to \"Edit Department\" page")]
+        public virtual void _05_UserCanNavigateToEditDepartmentPage()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("05_ User can navigate to \"Edit Course\" page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 44
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("05_ User can navigate to \"Edit Department\" page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 41
     this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -344,43 +329,43 @@ namespace ContosoUniversity.AcceptanceTests.Features
             else
             {
                 this.ScenarioStart();
-#line 45
-        testRunner.Given("user is on the Courses area landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 42
+        testRunner.Given("user is on the Departments area landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 46
-        testRunner.When("user clicks \"Edit\" link for course \"1010\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 43
+        testRunner.When("user clicks \"Edit\" link for department \"Informatics\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 47
+#line 44
         testRunner.Then("the \"/Edit\" page with identifier opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 48
+#line 45
         testRunner.And("the page title is \"Edit - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Course Code",
-                            "Title",
-                            "Credits",
-                            "Department"});
-                table4.AddRow(new string[] {
-                            "1010",
-                            "Computers",
-                            "5",
-                            "Engineering"});
-#line 49
-        testRunner.And("user is able to see the following course details to edit", ((string)(null)), table4, "And ");
+                TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Name",
+                            "Budget",
+                            "Start Date",
+                            "Administrator"});
+                table11.AddRow(new string[] {
+                            "Informatics",
+                            "¤1,000,000.00",
+                            "2021-09-01",
+                            "Zheng, Roger"});
+#line 46
+        testRunner.And("user is able to see the following department details to edit", ((string)(null)), table11, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("06_ User can edit Course")]
-        public virtual void _06_UserCanEditCourse()
+        [NUnit.Framework.DescriptionAttribute("06_ User can edit Department")]
+        public virtual void _06_UserCanEditDepartment()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("06_ User can edit Course", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 53
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("06_ User can edit Department", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 50
     this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -400,47 +385,49 @@ namespace ContosoUniversity.AcceptanceTests.Features
             else
             {
                 this.ScenarioStart();
-#line 54
-        testRunner.Given("user is on the \"Edit\" page for course \"1010\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 51
+        testRunner.Given("user is on the \"Edit\" page for department \"Informatics\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Title",
-                            "Credits",
-                            "Department"});
-                table5.AddRow(new string[] {
-                            "Computer Algebra",
-                            "3",
-                            "Mathematics"});
+                TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Name",
+                            "Budget",
+                            "Start Date",
+                            "Administrator"});
+                table12.AddRow(new string[] {
+                            "Computers",
+                            "¤1,100,000.00",
+                            "2022-09-01",
+                            "Harui, Roger"});
+#line 52
+        testRunner.When("user enters following details on form", ((string)(null)), table12, "When ");
+#line hidden
 #line 55
-        testRunner.When("user enters following details on form", ((string)(null)), table5, "When ");
-#line hidden
-#line 58
         testRunner.And("user submits the form", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
+#line 56
+        testRunner.Then("user is redirected to the Departments area landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 57
+        testRunner.And("the page title is \"Departments - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 58
+        testRunner.And("user is able to view the full list of departments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
 #line 59
-        testRunner.Then("user is redirected to the Courses area landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-#line 60
-        testRunner.And("the page title is \"Courses - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 61
-        testRunner.And("user is able to view the full list of courses", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 62
-        testRunner.And("including the course just submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+        testRunner.And("including the department just submitted", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("07_ User can navigate to \"Delete Course\" page")]
-        public virtual void _07_UserCanNavigateToDeleteCoursePage()
+        [NUnit.Framework.DescriptionAttribute("07_ User can navigate to \"Delete Department\" page")]
+        public virtual void _07_UserCanNavigateToDeleteDepartmentPage()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("07_ User can navigate to \"Delete Course\" page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 64
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("07_ User can navigate to \"Delete Department\" page", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 61
     this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -460,43 +447,43 @@ namespace ContosoUniversity.AcceptanceTests.Features
             else
             {
                 this.ScenarioStart();
-#line 65
-        testRunner.Given("user is on the Courses area landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 62
+        testRunner.Given("user is on the Departments area landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 66
-        testRunner.When("user clicks \"Delete\" link for course \"1010\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 63
+        testRunner.When("user clicks \"Delete\" link for department \"Computers\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 67
+#line 64
         testRunner.Then("the \"/Delete\" page with identifier opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 68
+#line 65
         testRunner.And("the page title is \"Delete - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Course Code",
-                            "Title",
-                            "Credits",
-                            "Department"});
-                table6.AddRow(new string[] {
-                            "1010",
-                            "Computer Algebra",
-                            "3",
-                            "Mathematics"});
-#line 69
-        testRunner.And("user is able to see the following details on course", ((string)(null)), table6, "And ");
+                TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Name",
+                            "Budget",
+                            "Start Date",
+                            "Administrator"});
+                table13.AddRow(new string[] {
+                            "Computers",
+                            "¤1,100,000.00",
+                            "2022-09-01",
+                            "Harui, Roger"});
+#line 66
+        testRunner.And("user is able to see the following details on department", ((string)(null)), table13, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("08_ User can delete course")]
-        public virtual void _08_UserCanDeleteCourse()
+        [NUnit.Framework.DescriptionAttribute("08_ User can delete department")]
+        public virtual void _08_UserCanDeleteDepartment()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("08_ User can delete course", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 73
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("08_ User can delete department", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 70
     this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -516,33 +503,33 @@ namespace ContosoUniversity.AcceptanceTests.Features
             else
             {
                 this.ScenarioStart();
-#line 74
-        testRunner.Given("user is on the \"Delete\" page for course \"1010\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 71
+        testRunner.Given("user is on the \"Delete\" page for department \"Computers\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 75
+#line 72
         testRunner.When("user submits the form", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
+#line 73
+        testRunner.Then("user is redirected to the Departments area landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 74
+        testRunner.And("the page title is \"Departments - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 75
+        testRunner.And("user is able to view the full list of departments", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Name",
+                            "Budget",
+                            "Start Date",
+                            "Administrator"});
+                table14.AddRow(new string[] {
+                            "Computers",
+                            "¤1,100,000.00",
+                            "2022-09-01",
+                            "Harui, Roger"});
 #line 76
-        testRunner.Then("user is redirected to the Courses area landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-#line 77
-        testRunner.And("the page title is \"Courses - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 78
-        testRunner.And("user is able to view the full list of courses", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-                TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Course Code",
-                            "Title",
-                            "Credits",
-                            "Department"});
-                table7.AddRow(new string[] {
-                            "1010",
-                            "Computer Algebra",
-                            "3",
-                            "Mathematics"});
-#line 79
-        testRunner.And("excluding the course just deleted", ((string)(null)), table7, "And ");
+        testRunner.And("excluding the department just deleted", ((string)(null)), table14, "And ");
 #line hidden
             }
             this.ScenarioCleanup();

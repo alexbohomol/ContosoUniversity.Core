@@ -11,6 +11,8 @@ using TechTalk.SpecFlow;
 [Binding]
 public class NavigationMenuSmoke
 {
+    private const string FeatureTag = "Navigation";
+
     private readonly ContosoUniversityPage _page;
 
     public NavigationMenuSmoke(ContosoUniversityPage page)
@@ -31,6 +33,7 @@ public class NavigationMenuSmoke
     }
 
     [Then(@"the page title is ""(.*)""")]
+    [Scope(Tag = FeatureTag)]
     public async Task ThenThePageTitleIs(string pageTitle)
     {
         (await _page.HasTitle(pageTitle)).Should().BeTrue();

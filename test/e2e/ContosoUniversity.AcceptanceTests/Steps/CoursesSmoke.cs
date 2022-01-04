@@ -14,6 +14,8 @@ using TechTalk.SpecFlow.Assist;
 [Binding]
 public class CoursesSmoke
 {
+    private const string FeatureTag = "Courses";
+
     private const string InitialListOfCourses = nameof(InitialListOfCourses);
     private const string SubmittedCourse = nameof(SubmittedCourse);
     private const string ListAfterCourseSubmitted = nameof(ListAfterCourseSubmitted);
@@ -45,30 +47,35 @@ public class CoursesSmoke
     }
 
     [When(@"user clicks ""(.*)"" link")]
+    [Scope(Tag = FeatureTag)]
     public async Task WhenUserClicksLink(string linkText)
     {
         await _page.ClickLinkWithText(linkText);
     }
 
-    // [Then(@"the page title is ""(.*)""")]
-    // public async Task ThenThePageTitleIs(string pageTitle)
-    // {
-    //     (await _page.HasTitle(pageTitle)).Should().BeTrue();
-    // }
+    [Then(@"the page title is ""(.*)""")]
+    [Scope(Tag = FeatureTag)]
+    public async Task ThenThePageTitleIs(string pageTitle)
+    {
+        (await _page.HasTitle(pageTitle)).Should().BeTrue();
+    }
 
     [Then(@"the ""(.*)"" page opens successfully")]
+    [Scope(Tag = FeatureTag)]
     public void ThenThePageOpensSuccessfully(string pageRoute)
     {
         _page.IsAtRoute(pageRoute).Should().BeTrue();
     }
 
     [Given(@"user is on the ""(.*)"" page")]
+    [Scope(Tag = FeatureTag)]
     public async Task GivenUserIsOnThePage(string route)
     {
         await _page.NavigateToRouteAsync(route);
     }
 
     [When(@"user enters following details on form")]
+    [Scope(Tag = FeatureTag)]
     public async Task WhenUserEntersFollowingDetailsOnForm(Table table)
     {
         var model = table.CreateInstance<CourseTableRowModel>();
@@ -77,6 +84,7 @@ public class CoursesSmoke
     }
 
     [When(@"user submits the form")]
+    [Scope(Tag = FeatureTag)]
     public async Task WhenUserSubmitsTheForm()
     {
         await _page.ClickSubmitButton();
@@ -114,6 +122,7 @@ public class CoursesSmoke
     }
 
     [Then(@"the ""(.*)"" page with identifier opens successfully")]
+    [Scope(Tag = FeatureTag)]
     public void ThenThePageWithIdentifierOpensSuccessfully(string pageRoute)
     {
         _page.IsAtRouteWithGuidIdentifier(pageRoute).Should().BeTrue();

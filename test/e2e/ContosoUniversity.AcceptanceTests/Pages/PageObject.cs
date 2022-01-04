@@ -44,4 +44,14 @@ public abstract class PageObject
         string idString = Page.Url[(pathWithoutId.Length + 1)..];
         return Guid.TryParse(idString, out _);
     }
+
+    public async Task ClickLinkWithText(string linkText)
+    {
+        await Page.ClickAsync($"text={linkText}");
+    }
+
+    public async Task ClickSubmitButton()
+    {
+        await Page.ClickAsync("input[type=submit]");
+    }
 }

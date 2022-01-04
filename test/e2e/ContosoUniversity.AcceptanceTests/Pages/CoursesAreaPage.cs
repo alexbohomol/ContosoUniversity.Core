@@ -35,11 +35,6 @@ public class CoursesAreaPage : PageObject
         return await Task.WhenAll(tasks);
     }
 
-    public async Task ClickLinkWithText(string linkText)
-    {
-        await Page.ClickAsync($"text={linkText}");
-    }
-
     public async Task EnterCourseDetails(CourseTableRowModel model)
     {
         if (model.CourseCode is not null)
@@ -52,11 +47,6 @@ public class CoursesAreaPage : PageObject
         {
             new SelectOptionValue { Label = model.Department }
         });
-    }
-
-    public async Task ClickSubmitButton()
-    {
-        await Page.ClickAsync("input[type=submit]");
     }
 
     public async Task ClickLinkOnCourseTable(string link, string courseCode)

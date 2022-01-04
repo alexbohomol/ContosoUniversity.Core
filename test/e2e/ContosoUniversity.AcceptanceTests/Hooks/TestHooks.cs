@@ -6,8 +6,6 @@ using BoDi;
 
 using Microsoft.Playwright;
 
-using Pages;
-
 using TechTalk.SpecFlow;
 
 [Binding]
@@ -24,22 +22,6 @@ public class TestHooks
         // });
         container.RegisterInstanceAs(playwright);
         container.RegisterInstanceAs(browser);
-    }
-
-    [BeforeFeature("Navigation")]
-    public static void BeforeFeatureNavigation(IObjectContainer container)
-    {
-        container.RegisterInstanceAs(
-            new ContosoUniversityPage(
-                container.Resolve<IBrowser>()));
-    }
-
-    [BeforeFeature("Courses")]
-    public static void BeforeFeatureCourses(IObjectContainer container)
-    {
-        container.RegisterInstanceAs(
-            new CoursesAreaPage(
-                container.Resolve<IBrowser>()));
     }
 
     [AfterTestRun]
