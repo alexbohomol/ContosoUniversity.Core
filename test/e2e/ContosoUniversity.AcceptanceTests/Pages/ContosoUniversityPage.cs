@@ -17,33 +17,8 @@ public class ContosoUniversityPage : PageObject
         await Page.ClickAsync("a.navbar-brand");
     }
 
-    public async Task ClickHomeHeaderLink()
+    public async Task ClickNavigationHeaderByText(string linkText)
     {
-        await Page.ClickAsync("a.nav-link[href='/']");
-    }
-
-    public async Task ClickAboutHeaderLink()
-    {
-        await Page.ClickAsync("a.nav-link[href='/Home/About']");
-    }
-
-    public async Task ClickStudentsHeaderLink()
-    {
-        await Page.ClickAsync("a.nav-link[href='/Students']");
-    }
-
-    public async Task ClickCoursesHeaderLink()
-    {
-        await Page.ClickAsync("a.nav-link[href='/Courses']");
-    }
-
-    public async Task ClickInstructorsHeaderLink()
-    {
-        await Page.ClickAsync("a.nav-link[href='/Instructors']");
-    }
-
-    public async Task ClickDepartmentsHeaderLink()
-    {
-        await Page.ClickAsync("a.nav-link[href='/Departments']");
+        await Page.ClickAsync($"a.nav-link:text-is('{linkText}')");
     }
 }

@@ -110,7 +110,7 @@ namespace ContosoUniversity.AcceptanceTests.Features
         testRunner.When("user clicks brand link in the navigation bar", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 8
-        testRunner.Then("the root of the site opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+        testRunner.Then("the \"/\" area opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 9
         testRunner.And("the page title is \"Home Page - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -150,10 +150,10 @@ namespace ContosoUniversity.AcceptanceTests.Features
         testRunner.Given("user is on the site landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 13
-        testRunner.When("user clicks Home link in the navigation bar", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+        testRunner.When("user clicks \"Home\" link in the navigation bar", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 14
-        testRunner.Then("the root of the site opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+        testRunner.Then("the \"/\" area opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 15
         testRunner.And("the page title is \"Home Page - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -193,10 +193,10 @@ namespace ContosoUniversity.AcceptanceTests.Features
         testRunner.Given("user is on the site landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 19
-        testRunner.When("user clicks About link in the navigation bar", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+        testRunner.When("user clicks \"About\" link in the navigation bar", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 20
-        testRunner.Then("the About area opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+        testRunner.Then("the \"/Home/About\" area opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 21
         testRunner.And("the page title is \"Student Body Statistics - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -236,10 +236,10 @@ namespace ContosoUniversity.AcceptanceTests.Features
         testRunner.Given("user is on the site landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 25
-        testRunner.When("user clicks Students link in the navigation bar", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+        testRunner.When("user clicks \"Students\" link in the navigation bar", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 26
-        testRunner.Then("the Students area opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+        testRunner.Then("the \"/Students\" area opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 27
         testRunner.And("the page title is \"Index - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -279,10 +279,10 @@ namespace ContosoUniversity.AcceptanceTests.Features
         testRunner.Given("user is on the site landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 31
-        testRunner.When("user clicks Courses link in the navigation bar", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+        testRunner.When("user clicks \"Courses\" link in the navigation bar", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 32
-        testRunner.Then("the Courses area opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+        testRunner.Then("the \"/Courses\" area opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 33
         testRunner.And("the page title is \"Courses - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -322,10 +322,10 @@ namespace ContosoUniversity.AcceptanceTests.Features
         testRunner.Given("user is on the site landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 37
-        testRunner.When("user clicks Instructors link in the navigation bar", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+        testRunner.When("user clicks \"Instructors\" link in the navigation bar", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 38
-        testRunner.Then("the Instructors area opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+        testRunner.Then("the \"/Instructors\" area opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 39
         testRunner.And("the page title is \"Instructors - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -365,10 +365,10 @@ namespace ContosoUniversity.AcceptanceTests.Features
         testRunner.Given("user is on the site landing page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 43
-        testRunner.When("user clicks Departments link in the navigation bar", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+        testRunner.When("user clicks \"Departments\" link in the navigation bar", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 44
-        testRunner.Then("the Departments area opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+        testRunner.Then("the \"/Departments\" area opens successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 45
         testRunner.And("the page title is \"Departments - Contoso University\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");

@@ -30,81 +30,21 @@ public class NavigationMenuSmoke
         await _page.ClickBrandLink();
     }
 
-    [Then(@"the root of the site opens successfully")]
-    public void ThenTheRootOfTheSiteOpensSuccessfully()
-    {
-        _page.IsAtRoute("/").Should().BeTrue();
-    }
-
     [Then(@"the page title is ""(.*)""")]
     public async Task ThenThePageTitleIs(string pageTitle)
     {
         (await _page.HasTitle(pageTitle)).Should().BeTrue();
     }
 
-    [When(@"user clicks Home link in the navigation bar")]
-    public async Task WhenUserClicksHomeLinkInTheNavigationBar()
+    [When(@"user clicks ""(.*)"" link in the navigation bar")]
+    public async Task WhenUserClicksLinkInTheNavigationBar(string linkText)
     {
-        await _page.ClickHomeHeaderLink();
+        await _page.ClickNavigationHeaderByText(linkText);
     }
 
-    [When(@"user clicks About link in the navigation bar")]
-    public async Task WhenUserClicksAboutLinkInTheNavigationBar()
+    [Then(@"the ""(.*)"" area opens successfully")]
+    public void ThenTheAreaOpensSuccessfully(string route)
     {
-        await _page.ClickAboutHeaderLink();
-    }
-
-    [Then(@"the About area opens successfully")]
-    public void ThenTheAboutAreaOpensSuccessfully()
-    {
-        _page.IsAtRoute("/Home/About").Should().BeTrue();
-    }
-
-    [When(@"user clicks Students link in the navigation bar")]
-    public async Task WhenUserClicksStudentsLinkInTheNavigationBar()
-    {
-        await _page.ClickStudentsHeaderLink();
-    }
-
-    [Then(@"the Students area opens successfully")]
-    public void ThenTheStudentsAreaOpensSuccessfully()
-    {
-        _page.IsAtRoute("/Students").Should().BeTrue();
-    }
-
-    [When(@"user clicks Courses link in the navigation bar")]
-    public async Task WhenUserClicksCoursesLinkInTheNavigationBar()
-    {
-        await _page.ClickCoursesHeaderLink();
-    }
-
-    [Then(@"the Courses area opens successfully")]
-    public void ThenTheCoursesAreaOpensSuccessfully()
-    {
-        _page.IsAtRoute("/Courses").Should().BeTrue();
-    }
-
-    [When(@"user clicks Instructors link in the navigation bar")]
-    public async Task WhenUserClicksInstructorsLinkInTheNavigationBar()
-    {
-        await _page.ClickInstructorsHeaderLink();
-    }
-
-    [Then(@"the Instructors area opens successfully")]
-    public void ThenTheInstructorsAreaOpensSuccessfully()
-    {
-        _page.IsAtRoute("/Instructors").Should().BeTrue();
-    }
-
-    [When(@"user clicks Departments link in the navigation bar")]
-    public async Task WhenUserClicksDepartmentsLinkInTheNavigationBar()
-    {
-        await _page.ClickDepartmentsHeaderLink();
-    }
-
-    [Then(@"the Departments area opens successfully")]
-    public void ThenTheDepartmentsAreaOpensSuccessfully()
-    {
-        _page.IsAtRoute("/Departments").Should().BeTrue();
+        _page.IsAtRoute(route).Should().BeTrue();
     }
 }
