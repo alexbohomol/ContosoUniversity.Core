@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -17,13 +16,12 @@ public static class SchemaMigrator
     ///     https://docs.microsoft.com/en-us/ef/core/managing-schemas/ensure-created
     ///     https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli#apply-migrations-at-runtime
     /// </summary>
-    public static async Task EnsureStudentsSchema(this IWebHost host)
+    public static async Task EnsureStudentsSchema(this IServiceCollection services)
     {
-        using IServiceScope scope = host.Services.CreateScope();
-        IServiceProvider services = scope.ServiceProvider;
+        using IServiceScope scope = services.BuildServiceProvider().CreateScope();
         try
         {
-            var context = services.GetRequiredService<ReadWriteContext>();
+            var context = scope.ServiceProvider.GetRequiredService<ReadWriteContext>();
             if ((await context.Database.GetPendingMigrationsAsync()).Any())
                 await context.Database.MigrateAsync();
         }
@@ -32,7 +30,7 @@ public static class SchemaMigrator
             /*
              * TODO: DI resolution failing
              */
-            var logger = services.GetRequiredService<ILogger>();
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger>();
             logger.LogError(ex, "An error occurred while migrating the 'Students' schema");
         }
     }
