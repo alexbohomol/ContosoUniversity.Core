@@ -86,9 +86,16 @@ public class Program
                 "{controller=Home}/{action=Index}/{id?}");
         });
 
-        await services.EnsureCoursesSchema();
-        await services.EnsureStudentsSchema();
-        await services.EnsureDepartmentsSchema();
+        if (app.Environment.IsDevelopment())
+        {
+            await services.EnsureCoursesSchema();
+            await services.EnsureStudentsSchema();
+            await services.EnsureDepartmentsSchema();
+        }
+        else
+        {
+            // require database created (and migrated?)
+        }
 
         await app.RunAsync();
     }
