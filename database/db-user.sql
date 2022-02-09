@@ -1,4 +1,4 @@
-USE ContosoUniversity
+USE [ContosoUniversity]
 GO
 
 /*
@@ -16,6 +16,9 @@ ALTER ROLE [db_datareader] ADD MEMBER [courses_rw]
 GO
 ALTER ROLE [db_datawriter] ADD MEMBER [courses_rw]
 GO
+-- we need it temporarily to enable migrations with 'dotnet ef'
+ALTER ROLE [db_ddladmin] ADD MEMBER [courses_rw]
+GO
 
 /*
  * Departments Schema
@@ -32,6 +35,9 @@ ALTER ROLE [db_datareader] ADD MEMBER [departments_rw]
 GO
 ALTER ROLE [db_datawriter] ADD MEMBER [departments_rw]
 GO
+-- we need it temporarily to enable migrations with 'dotnet ef'
+ALTER ROLE [db_ddladmin] ADD MEMBER [departments_rw]
+GO
 
 /*
  * Students Schema
@@ -47,6 +53,9 @@ GO
 ALTER ROLE [db_datareader] ADD MEMBER [students_rw]
 GO
 ALTER ROLE [db_datawriter] ADD MEMBER [students_rw]
+GO
+-- we need it temporarily to enable migrations with 'dotnet ef'
+ALTER ROLE [db_ddladmin] ADD MEMBER [students_rw]
 GO
 
 /*
