@@ -5,13 +5,17 @@ using System.Threading.Tasks;
 using Application.Contracts.Repositories.ReadWrite;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class StartupExtensions
 {
-    public static void AddCoursesSchemaWrites(this IServiceCollection services, string connectionString)
+    public static void AddCoursesSchemaWrites(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<ReadWriteContext>(options => { options.UseSqlServer(connectionString); });
+        services.AddDbContext<ReadWriteContext>(options =>
+        {
+            options.UseSqlServer(configuration.GetConnectionString("Courses-RW"));
+        });
 
         services.AddScoped<ICoursesRwRepository, ReadWriteRepository>();
     }
