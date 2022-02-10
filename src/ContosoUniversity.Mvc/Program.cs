@@ -38,12 +38,12 @@ public class Program
 
         ConfigurationManager configuration = builder.Configuration;
 
-        services.AddCoursesSchemaReads(configuration.GetConnectionString("Courses"));
-        services.AddCoursesSchemaWrites(configuration.GetConnectionString("Courses"));
-        services.AddStudentsSchemaReads(configuration.GetConnectionString("Students"));
-        services.AddStudentsSchemaWrites(configuration.GetConnectionString("Students"));
-        services.AddDepartmentsSchemaReads(configuration.GetConnectionString("Departments"));
-        services.AddDepartmentsSchemaWrites(configuration.GetConnectionString("Departments"));
+        services.AddCoursesSchemaReads(configuration.GetConnectionString("Courses-RO"));
+        services.AddCoursesSchemaWrites(configuration.GetConnectionString("Courses-RW"));
+        services.AddStudentsSchemaReads(configuration.GetConnectionString("Students-RO"));
+        services.AddStudentsSchemaWrites(configuration.GetConnectionString("Students-RW"));
+        services.AddDepartmentsSchemaReads(configuration.GetConnectionString("Departments-RO"));
+        services.AddDepartmentsSchemaWrites(configuration.GetConnectionString("Departments-RW"));
 
         services
             .AddMvc()
