@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Data.Courses.Writes;
+namespace ContosoUniversity.Data.Students.Writes;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 /// <summary>
 ///     https://docs.microsoft.com/uk-ua/ef/core/cli/dbcontext-creation?tabs=dotnet-core-cli#from-a-design-time-factory
 /// </summary>
-public class CoursesContextDesignTime : IDesignTimeDbContextFactory<ReadWriteContext>
+public class DesignTimeContextFactory : IDesignTimeDbContextFactory<ReadWriteContext>
 {
     public ReadWriteContext CreateDbContext(string[] args)
     {
@@ -15,7 +15,7 @@ public class CoursesContextDesignTime : IDesignTimeDbContextFactory<ReadWriteCon
 
         optionsBuilder.UseSqlServer(DesignTimeSupport
             .ConfigurationRoot
-            .GetConnectionString("Courses"));
+            .GetConnectionString("Students-RW"));
 
         return new ReadWriteContext(optionsBuilder.Options);
     }

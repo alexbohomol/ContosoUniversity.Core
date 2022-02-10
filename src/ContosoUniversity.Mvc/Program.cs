@@ -38,12 +38,12 @@ public class Program
 
         ConfigurationManager configuration = builder.Configuration;
 
-        services.AddCoursesSchemaReads(configuration.GetConnectionString("Courses"));
-        services.AddCoursesSchemaWrites(configuration.GetConnectionString("Courses"));
-        services.AddStudentsSchemaReads(configuration.GetConnectionString("Students"));
-        services.AddStudentsSchemaWrites(configuration.GetConnectionString("Students"));
-        services.AddDepartmentsSchemaReads(configuration.GetConnectionString("Departments"));
-        services.AddDepartmentsSchemaWrites(configuration.GetConnectionString("Departments"));
+        services.AddCoursesSchemaReads(configuration);
+        services.AddCoursesSchemaWrites(configuration);
+        services.AddStudentsSchemaReads(configuration);
+        services.AddStudentsSchemaWrites(configuration);
+        services.AddDepartmentsSchemaReads(configuration);
+        services.AddDepartmentsSchemaWrites(configuration);
 
         services
             .AddMvc()
@@ -86,10 +86,11 @@ public class Program
                 "{controller=Home}/{action=Index}/{id?}");
         });
 
-        await services.EnsureCoursesSchema();
-        await services.EnsureStudentsSchema();
-        await services.EnsureDepartmentsSchema();
+        bool isDbAvailable = await services.EnsureCoursesSchemaIsAvailable()
+                             && await services.EnsureStudentsSchemaIsAvailable()
+                             && await services.EnsureDepartmentsSchemaIsAvailable();
 
-        await app.RunAsync();
+        if (isDbAvailable)
+            await app.RunAsync();
     }
 }
