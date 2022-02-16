@@ -9,7 +9,7 @@ services:
       - "db"
     build:
       context: .
-      dockerfile: ContosoUniversity/Dockerfile
+      dockerfile: src/ContosoUniversity.Mvc/Dockerfile
     volumes:
       - ~/.aspnet/https:/root/.aspnet/https:ro
       - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
