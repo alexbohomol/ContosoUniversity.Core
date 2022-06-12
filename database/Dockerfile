@@ -1,6 +1,7 @@
 FROM mcr.microsoft.com/mssql/server
 
 COPY ["container", "scripts"]
+COPY ["migrations", "scripts/migrations"]
 COPY ["*.sql", "scripts"]
 
 WORKDIR /scripts
