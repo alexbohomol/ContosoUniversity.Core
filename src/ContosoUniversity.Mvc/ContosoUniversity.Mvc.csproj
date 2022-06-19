@@ -6,25 +6,26 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.6"/>
-        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1"/>
+        <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.6" />
+        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ContosoUniversity.Data.Courses.Reads\ContosoUniversity.Data.Courses.Reads.csproj"/>
-        <ProjectReference Include="..\ContosoUniversity.Data.Courses.Writes\ContosoUniversity.Data.Courses.Writes.csproj"/>
-        <ProjectReference Include="..\ContosoUniversity.Data.Departments.Reads\ContosoUniversity.Data.Departments.Reads.csproj"/>
-        <ProjectReference Include="..\ContosoUniversity.Data.Departments.Writes\ContosoUniversity.Data.Departments.Writes.csproj"/>
-        <ProjectReference Include="..\ContosoUniversity.Data.Students.Reads\ContosoUniversity.Data.Students.Reads.csproj"/>
-        <ProjectReference Include="..\ContosoUniversity.Data.Students.Writes\ContosoUniversity.Data.Students.Writes.csproj"/>
-        <ProjectReference Include="..\ContosoUniversity.Application\ContosoUniversity.Application.csproj"/>
+        <ProjectReference Include="..\ContosoUniversity.Data.Courses.Reads\ContosoUniversity.Data.Courses.Reads.csproj" />
+        <ProjectReference Include="..\ContosoUniversity.Data.Courses.Writes\ContosoUniversity.Data.Courses.Writes.csproj" />
+        <ProjectReference Include="..\ContosoUniversity.Data.Departments.Reads\ContosoUniversity.Data.Departments.Reads.csproj" />
+        <ProjectReference Include="..\ContosoUniversity.Data.Departments.Writes\ContosoUniversity.Data.Departments.Writes.csproj" />
+        <ProjectReference Include="..\ContosoUniversity.Data.Students.Reads\ContosoUniversity.Data.Students.Reads.csproj" />
+        <ProjectReference Include="..\ContosoUniversity.Data.Students.Writes\ContosoUniversity.Data.Students.Writes.csproj" />
+        <ProjectReference Include="..\ContosoUniversity.Application\ContosoUniversity.Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="wwwroot\lib"/>
+        <Folder Include="wwwroot\lib" />
     </ItemGroup>
     <PropertyGroup>
         <GenerateRuntimeConfigurationFiles>True</GenerateRuntimeConfigurationFiles>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(RunConfiguration)' == 'ContosoUniversity' " />
 </Project>

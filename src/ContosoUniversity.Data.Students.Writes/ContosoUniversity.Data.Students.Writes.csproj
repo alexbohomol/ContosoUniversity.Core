@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ContosoUniversity.Data\ContosoUniversity.Data.csproj"/>
+        <ProjectReference Include="..\ContosoUniversity.Data\ContosoUniversity.Data.csproj" />
     </ItemGroup>
 
     <ItemGroup>

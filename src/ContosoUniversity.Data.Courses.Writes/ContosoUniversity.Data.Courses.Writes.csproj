@@ -5,8 +5,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ContosoUniversity.Data\ContosoUniversity.Data.csproj"/>
-        <ProjectReference Include="..\ContosoUniversity.Application\ContosoUniversity.Application.csproj"/>
+        <ProjectReference Include="..\ContosoUniversity.Data\ContosoUniversity.Data.csproj" />
+        <ProjectReference Include="..\ContosoUniversity.Application\ContosoUniversity.Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>
