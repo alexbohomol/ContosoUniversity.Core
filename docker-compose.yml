@@ -24,7 +24,7 @@ services:
     ports:
       - "1433:1433"
     volumes:
-      - sqlvolume
+      - sqlvolume:/var/opt/mssql
     networks:
       - cunetwork
 
