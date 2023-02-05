@@ -39,8 +39,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "e2e", "e2e", "{9A8A315F-D32
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.AcceptanceTests", "test\e2e\ContosoUniversity.AcceptanceTests\ContosoUniversity.AcceptanceTests.csproj", "{AD8D36CB-F094-42C2-BC54-2E4636D277FD}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{CC571C66-462A-47FB-8D4D-B6DEE609305C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,10 +97,6 @@ Global
 		{AD8D36CB-F094-42C2-BC54-2E4636D277FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD8D36CB-F094-42C2-BC54-2E4636D277FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD8D36CB-F094-42C2-BC54-2E4636D277FD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CC571C66-462A-47FB-8D4D-B6DEE609305C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC571C66-462A-47FB-8D4D-B6DEE609305C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CC571C66-462A-47FB-8D4D-B6DEE609305C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CC571C66-462A-47FB-8D4D-B6DEE609305C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
