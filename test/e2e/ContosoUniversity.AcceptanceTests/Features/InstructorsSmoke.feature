@@ -65,8 +65,8 @@ Smoke test
         Then the "/Delete" page with identifier opens successfully
         And the page title is "Delete - Contoso University"
         And user is able to see the following details on instructor
-          | Last Name | First Name | Hire Date  |
-          | Bogomol   | Oleksandr  | 1/31/2022  |
+          | Last Name | First Name | Hire Date |
+          | Bogomol   | Oleksandr  | 1/31/2022 |
 
     Scenario: 08_ User can delete instructor
         Given user is on the "Delete" page for instructor "Bogomol"
