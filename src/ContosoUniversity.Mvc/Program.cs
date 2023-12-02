@@ -1,5 +1,6 @@
 ﻿namespace ContosoUniversity.Mvc;
 
+using System.Globalization;
 using System.Threading.Tasks;
 
 using Application;
@@ -17,6 +18,7 @@ using MediatR;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -74,6 +76,16 @@ public class Program
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseCookiePolicy();
+
+        // https://stackoverflow.com/a/60245525/19518138
+        // https://itecnote.com/tecnote/c-force-locale-with-asp-net-core/
+        // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization/select-language-culture
+        app.UseRequestLocalization(new RequestLocalizationOptions
+        {
+            DefaultRequestCulture = new RequestCulture("en-US"),
+            SupportedCultures = new[] { new CultureInfo("en-US") },
+            FallBackToParentCultures = false
+        });
 
         app.UseRouting();
 

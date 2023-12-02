@@ -113,22 +113,22 @@ namespace ContosoUniversity.AcceptanceTests.Features
                             "Administrator"});
                 table8.AddRow(new string[] {
                             "Economics",
-                            "¤100,000.00",
+                            "100000.00",
                             "2007-09-01",
                             "Kapoor, Candace"});
                 table8.AddRow(new string[] {
                             "Engineering",
-                            "¤350,000.00",
+                            "350000.00",
                             "2007-09-01",
                             "Harui, Roger"});
                 table8.AddRow(new string[] {
                             "Mathematics",
-                            "¤100,000.00",
+                            "100000.00",
                             "2007-09-01",
                             "Fakhouri, Fadi"});
                 table8.AddRow(new string[] {
                             "English",
-                            "¤350,000.00",
+                            "350000.00",
                             "2007-09-01",
                             "Abercrombie, Kim"});
 #line 7
@@ -221,7 +221,7 @@ namespace ContosoUniversity.AcceptanceTests.Features
                             "Administrator"});
                 table9.AddRow(new string[] {
                             "Informatics",
-                            "¤1,000,000.00",
+                            "1000000.00",
                             "2021-09-01",
                             "Zheng, Roger"});
 #line 23
@@ -292,7 +292,7 @@ namespace ContosoUniversity.AcceptanceTests.Features
                             "Administrator"});
                 table10.AddRow(new string[] {
                             "Informatics",
-                            "¤1,000,000.00",
+                            "1000000.00",
                             "2021-09-01",
                             "Zheng, Roger"});
 #line 37
@@ -348,7 +348,7 @@ namespace ContosoUniversity.AcceptanceTests.Features
                             "Administrator"});
                 table11.AddRow(new string[] {
                             "Informatics",
-                            "¤1,000,000.00",
+                            "1000000.00",
                             "2021-09-01",
                             "Zheng, Roger"});
 #line 46
@@ -395,7 +395,7 @@ namespace ContosoUniversity.AcceptanceTests.Features
                             "Administrator"});
                 table12.AddRow(new string[] {
                             "Computers",
-                            "¤1,100,000.00",
+                            "1100000.00",
                             "2022-09-01",
                             "Harui, Roger"});
 #line 52
@@ -466,7 +466,7 @@ namespace ContosoUniversity.AcceptanceTests.Features
                             "Administrator"});
                 table13.AddRow(new string[] {
                             "Computers",
-                            "¤1,100,000.00",
+                            "1100000.00",
                             "2022-09-01",
                             "Harui, Roger"});
 #line 66
@@ -525,7 +525,7 @@ namespace ContosoUniversity.AcceptanceTests.Features
                             "Administrator"});
                 table14.AddRow(new string[] {
                             "Computers",
-                            "¤1,100,000.00",
+                            "1100000.00",
                             "2022-09-01",
                             "Harui, Roger"});
 #line 76

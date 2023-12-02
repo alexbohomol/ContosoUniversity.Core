@@ -39,7 +39,7 @@ public class DepartmentsAreaPage : PageObject
     public async Task EnterDepartmentDetails(DepartmentTableRowModel model)
     {
         await Page.FillAsync("#Name", model.Name);
-        await Page.FillAsync("#Budget", model.Budget.Remove(0, 1));
+        await Page.FillAsync("#Budget", model.Budget);
         await Page.FillAsync("#StartDate", model.StartDate);
 
         await Page.SelectOptionAsync("#AdministratorId", new[]
@@ -67,11 +67,9 @@ public class DepartmentsAreaPage : PageObject
 
     public async Task<DepartmentTableRowModel> ScrapRenderedDepartmentDetailsToEdit()
     {
-        string renderedBudget = await Page.InputValueAsync("#Budget");
-
         return new DepartmentTableRowModel(
             await Page.InputValueAsync("#Name"),
-            $"¤{Convert.ToDecimal(renderedBudget):N2}",
+            await Page.InputValueAsync("#Budget"),
             await Page.InputValueAsync("#StartDate"),
             await Page.EvalOnSelectorAsync<string>(
                 "#AdministratorId",

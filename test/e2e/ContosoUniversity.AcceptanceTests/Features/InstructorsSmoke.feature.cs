@@ -467,7 +467,7 @@ namespace ContosoUniversity.AcceptanceTests.Features
                 table20.AddRow(new string[] {
                             "Bogomol",
                             "Oleksandr",
-                            "01/31/2022"});
+                            "1/31/2022"});
 #line 67
         testRunner.And("user is able to see the following details on instructor", ((string)(null)), table20, "And ");
 #line hidden

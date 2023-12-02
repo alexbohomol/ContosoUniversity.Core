@@ -20,7 +20,7 @@ public class DepartmentListItemViewModel
 
     public string Name { get; }
 
-    [DataType(DataType.Currency)] public decimal Budget { get; }
+    public decimal Budget { get; }
 
     [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
     [Display(Name = "Start Date")]
