@@ -98,11 +98,14 @@ public class Program
                 "{controller=Home}/{action=Index}/{id?}");
         });
 
+        /*
         bool isDbAvailable = await services.EnsureCoursesSchemaIsAvailable()
                              && await services.EnsureStudentsSchemaIsAvailable()
                              && await services.EnsureDepartmentsSchemaIsAvailable();
 
         if (isDbAvailable)
-            await app.RunAsync();
+        */
+
+        await app.RunAsync();
     }
 }
