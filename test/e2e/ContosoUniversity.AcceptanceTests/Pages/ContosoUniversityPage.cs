@@ -10,7 +10,7 @@ public class ContosoUniversityPage : PageObject
     {
     }
 
-    protected override string PagePath => "https://localhost:5001";
+    protected override string PagePath => "https://localhost:10001";
 
     public async Task ClickBrandLink()
     {
