@@ -1,5 +1,6 @@
 ﻿namespace ContosoUniversity.Mvc;
 
+using System;
 using System.Globalization;
 using System.Threading.Tasks;
 
@@ -19,6 +20,7 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -40,12 +42,18 @@ public class Program
 
         ConfigurationManager configuration = builder.Configuration;
 
-        services.AddCoursesSchemaReads(configuration);
-        services.AddCoursesSchemaWrites(configuration);
-        services.AddStudentsSchemaReads(configuration);
-        services.AddStudentsSchemaWrites(configuration);
-        services.AddDepartmentsSchemaReads(configuration);
-        services.AddDepartmentsSchemaWrites(configuration);
+        SqlConnectionStringBuilder SqlBuilderFor(string connectionStringName) => 
+            new(configuration.GetConnectionString(connectionStringName))
+            {
+                DataSource = Environment.GetEnvironmentVariable("CONTOSO_DB_HOST") ?? "localhost,1433"
+            };
+
+        services.AddCoursesSchemaReads(SqlBuilderFor("Courses-RO"));
+        services.AddCoursesSchemaWrites(SqlBuilderFor("Courses-RW"));
+        services.AddStudentsSchemaReads(SqlBuilderFor("Students-RO"));
+        services.AddStudentsSchemaWrites(SqlBuilderFor("Students-RW"));
+        services.AddDepartmentsSchemaReads(SqlBuilderFor("Departments-RO"));
+        services.AddDepartmentsSchemaWrites(SqlBuilderFor("Departments-RW"));
 
         services
             .AddMvc()
