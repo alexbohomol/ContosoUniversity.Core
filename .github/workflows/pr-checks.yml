@@ -43,7 +43,7 @@ jobs:
     #   run: playwright install
       
     - name: Ensure browsers are installed
-      run: pwsh bin/Debug/net6.0/playwright.ps1 install --with-deps
+      run: pwsh test/e2e/ContosoUniversity.AcceptanceTests/bin/Debug/net6.0/playwright.ps1 install --with-deps
       
     - name: Run E2E Tests
       run: dotnet test --no-build --verbosity normal test/e2e/ContosoUniversity.AcceptanceTests/ContosoUniversity.AcceptanceTests.csproj
