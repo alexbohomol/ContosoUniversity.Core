@@ -10,7 +10,7 @@ jobs:
   CI:
     name: CI Checks
     runs-on: ubuntu-latest
-    container: ubuntu
+    container: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
