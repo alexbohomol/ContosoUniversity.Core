@@ -1,4 +1,12 @@
-version: '3.7'
+version: '3.9'
+
+networks:
+  cunetwork:
+    name: cunetwork
+
+volumes:
+  sqlvolume:
+    name: sqlvolume
 
 services:
   web:
@@ -9,23 +17,12 @@ services:
       - "db"
     build:
       context: .
-      dockerfile: ContosoUniversity/Dockerfile
-    volumes:
-      - ~/.aspnet/https:/root/.aspnet/https:ro
-      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
-      - webvolume
+      dockerfile: src/ContosoUniversity.Mvc/Dockerfile
     networks:
       - cunetwork
-    ports:
-      - "59075:80"
-      - "44367:443"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Container
-      - ASPNETCORE_URLS=https://+:443;http://+:80
-      - ASPNETCORE_HTTPS_PORT=44367
+
   db:
-    image: cudb
-    build: ./database
+    image: mcr.microsoft.com/mssql/server
     container_name: cudb
     hostname: db
     environment:
@@ -34,16 +31,6 @@ services:
     ports:
       - "1433:1433"
     volumes:
-      - sqlvolume
+      - sqlvolume:/var/opt/mssql
     networks:
       - cunetwork
-
-networks:
-  cunetwork:
-    name: cunetwork
-
-volumes:
-  sqlvolume:
-    name: sqlvolume
-  webvolume:
-    name: webvolume

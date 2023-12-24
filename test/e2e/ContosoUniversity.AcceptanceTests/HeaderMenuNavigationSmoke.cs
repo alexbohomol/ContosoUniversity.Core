@@ -12,7 +12,7 @@ using NUnit.Framework;
 [Parallelizable(ParallelScope.Self)]
 public class HeaderMenuNavigationSmoke : PageTest
 {
-    private const string SiteUrl = "https://localhost:5001";
+    private const string SiteUrl = "https://localhost:10001";
 
     [Ignore("we will play further with SpecFlow-based E2E testing")]
     [Test]

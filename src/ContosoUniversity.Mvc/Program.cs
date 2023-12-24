@@ -1,5 +1,7 @@
 ﻿namespace ContosoUniversity.Mvc;
 
+using System;
+using System.Globalization;
 using System.Threading.Tasks;
 
 using Application;
@@ -17,6 +19,8 @@ using MediatR;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -38,12 +42,18 @@ public class Program
 
         ConfigurationManager configuration = builder.Configuration;
 
-        services.AddCoursesSchemaReads(configuration);
-        services.AddCoursesSchemaWrites(configuration);
-        services.AddStudentsSchemaReads(configuration);
-        services.AddStudentsSchemaWrites(configuration);
-        services.AddDepartmentsSchemaReads(configuration);
-        services.AddDepartmentsSchemaWrites(configuration);
+        SqlConnectionStringBuilder SqlBuilderFor(string connectionStringName) => 
+            new(configuration.GetConnectionString(connectionStringName))
+            {
+                DataSource = Environment.GetEnvironmentVariable("CONTOSO_DB_HOST") ?? "localhost,1433"
+            };
+
+        services.AddCoursesSchemaReads(SqlBuilderFor("Courses-RO"));
+        services.AddCoursesSchemaWrites(SqlBuilderFor("Courses-RW"));
+        services.AddStudentsSchemaReads(SqlBuilderFor("Students-RO"));
+        services.AddStudentsSchemaWrites(SqlBuilderFor("Students-RW"));
+        services.AddDepartmentsSchemaReads(SqlBuilderFor("Departments-RO"));
+        services.AddDepartmentsSchemaWrites(SqlBuilderFor("Departments-RW"));
 
         services
             .AddMvc()
@@ -75,6 +85,16 @@ public class Program
         app.UseStaticFiles();
         app.UseCookiePolicy();
 
+        // https://stackoverflow.com/a/60245525/19518138
+        // https://itecnote.com/tecnote/c-force-locale-with-asp-net-core/
+        // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization/select-language-culture
+        app.UseRequestLocalization(new RequestLocalizationOptions
+        {
+            DefaultRequestCulture = new RequestCulture("en-US"),
+            SupportedCultures = new[] { new CultureInfo("en-US") },
+            FallBackToParentCultures = false
+        });
+
         app.UseRouting();
 
         app.UseAuthorization();
@@ -86,11 +106,14 @@ public class Program
                 "{controller=Home}/{action=Index}/{id?}");
         });
 
+        /*
         bool isDbAvailable = await services.EnsureCoursesSchemaIsAvailable()
                              && await services.EnsureStudentsSchemaIsAvailable()
                              && await services.EnsureDepartmentsSchemaIsAvailable();
 
         if (isDbAvailable)
-            await app.RunAsync();
+        */
+
+        await app.RunAsync();
     }
 }

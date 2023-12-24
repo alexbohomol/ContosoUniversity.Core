@@ -15,13 +15,13 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "ContosoUniversity": {
+    "ContosoUniversity.Mvc": {
       "commandName": "Project",
       "launchBrowser": true,
+      "applicationUrl": "https://localhost:10001;http://localhost:10000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "https://localhost:5001;http://localhost:5000"
+      }
     }
   }
 }

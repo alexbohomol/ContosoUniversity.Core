@@ -4,17 +4,17 @@ using System.Threading.Tasks;
 
 using Application.Contracts.Repositories.ReadWrite;
 
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class StartupExtensions
 {
-    public static void AddStudentsSchemaWrites(this IServiceCollection services, IConfiguration configuration)
+    public static void AddStudentsSchemaWrites(this IServiceCollection services, SqlConnectionStringBuilder builder)
     {
         services.AddDbContext<ReadWriteContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("Students-RW"));
+            options.UseSqlServer(builder.ConnectionString);
         });
 
         services.AddScoped<IStudentsRwRepository, ReadWriteRepository>();
