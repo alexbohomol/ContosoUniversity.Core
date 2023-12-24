@@ -25,5 +25,11 @@ jobs:
     - name: Build Solution
       run: dotnet build --no-restore
       
-    - name: Run Test
-      run: dotnet test --no-build --verbosity normal
+    - name: Run Unit Tests
+      run: dotnet test --no-build --verbosity normal test/unit/ContosoUniversity.Domain.Tests/ContosoUniversity.Domain.Tests.csproj
+      
+    - name: Run Integration Tests
+      run: dotnet test --no-build --verbosity normal test/integration/ContosoUniversity.Mvc.IntegrationTests/ContosoUniversity.Mvc.IntegrationTests.csproj
+      
+    - name: Run E2E Tests
+      run: dotnet test --no-build --verbosity normal test/e2e/ContosoUniversity.AcceptanceTests/ContosoUniversity.AcceptanceTests.csproj
