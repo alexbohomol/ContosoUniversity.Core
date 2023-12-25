@@ -7,8 +7,9 @@ on:
     branches: [ "main" ]
 
 jobs:
-  CI:
-    name: CI Checks
+
+  build_and_unit_testing:
+    name: Build and Unit Testing
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -27,6 +28,13 @@ jobs:
       
     - name: Run Unit Tests
       run: dotnet test --no-build --verbosity normal test/unit/ContosoUniversity.Domain.Tests/ContosoUniversity.Domain.Tests.csproj
+      
+  integration_testing:
+    name: Integration Testing
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
       
     - name: Create docker network
       run: docker network inspect cunetwork >/dev/null 2>&1 || \docker network create cunetwork
