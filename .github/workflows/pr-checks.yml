@@ -32,7 +32,9 @@ jobs:
       run: docker compose up -d --build
       
     - name: Init database
-      run: docker run --rm --entrypoint /opt/mssql-tools/bin/sqlcmd --workdir /scripts --volume "$(pwd)"/database:/scripts --network=cunetwork mcr.microsoft.com/mssql-tools -S cudb -U SA -P "<YourStrong!Passw0rd>" -i "db-init.sql"
+      # run: docker run --rm --entrypoint /opt/mssql-tools/bin/sqlcmd --workdir /scripts --volume "$(pwd)"/database:/scripts --network=cunetwork mcr.microsoft.com/mssql-tools -S cudb -U SA -P "<YourStrong!Passw0rd>" -i "db-init.sql"
+      run: docker run --rm --entrypoint /opt/mssql-tools/bin/sqlcmd --workdir /scripts --volume "$(pwd)"/database:/scripts mcr.microsoft.com/mssql-tools -S cudb -U SA -P "<YourStrong!Passw0rd>" -i "db-init.sql"
+      
       
     - name: Run Integration Tests
       run: dotnet test --no-build --verbosity normal test/integration/ContosoUniversity.Mvc.IntegrationTests/ContosoUniversity.Mvc.IntegrationTests.csproj
