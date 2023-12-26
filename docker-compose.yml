@@ -1,9 +1,8 @@
 version: '3.9'
 
 networks:
-  default:
+  cunetwork:
     name: cunetwork
-    # external: true
 
 volumes:
   sqlvolume:
