@@ -33,8 +33,8 @@ jobs:
   integration_testing:
     name: Integration Testing
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright/dotnet:v1.40.0-jammy
+    # container:
+    #   image: mcr.microsoft.com/playwright/dotnet:v1.40.0-jammy
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
