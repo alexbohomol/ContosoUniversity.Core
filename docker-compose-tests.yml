@@ -11,7 +11,7 @@ services:
         build:
             context: .
             dockerfile: test/e2e/ContosoUniversity.AcceptanceTests/Dockerfile
-            target: src/ContosoUniversity.AcceptanceTests
+            target: test/e2e
         # environment:
         #     ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
         entrypoint: "dotnet test --no-build --verbosity normal"
