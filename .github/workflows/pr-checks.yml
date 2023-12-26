@@ -52,7 +52,7 @@ jobs:
       run: docker run --rm --entrypoint /opt/mssql-tools/bin/sqlcmd --workdir /scripts --volume "$(pwd)"/database:/scripts --network=cunetwork mcr.microsoft.com/mssql-tools -S cudb -U SA -P "<YourStrong!Passw0rd>" -i "db-init.sql"
       
     - name: Run Docker E2E Tests
-      run: docker compose up --build -f docker-compose-tests.yml --exit-code-from e2e-tests e2e-tests
+      run: docker compose -f docker-compose-tests.yml up --exit-code-from e2e-tests e2e-tests
     
     # - name: Run Integration Tests
     #   run: dotnet test --no-build --verbosity normal test/integration/ContosoUniversity.Mvc.IntegrationTests/ContosoUniversity.Mvc.IntegrationTests.csproj
