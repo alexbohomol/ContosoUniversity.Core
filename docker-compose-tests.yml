@@ -1,0 +1,16 @@
+version: '3.9'
+
+# networks:
+#   default:
+#     name: cunetwork
+    
+services:
+    e2e-tests:
+        image: e2e-tests
+        container_name: e2e-tests
+        build:
+            context: .
+            dockerfile: test/e2e/ContosoUniversity.AcceptanceTests/Dockerfile
+        # environment:
+        #     ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+        entrypoint: "dotnet test --no-build --verbosity normal"
