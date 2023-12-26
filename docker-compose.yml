@@ -3,7 +3,7 @@ version: '3.9'
 networks:
   default:
     name: cunetwork
-    external: true
+    # external: true
 
 volumes:
   sqlvolume:
@@ -19,8 +19,8 @@ services:
     build:
       context: .
       dockerfile: src/ContosoUniversity.Mvc/Dockerfile
-    # networks:
-    #   - cunetwork
+    networks:
+      - cunetwork
 
   db:
     image: mcr.microsoft.com/mssql/server
@@ -33,5 +33,5 @@ services:
       - "1433:1433"
     volumes:
       - sqlvolume:/var/opt/mssql
-    # networks:
-    #   - cunetwork
+    networks:
+      - cunetwork

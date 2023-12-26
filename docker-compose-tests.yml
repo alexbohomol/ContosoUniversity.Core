@@ -1,8 +1,9 @@
 version: '3.9'
 
-# networks:
-#   default:
-#     name: cunetwork
+networks:
+  default:
+    name: cunetwork
+    # external: true
     
 services:
     e2e-tests:
@@ -14,3 +15,5 @@ services:
         # environment:
         #     ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
         entrypoint: "dotnet test --no-build --verbosity normal"
+        networks:
+        - cunetwork
