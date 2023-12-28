@@ -20,8 +20,6 @@ services:
       dockerfile: src/ContosoUniversity.Mvc/Dockerfile
     networks:
       - cunetwork
-    aliases:
-      - web
 
   db:
     image: mcr.microsoft.com/mssql/server
