@@ -1,0 +1,73 @@
+name: Pull Request Checks
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build_and_unit_testing:
+    name: Build and Unit Testing
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build Solution
+      run: dotnet build --no-restore
+      
+    - name: Run Unit Tests
+      working-directory: test/unit/ContosoUniversity.Domain.Tests
+      run: dotnet test --no-build --verbosity normal
+      
+  integration_testing:
+    name: Integration Testing
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Run Docker Infrastructure
+      run: docker compose up -d --build
+      
+    - name: Init database
+      run: |
+        ./migrate-database.sh
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+      
+    - name: Build Integration Tests
+      working-directory: test/integration/ContosoUniversity.Mvc.IntegrationTests
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+      
+    - name: Run Integration Tests
+      working-directory: test/integration/ContosoUniversity.Mvc.IntegrationTests
+      run: |
+        dotnet test --no-build --verbosity normal
+
+    - name: Shutdown Docker Infrastructure
+      run: docker compose down
+      
+  e2e_testing:
+    name: E2E Testing (Playwright)
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    # a lot of fun stuff...
