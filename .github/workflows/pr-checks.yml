@@ -46,7 +46,7 @@ jobs:
       #   docker network inspect cunetwork
 
     - name: Run Docker Infrastructure
-      run: docker compose up -d --build --network cunetwork
+      run: docker compose up -d --build
       # options:
       #   --network cunetwork
       
