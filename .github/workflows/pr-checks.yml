@@ -33,6 +33,38 @@ jobs:
   integration_testing:
     name: Integration Testing
     runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Run Docker Infrastructure
+      run: docker compose up -d --build
+      
+    - name: Init database
+      run: docker run --rm --entrypoint /opt/mssql-tools/bin/sqlcmd --workdir /scripts --volume "$(pwd)"/database:/scripts --network=cunetwork mcr.microsoft.com/mssql-tools -S cudb -U SA -P "<YourStrong!Passw0rd>" -i "db-init.sql"
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+      
+    - name: Build Integration Tests
+      working-directory: test/integration/ContosoUniversity.Mvc.IntegrationTests
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+      
+    - name: Run Integration Tests
+      working-directory: test/integration/ContosoUniversity.Mvc.IntegrationTests
+      run: |
+        dotnet test --no-build --verbosity normal
+
+    - name: Shutdown Docker Infrastructure
+      run: docker compose down
+      
+  e2e_testing:
+    name: E2E Testing (Playwright)
+    runs-on: ubuntu-latest
     # container:
     #   image: mcr.microsoft.com/playwright/dotnet:v1.40.0-jammy
     steps:
@@ -45,21 +77,19 @@ jobs:
       #   docker network ls
       #   docker network inspect cunetwork
 
-    - name: Run Docker Infrastructure
-      run: docker compose up -d --build
-      # options:
-      #   --network cunetwork
+    # - name: Run Docker Infrastructure
+    #   run: docker compose up -d --build
       
-    - name: Init database
-      run: docker run --rm --entrypoint /opt/mssql-tools/bin/sqlcmd --workdir /scripts --volume "$(pwd)"/database:/scripts --network=cunetwork mcr.microsoft.com/mssql-tools -S cudb -U SA -P "<YourStrong!Passw0rd>" -i "db-init.sql"
+    # - name: Init database
+    #   run: docker run --rm --entrypoint /opt/mssql-tools/bin/sqlcmd --workdir /scripts --volume "$(pwd)"/database:/scripts --network=cunetwork mcr.microsoft.com/mssql-tools -S cudb -U SA -P "<YourStrong!Passw0rd>" -i "db-init.sql"
       
-    - name: Get the container IP address
-      run: CONTAINER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' cuweb)
+    # - name: Get the container IP address
+    #   run: CONTAINER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' cuweb)
     
-    - name: Test host availability
-      run: |
-        echo CONTAINER_IP
-        curl "https://${CONTAINER_IP}:10001/Courses"
+    # - name: Test host availability
+    #   run: |
+    #     echo CONTAINER_IP
+    #     curl "https://${CONTAINER_IP}:10001/Courses"
 
     # - name: Run Docker E2E Tests
     #   run: docker compose -f docker-compose-tests.yml up --exit-code-from e2e-tests e2e-tests
@@ -88,5 +118,5 @@ jobs:
     #   working-directory: test/e2e/ContosoUniversity.AcceptanceTests
     #   run: dotnet test --no-build --verbosity normal
 
-    - name: Shutdown Docker Infrastructure
-      run: docker compose down
+    # - name: Shutdown Docker Infrastructure
+    #   run: docker compose down
