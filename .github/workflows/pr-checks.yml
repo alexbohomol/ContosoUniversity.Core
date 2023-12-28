@@ -41,7 +41,8 @@ jobs:
       run: docker compose up -d --build
       
     - name: Init database
-      run: docker run --rm --entrypoint /opt/mssql-tools/bin/sqlcmd --workdir /scripts --volume "$(pwd)"/database:/scripts --network=cunetwork mcr.microsoft.com/mssql-tools -S cudb -U SA -P "<YourStrong!Passw0rd>" -i "db-init.sql"
+      run: |
+        ./migrate-database.sh
       
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
