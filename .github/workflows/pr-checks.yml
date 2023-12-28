@@ -52,7 +52,7 @@ jobs:
       run: docker run --rm --entrypoint /opt/mssql-tools/bin/sqlcmd --workdir /scripts --volume "$(pwd)"/database:/scripts --network=cunetwork mcr.microsoft.com/mssql-tools -S cudb -U SA -P "<YourStrong!Passw0rd>" -i "db-init.sql"
       
     - name: Test host availability
-      run: curl https://localhost:10001/Courses
+      run: curl https://web:10001/Courses
 
     # - name: Run Docker E2E Tests
     #   run: docker compose -f docker-compose-tests.yml up --exit-code-from e2e-tests e2e-tests
