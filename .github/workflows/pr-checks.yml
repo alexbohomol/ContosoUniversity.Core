@@ -23,18 +23,17 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
         
-    - name: Restore dependencies
-      run: dotnet restore
-      
     - name: Build Solution
-      run: dotnet build --no-restore
+      run: |
+        dotnet restore
+        dotnet build --no-restore
       
     - name: Run Unit Tests
       working-directory: test/unit/ContosoUniversity.Domain.Tests
       run: dotnet test --no-build --verbosity normal
       
   code_style_checks:
-    name: Build and Unit Testing
+    name: Code style checks
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -52,7 +51,7 @@ jobs:
       
     - name: Dotnet Format Checks
       run: |
-        dotnet format --no-restore
+        dotnet format --no-restore --verify-no-changes
       
   integration_testing:
     name: Integration Testing
