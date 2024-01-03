@@ -33,6 +33,27 @@ jobs:
       working-directory: test/unit/ContosoUniversity.Domain.Tests
       run: dotnet test --no-build --verbosity normal
       
+  code_style_checks:
+    name: Build and Unit Testing
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Build Solution
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+      
+    - name: Dotnet Format Checks
+      run: |
+        dotnet format --no-restore
+      
   integration_testing:
     name: Integration Testing
     runs-on: ubuntu-latest
