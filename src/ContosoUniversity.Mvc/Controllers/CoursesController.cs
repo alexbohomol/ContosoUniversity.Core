@@ -1,4 +1,4 @@
-﻿namespace ContosoUniversity.Mvc.Controllers;
+namespace ContosoUniversity.Mvc.Controllers;
 
 using System;
 using System.Collections.Generic;
@@ -55,7 +55,8 @@ public class CoursesController : Controller
 
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
-        if (id is null) return BadRequest();
+        if (id is null)
+            return BadRequest();
 
         (Course course, Department department) = await _mediator.Send(
             new GetCourseDetailsQuery(id.Value),
@@ -77,7 +78,8 @@ public class CoursesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateCourseCommand command, CancellationToken cancellationToken)
     {
-        if (command is null) return BadRequest();
+        if (command is null)
+            return BadRequest();
 
         if (!ModelState.IsValid)
             return View(
@@ -92,7 +94,8 @@ public class CoursesController : Controller
 
     public async Task<IActionResult> Edit(Guid? id, CancellationToken cancellationToken)
     {
-        if (id is null) return BadRequest();
+        if (id is null)
+            return BadRequest();
 
         (Course course, Dictionary<Guid, string> departmentsReference) = await _mediator.Send(
             new GetCourseEditFormQuery(id.Value),
@@ -110,7 +113,8 @@ public class CoursesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(EditCourseCommand command, CancellationToken cancellationToken)
     {
-        if (command is null) return BadRequest();
+        if (command is null)
+            return BadRequest();
 
         if (!ModelState.IsValid)
         {
@@ -130,7 +134,8 @@ public class CoursesController : Controller
 
     public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
     {
-        if (id is null) return BadRequest();
+        if (id is null)
+            return BadRequest();
 
         (Course course, Department department) = await _mediator.Send(
             new GetCourseDetailsQuery(id.Value),

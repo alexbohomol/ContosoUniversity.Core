@@ -61,7 +61,8 @@ public class Instructor : IIdentifiable<Guid>
 
     public void ResetCourseAssignments()
     {
-        if (CourseAssignments.Any()) CourseAssignments.Clear();
+        if (CourseAssignments.Any())
+            CourseAssignments.Clear();
     }
 
     public void AssignCourses(Guid[] courseIds)

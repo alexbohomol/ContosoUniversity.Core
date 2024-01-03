@@ -1,4 +1,4 @@
-﻿namespace ContosoUniversity.Mvc.ViewModels.Instructors;
+namespace ContosoUniversity.Mvc.ViewModels.Instructors;
 
 using System;
 
