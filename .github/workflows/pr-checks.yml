@@ -49,9 +49,26 @@ jobs:
         dotnet restore
         dotnet build --no-restore
       
-    - name: Dotnet Format Checks
+    - name: Dotnet Format Checks (Whitespaces)
       run: |
-        dotnet format --no-restore --verify-no-changes
+        dotnet format whitespace \
+        --no-restore \
+        --exclude ./src/*/Migrations \
+        --verify-no-changes
+      
+    - name: Dotnet Format Checks (Style)
+      run: |
+        dotnet format style \
+        --no-restore \
+        --exclude ./src/*/Migrations \
+        --verify-no-changes
+      
+    - name: Dotnet Format Checks (Analizers)
+      run: |
+        dotnet format analizers \
+        --no-restore \
+        --exclude ./src/*/Migrations \
+        --verify-no-changes
       
   integration_testing:
     name: Integration Testing
