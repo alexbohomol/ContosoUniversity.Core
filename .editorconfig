@@ -50,5 +50,9 @@ csharp_space_around_binary_operators = before_and_after
 csharp_preserve_single_line_statements = false
 csharp_preserve_single_line_blocks = true
 
+# Language and unnecessary rules
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/language-rules
+dotnet_diagnostic.IDE0005.severity = error
+
 [*.json]
 indent_size = 2
