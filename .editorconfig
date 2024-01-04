@@ -54,6 +54,7 @@ csharp_preserve_single_line_blocks = true
 # https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/language-rules
 dotnet_diagnostic.IDE0005.severity = error # Remove unnecessary using directives
 dotnet_diagnostic.IDE0011.severity = error # Add braces
+dotnet_diagnostic.IDE0044.severity = error # Add readonly modifier
 
 [*.json]
 indent_size = 2
