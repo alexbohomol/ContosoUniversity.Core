@@ -19,8 +19,8 @@ public record Instructor(
 
     public string Office => _officeAssignment?.Title;
 
-#pragma warning disable CS0649
+#pragma warning disable CS0649, IDE0044
     private IList<CourseAssignment> _courseAssignments;
     private OfficeAssignment _officeAssignment;
-#pragma warning restore CS0649
+#pragma warning restore CS0649, IDE0044
 }

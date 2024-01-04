@@ -46,7 +46,9 @@ public class EditStudentCommandHandler : AsyncRequestHandler<EditStudentCommand>
     {
         Student student = await _studentsRepository.GetById(request.ExternalId, cancellationToken);
         if (student == null)
+        {
             throw new EntityNotFoundException(nameof(student), request.ExternalId);
+        }
 
         student.UpdatePersonInfo(request.LastName, request.FirstName);
         student.Enroll(request.EnrollmentDate);

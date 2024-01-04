@@ -12,9 +12,11 @@ public readonly struct CourseCode
     private CourseCode(int code)
     {
         if (code is < MinValue or > MaxValue)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(code),
                 $"Provided value: {code}.");
+        }
 
         _code = code;
     }

@@ -1,4 +1,4 @@
-﻿namespace ContosoUniversity.Mvc;
+namespace ContosoUniversity.Mvc;
 
 using System;
 using System.Globalization;
@@ -42,7 +42,7 @@ public class Program
 
         ConfigurationManager configuration = builder.Configuration;
 
-        SqlConnectionStringBuilder SqlBuilderFor(string connectionStringName) => 
+        SqlConnectionStringBuilder SqlBuilderFor(string connectionStringName) =>
             new(configuration.GetConnectionString(connectionStringName))
             {
                 DataSource = Environment.GetEnvironmentVariable("CONTOSO_DB_HOST") ?? "localhost,1433"

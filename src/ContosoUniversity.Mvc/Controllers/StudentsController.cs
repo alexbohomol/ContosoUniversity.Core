@@ -1,4 +1,4 @@
-﻿namespace ContosoUniversity.Mvc.Controllers;
+namespace ContosoUniversity.Mvc.Controllers;
 
 using System;
 using System.Collections.Generic;
@@ -28,9 +28,13 @@ public class StudentsController : Controller
     public async Task<IActionResult> Index(GetStudentsIndexQuery request, CancellationToken cancellationToken)
     {
         if (request.SearchString != null)
+        {
             request.PageNumber = 1;
+        }
         else
+        {
             request.SearchString = request.CurrentFilter;
+        }
 
         (PageInfo pageInfo, Student[] students) = await _mediator.Send(request, cancellationToken);
 
@@ -39,7 +43,10 @@ public class StudentsController : Controller
 
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
-        if (id == null) return NotFound();
+        if (id == null)
+        {
+            return NotFound();
+        }
 
         (Student student, Dictionary<Guid, string> courseTitles) = await _mediator.Send(
             new GetStudentDetailsQuery(id.Value),
@@ -62,7 +69,10 @@ public class StudentsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateStudentCommand command, CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid) return View(command as CreateStudentForm);
+        if (!ModelState.IsValid)
+        {
+            return View(command as CreateStudentForm);
+        }
 
         await _mediator.Send(command, cancellationToken);
 
@@ -71,7 +81,10 @@ public class StudentsController : Controller
 
     public async Task<IActionResult> Edit(Guid? id, CancellationToken cancellationToken)
     {
-        if (id is null) return BadRequest();
+        if (id is null)
+        {
+            return BadRequest();
+        }
 
         Student student = await _mediator.Send(
             new GetStudentProjectionQuery(id.Value),
@@ -86,9 +99,15 @@ public class StudentsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(EditStudentCommand command, CancellationToken cancellationToken)
     {
-        if (command is null) return BadRequest();
+        if (command is null)
+        {
+            return BadRequest();
+        }
 
-        if (!ModelState.IsValid) return View(command as EditStudentForm);
+        if (!ModelState.IsValid)
+        {
+            return View(command as EditStudentForm);
+        }
 
         await _mediator.Send(command, cancellationToken);
 
@@ -97,7 +116,10 @@ public class StudentsController : Controller
 
     public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
     {
-        if (id is null) return BadRequest();
+        if (id is null)
+        {
+            return BadRequest();
+        }
 
         Student student = await _mediator.Send(
             new GetStudentProjectionQuery(id.Value),

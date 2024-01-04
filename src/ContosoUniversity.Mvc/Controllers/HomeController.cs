@@ -1,4 +1,4 @@
-﻿namespace ContosoUniversity.Mvc.Controllers;
+namespace ContosoUniversity.Mvc.Controllers;
 
 using System.Diagnostics;
 using System.Linq;

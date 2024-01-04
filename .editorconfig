@@ -1,8 +1,8 @@
 [*]
 charset = utf-8
 end_of_line = lf
-trim_trailing_whitespace = false
-insert_final_newline = false
+trim_trailing_whitespace = true
+insert_final_newline = true
 indent_style = space
 indent_size = 4
 
@@ -15,8 +15,8 @@ indent_size = 4
 dotnet_sort_system_directives_first = true
 dotnet_separate_import_directive_groups = true
 csharp_using_directive_placement = inside_namespace
-# dotnet_style_namespace_match_folder = true
-# csharp_style_namespace_declarations = file_scoped
+dotnet_style_namespace_match_folder = true
+csharp_style_namespace_declarations = file_scoped
 
 #########################################################################
 #   C# Rules
@@ -30,7 +30,7 @@ csharp_style_var_when_type_is_apparent = true
 # https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/formatting-rules#new-line-options
 csharp_new_line_between_query_expression_clauses = true
 csharp_new_line_before_members_in_anonymous_types = true
-# csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_object_initializers = true
 csharp_new_line_before_finally = true
 csharp_new_line_before_catch = true
 csharp_new_line_before_else = true
@@ -49,6 +49,12 @@ csharp_space_around_binary_operators = before_and_after
 # https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/formatting-rules#wrap-options
 csharp_preserve_single_line_statements = false
 csharp_preserve_single_line_blocks = true
+
+# Language and unnecessary rules
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/language-rules
+dotnet_diagnostic.IDE0005.severity = error # Remove unnecessary using directives
+dotnet_diagnostic.IDE0011.severity = error # Add braces
+dotnet_diagnostic.IDE0044.severity = error # Add readonly modifier
 
 [*.json]
 indent_size = 2

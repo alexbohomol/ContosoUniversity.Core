@@ -36,11 +36,15 @@ public class GetCourseDetailsQueryHandler : IRequestHandler<GetCourseDetailsQuer
 
         Course course = await _coursesRepository.GetById(request.Id, cancellationToken);
         if (course == null)
+        {
             throw new EntityNotFoundException(nameof(course), request.Id);
+        }
 
         Department department = await _departmentsRepository.GetById(course.DepartmentId, cancellationToken);
         if (department == null)
+        {
             throw new EntityNotFoundException(nameof(department), course.DepartmentId);
+        }
 
         return new GetCourseDetailsQueryResult(course, department);
     }

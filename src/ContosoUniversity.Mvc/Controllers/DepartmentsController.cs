@@ -1,4 +1,4 @@
-﻿namespace ContosoUniversity.Mvc.Controllers;
+namespace ContosoUniversity.Mvc.Controllers;
 
 using System;
 using System.Collections.Generic;
@@ -42,7 +42,10 @@ public class DepartmentsController : Controller
 
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
-        if (id is null) return BadRequest();
+        if (id is null)
+        {
+            return BadRequest();
+        }
 
         Department department = await _mediator.Send(
             new GetDepartmentDetailsQuery(id.Value),
@@ -69,13 +72,18 @@ public class DepartmentsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateDepartmentCommand command, CancellationToken cancellationToken)
     {
-        if (command is null) return BadRequest();
+        if (command is null)
+        {
+            return BadRequest();
+        }
 
         if (!ModelState.IsValid)
+        {
             return View(
                 new CreateDepartmentForm(
                     command,
                     await _instructorsRepository.GetInstructorNamesReference(cancellationToken)));
+        }
 
         await _mediator.Send(command, cancellationToken);
 
@@ -84,7 +92,10 @@ public class DepartmentsController : Controller
 
     public async Task<IActionResult> Edit(Guid? id, CancellationToken cancellationToken)
     {
-        if (id is null) return BadRequest();
+        if (id is null)
+        {
+            return BadRequest();
+        }
 
         (Department department, Dictionary<Guid, string> instructorsReference) = await _mediator.Send(
             new GetDepartmentEditFormQuery(id.Value),
@@ -99,13 +110,18 @@ public class DepartmentsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(EditDepartmentCommand command, CancellationToken cancellationToken)
     {
-        if (command is null) return BadRequest();
+        if (command is null)
+        {
+            return BadRequest();
+        }
 
         if (!ModelState.IsValid)
+        {
             return View(
                 new EditDepartmentForm(
                     command,
                     await _instructorsRepository.GetInstructorNamesReference(cancellationToken)));
+        }
 
         await _mediator.Send(command, cancellationToken);
 
@@ -114,7 +130,10 @@ public class DepartmentsController : Controller
 
     public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
     {
-        if (id is null) return BadRequest();
+        if (id is null)
+        {
+            return BadRequest();
+        }
 
         Department department = await _mediator.Send(
             new GetDepartmentDetailsQuery(id.Value),

@@ -40,7 +40,9 @@ public class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQu
 
         Student student = await _studentsRepository.GetById(request.Id, cancellationToken);
         if (student == null)
+        {
             throw new EntityNotFoundException(nameof(student), request.Id);
+        }
 
         Guid[] coursesIds = student.Enrollments.Select(x => x.CourseId).ToArray();
 
@@ -49,8 +51,10 @@ public class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQu
 
         Guid[] notFoundCourseIds = coursesIds.Except(courseTitles.Keys).ToArray();
         if (notFoundCourseIds.Any())
+        {
             throw new AggregateException(notFoundCourseIds
                 .Select(x => new EntityNotFoundException("course", x)));
+        }
 
         return new GetStudentDetailsQueryResult(student, courseTitles);
     }

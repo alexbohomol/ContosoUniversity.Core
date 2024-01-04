@@ -34,9 +34,13 @@ public abstract class EfRwRepository<TDomainEntity> : IRwRepository<TDomainEntit
     {
         var existing = await DbContext.FindAsync<TDomainEntity>(entity.ExternalId);
         if (existing is null)
+        {
             await DbSet.AddAsync(entity, cancellationToken);
+        }
         else
+        {
             DbSet.Update(entity);
+        }
 
         await DbContext.SaveChangesAsync(cancellationToken);
     }

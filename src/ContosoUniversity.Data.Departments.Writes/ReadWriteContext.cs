@@ -1,4 +1,4 @@
-﻿namespace ContosoUniversity.Data.Departments.Writes;
+namespace ContosoUniversity.Data.Departments.Writes;
 
 using Domain.Department;
 using Domain.Instructor;

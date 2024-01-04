@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  DOTNET_VERSION: 6.0.x
+
 jobs:
 
   build_and_unit_testing:
@@ -18,17 +21,54 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: ${{ env.DOTNET_VERSION }}
         
-    - name: Restore dependencies
-      run: dotnet restore
-      
     - name: Build Solution
-      run: dotnet build --no-restore
+      run: |
+        dotnet restore
+        dotnet build --no-restore
       
     - name: Run Unit Tests
       working-directory: test/unit/ContosoUniversity.Domain.Tests
       run: dotnet test --no-build --verbosity normal
+      
+  code_style_checks:
+    name: Code style checks
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Build Solution
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+      
+    - name: Dotnet Format Checks (Whitespaces)
+      run: |
+        dotnet format whitespace \
+        --no-restore \
+        --exclude ./src/*/Migrations \
+        --verify-no-changes
+      
+    - name: Dotnet Format Checks (Style)
+      run: |
+        dotnet format style \
+        --no-restore \
+        --exclude ./src/*/Migrations \
+        --verify-no-changes
+      
+    - name: Dotnet Format Checks (Analizers)
+      run: |
+        dotnet format analyzers \
+        --no-restore \
+        --exclude ./src/*/Migrations \
+        --verify-no-changes
       
   integration_testing:
     name: Integration Testing
@@ -47,7 +87,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: ${{ env.DOTNET_VERSION }}
       
     - name: Build Integration Tests
       working-directory: test/integration/ContosoUniversity.Mvc.IntegrationTests

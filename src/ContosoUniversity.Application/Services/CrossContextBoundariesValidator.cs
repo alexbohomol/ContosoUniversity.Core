@@ -25,8 +25,10 @@ public static class CrossContextBoundariesValidator
         Guid[] notFoundDepartments = referencedDepartmentIds.Except(existingDepartmentIds).ToArray();
 
         if (notFoundDepartments.Any())
+        {
             throw new Exception(
                 $"Unbound contexts inconsistency. Departments not found: {notFoundDepartments.ToDisplayString()}.");
+        }
     }
 
     /// <summary>
@@ -41,8 +43,10 @@ public static class CrossContextBoundariesValidator
         Guid[] notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
 
         if (notFoundCourses.Any())
+        {
             throw new Exception(
                 $"Unbound contexts inconsistency. Course not found: {notFoundCourses.ToDisplayString()}.");
+        }
     }
 
     /// <summary>
@@ -57,7 +61,9 @@ public static class CrossContextBoundariesValidator
         Guid[] notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
 
         if (notFoundCourses.Any())
+        {
             throw new Exception(
                 $"Unbound contexts inconsistency. Course not found: {notFoundCourses.ToDisplayString()}.");
+        }
     }
 }

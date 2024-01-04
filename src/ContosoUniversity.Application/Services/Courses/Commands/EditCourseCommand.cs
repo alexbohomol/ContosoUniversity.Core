@@ -44,7 +44,9 @@ public class EditCourseCommandHandler : AsyncRequestHandler<EditCourseCommand>
     {
         Domain.Course.Course course = await _coursesRepository.GetById(request.Id, cancellationToken);
         if (course == null)
+        {
             throw new EntityNotFoundException(nameof(course), request.Id);
+        }
 
         course.Update(
             request.Title,

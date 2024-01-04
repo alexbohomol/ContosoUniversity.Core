@@ -38,7 +38,9 @@ public class CoursesAreaPage : PageObject
     public async Task EnterCourseDetails(CourseTableRowModel model)
     {
         if (model.CourseCode is not null)
+        {
             await Page.FillAsync("#CourseCode", model.CourseCode);
+        }
 
         await Page.FillAsync("#Title", model.Title);
         await Page.FillAsync("#Credits", model.Credits);
