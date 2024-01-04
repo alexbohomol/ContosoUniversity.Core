@@ -40,7 +40,9 @@ public class DeleteDepartmentCommandHandler : AsyncRequestHandler<DeleteDepartme
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
         if (!await _departmentsRoRepository.Exists(request.Id, cancellationToken))
+        {
             throw new EntityNotFoundException("department", request.Id);
+        }
 
         await _departmentsRwRepository.Remove(request.Id, cancellationToken);
 
@@ -54,8 +56,10 @@ public class DeleteDepartmentCommandHandler : AsyncRequestHandler<DeleteDepartme
          * - remove related assignments (restrain assigned instructors)
          */
         if (relatedCoursesIds.Any())
+        {
             await _mediator.Publish(
                 new DepartmentDeletedNotification(relatedCoursesIds),
                 cancellationToken);
+        }
     }
 }

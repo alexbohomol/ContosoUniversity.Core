@@ -40,14 +40,18 @@ public class EditDepartmentCommandHandler : AsyncRequestHandler<EditDepartmentCo
     {
         Department department = await _departmentsRepository.GetById(request.ExternalId, cancellationToken);
         if (department is null)
+        {
             throw new EntityNotFoundException(nameof(department), request.ExternalId);
+        }
 
         department.UpdateGeneralInfo(request.Name, request.Budget, request.StartDate);
 
         if (request.AdministratorId.HasValue)
         {
             if (!await _instructorsRepository.Exists(request.AdministratorId.Value, cancellationToken))
+            {
                 throw new EntityNotFoundException("instructor", request.AdministratorId.Value);
+            }
 
             department.AssociateAdministrator(request.AdministratorId.Value);
         }

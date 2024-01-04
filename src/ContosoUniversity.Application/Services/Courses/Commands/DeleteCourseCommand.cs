@@ -34,7 +34,9 @@ public class DeleteCourseCommandHandler : AsyncRequestHandler<DeleteCourseComman
     protected override async Task Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
     {
         if (!await _coursesRoRepository.Exists(request.Id, cancellationToken))
+        {
             throw new EntityNotFoundException("course", request.Id);
+        }
 
         await _coursesRwRepository.Remove(request.Id, cancellationToken);
 

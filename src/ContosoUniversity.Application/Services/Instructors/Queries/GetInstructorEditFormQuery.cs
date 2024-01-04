@@ -37,7 +37,9 @@ public class GetInstructorEditFormQueryHandler :
 
         Instructor instructor = await _instructorsRepository.GetById(request.Id, cancellationToken);
         if (instructor == null)
+        {
             throw new EntityNotFoundException(nameof(instructor), request.Id);
+        }
 
         Course[] courses = await _coursesRepository.GetAll(cancellationToken);
 

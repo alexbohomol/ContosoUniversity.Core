@@ -41,7 +41,9 @@ public class Instructor : IIdentifiable<Guid>
     {
         CourseAssignment assignment = CourseAssignments.FirstOrDefault(x => x.CourseId == courseId);
         if (assignment is not null)
+        {
             CourseAssignments.Remove(assignment); // publish event here: course assignment was reset
+        }
     }
 
     public static Instructor Create(
@@ -62,7 +64,9 @@ public class Instructor : IIdentifiable<Guid>
     public void ResetCourseAssignments()
     {
         if (CourseAssignments.Any())
+        {
             CourseAssignments.Clear();
+        }
     }
 
     public void AssignCourses(Guid[] courseIds)
@@ -73,17 +77,25 @@ public class Instructor : IIdentifiable<Guid>
          * Add newly assigned courses
          */
         foreach (Guid courseId in courseIds)
+        {
             if (CourseAssignments.All(x => x.CourseId != courseId))
+            {
                 CourseAssignments.Add(
                     new CourseAssignment(ExternalId, courseId)); // publish event here: assigned to course
+            }
+        }
 
         /*
          * Remove courses that were reset
          */
         Guid[] availableAssignments = CourseAssignments.Select(x => x.CourseId).ToArray();
         foreach (Guid courseId in availableAssignments)
+        {
             if (!courseIds.Contains(courseId))
+            {
                 ResetCourseAssignment(courseId); // publish event here: dis-assigned from course
+            }
+        }
     }
 
     public void AssignOffice(OfficeAssignment officeAssignment)

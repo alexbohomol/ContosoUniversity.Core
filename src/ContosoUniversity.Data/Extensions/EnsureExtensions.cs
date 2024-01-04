@@ -12,7 +12,9 @@ public static class EnsureExtensions
         Func<Guid, Exception> exceptionFactory)
     {
         if (source.Count() == target.Count() && !source.Except(target).Any())
+        {
             return;
+        }
 
         throw new AggregateException(source
             .Except(target)

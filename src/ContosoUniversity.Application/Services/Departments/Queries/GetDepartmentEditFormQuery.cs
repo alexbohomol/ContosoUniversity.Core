@@ -40,7 +40,9 @@ public class GetDepartmentEditFormQueryHandler :
 
         Department department = await _departmentsRepository.GetById(request.Id, cancellationToken);
         if (department is null)
+        {
             throw new EntityNotFoundException(nameof(department));
+        }
 
         Dictionary<Guid, string> instructorNames = await _instructorsRepository
             .GetInstructorNamesReference(cancellationToken);

@@ -103,7 +103,9 @@ public class CoursesSmoke
         var submittedCourse = _scenarioContext.Get<CourseTableRowModel>(SubmittedCourse);
 
         if (submittedCourse.CourseCode is null)
+        {
             submittedCourse = submittedCourse with { CourseCode = "1010" };
+        }
 
         listAfterSubmit.Length.Should().Be(8);
         listAfterSubmit.Should().Contain(submittedCourse);

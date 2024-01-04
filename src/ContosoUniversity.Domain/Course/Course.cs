@@ -36,8 +36,10 @@ public class Course : IIdentifiable<Guid>
         private set
         {
             if (string.IsNullOrWhiteSpace(value))
+            {
                 throw new ArgumentException(
                     "Title cannot be null or whitespace.");
+            }
 
             _title = value;
         }
@@ -51,8 +53,10 @@ public class Course : IIdentifiable<Guid>
         private set
         {
             if (value == default)
+            {
                 throw new ArgumentException(
                     "DepartmentId value cannot be set to empty.");
+            }
 
             _departmentId = value;
         }

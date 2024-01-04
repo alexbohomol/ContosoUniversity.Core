@@ -12,9 +12,11 @@ public readonly struct Credits
     private Credits(int credits)
     {
         if (credits is < MinValue or > MaxValue)
+        {
             throw new ArgumentOutOfRangeException(
                 nameof(credits),
                 $"Provided value: {credits}.");
+        }
 
         _credits = credits;
     }

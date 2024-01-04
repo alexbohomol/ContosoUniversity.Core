@@ -40,10 +40,14 @@ public class CreateInstructorCommandHandler : AsyncRequestHandler<CreateInstruct
             command.HireDate);
 
         if (command.HasAssignedCourses)
+        {
             instructor.AssignCourses(command.SelectedCourses);
+        }
 
         if (command.HasAssignedOffice)
+        {
             instructor.AssignOffice(new OfficeAssignment(command.Location));
+        }
 
         await _instructorsRepository.Save(instructor, cancellationToken);
     }

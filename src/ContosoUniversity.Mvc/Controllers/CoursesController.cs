@@ -56,7 +56,9 @@ public class CoursesController : Controller
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
+        {
             return BadRequest();
+        }
 
         (Course course, Department department) = await _mediator.Send(
             new GetCourseDetailsQuery(id.Value),
@@ -79,13 +81,17 @@ public class CoursesController : Controller
     public async Task<IActionResult> Create(CreateCourseCommand command, CancellationToken cancellationToken)
     {
         if (command is null)
+        {
             return BadRequest();
+        }
 
         if (!ModelState.IsValid)
+        {
             return View(
                 new CreateCourseForm(
                     command,
                     await _departmentsRepository.GetDepartmentNamesReference(cancellationToken)));
+        }
 
         await _mediator.Send(command, cancellationToken);
 
@@ -95,7 +101,9 @@ public class CoursesController : Controller
     public async Task<IActionResult> Edit(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
+        {
             return BadRequest();
+        }
 
         (Course course, Dictionary<Guid, string> departmentsReference) = await _mediator.Send(
             new GetCourseEditFormQuery(id.Value),
@@ -114,7 +122,9 @@ public class CoursesController : Controller
     public async Task<IActionResult> Edit(EditCourseCommand command, CancellationToken cancellationToken)
     {
         if (command is null)
+        {
             return BadRequest();
+        }
 
         if (!ModelState.IsValid)
         {
@@ -135,7 +145,9 @@ public class CoursesController : Controller
     public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
+        {
             return BadRequest();
+        }
 
         (Course course, Department department) = await _mediator.Send(
             new GetCourseDetailsQuery(id.Value),
@@ -166,9 +178,11 @@ public class CoursesController : Controller
     public async Task<IActionResult> UpdateCourseCredits(int? multiplier, CancellationToken cancellationToken)
     {
         if (multiplier.HasValue)
+        {
             ViewData["RowsAffected"] = await _coursesRwRepository.UpdateCourseCredits(
                 multiplier.Value,
                 cancellationToken);
+        }
 
         return View();
     }

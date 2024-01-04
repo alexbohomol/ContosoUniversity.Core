@@ -34,7 +34,9 @@ public class DeleteInstructorCommandHandler : AsyncRequestHandler<DeleteInstruct
     protected override async Task Handle(DeleteInstructorCommand request, CancellationToken cancellationToken)
     {
         if (!await _instructorsRoRepository.Exists(request.Id, cancellationToken))
+        {
             throw new EntityNotFoundException("instructor", request.Id);
+        }
 
         Department[] administratedDepartments = await _departmentsRepository.GetByAdministrator(
             request.Id,

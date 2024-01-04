@@ -30,10 +30,12 @@ public class CourseDeletedNotificationHandler : INotificationHandler<CourseDelet
             .GetStudentsEnrolledForCourses(courseIds, cancellationToken);
 
         if (enrolledStudents.Any())
+        {
             foreach (Student student in enrolledStudents)
             {
                 student.WithdrawCourses(courseIds);
                 await _studentsRepository.Save(student, cancellationToken);
             }
+        }
     }
 }

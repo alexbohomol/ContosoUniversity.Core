@@ -41,19 +41,29 @@ public class EditInstructorCommandHandler : AsyncRequestHandler<EditInstructorCo
     {
         Instructor instructor = await _instructorsRepository.GetById(request.ExternalId, cancellationToken);
         if (instructor is null)
+        {
             throw new EntityNotFoundException(nameof(instructor), request.ExternalId);
+        }
 
         instructor.UpdatePersonalInfo(request.FirstName, request.LastName, request.HireDate);
 
         if (request.HasAssignedCourses)
+        {
             instructor.AssignCourses(request.SelectedCourses);
+        }
         else
+        {
             instructor.ResetCourseAssignments();
+        }
 
         if (request.HasAssignedOffice)
+        {
             instructor.AssignOffice(new OfficeAssignment(request.Location));
+        }
         else
+        {
             instructor.ResetOffice();
+        }
 
         await _instructorsRepository.Save(instructor, cancellationToken);
     }

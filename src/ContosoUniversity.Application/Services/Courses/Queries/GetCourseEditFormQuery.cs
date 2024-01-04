@@ -37,7 +37,9 @@ public class GetCourseEditFormQueryHandler : IRequestHandler<GetCourseEditFormQu
 
         Course course = await _coursesRepository.GetById(request.Id, cancellationToken);
         if (course == null)
+        {
             throw new EntityNotFoundException(nameof(course), request.Id);
+        }
 
         Dictionary<Guid, string> departments =
             await _departmentsRepository.GetDepartmentNamesReference(cancellationToken);

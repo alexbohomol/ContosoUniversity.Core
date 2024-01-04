@@ -32,7 +32,9 @@ public class DepartmentDeletedNotificationHandler : INotificationHandler<Departm
         foreach (Instructor instructor in instructors)
         {
             foreach (Guid courseId in notification.CourseIds)
+            {
                 instructor.ResetCourseAssignment(courseId);
+            }
 
             await _instructorsRepository.Save(instructor, cancellationToken);
         }

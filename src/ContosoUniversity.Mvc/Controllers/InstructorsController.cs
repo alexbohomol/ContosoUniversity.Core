@@ -125,7 +125,9 @@ public class InstructorsController : Controller
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
         if (id == null)
+        {
             return NotFound();
+        }
 
         Instructor instructor = await _mediator.Send(
             new GetInstructorDetailsQuery(id.Value),
@@ -152,7 +154,9 @@ public class InstructorsController : Controller
     public async Task<IActionResult> Create(CreateInstructorCommand command, CancellationToken cancellationToken)
     {
         if (command is null)
+        {
             return BadRequest();
+        }
 
         if (!ModelState.IsValid)
         {
@@ -172,7 +176,9 @@ public class InstructorsController : Controller
     public async Task<IActionResult> Edit(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
+        {
             return BadRequest();
+        }
 
         (Instructor instructor, Course[] courses) = await _mediator.Send(
             new GetInstructorEditFormQuery(id.Value),
@@ -188,7 +194,9 @@ public class InstructorsController : Controller
     public async Task<IActionResult> Edit(EditInstructorCommand command, CancellationToken cancellationToken)
     {
         if (command is null)
+        {
             return BadRequest();
+        }
 
         if (!ModelState.IsValid)
         {
@@ -208,7 +216,9 @@ public class InstructorsController : Controller
     public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
     {
         if (id == null)
+        {
             return NotFound();
+        }
 
         Instructor instructor = await _mediator.Send(
             new GetInstructorDetailsQuery(id.Value),

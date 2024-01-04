@@ -35,11 +35,15 @@ internal sealed class ReadOnlyRepository : EfRoRepository<Student>, IStudentsRoR
             DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
 
             if (reader.HasRows)
+            {
                 while (await reader.ReadAsync(cancellationToken))
+                {
                     groups.Add(
                         new EnrollmentDateGroup(
                             reader.GetDateTime(0),
                             reader.GetInt32(1)));
+                }
+            }
 
             await reader.DisposeAsync();
         }
