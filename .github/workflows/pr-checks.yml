@@ -197,4 +197,26 @@ jobs:
       run: |
         docker image list
         docker image inspect cuweb
-        
+      
+    - name: Docker run cuweb app container
+      run: |
+        docker run -d --rm --name cuweb \
+        --expose 10000:80 \
+        --expose 10001:443 \
+        --network ${{ steps.get_network.outputs.network }} \
+        --env ASPNETCORE_ENVIRONMENT="Development" \
+        --env ASPNETCORE_PORT="https://+:443;http://+:80" \
+        --env ASPNETCORE_URLS="https://+:443;http://+:80" \
+        --env ASPNETCORE_HTTPS_PORT=10001 \
+        --env CONTOSO_DB_HOST="db,1433" \
+        --volume ~/.aspnet/https:/root/.aspnet/https:ro \
+        --volume ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro \
+        cuweb
+
+    - name: Inspect cuweb container just started
+      run: |
+        docker container list
+        docker container inspect cuweb
+      
+    - name: Check site availability
+      run: curl https://localhost:10001
