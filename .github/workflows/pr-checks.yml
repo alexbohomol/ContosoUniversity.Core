@@ -216,5 +216,23 @@ jobs:
         docker container list
         docker container inspect cuweb
       
-    - name: Check site availability
-      run: curl https://localhost:10001
+    # - name: Check site availability
+    #   run: curl https://localhost:10001
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Build E2E Tests
+      working-directory: test/e2e/ContosoUniversity.AcceptanceTests
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+
+    - name: Ensure browsers are installed
+      run: pwsh test/e2e/ContosoUniversity.AcceptanceTests/bin/Debug/net6.0/playwright.ps1 install --with-deps
+      
+    - name: Run E2E Tests
+      working-directory: test/e2e/ContosoUniversity.AcceptanceTests
+      run: dotnet test --no-build --verbosity normal
