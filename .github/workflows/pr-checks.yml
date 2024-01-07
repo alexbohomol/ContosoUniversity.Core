@@ -133,34 +133,59 @@ jobs:
   e2e_testing:
     name: E2E Testing (Playwright)
     runs-on: ubuntu-latest
-    services:
-      cudb:
-        image: mcr.microsoft.com/mssql/server
-        env:
-          ACCEPT_EULA: "Y"
-          SA_PASSWORD: ${{ secrets.MSSQL_SA_PASSWORD }}
-        ports:
-          - 1433:1433
-        volumes:
-          - sqlvolume:/var/opt/mssql
-        options: >-
-          --name cudb
+    # services:
+    #   cudb:
+    #     image: mcr.microsoft.com/mssql/server
+    #     env:
+    #       ACCEPT_EULA: "Y"
+    #       SA_PASSWORD: ${{ secrets.MSSQL_SA_PASSWORD }}
+    #     ports:
+    #       - 1433:1433
+    #     volumes:
+    #       - sqlvolume:/var/opt/mssql
+    #     options: >-
+    #       --name cudb
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Resolve container network
-      id: get_network
-      run: |
-        echo "network=$(docker inspect cudb --format '{{range $key, $_ := .NetworkSettings.Networks}}{{$key}}{{end}}')" >> "$GITHUB_OUTPUT"
+    # - name: Resolve container network
+    #   id: get_network
+    #   run: |
+    #     echo "network=$(docker inspect cudb --format '{{range $key, $_ := .NetworkSettings.Networks}}{{$key}}{{end}}')" >> "$GITHUB_OUTPUT"
       
-    - name: Init container database
-      run: |
-        docker run --rm \
-        --entrypoint /opt/mssql-tools/bin/sqlcmd \
-        --workdir /scripts \
-        --volume "$(pwd)"/database:/scripts \
-        --network ${{ steps.get_network.outputs.network }} \
-        mcr.microsoft.com/mssql-tools \
-        -S cudb -U SA -P "${{ secrets.MSSQL_SA_PASSWORD }}" -i "db-init.sql"
-    
+    # - name: Init container database
+    #   run: |
+    #     docker run --rm \
+    #     --entrypoint /opt/mssql-tools/bin/sqlcmd \
+    #     --workdir /scripts \
+    #     --volume "$(pwd)"/database:/scripts \
+    #     --network ${{ steps.get_network.outputs.network }} \
+    #     mcr.microsoft.com/mssql-tools \
+    #     -S cudb -U SA -P "${{ secrets.MSSQL_SA_PASSWORD }}" -i "db-init.sql"
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Check for the available dev certificate
+      run: dotnet dev-certs https --check
+      
+    - name: Clean up dev certificates
+      run: sudo dotnet dev-certs https --clean
+      
+    - name: Create dev certificate
+      run: dotnet dev-certs https -ep ~/.aspnet/https/ContosoUniversity.Mvc.pfx -p ${{ secrets.CERTIFICATE_PASS }}
+      
+    - name: Trust dev certificate
+      run: dotnet dev-certs https --trust
+      
+    - name: Set secret for certificate password
+      run: dotnet user-secrets --project 'src/ContosoUniversity.Mvc' set 'Kestrel:Certificates:Development:Password' '${{ secrets.CERTIFICATE_PASS }}'
+      
+    - name: Inspect certificate storage
+      run: ls -alR ~/.aspnet
+      
+    - name: Inspect secrets storage
+      run: ls -alR ~/.microsoft
