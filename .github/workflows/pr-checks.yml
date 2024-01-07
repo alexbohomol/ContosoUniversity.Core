@@ -99,7 +99,7 @@ jobs:
     - name: Resolve container network
       id: get_network
       run: |
-        echo "::set-output name=network::$(docker inspect cudb --format '{{range $key, $_ := .NetworkSettings.Networks}}{{$key}}{{end}}')"
+        echo "network=$(docker inspect cudb --format '{{range $key, $_ := .NetworkSettings.Networks}}{{$key}}{{end}}')" >> "$GITHUB_OUTPUT"
         
     - name: Init container database
       run: |
