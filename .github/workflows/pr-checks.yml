@@ -200,9 +200,7 @@ jobs:
       
     - name: Docker run cuweb app container
       run: |
-        docker run -d --rm --name cuweb \
-        --expose 10000:80 \
-        --expose 10001:443 \
+        docker run -d --rm --name cuweb -p 10000:80 -p 10001:443 \
         --network ${{ steps.get_network.outputs.network }} \
         --env ASPNETCORE_ENVIRONMENT="Development" \
         --env ASPNETCORE_PORT="https://+:443;http://+:80" \
