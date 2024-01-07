@@ -81,7 +81,7 @@ jobs:
         image: mcr.microsoft.com/mssql/server
         env:
           ACCEPT_EULA: "Y"
-          SA_PASSWORD: <YourStrong!Passw0rd>
+          SA_PASSWORD: ${{ secrets.MSSQL_SA_PASSWORD }}
         ports:
           - 1433:1433
         volumes:
@@ -112,7 +112,7 @@ jobs:
         --volume "$(pwd)"/database:/scripts \
         --network ${{ steps.get_network.outputs.network }} \
         mcr.microsoft.com/mssql-tools \
-        -S cudb -U SA -P "<YourStrong!Passw0rd>" -i "db-init.sql"
+        -S cudb -U SA -P "${{ secrets.MSSQL_SA_PASSWORD }}" -i "db-init.sql"
       
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -138,7 +138,7 @@ jobs:
         image: mcr.microsoft.com/mssql/server
         env:
           ACCEPT_EULA: "Y"
-          SA_PASSWORD: <YourStrong!Passw0rd>
+          SA_PASSWORD: ${{ secrets.MSSQL_SA_PASSWORD }}
         ports:
           - 1433:1433
         volumes:
@@ -162,5 +162,5 @@ jobs:
         --volume "$(pwd)"/database:/scripts \
         --network ${{ steps.get_network.outputs.network }} \
         mcr.microsoft.com/mssql-tools \
-        -S cudb -U SA -P "<YourStrong!Passw0rd>" -i "db-init.sql"
+        -S cudb -U SA -P "${{ secrets.MSSQL_SA_PASSWORD }}" -i "db-init.sql"
     
