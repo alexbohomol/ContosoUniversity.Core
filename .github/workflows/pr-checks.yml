@@ -130,8 +130,34 @@ jobs:
   e2e_testing:
     name: E2E Testing (Playwright)
     runs-on: ubuntu-latest
+    services:
+      cudb:
+        image: mcr.microsoft.com/mssql/server
+        env:
+          ACCEPT_EULA: "Y"
+          SA_PASSWORD: <YourStrong!Passw0rd>
+        ports:
+          - 1433:1433
+        volumes:
+          - sqlvolume:/var/opt/mssql
+        options: >-
+          --name cudb
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    # a lot of fun stuff...
+    - name: Resolve container network
+      id: get_network
+      run: |
+        echo "network=$(docker inspect cudb --format '{{range $key, $_ := .NetworkSettings.Networks}}{{$key}}{{end}}')" >> "$GITHUB_OUTPUT"
+      
+    - name: Init container database
+      run: |
+        docker run --rm \
+        --entrypoint /opt/mssql-tools/bin/sqlcmd \
+        --workdir /scripts \
+        --volume "$(pwd)"/database:/scripts \
+        --network ${{ steps.get_network.outputs.network }} \
+        mcr.microsoft.com/mssql-tools \
+        -S cudb -U SA -P "<YourStrong!Passw0rd>" -i "db-init.sql"
+    
