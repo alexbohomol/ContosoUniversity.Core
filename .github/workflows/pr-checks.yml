@@ -133,6 +133,7 @@ jobs:
   e2e_testing:
     name: E2E Testing (Playwright)
     runs-on: ubuntu-latest
+    container: ubuntu
     services:
       cudb:
         image: mcr.microsoft.com/mssql/server
