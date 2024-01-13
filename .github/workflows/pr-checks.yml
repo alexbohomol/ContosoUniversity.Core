@@ -133,7 +133,7 @@ jobs:
   e2e_testing:
     name: E2E Testing (Playwright)
     runs-on: ubuntu-latest
-    container: ubuntu
+    # container: ubuntu
     services:
       cudb:
         image: mcr.microsoft.com/mssql/server
@@ -221,7 +221,7 @@ jobs:
       run: apt-get update; apt-get install -y curl
       
     - name: Check site availability
-      run: curl https://localhost:10001
+      run: curl https://127.0.0.1:10001
     
     # - name: Setup .NET
     #   uses: actions/setup-dotnet@v3
