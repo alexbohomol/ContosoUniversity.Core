@@ -134,6 +134,9 @@ jobs:
     name: Build local `cuweb` image
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Docker build cuweb
         working-directory: src/ContosoUniversity.Mvc
         run: docker build -t cuweb .
