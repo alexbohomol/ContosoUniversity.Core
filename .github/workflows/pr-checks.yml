@@ -155,8 +155,8 @@ jobs:
           context: .
           file: src/ContosoUniversity.Mvc/Dockerfile
           push: true
-          # tags: ${{ steps.meta.outputs.tags }}
-          # labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
   e2e_testing:
     name: E2E Testing (Playwright)
