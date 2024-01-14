@@ -160,10 +160,23 @@ jobs:
 
   e2e_testing:
     name: E2E Testing (Playwright)
-    if: false
     runs-on: ubuntu-latest
     needs: build_push_sut_image
     services:
+      cuweb:
+        image: alexbogomol/cuweb:pr-64
+        env:
+          ASPNETCORE_ENVIRONMENT: "Development"
+          ASPNETCORE_PORT: "https://+:443;http://+:80"
+          ASPNETCORE_URLS: "https://+:443;http://+:80"
+          ASPNETCORE_HTTPS_PORT: 10001
+          CONTOSO_DB_HOST: "db,1433"
+        ports:
+          - 10000:80
+          - 10001:443
+        volumes:
+          - ~/.aspnet/https:/root/.aspnet/https:ro
+          - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
       cudb:
         image: mcr.microsoft.com/mssql/server
         env:
@@ -228,18 +241,18 @@ jobs:
         docker image list
         docker image inspect cuweb
       
-    - name: Docker run cuweb app container
-      run: |
-        docker run -d --rm --name cuweb -p 10000:80 -p 10001:443 \
-        --network ${{ steps.get_network.outputs.network }} \
-        --env ASPNETCORE_ENVIRONMENT="Development" \
-        --env ASPNETCORE_PORT="https://+:443;http://+:80" \
-        --env ASPNETCORE_URLS="https://+:443;http://+:80" \
-        --env ASPNETCORE_HTTPS_PORT=10001 \
-        --env CONTOSO_DB_HOST="db,1433" \
-        --volume ~/.aspnet/https:/root/.aspnet/https:ro \
-        --volume ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro \
-        cuweb
+    # - name: Docker run cuweb app container
+    #   run: |
+    #     docker run -d --rm --name cuweb -p 10000:80 -p 10001:443 \
+    #     --network ${{ steps.get_network.outputs.network }} \
+    #     --env ASPNETCORE_ENVIRONMENT="Development" \
+    #     --env ASPNETCORE_PORT="https://+:443;http://+:80" \
+    #     --env ASPNETCORE_URLS="https://+:443;http://+:80" \
+    #     --env ASPNETCORE_HTTPS_PORT=10001 \
+    #     --env CONTOSO_DB_HOST="db,1433" \
+    #     --volume ~/.aspnet/https:/root/.aspnet/https:ro \
+    #     --volume ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro \
+    #     cuweb
 
     - name: Inspect cuweb container just started
       run: |
