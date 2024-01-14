@@ -130,10 +130,23 @@ jobs:
       run: |
         dotnet test --no-build --verbosity normal
       
+  build_sut_image:
+    name: Build local `cuweb` image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Docker build cuweb
+        working-directory: src/ContosoUniversity.Mvc
+        run: docker build -t cuweb .
+
+      - name: Inspect cuweb image just built
+        run: |
+          docker image list
+          docker image inspect cuweb
+
   e2e_testing:
     name: E2E Testing (Playwright)
     runs-on: ubuntu-latest
-    # container: ubuntu
+    needs: build_sut_image
     services:
       cudb:
         image: mcr.microsoft.com/mssql/server
@@ -191,8 +204,8 @@ jobs:
     - name: Inspect secrets storage
       run: ls -alR ~/.microsoft
 
-    - name: Docker build cuweb
-      run: docker build -t cuweb -f src/ContosoUniversity.Mvc/Dockerfile .
+    # - name: Docker build cuweb
+    #   run: docker build -t cuweb -f src/ContosoUniversity.Mvc/Dockerfile .
 
     - name: Inspect cuweb image just built
       run: |
@@ -224,12 +237,7 @@ jobs:
       
     - name: Check site availability
       run: curl https://127.0.0.1:10001
-    
-    # - name: Setup .NET
-    #   uses: actions/setup-dotnet@v3
-    #   with:
-    #     dotnet-version: 6.0.x
-
+      
     # - name: Build E2E Tests
     #   working-directory: test/e2e/ContosoUniversity.AcceptanceTests
     #   run: |
