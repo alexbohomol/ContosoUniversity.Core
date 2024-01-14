@@ -176,7 +176,7 @@ jobs:
           - 10001:443
         volumes:
           - ${{ github.workspace }}/.aspnet/https:/root/.aspnet/https:ro
-          - ${{ github.workspace }}/$HOME/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+          - ${{ github.workspace }}/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
       cudb:
         image: mcr.microsoft.com/mssql/server
         env:
