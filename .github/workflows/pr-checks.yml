@@ -175,8 +175,8 @@ jobs:
           - 10000:80
           - 10001:443
         volumes:
-          - ~/.aspnet/https:/root/.aspnet/https:ro
-          - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+          - $HOME/.aspnet/https:/root/.aspnet/https:ro
+          - $HOME/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
       cudb:
         image: mcr.microsoft.com/mssql/server
         env:
