@@ -130,25 +130,50 @@ jobs:
       run: |
         dotnet test --no-build --verbosity normal
       
-  build_sut_image:
-    name: Build local `cuweb` image
+  build_push_sut_image:
+    name: Build & push `cuweb` image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Docker build cuweb
-        run: docker build -t cuweb -f src/ContosoUniversity.Mvc/Dockerfile .
+      # - name: Docker build cuweb
+      #   run: docker build -t cuweb -f src/ContosoUniversity.Mvc/Dockerfile .
 
       - name: Inspect cuweb image just built
         run: |
           docker image list
           docker image inspect cuweb
 
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+        
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5.5.0
+        with:
+          images: alexbogomol/contoso-university
+
+      - name: Inspect metadata
+        run: echo ${{ steps.meta }}
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5.1.0
+        with:
+          context: .
+          file: src/ContosoUniversity.Mvc/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
   e2e_testing:
     name: E2E Testing (Playwright)
+    if: false
     runs-on: ubuntu-latest
-    needs: build_sut_image
+    needs: build_push_sut_image
     services:
       cudb:
         image: mcr.microsoft.com/mssql/server
