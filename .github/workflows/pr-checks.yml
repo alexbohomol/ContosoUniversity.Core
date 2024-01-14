@@ -143,14 +143,14 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
         
-      # - name: Extract metadata (tags, labels) for Docker
-      #   id: meta
-      #   uses: docker/metadata-action@v5.5.0
-      #   with:
-      #     images: alexbogomol/cuweb
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5.5.0
+        with:
+          images: alexbogomol/cuweb
 
-      # - name: Inspect metadata
-      #   run: echo ${{ steps.meta }}
+      - name: Inspect metadata
+        run: echo ${{ toJson(steps.meta) }}
       
       - name: Build and push Docker image
         uses: docker/build-push-action@v5.1.0
@@ -158,9 +158,10 @@ jobs:
           context: .
           file: src/ContosoUniversity.Mvc/Dockerfile
           push: true
-          tags: alexbogomol/cuweb:ci-${ github.sha:7 }
+          tags: |
+            type=sha,enable=true,priority=100,prefix=sha-,suffix=,format=short
           # tags: ${{ steps.meta.outputs.tags }}
-          # labels: ${{ steps.meta.outputs.labels }}
+          labels: ${{ steps.meta.outputs.labels }}
 
   e2e_testing:
     name: E2E Testing (Playwright)
