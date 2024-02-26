@@ -73,8 +73,6 @@ jobs:
   integration_testing:
     name: Integration Testing
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright/dotnet:v1.41.1-focal
     services:
       cudb:
         image: mcr.microsoft.com/mssql/server
@@ -125,6 +123,8 @@ jobs:
   e2e_testing_in_process:
     name: E2E Testing | In-Process
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright/dotnet:v1.41.1-focal
     services:
       cudb:
         image: mcr.microsoft.com/mssql/server
