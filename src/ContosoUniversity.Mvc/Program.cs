@@ -2,7 +2,6 @@ namespace ContosoUniversity.Mvc;
 
 using System;
 using System.Globalization;
-using System.Threading.Tasks;
 
 using Application;
 
@@ -18,6 +17,7 @@ using FluentValidation.AspNetCore;
 using MediatR;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Data.SqlClient;
@@ -27,12 +27,35 @@ using Microsoft.Extensions.Hosting;
 
 public class Program
 {
-    public static async Task Main(string[] args)
+    public static void Main(string[] args)
     {
-        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+        CreateHostBuilder(args).Build().Run();
+    }
 
-        IServiceCollection services = builder.Services;
+    public static IHostBuilder CreateHostBuilder(string[] args, string[] hostUrls = null) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
 
+                if (hostUrls != null)
+                {
+                    webBuilder.UseUrls(hostUrls);
+                }
+            });
+}
+
+internal class Startup
+{
+    private IConfiguration Configuration { get; }
+
+    public Startup(IConfiguration configuration)
+    {
+        Configuration = configuration;
+    }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
         services.Configure<CookiePolicyOptions>(options =>
         {
             // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -40,10 +63,8 @@ public class Program
             options.MinimumSameSitePolicy = SameSiteMode.None;
         });
 
-        ConfigurationManager configuration = builder.Configuration;
-
         SqlConnectionStringBuilder SqlBuilderFor(string connectionStringName) =>
-            new(configuration.GetConnectionString(connectionStringName))
+            new(Configuration.GetConnectionString(connectionStringName))
             {
                 DataSource = Environment.GetEnvironmentVariable("CONTOSO_DB_HOST") ?? "localhost,1433"
             };
@@ -64,10 +85,11 @@ public class Program
             });
 
         services.AddMediatR(typeof(IApplicationLayerMarker).Assembly);
+    }
 
-        WebApplication app = builder.Build();
-
-        if (app.Environment.IsDevelopment())
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
         }
@@ -105,15 +127,5 @@ public class Program
                 "default",
                 "{controller=Home}/{action=Index}/{id?}");
         });
-
-        /*
-        bool isDbAvailable = await services.EnsureCoursesSchemaIsAvailable()
-                             && await services.EnsureStudentsSchemaIsAvailable()
-                             && await services.EnsureDepartmentsSchemaIsAvailable();
-
-        if (isDbAvailable)
-        */
-
-        await app.RunAsync();
     }
 }

@@ -9,7 +9,7 @@ using Microsoft.Playwright;
 using TechTalk.SpecFlow;
 
 [Binding]
-public class TestHooks
+public class PlaywrightHooks
 {
     [BeforeTestRun]
     public static async Task BeforeTestRun(IObjectContainer container)
