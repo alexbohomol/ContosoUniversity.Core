@@ -123,8 +123,8 @@ jobs:
   e2e_testing_in_process:
     name: E2E Testing | In-Process
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright/dotnet:v1.41.1-focal
+    # container:
+    #   image: mcr.microsoft.com/playwright/dotnet:v1.41.1-focal
     services:
       cudb:
         image: mcr.microsoft.com/mssql/server
@@ -168,9 +168,12 @@ jobs:
         dotnet build --no-restore
       
     - name: Run Acceptance Tests
-      working-directory: test/e2e/ContosoUniversity.AcceptanceTests
-      run: |
-        dotnet test --no-build --verbosity normal
+      uses: docker://mcr.microsoft.com/playwright/dotnet:v1.41.1-focal
+      # working-directory: test/e2e/ContosoUniversity.AcceptanceTests
+      with:
+        args: |
+          ls -alR
+          dotnet test --no-build --verbosity normal
       
   build_push_sut_image:
     if: false
