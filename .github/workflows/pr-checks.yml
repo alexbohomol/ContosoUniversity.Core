@@ -167,12 +167,20 @@ jobs:
         dotnet restore
         dotnet build --no-restore
       
+    # - name: Run Acceptance Tests
+    #   uses: docker://mcr.microsoft.com/playwright/dotnet:v1.41.1-focal
+    #   with:
+    #     args: dotnet test --no-build --verbosity normal
+    #     working-directory: test/e2e/ContosoUniversity.AcceptanceTests
+
+    - name: Ensure browsers are installed
+      working-directory: test/e2e/ContosoUniversity.AcceptanceTests
+      run: pwsh bin/Debug/net6.0/playwright.ps1 install --with-deps
+
     - name: Run Acceptance Tests
-      uses: docker://mcr.microsoft.com/playwright/dotnet:v1.41.1-focal
-      with:
-        args: dotnet test --no-build --verbosity normal
-        working-directory: test/e2e/ContosoUniversity.AcceptanceTests
-      
+      working-directory: test/e2e/ContosoUniversity.AcceptanceTests
+      run: |
+        dotnet test --no-build --verbosity normal
       
   build_push_sut_image:
     if: false
