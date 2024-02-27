@@ -169,9 +169,10 @@ jobs:
       
     - name: Run Acceptance Tests
       uses: docker://mcr.microsoft.com/playwright/dotnet:v1.41.1-focal
-      # working-directory: test/e2e/ContosoUniversity.AcceptanceTests
       with:
-        args: dotnet test test/e2e/ContosoUniversity.AcceptanceTests/ContosoUniversity.AcceptanceTests.csproj --no-build --verbosity normal
+        args: dotnet test --no-build --verbosity normal
+        working-directory: test/e2e/ContosoUniversity.AcceptanceTests
+      
       
   build_push_sut_image:
     if: false
