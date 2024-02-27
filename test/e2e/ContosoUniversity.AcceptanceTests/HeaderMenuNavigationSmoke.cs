@@ -12,7 +12,7 @@ using NUnit.Framework;
 [Parallelizable(ParallelScope.Self)]
 public class HeaderMenuNavigationSmoke : PageTest
 {
-    private const string SiteUrl = "https://localhost:10001";
+    private const string SiteUrl = "http://localhost:10000";
 
     [Test]
     [TestCase($"{SiteUrl}/", "Home Page - Contoso University")]
