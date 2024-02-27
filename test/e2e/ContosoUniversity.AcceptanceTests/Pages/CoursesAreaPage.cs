@@ -14,7 +14,7 @@ public class CoursesAreaPage : PageObject
     {
     }
 
-    protected override string PagePath => "https://localhost:10001/Courses";
+    protected override string PagePath => "http://localhost:10000/Courses";
 
     public async Task<CourseTableRowModel[]> ScrapRenderedCoursesList()
     {

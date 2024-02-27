@@ -14,7 +14,7 @@ public class DepartmentsAreaPage : PageObject
     {
     }
 
-    protected override string PagePath => "https://localhost:10001/Departments";
+    protected override string PagePath => "http://localhost:10000/Departments";
 
     public async Task<DepartmentTableRowModel[]> ScrapRenderedDepartmentsList()
     {

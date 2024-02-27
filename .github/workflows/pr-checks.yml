@@ -161,26 +161,26 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
       
-    - name: Check for the available dev certificate
-      run: dotnet dev-certs https --check
+    # - name: Check for the available dev certificate
+    #   run: dotnet dev-certs https --check
       
-    - name: Clean up dev certificates
-      run: sudo dotnet dev-certs https --clean
+    # - name: Clean up dev certificates
+    #   run: sudo dotnet dev-certs https --clean
       
-    - name: Create dev certificate
-      run: dotnet dev-certs https -ep ~/.aspnet/https/ContosoUniversity.Mvc.pfx -p ${{ secrets.CERTIFICATE_PASS }}
+    # - name: Create dev certificate
+    #   run: dotnet dev-certs https -ep ~/.aspnet/https/ContosoUniversity.Mvc.pfx -p ${{ secrets.CERTIFICATE_PASS }}
       
-    - name: Trust dev certificate
-      run: dotnet dev-certs https --trust
+    # - name: Trust dev certificate
+    #   run: dotnet dev-certs https --trust
       
-    - name: Set secret for certificate password
-      run: dotnet user-secrets --project 'src/ContosoUniversity.Mvc' set 'Kestrel:Certificates:Development:Password' '${{ secrets.CERTIFICATE_PASS }}'
+    # - name: Set secret for certificate password
+    #   run: dotnet user-secrets --project 'src/ContosoUniversity.Mvc' set 'Kestrel:Certificates:Development:Password' '${{ secrets.CERTIFICATE_PASS }}'
       
-    - name: Inspect certificate storage
-      run: ls -alR ~/.aspnet
+    # - name: Inspect certificate storage
+    #   run: ls -alR ~/.aspnet
       
-    - name: Inspect secrets storage
-      run: ls -alR ~/.microsoft
+    # - name: Inspect secrets storage
+    #   run: ls -alR ~/.microsoft
       
     - name: Build Acceptance Tests
       working-directory: test/e2e/ContosoUniversity.AcceptanceTests
