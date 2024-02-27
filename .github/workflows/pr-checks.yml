@@ -156,6 +156,11 @@ jobs:
         mcr.microsoft.com/mssql-tools \
         -S cudb -U SA -P "${{ secrets.MSSQL_SA_PASSWORD }}" -i "db-init.sql"
       
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+      
     - name: Check for the available dev certificate
       run: dotnet dev-certs https --check
       
@@ -176,11 +181,6 @@ jobs:
       
     - name: Inspect secrets storage
       run: ls -alR ~/.microsoft
-      
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
       
     - name: Build Acceptance Tests
       working-directory: test/e2e/ContosoUniversity.AcceptanceTests
