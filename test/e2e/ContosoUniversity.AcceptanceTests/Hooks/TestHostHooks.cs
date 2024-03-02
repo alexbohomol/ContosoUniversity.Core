@@ -1,5 +1,8 @@
 namespace ContosoUniversity.AcceptanceTests.Hooks;
 
+using System;
+using System.IO;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
@@ -16,7 +19,7 @@ public class TestHostHooks
     public static void BeforeTestRun(IConfiguration configuration)
     {
         _host = Program.CreateHostBuilder(null, configuration["ApplicationUrls"].Split(';'))
-            //.UseContentRoot(Path.Combine(Environment.CurrentDirectory, "../../../../../../src/ContosoUniversity.Mvc"))
+            .UseContentRoot(Path.Combine(Environment.CurrentDirectory, "../../../../../../src/ContosoUniversity.Mvc"))
             .Build();
 
         _host.Start();
