@@ -1,7 +1,5 @@
 namespace ContosoUniversity.AcceptanceTests.Hooks;
 
-using BoDi;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 

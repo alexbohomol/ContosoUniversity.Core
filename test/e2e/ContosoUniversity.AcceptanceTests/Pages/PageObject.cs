@@ -3,8 +3,6 @@ namespace ContosoUniversity.AcceptanceTests.Pages;
 using System;
 using System.Threading.Tasks;
 
-using BoDi;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 
