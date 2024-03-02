@@ -14,7 +14,7 @@ public abstract class PageObject
         Configuration = configuration;
     }
 
-    protected string PageBaseUrl => Configuration["PageBaseUrl:Https"];
+    protected string PageBaseUrl => Configuration["PageBaseUrl:Http"];
     protected abstract string PagePath { get; }
     protected IPage Page { get; set; }
     private IBrowser Browser { get; }
