@@ -26,7 +26,7 @@ public class HeaderMenuNavigationSmoke : PageTest
     [TestCase("/Departments", "Departments - Contoso University")]
     public async Task Smoke_User_IsAbleTo_NavigateHeaderMenu(string pathUrl, string expectedTitle)
     {
-        var pageUrl = $"{Configuration["PageBaseUrl:Http"]}{pathUrl}";
+        var pageUrl = $"{Configuration["PageBaseUrl:Https"]}{pathUrl}";
         IResponse gotoAsync = await Page.GotoAsync(pageUrl);
         string title = await Page.TitleAsync();
 
