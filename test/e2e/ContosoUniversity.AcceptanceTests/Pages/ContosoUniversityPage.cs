@@ -2,15 +2,16 @@ namespace ContosoUniversity.AcceptanceTests.Pages;
 
 using System.Threading.Tasks;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 
 public class ContosoUniversityPage : PageObject
 {
-    public ContosoUniversityPage(IBrowser browser) : base(browser)
+    public ContosoUniversityPage(IBrowser browser, IConfiguration configuration) : base(browser, configuration)
     {
     }
 
-    protected override string PagePath => "https://localhost:10001";
+    protected override string PagePath => PageBaseUrl;
 
     public async Task ClickBrandLink()
     {

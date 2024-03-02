@@ -4,17 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 
 using Models;
 
 public class InstructorsAreaPage : PageObject
 {
-    public InstructorsAreaPage(IBrowser browser) : base(browser)
+    public InstructorsAreaPage(IBrowser browser, IConfiguration configuration) : base(browser, configuration)
     {
     }
 
-    protected override string PagePath => "https://localhost:10001/Instructors";
+    protected override string PagePath => $"{PageBaseUrl}/Instructors";
 
     public async Task<InstructorTableRowModel[]> ScrapRenderedInstructorsList()
     {

@@ -4,17 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 
 using Models;
 
 public class CoursesAreaPage : PageObject
 {
-    public CoursesAreaPage(IBrowser browser) : base(browser)
+    public CoursesAreaPage(IBrowser browser, IConfiguration configuration) : base(browser, configuration)
     {
     }
 
-    protected override string PagePath => "https://localhost:10001/Courses";
+    protected override string PagePath => $"{PageBaseUrl}/Courses";
 
     public async Task<CourseTableRowModel[]> ScrapRenderedCoursesList()
     {
@@ -77,7 +78,7 @@ public class CoursesAreaPage : PageObject
             await Page.EvalOnSelectorAsync<string>(
                 "#DepartmentId",
                 @"e => {
-                    var opts = e.options; 
+                    var opts = e.options;
                     return opts[opts.selectedIndex].text;
                 }")
         );
