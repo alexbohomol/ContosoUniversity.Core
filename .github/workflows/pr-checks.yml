@@ -123,8 +123,6 @@ jobs:
   e2e_testing_in_process:
     name: E2E Testing | In-Process
     runs-on: ubuntu-latest
-    # container:
-    #   image: mcr.microsoft.com/playwright/dotnet:v1.41.1-focal
     services:
       cudb:
         image: mcr.microsoft.com/mssql/server
@@ -161,39 +159,12 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
       
-    # - name: Check for the available dev certificate
-    #   run: dotnet dev-certs https --check
-      
-    # - name: Clean up dev certificates
-    #   run: sudo dotnet dev-certs https --clean
-      
-    # - name: Create dev certificate
-    #   run: dotnet dev-certs https -ep ~/.aspnet/https/ContosoUniversity.Mvc.pfx -p ${{ secrets.CERTIFICATE_PASS }}
-      
-    # - name: Trust dev certificate
-    #   run: dotnet dev-certs https --trust
-      
-    # - name: Set secret for certificate password
-    #   run: dotnet user-secrets --project 'src/ContosoUniversity.Mvc' set 'Kestrel:Certificates:Development:Password' '${{ secrets.CERTIFICATE_PASS }}'
-      
-    # - name: Inspect certificate storage
-    #   run: ls -alR ~/.aspnet
-      
-    # - name: Inspect secrets storage
-    #   run: ls -alR ~/.microsoft
-      
     - name: Build Acceptance Tests
       working-directory: test/e2e/ContosoUniversity.AcceptanceTests
       run: |
         dotnet restore
         dotnet build --no-restore
       
-    # - name: Run Acceptance Tests
-    #   uses: docker://mcr.microsoft.com/playwright/dotnet:v1.41.1-focal
-    #   with:
-    #     args: dotnet test --no-build --verbosity normal
-    #     working-directory: test/e2e/ContosoUniversity.AcceptanceTests
-
     - name: Ensure browsers are installed
       working-directory: test/e2e/ContosoUniversity.AcceptanceTests
       run: pwsh bin/Debug/net6.0/playwright.ps1 install --with-deps
@@ -202,155 +173,3 @@ jobs:
       working-directory: test/e2e/ContosoUniversity.AcceptanceTests
       run: |
         dotnet test --no-build --verbosity normal
-      
-  build_push_sut_image:
-    if: false
-    name: Build & push `cuweb` image
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-        
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5.5.0
-        with:
-          images: alexbogomol/cuweb
-      
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5.1.0
-        with:
-          context: .
-          file: src/ContosoUniversity.Mvc/Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-  e2e_testing_isolated:
-    if: false
-    name: E2E Testing | Isolated
-    runs-on: ubuntu-latest
-    needs: build_push_sut_image
-    services:
-      cuweb:
-        image: alexbogomol/cuweb:pr-64
-        env:
-          ASPNETCORE_ENVIRONMENT: "Development"
-          ASPNETCORE_PORT: "https://+:443;http://+:80"
-          ASPNETCORE_URLS: "https://+:443;http://+:80"
-          ASPNETCORE_HTTPS_PORT: 10001
-          CONTOSO_DB_HOST: "db,1433"
-        ports:
-          - 10000:80
-          - 10001:443
-        volumes:
-          - ${{ github.workspace }}/.aspnet/https:/root/.aspnet/https:ro
-          - ${{ github.workspace }}/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
-      cudb:
-        image: mcr.microsoft.com/mssql/server
-        env:
-          ACCEPT_EULA: "Y"
-          SA_PASSWORD: ${{ secrets.MSSQL_SA_PASSWORD }}
-        ports:
-          - 1433:1433
-        volumes:
-          - sqlvolume:/var/opt/mssql
-        options: >-
-          --name cudb
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Resolve container network
-      id: get_network
-      run: |
-        echo "network=$(docker inspect cudb --format '{{range $key, $_ := .NetworkSettings.Networks}}{{$key}}{{end}}')" >> "$GITHUB_OUTPUT"
-      
-    - name: Init container database
-      run: |
-        docker run --rm \
-        --entrypoint /opt/mssql-tools/bin/sqlcmd \
-        --workdir /scripts \
-        --volume "$(pwd)"/database:/scripts \
-        --network ${{ steps.get_network.outputs.network }} \
-        mcr.microsoft.com/mssql-tools \
-        -S cudb -U SA -P "${{ secrets.MSSQL_SA_PASSWORD }}" -i "db-init.sql"
-      
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-        
-    - name: Check for the available dev certificate
-      run: dotnet dev-certs https --check
-      
-    - name: Clean up dev certificates
-      run: sudo dotnet dev-certs https --clean
-      
-    - name: Create dev certificate
-      run: dotnet dev-certs https -ep ~/.aspnet/https/ContosoUniversity.Mvc.pfx -p ${{ secrets.CERTIFICATE_PASS }}
-      
-    - name: Trust dev certificate
-      run: dotnet dev-certs https --trust
-      
-    - name: Set secret for certificate password
-      run: dotnet user-secrets --project 'src/ContosoUniversity.Mvc' set 'Kestrel:Certificates:Development:Password' '${{ secrets.CERTIFICATE_PASS }}'
-      
-    - name: Inspect certificate storage
-      run: ls -alR ~/.aspnet
-      
-    - name: Inspect secrets storage
-      run: ls -alR ~/.microsoft
-
-    # - name: Docker build cuweb
-    #   run: docker build -t cuweb -f src/ContosoUniversity.Mvc/Dockerfile .
-
-    - name: Inspect cuweb image just built
-      run: |
-        docker image list
-        docker image inspect cuweb
-      
-    # - name: Docker run cuweb app container
-    #   run: |
-    #     docker run -d --rm --name cuweb -p 10000:80 -p 10001:443 \
-    #     --network ${{ steps.get_network.outputs.network }} \
-    #     --env ASPNETCORE_ENVIRONMENT="Development" \
-    #     --env ASPNETCORE_PORT="https://+:443;http://+:80" \
-    #     --env ASPNETCORE_URLS="https://+:443;http://+:80" \
-    #     --env ASPNETCORE_HTTPS_PORT=10001 \
-    #     --env CONTOSO_DB_HOST="db,1433" \
-    #     --volume ~/.aspnet/https:/root/.aspnet/https:ro \
-    #     --volume ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro \
-    #     cuweb
-
-    - name: Inspect cuweb container just started
-      run: |
-        docker container list
-        docker container inspect cuweb
-
-    - name: Update curl
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y curl
-      
-    - name: Check site availability
-      run: curl https://127.0.0.1:10001
-      
-    # - name: Build E2E Tests
-    #   working-directory: test/e2e/ContosoUniversity.AcceptanceTests
-    #   run: |
-    #     dotnet restore
-    #     dotnet build --no-restore
-
-    # - name: Ensure browsers are installed
-    #   run: pwsh test/e2e/ContosoUniversity.AcceptanceTests/bin/Debug/net6.0/playwright.ps1 install --with-deps
-      
-    # - name: Run E2E Tests
-    #   working-directory: test/e2e/ContosoUniversity.AcceptanceTests
-    #   run: dotnet test --no-build --verbosity normal
