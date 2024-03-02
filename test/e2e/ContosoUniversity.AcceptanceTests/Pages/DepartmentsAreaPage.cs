@@ -4,17 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 
 using Models;
 
 public class DepartmentsAreaPage : PageObject
 {
-    public DepartmentsAreaPage(IBrowser browser) : base(browser)
+    public DepartmentsAreaPage(IBrowser browser, IConfiguration configuration) : base(browser, configuration)
     {
     }
 
-    protected override string PagePath => "http://localhost:10000/Departments";
+    protected override string PagePath => $"{PageBaseUrl}/Departments";
 
     public async Task<DepartmentTableRowModel[]> ScrapRenderedDepartmentsList()
     {
@@ -73,7 +74,7 @@ public class DepartmentsAreaPage : PageObject
             await Page.EvalOnSelectorAsync<string>(
                 "#AdministratorId",
                 @"e => {
-                    var opts = e.options; 
+                    var opts = e.options;
                     return opts[opts.selectedIndex].text;
                 }")
         );

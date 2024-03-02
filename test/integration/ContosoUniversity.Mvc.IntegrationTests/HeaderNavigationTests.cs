@@ -7,16 +7,21 @@ using System.Threading.Tasks;
 using FluentAssertions;
 
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 
 using Xunit;
 
 public class HeaderNavigationTests : IClassFixture<WebApplicationFactory<Program>>
 {
+    private static readonly IConfiguration Configuration = new ConfigurationBuilder()
+        .AddJsonFile($"testsettings.json", optional: false)
+        .Build();
+
     private readonly HttpClient _httpClient;
 
     public HeaderNavigationTests(WebApplicationFactory<Program> factory)
     {
-        factory.ClientOptions.BaseAddress = new Uri("https://localhost:10001");
+        factory.ClientOptions.BaseAddress = new Uri(Configuration["PageBaseUrl:Https"]);
         _httpClient = factory.CreateClient();
     }
 

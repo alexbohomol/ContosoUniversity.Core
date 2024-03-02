@@ -1,5 +1,8 @@
 namespace ContosoUniversity.AcceptanceTests.Hooks;
 
+using BoDi;
+
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 using Mvc;
@@ -10,12 +13,11 @@ using TechTalk.SpecFlow;
 public class TestHostHooks
 {
     private static IHost _host;
-    private const string ApplicationUrls = "https://localhost:10001;http://localhost:10000";
 
-    [BeforeTestRun]
-    public static void BeforeTestRun()
+    [BeforeTestRun(Order = 1)]
+    public static void BeforeTestRun(IConfiguration configuration)
     {
-        _host = Program.CreateHostBuilder(null, ApplicationUrls.Split(';'))
+        _host = Program.CreateHostBuilder(null, configuration["ApplicationUrls"].Split(';'))
             //.UseContentRoot(Path.Combine(Environment.CurrentDirectory, "../../../../../../src/ContosoUniversity.Mvc"))
             .Build();
 
