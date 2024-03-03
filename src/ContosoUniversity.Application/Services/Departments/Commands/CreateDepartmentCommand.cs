@@ -18,7 +18,7 @@ public class CreateDepartmentCommand : IRequest
     public Guid? AdministratorId { get; set; }
 }
 
-public class CreateDepartmentCommandHandler : AsyncRequestHandler<CreateDepartmentCommand>
+internal class CreateDepartmentCommandHandler : IRequestHandler<CreateDepartmentCommand>
 {
     private readonly IDepartmentsRwRepository _departmentsRepository;
 
@@ -27,7 +27,7 @@ public class CreateDepartmentCommandHandler : AsyncRequestHandler<CreateDepartme
         _departmentsRepository = departmentsRepository;
     }
 
-    protected override async Task Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
+    public async Task Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
     {
         var department = Department.Create(
             request.Name,

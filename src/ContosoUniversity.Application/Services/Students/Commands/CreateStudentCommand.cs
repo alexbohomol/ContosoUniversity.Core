@@ -17,7 +17,7 @@ public class CreateStudentCommand : IRequest
     public string FirstName { get; set; }
 }
 
-public class CreateStudentCommandHandler : AsyncRequestHandler<CreateStudentCommand>
+internal class CreateStudentCommandHandler : IRequestHandler<CreateStudentCommand>
 {
     private readonly IStudentsRwRepository _repository;
 
@@ -26,9 +26,9 @@ public class CreateStudentCommandHandler : AsyncRequestHandler<CreateStudentComm
         _repository = repository;
     }
 
-    protected override Task Handle(CreateStudentCommand request, CancellationToken cancellationToken)
+    public async Task Handle(CreateStudentCommand request, CancellationToken cancellationToken)
     {
-        return _repository.Save(Student.Create(
+        await _repository.Save(Student.Create(
                 request.LastName,
                 request.FirstName,
                 request.EnrollmentDate),

@@ -15,7 +15,7 @@ public record GetCourseDetailsQuery(Guid Id) : IRequest<GetCourseDetailsQueryRes
 
 public record GetCourseDetailsQueryResult(Course Course, Department Department);
 
-public class GetCourseDetailsQueryHandler : IRequestHandler<GetCourseDetailsQuery, GetCourseDetailsQueryResult>
+internal class GetCourseDetailsQueryHandler : IRequestHandler<GetCourseDetailsQuery, GetCourseDetailsQueryResult>
 {
     private readonly ICoursesRoRepository _coursesRepository;
     private readonly IDepartmentsRoRepository _departmentsRepository;

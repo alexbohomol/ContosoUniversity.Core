@@ -15,7 +15,7 @@ using MediatR;
 
 public record DeleteInstructorCommand(Guid Id) : IRequest;
 
-public class DeleteInstructorCommandHandler : AsyncRequestHandler<DeleteInstructorCommand>
+internal class DeleteInstructorCommandHandler : IRequestHandler<DeleteInstructorCommand>
 {
     private readonly IDepartmentsRwRepository _departmentsRepository;
     private readonly IInstructorsRoRepository _instructorsRoRepository;
@@ -31,7 +31,7 @@ public class DeleteInstructorCommandHandler : AsyncRequestHandler<DeleteInstruct
         _departmentsRepository = departmentsRepository;
     }
 
-    protected override async Task Handle(DeleteInstructorCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteInstructorCommand request, CancellationToken cancellationToken)
     {
         if (!await _instructorsRoRepository.Exists(request.Id, cancellationToken))
         {

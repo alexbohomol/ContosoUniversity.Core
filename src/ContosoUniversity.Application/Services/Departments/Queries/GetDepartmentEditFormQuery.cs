@@ -18,7 +18,7 @@ public record GetDepartmentEditFormQueryResult(
     Department Department,
     Dictionary<Guid, string> InstructorsReference);
 
-public class GetDepartmentEditFormQueryHandler :
+internal class GetDepartmentEditFormQueryHandler :
     IRequestHandler<GetDepartmentEditFormQuery, GetDepartmentEditFormQueryResult>
 {
     private readonly IDepartmentsRoRepository _departmentsRepository;

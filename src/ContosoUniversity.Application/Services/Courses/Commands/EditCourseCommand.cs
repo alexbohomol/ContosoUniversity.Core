@@ -31,7 +31,7 @@ public class EditCourseCommand : IRequest
     public Guid DepartmentId { get; set; }
 }
 
-public class EditCourseCommandHandler : AsyncRequestHandler<EditCourseCommand>
+internal class EditCourseCommandHandler : IRequestHandler<EditCourseCommand>
 {
     private readonly ICoursesRwRepository _coursesRepository;
 
@@ -40,7 +40,7 @@ public class EditCourseCommandHandler : AsyncRequestHandler<EditCourseCommand>
         _coursesRepository = coursesRepository;
     }
 
-    protected override async Task Handle(EditCourseCommand request, CancellationToken cancellationToken)
+    public async Task Handle(EditCourseCommand request, CancellationToken cancellationToken)
     {
         Domain.Course.Course course = await _coursesRepository.GetById(request.Id, cancellationToken);
         if (course == null)

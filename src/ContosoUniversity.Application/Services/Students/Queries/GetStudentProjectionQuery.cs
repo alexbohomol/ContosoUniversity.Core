@@ -13,7 +13,7 @@ using MediatR;
 
 public record GetStudentProjectionQuery(Guid Id) : IRequest<Student>;
 
-public class GetStudentEditFormQueryHandler : IRequestHandler<GetStudentProjectionQuery, Student>
+internal class GetStudentEditFormQueryHandler : IRequestHandler<GetStudentProjectionQuery, Student>
 {
     private readonly IStudentsRoRepository _studentsRepository;
 

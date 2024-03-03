@@ -12,7 +12,7 @@ using Domain.Instructor;
 
 using MediatR;
 
-public class DepartmentDeletedNotificationHandler : INotificationHandler<DepartmentDeletedNotification>
+internal class DepartmentDeletedNotificationHandler : INotificationHandler<DepartmentDeletedNotification>
 {
     private readonly IInstructorsRwRepository _instructorsRepository;
 

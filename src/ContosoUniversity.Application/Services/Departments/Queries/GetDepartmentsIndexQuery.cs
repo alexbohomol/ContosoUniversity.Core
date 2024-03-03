@@ -11,7 +11,7 @@ using MediatR;
 
 public record GetDepartmentsIndexQuery : IRequest<Department[]>;
 
-public class GetDepartmentsIndexQueryHandler : IRequestHandler<GetDepartmentsIndexQuery, Department[]>
+internal class GetDepartmentsIndexQueryHandler : IRequestHandler<GetDepartmentsIndexQuery, Department[]>
 {
     private readonly IDepartmentsRoRepository _departmentsRepository;
 

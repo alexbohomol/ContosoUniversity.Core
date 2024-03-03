@@ -15,7 +15,7 @@ using Notifications;
 
 public record DeleteCourseCommand(Guid Id) : IRequest;
 
-public class DeleteCourseCommandHandler : AsyncRequestHandler<DeleteCourseCommand>
+internal class DeleteCourseCommandHandler : IRequestHandler<DeleteCourseCommand>
 {
     private readonly ICoursesRoRepository _coursesRoRepository;
     private readonly ICoursesRwRepository _coursesRwRepository;
@@ -31,7 +31,7 @@ public class DeleteCourseCommandHandler : AsyncRequestHandler<DeleteCourseComman
         _mediator = mediator;
     }
 
-    protected override async Task Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
     {
         if (!await _coursesRoRepository.Exists(request.Id, cancellationToken))
         {

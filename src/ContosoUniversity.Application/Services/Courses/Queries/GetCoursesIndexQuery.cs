@@ -16,7 +16,7 @@ public record GetCoursesIndexQueryResult(
     Course[] Courses,
     Dictionary<Guid, string> DepartmentsReference);
 
-public class GetCoursesIndexQueryHandler : IRequestHandler<GetCoursesIndexQuery, GetCoursesIndexQueryResult>
+internal class GetCoursesIndexQueryHandler : IRequestHandler<GetCoursesIndexQuery, GetCoursesIndexQueryResult>
 {
     private readonly ICoursesRoRepository _coursesRepository;
     private readonly IDepartmentsRoRepository _departmentsRepository;

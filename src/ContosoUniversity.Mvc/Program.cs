@@ -84,7 +84,10 @@ internal class Startup
                 fv.RegisterValidatorsFromAssembly(typeof(IApplicationLayerMarker).Assembly);
             });
 
-        services.AddMediatR(typeof(IApplicationLayerMarker).Assembly);
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(typeof(IApplicationLayerMarker).Assembly);
+        });
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -101,9 +104,9 @@ internal class Startup
              * for production scenarios, see https://aka.ms/aspnetcore-hsts.
              */
             app.UseHsts();
+            app.UseHttpsRedirection();
         }
 
-        // app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseCookiePolicy();
 

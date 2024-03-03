@@ -16,7 +16,7 @@ public record GetCourseEditFormQuery(Guid Id) : IRequest<GetCourseEditFormQueryR
 
 public record GetCourseEditFormQueryResult(Course Course, Dictionary<Guid, string> DepartmentsReference);
 
-public class GetCourseEditFormQueryHandler : IRequestHandler<GetCourseEditFormQuery, GetCourseEditFormQueryResult>
+internal class GetCourseEditFormQueryHandler : IRequestHandler<GetCourseEditFormQuery, GetCourseEditFormQueryResult>
 {
     private readonly ICoursesRoRepository _coursesRepository;
     private readonly IDepartmentsRoRepository _departmentsRepository;
