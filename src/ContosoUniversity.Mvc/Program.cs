@@ -14,8 +14,6 @@ using Data.Students.Writes;
 
 using FluentValidation.AspNetCore;
 
-using MediatR;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -104,9 +102,9 @@ internal class Startup
              * for production scenarios, see https://aka.ms/aspnetcore-hsts.
              */
             app.UseHsts();
-            app.UseHttpsRedirection();
         }
 
+        // app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseCookiePolicy();
 
