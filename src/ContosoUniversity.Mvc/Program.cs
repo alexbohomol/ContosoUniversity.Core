@@ -12,6 +12,7 @@ using Data.Departments.Writes;
 using Data.Students.Reads;
 using Data.Students.Writes;
 
+using FluentValidation;
 using FluentValidation.AspNetCore;
 
 using Microsoft.AspNetCore.Builder;
@@ -76,12 +77,10 @@ internal class Startup
 
         services.AddControllersWithViews();
 
-        services
-            .AddFluentValidation(fv =>
-            {
-                fv.RegisterValidatorsFromAssembly(typeof(Program).Assembly);
-                fv.RegisterValidatorsFromAssembly(typeof(IApplicationLayerMarker).Assembly);
-            });
+        services.AddFluentValidationAutoValidation();
+        services.AddFluentValidationClientsideAdapters();
+        services.AddValidatorsFromAssemblyContaining<Program>();
+        services.AddValidatorsFromAssemblyContaining<IApplicationLayerMarker>();
 
         services.AddMediatR(cfg =>
         {
