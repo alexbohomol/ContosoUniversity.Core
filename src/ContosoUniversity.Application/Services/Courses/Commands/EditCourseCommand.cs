@@ -4,7 +4,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Contracts.Repositories.ReadOnly.Projections;
 using Contracts.Repositories.ReadWrite;
 
 using Exceptions;
@@ -13,18 +12,6 @@ using MediatR;
 
 public class EditCourseCommand : IRequest
 {
-    public EditCourseCommand(Course course)
-    {
-        Id = course.ExternalId;
-        Title = course.Title;
-        Credits = course.Credits;
-        DepartmentId = course.DepartmentId;
-    }
-
-    public EditCourseCommand()
-    {
-    }
-
     public Guid Id { get; set; }
     public string Title { get; set; }
     public int Credits { get; set; }

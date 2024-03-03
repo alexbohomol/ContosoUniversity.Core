@@ -6,7 +6,7 @@ using FluentValidation;
 
 using ViewModels.Courses;
 
-public class EditCourseFormValidator : AbstractValidator<CourseEditForm>
+public class EditCourseFormValidator : AbstractValidator<EditCourseForm>
 {
     public EditCourseFormValidator()
     {

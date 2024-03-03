@@ -11,6 +11,7 @@ using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Contracts.Repositories.ReadWrite;
 using Application.Services.Courses.Commands;
 using Application.Services.Courses.Queries;
+using Application.Services.Courses.Validators;
 
 using MediatR;
 
@@ -78,9 +79,12 @@ public class CoursesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(CreateCourseCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create(
+        CreateCourseRequest request,
+        [FromServices] CreateCourseCommandValidator validator,
+        CancellationToken cancellationToken)
     {
-        if (command is null)
+        if (request is null)
         {
             return BadRequest();
         }
@@ -89,8 +93,21 @@ public class CoursesController : Controller
         {
             return View(
                 new CreateCourseForm(
-                    command,
+                    request,
                     await _departmentsRepository.GetDepartmentNamesReference(cancellationToken)));
+        }
+
+        CreateCourseCommand command = new()
+        {
+            CourseCode = request.CourseCode,
+            Credits = request.Credits,
+            DepartmentId = request.DepartmentId,
+            Title = request.Title
+        };
+        var result = await validator.ValidateAsync(command, cancellationToken);
+        if (!result.IsValid)
+        {
+            return BadRequest();
         }
 
         await _mediator.Send(command, cancellationToken);
@@ -109,32 +126,48 @@ public class CoursesController : Controller
             new GetCourseEditFormQuery(id.Value),
             cancellationToken);
 
-        return course is not null
-            ? View(new CourseEditForm(
-                new EditCourseCommand(course),
+        return course is null
+            ? NotFound()
+            : View(new EditCourseForm(
+                new EditCourseRequest(course),
                 course.Code,
-                departmentsReference))
-            : NotFound();
+                departmentsReference));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(EditCourseCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Edit(
+        EditCourseRequest request,
+        [FromServices] EditCourseCommandValidator validator,
+        CancellationToken cancellationToken)
     {
-        if (command is null)
+        if (request is null)
         {
             return BadRequest();
         }
 
         if (!ModelState.IsValid)
         {
-            Course course = await _coursesRoRepository.GetById(command.Id, cancellationToken);
+            Course course = await _coursesRoRepository.GetById(request.Id, cancellationToken);
 
             return View(
-                new CourseEditForm(
-                    command,
+                new EditCourseForm(
+                    request,
                     course.Code,
                     await _departmentsRepository.GetDepartmentNamesReference(cancellationToken)));
+        }
+
+        EditCourseCommand command = new()
+        {
+            Id = request.Id,
+            Credits = request.Credits,
+            DepartmentId = request.DepartmentId,
+            Title = request.Title
+        };
+        var result = await validator.ValidateAsync(command, cancellationToken);
+        if (!result.IsValid)
+        {
+            return BadRequest();
         }
 
         await _mediator.Send(command, cancellationToken);
