@@ -3,9 +3,8 @@ namespace ContosoUniversity.Mvc.ViewModels.Students;
 using System;
 
 using Application.Contracts.Repositories.ReadOnly.Projections;
-using Application.Services.Students.Commands;
 
-public class EditStudentForm : EditStudentCommand
+public class EditStudentForm : EditStudentRequest
 {
     public EditStudentForm(Student student)
     {
