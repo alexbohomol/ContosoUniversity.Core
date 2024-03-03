@@ -17,6 +17,5 @@ public class CreateInstructorForm : CreateInstructorRequest
     {
     }
 
-    [Display(Name = "Assigned Courses")]
-    public AssignedCourseOption[] AssignedCourses { get; set; }
+    [Display(Name = "Assigned Courses")] public AssignedCourseOption[] AssignedCourses { get; set; }
 }
