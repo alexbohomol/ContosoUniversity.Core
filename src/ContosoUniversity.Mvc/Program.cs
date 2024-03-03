@@ -74,8 +74,9 @@ internal class Startup
         services.AddDepartmentsSchemaReads(SqlBuilderFor("Departments-RO"));
         services.AddDepartmentsSchemaWrites(SqlBuilderFor("Departments-RW"));
 
+        services.AddControllersWithViews();
+
         services
-            .AddMvc()
             .AddFluentValidation(fv =>
             {
                 fv.RegisterValidatorsFromAssembly(typeof(Program).Assembly);
