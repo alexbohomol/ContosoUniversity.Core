@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  DOTNET_VERSION: 6.0.x
+  DOTNET_VERSION: 8.0.x
 
 jobs:
 
@@ -167,7 +167,7 @@ jobs:
       
     - name: Ensure browsers are installed
       working-directory: test/e2e/ContosoUniversity.AcceptanceTests
-      run: pwsh bin/Debug/net6.0/playwright.ps1 install --with-deps
+      run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
 
     - name: Run Acceptance Tests
       working-directory: test/e2e/ContosoUniversity.AcceptanceTests
