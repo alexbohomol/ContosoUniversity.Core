@@ -13,7 +13,7 @@ using MediatR;
 
 public record GetDepartmentDetailsQuery(Guid Id) : IRequest<Department>;
 
-public class GetDepartmentDetailsQueryHandler : IRequestHandler<GetDepartmentDetailsQuery, Department>
+internal class GetDepartmentDetailsQueryHandler : IRequestHandler<GetDepartmentDetailsQuery, Department>
 {
     private readonly IDepartmentsRoRepository _departmentsRepository;
 

@@ -13,7 +13,7 @@ using MediatR;
 
 public record GetInstructorDetailsQuery(Guid Id) : IRequest<Instructor>;
 
-public class GetInstructorDetailsQueryHandler : IRequestHandler<GetInstructorDetailsQuery, Instructor>
+internal class GetInstructorDetailsQueryHandler : IRequestHandler<GetInstructorDetailsQuery, Instructor>
 {
     private readonly IInstructorsRoRepository _instructorsRepository;
 

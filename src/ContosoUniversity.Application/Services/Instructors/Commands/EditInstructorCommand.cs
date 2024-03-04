@@ -28,7 +28,7 @@ public class EditInstructorCommand : IRequest
     public bool HasAssignedCourses => SelectedCourses is not null && SelectedCourses.Any();
 }
 
-public class EditInstructorCommandHandler : AsyncRequestHandler<EditInstructorCommand>
+internal class EditInstructorCommandHandler : IRequestHandler<EditInstructorCommand>
 {
     private readonly IInstructorsRwRepository _instructorsRepository;
 
@@ -37,7 +37,7 @@ public class EditInstructorCommandHandler : AsyncRequestHandler<EditInstructorCo
         _instructorsRepository = instructorsRepository;
     }
 
-    protected override async Task Handle(EditInstructorCommand request, CancellationToken cancellationToken)
+    public async Task Handle(EditInstructorCommand request, CancellationToken cancellationToken)
     {
         Instructor instructor = await _instructorsRepository.GetById(request.ExternalId, cancellationToken);
         if (instructor is null)

@@ -9,6 +9,7 @@ using Application.Contracts.Repositories.ReadOnly.Paging;
 using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Services.Students.Commands;
 using Application.Services.Students.Queries;
+using Application.Services.Students.Validators;
 
 using MediatR;
 
@@ -67,11 +68,26 @@ public class StudentsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(CreateStudentCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create(
+        CreateStudentRequest request,
+        [FromServices] CreateStudentCommandValidator validator,
+        CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
-            return View(command as CreateStudentForm);
+            return View(request as CreateStudentForm);
+        }
+
+        CreateStudentCommand command = new()
+        {
+            EnrollmentDate = request.EnrollmentDate,
+            FirstName = request.FirstName,
+            LastName = request.LastName
+        };
+        var result = validator.Validate(command);
+        if (!result.IsValid)
+        {
+            return BadRequest();
         }
 
         await _mediator.Send(command, cancellationToken);
@@ -90,23 +106,39 @@ public class StudentsController : Controller
             new GetStudentProjectionQuery(id.Value),
             cancellationToken);
 
-        return student is not null
-            ? View(new EditStudentForm(student))
-            : NotFound();
+        return student is null
+            ? NotFound()
+            : View(new EditStudentForm(student));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(EditStudentCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Edit(
+        EditStudentRequest request,
+        [FromServices] EditStudentCommandValidator validator,
+        CancellationToken cancellationToken)
     {
-        if (command is null)
+        if (request is null)
         {
             return BadRequest();
         }
 
         if (!ModelState.IsValid)
         {
-            return View(command as EditStudentForm);
+            return View(request as EditStudentForm);
+        }
+
+        EditStudentCommand command = new()
+        {
+            ExternalId = request.ExternalId,
+            LastName = request.LastName,
+            FirstName = request.FirstName,
+            EnrollmentDate = request.EnrollmentDate
+        };
+        var result = validator.Validate(command);
+        if (!result.IsValid)
+        {
+            return BadRequest();
         }
 
         await _mediator.Send(command, cancellationToken);

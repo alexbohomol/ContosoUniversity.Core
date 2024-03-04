@@ -33,7 +33,7 @@ public class EditStudentCommand : IRequest
     public Guid ExternalId { get; set; }
 }
 
-public class EditStudentCommandHandler : AsyncRequestHandler<EditStudentCommand>
+internal class EditStudentCommandHandler : IRequestHandler<EditStudentCommand>
 {
     private readonly IStudentsRwRepository _studentsRepository;
 
@@ -42,7 +42,7 @@ public class EditStudentCommandHandler : AsyncRequestHandler<EditStudentCommand>
         _studentsRepository = studentsRepository;
     }
 
-    protected override async Task Handle(EditStudentCommand request, CancellationToken cancellationToken)
+    public async Task Handle(EditStudentCommand request, CancellationToken cancellationToken)
     {
         Student student = await _studentsRepository.GetById(request.ExternalId, cancellationToken);
         if (student == null)

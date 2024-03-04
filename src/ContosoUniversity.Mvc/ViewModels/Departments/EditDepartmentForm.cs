@@ -4,21 +4,20 @@ using System;
 using System.Collections.Generic;
 
 using Application.Contracts.Repositories.ReadOnly.Projections;
-using Application.Services.Departments.Commands;
 
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-public class EditDepartmentForm : EditDepartmentCommand
+public class EditDepartmentForm : EditDepartmentRequest
 {
-    public EditDepartmentForm(EditDepartmentCommand command, Dictionary<Guid, string> instructorNames)
+    public EditDepartmentForm(EditDepartmentRequest request, Dictionary<Guid, string> instructorNames)
     {
-        Name = command.Name;
-        Budget = command.Budget;
-        StartDate = command.StartDate;
-        AdministratorId = command.AdministratorId;
-        ExternalId = command.ExternalId;
-        RowVersion = command.RowVersion;
-        InstructorsDropDown = instructorNames.ToSelectList(command.AdministratorId.GetValueOrDefault());
+        Name = request.Name;
+        Budget = request.Budget;
+        StartDate = request.StartDate;
+        AdministratorId = request.AdministratorId;
+        ExternalId = request.ExternalId;
+        RowVersion = request.RowVersion;
+        InstructorsDropDown = instructorNames.ToSelectList(request.AdministratorId.GetValueOrDefault());
     }
 
     public EditDepartmentForm()

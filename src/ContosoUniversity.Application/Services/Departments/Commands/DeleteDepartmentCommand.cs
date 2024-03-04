@@ -16,7 +16,7 @@ using Notifications;
 
 public record DeleteDepartmentCommand(Guid Id) : IRequest;
 
-public class DeleteDepartmentCommandHandler : AsyncRequestHandler<DeleteDepartmentCommand>
+internal class DeleteDepartmentCommandHandler : IRequestHandler<DeleteDepartmentCommand>
 {
     private readonly ICoursesRoRepository _coursesRepository;
     private readonly IDepartmentsRoRepository _departmentsRoRepository;
@@ -35,7 +35,7 @@ public class DeleteDepartmentCommandHandler : AsyncRequestHandler<DeleteDepartme
         _mediator = mediator;
     }
 
-    protected override async Task Handle(DeleteDepartmentCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteDepartmentCommand request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 

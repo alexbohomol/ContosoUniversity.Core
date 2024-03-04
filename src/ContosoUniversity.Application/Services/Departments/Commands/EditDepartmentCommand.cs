@@ -23,7 +23,7 @@ public class EditDepartmentCommand : IRequest
     public byte[] RowVersion { get; set; }
 }
 
-public class EditDepartmentCommandHandler : AsyncRequestHandler<EditDepartmentCommand>
+internal class EditDepartmentCommandHandler : IRequestHandler<EditDepartmentCommand>
 {
     private readonly IDepartmentsRwRepository _departmentsRepository;
     private readonly IInstructorsRoRepository _instructorsRepository;
@@ -36,7 +36,7 @@ public class EditDepartmentCommandHandler : AsyncRequestHandler<EditDepartmentCo
         _departmentsRepository = departmentsRepository;
     }
 
-    protected override async Task Handle(EditDepartmentCommand request, CancellationToken cancellationToken)
+    public async Task Handle(EditDepartmentCommand request, CancellationToken cancellationToken)
     {
         Department department = await _departmentsRepository.GetById(request.ExternalId, cancellationToken);
         if (department is null)

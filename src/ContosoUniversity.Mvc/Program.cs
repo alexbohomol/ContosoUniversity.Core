@@ -12,9 +12,8 @@ using Data.Departments.Writes;
 using Data.Students.Reads;
 using Data.Students.Writes;
 
+using FluentValidation;
 using FluentValidation.AspNetCore;
-
-using MediatR;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -76,15 +75,17 @@ internal class Startup
         services.AddDepartmentsSchemaReads(SqlBuilderFor("Departments-RO"));
         services.AddDepartmentsSchemaWrites(SqlBuilderFor("Departments-RW"));
 
-        services
-            .AddMvc()
-            .AddFluentValidation(fv =>
-            {
-                fv.RegisterValidatorsFromAssembly(typeof(Program).Assembly);
-                fv.RegisterValidatorsFromAssembly(typeof(IApplicationLayerMarker).Assembly);
-            });
+        services.AddControllersWithViews();
 
-        services.AddMediatR(typeof(IApplicationLayerMarker).Assembly);
+        services.AddFluentValidationAutoValidation();
+        services.AddFluentValidationClientsideAdapters();
+        services.AddValidatorsFromAssemblyContaining<Program>();
+        services.AddValidatorsFromAssemblyContaining<IApplicationLayerMarker>();
+
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(typeof(IApplicationLayerMarker).Assembly);
+        });
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

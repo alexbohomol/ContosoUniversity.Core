@@ -11,6 +11,9 @@ using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Services;
 using Application.Services.Instructors.Commands;
 using Application.Services.Instructors.Queries;
+using Application.Services.Instructors.Validators;
+
+using FluentValidation.Results;
 
 using MediatR;
 
@@ -151,9 +154,12 @@ public class InstructorsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(CreateInstructorCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create(
+        CreateInstructorRequest request,
+        [FromServices] CreateInstructorCommandValidator validator,
+        CancellationToken cancellationToken)
     {
-        if (command is null)
+        if (request is null)
         {
             return BadRequest();
         }
@@ -164,8 +170,22 @@ public class InstructorsController : Controller
 
             return View(
                 new CreateInstructorForm(
-                    command,
+                    request,
                     courses.ToAssignedCourseOptions()));
+        }
+
+        CreateInstructorCommand command = new()
+        {
+            LastName = request.LastName,
+            FirstName = request.FirstName,
+            HireDate = request.HireDate,
+            SelectedCourses = request.SelectedCourses,
+            Location = request.Location
+        };
+        ValidationResult result = validator.Validate(command);
+        if (!result.IsValid)
+        {
+            return BadRequest();
         }
 
         await _mediator.Send(command, cancellationToken);
@@ -184,16 +204,19 @@ public class InstructorsController : Controller
             new GetInstructorEditFormQuery(id.Value),
             cancellationToken);
 
-        return instructor is not null
-            ? View(new EditInstructorForm(instructor, courses))
-            : NotFound();
+        return instructor is null
+            ? NotFound()
+            : View(new EditInstructorForm(instructor, courses));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(EditInstructorCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Edit(
+        EditInstructorRequest request,
+        [FromServices] EditInstructorCommandValidator validator,
+        CancellationToken cancellationToken)
     {
-        if (command is null)
+        if (request is null)
         {
             return BadRequest();
         }
@@ -204,8 +227,23 @@ public class InstructorsController : Controller
 
             return View(
                 new EditInstructorForm(
-                    command,
+                    request,
                     courses.ToAssignedCourseOptions( /* instructor? */)));
+        }
+
+        EditInstructorCommand command = new()
+        {
+            ExternalId = request.ExternalId,
+            LastName = request.LastName,
+            FirstName = request.FirstName,
+            HireDate = request.HireDate,
+            SelectedCourses = request.SelectedCourses,
+            Location = request.Location
+        };
+        ValidationResult result = validator.Validate(command);
+        if (!result.IsValid)
+        {
+            return BadRequest();
         }
 
         await _mediator.Send(command, cancellationToken);

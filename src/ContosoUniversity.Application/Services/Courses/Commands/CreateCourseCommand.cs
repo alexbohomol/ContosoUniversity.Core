@@ -18,7 +18,7 @@ public class CreateCourseCommand : IRequest
     public Guid DepartmentId { get; set; }
 }
 
-public class CreateCourseCommandHandler : AsyncRequestHandler<CreateCourseCommand>
+internal class CreateCourseCommandHandler : IRequestHandler<CreateCourseCommand>
 {
     private readonly ICoursesRwRepository _coursesRepository;
 
@@ -27,9 +27,9 @@ public class CreateCourseCommandHandler : AsyncRequestHandler<CreateCourseComman
         _coursesRepository = coursesRepository;
     }
 
-    protected override Task Handle(CreateCourseCommand request, CancellationToken cancellationToken)
+    public async Task Handle(CreateCourseCommand request, CancellationToken cancellationToken)
     {
-        return _coursesRepository.Save(
+        await _coursesRepository.Save(
             Course.Create(
                 request.CourseCode,
                 request.Title,

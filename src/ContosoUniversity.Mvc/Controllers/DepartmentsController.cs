@@ -10,6 +10,7 @@ using Application.Contracts.Repositories.ReadOnly;
 using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Services.Departments.Commands;
 using Application.Services.Departments.Queries;
+using Application.Services.Departments.Validators;
 
 using MediatR;
 
@@ -70,9 +71,12 @@ public class DepartmentsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(CreateDepartmentCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create(
+        CreateDepartmentRequest request,
+        [FromServices] CreateDepartmentCommandValidator validator,
+        CancellationToken cancellationToken)
     {
-        if (command is null)
+        if (request is null)
         {
             return BadRequest();
         }
@@ -81,8 +85,21 @@ public class DepartmentsController : Controller
         {
             return View(
                 new CreateDepartmentForm(
-                    command,
+                    request,
                     await _instructorsRepository.GetInstructorNamesReference(cancellationToken)));
+        }
+
+        CreateDepartmentCommand command = new()
+        {
+            AdministratorId = request.AdministratorId,
+            Budget = request.Budget,
+            Name = request.Name,
+            StartDate = request.StartDate
+        };
+        var result = await validator.ValidateAsync(command, cancellationToken);
+        if (!result.IsValid)
+        {
+            return BadRequest();
         }
 
         await _mediator.Send(command, cancellationToken);
@@ -101,16 +118,19 @@ public class DepartmentsController : Controller
             new GetDepartmentEditFormQuery(id.Value),
             cancellationToken);
 
-        return department is not null
-            ? View(new EditDepartmentForm(department, instructorsReference))
-            : NotFound();
+        return department is null
+            ? NotFound()
+            : View(new EditDepartmentForm(department, instructorsReference));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(EditDepartmentCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Edit(
+        EditDepartmentRequest request,
+        [FromServices] EditDepartmentCommandValidator validator,
+        CancellationToken cancellationToken)
     {
-        if (command is null)
+        if (request is null)
         {
             return BadRequest();
         }
@@ -119,8 +139,23 @@ public class DepartmentsController : Controller
         {
             return View(
                 new EditDepartmentForm(
-                    command,
+                    request,
                     await _instructorsRepository.GetInstructorNamesReference(cancellationToken)));
+        }
+
+        EditDepartmentCommand command = new()
+        {
+            AdministratorId = request.AdministratorId,
+            Budget = request.Budget,
+            ExternalId = request.ExternalId,
+            Name = request.Name,
+            RowVersion = request.RowVersion,
+            StartDate = request.StartDate
+        };
+        var result = await validator.ValidateAsync(command, cancellationToken);
+        if (!result.IsValid)
+        {
+            return BadRequest();
         }
 
         await _mediator.Send(command, cancellationToken);

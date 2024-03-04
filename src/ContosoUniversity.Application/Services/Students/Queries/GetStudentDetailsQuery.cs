@@ -19,7 +19,7 @@ public record GetStudentDetailsQueryResult(
     Student Student,
     Dictionary<Guid, string> CourseTitles);
 
-public class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQuery, GetStudentDetailsQueryResult>
+internal class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQuery, GetStudentDetailsQueryResult>
 {
     private readonly ICoursesRoRepository _coursesRepository;
     private readonly IStudentsRoRepository _studentsRepository;

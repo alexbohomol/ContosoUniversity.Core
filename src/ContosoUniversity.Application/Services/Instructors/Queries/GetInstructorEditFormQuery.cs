@@ -15,7 +15,7 @@ public record GetInstructorEditFormQuery(Guid Id) : IRequest<GetInstructorEditFo
 
 public record GetInstructorEditFormQueryResult(Instructor Instructor, Course[] Courses);
 
-public class GetInstructorEditFormQueryHandler :
+internal class GetInstructorEditFormQueryHandler :
     IRequestHandler<GetInstructorEditFormQuery, GetInstructorEditFormQueryResult>
 {
     private readonly ICoursesRoRepository _coursesRepository;

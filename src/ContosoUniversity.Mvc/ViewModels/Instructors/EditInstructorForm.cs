@@ -3,12 +3,11 @@ namespace ContosoUniversity.Mvc.ViewModels.Instructors;
 using System.ComponentModel.DataAnnotations;
 
 using Application.Contracts.Repositories.ReadOnly.Projections;
-using Application.Services.Instructors.Commands;
 
-public class EditInstructorForm : EditInstructorCommand
+public class EditInstructorForm : EditInstructorRequest
 {
     public EditInstructorForm(
-        EditInstructorCommand command,
+        EditInstructorRequest command,
         AssignedCourseOption[] assignedCourses)
     {
         LastName = command.LastName;

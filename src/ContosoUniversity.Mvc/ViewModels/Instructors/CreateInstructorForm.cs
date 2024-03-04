@@ -2,11 +2,9 @@ namespace ContosoUniversity.Mvc.ViewModels.Instructors;
 
 using System.ComponentModel.DataAnnotations;
 
-using Application.Services.Instructors.Commands;
-
-public class CreateInstructorForm : CreateInstructorCommand
+public class CreateInstructorForm : CreateInstructorRequest
 {
-    public CreateInstructorForm(CreateInstructorCommand command, AssignedCourseOption[] assignedCourses)
+    public CreateInstructorForm(CreateInstructorRequest command, AssignedCourseOption[] assignedCourses)
     {
         LastName = command.LastName;
         FirstName = command.FirstName;

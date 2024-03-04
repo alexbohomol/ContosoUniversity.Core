@@ -5,24 +5,22 @@ using System.Collections.Generic;
 
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-public class CreateCourseForm : CreateCourseRequest
+public class EditCourseForm : EditCourseRequest
 {
-    public CreateCourseForm(
+    public EditCourseForm(
+        EditCourseRequest request,
+        int courseCode,
         IDictionary<Guid, string> departmentsNames)
     {
-        DepartmentsSelectList = departmentsNames.ToSelectList();
-    }
-
-    public CreateCourseForm(
-        CreateCourseRequest request,
-        IDictionary<Guid, string> departmentsNames)
-    {
-        CourseCode = request.CourseCode;
+        Id = request.Id;
         Title = request.Title;
         Credits = request.Credits;
         DepartmentId = request.DepartmentId;
+
+        CourseCode = courseCode;
         DepartmentsSelectList = departmentsNames.ToSelectList(request.DepartmentId);
     }
 
+    public int CourseCode { get; }
     public SelectList DepartmentsSelectList { get; }
 }

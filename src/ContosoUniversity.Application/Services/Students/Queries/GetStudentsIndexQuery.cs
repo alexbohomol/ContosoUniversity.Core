@@ -22,7 +22,7 @@ public record GetStudentsIndexQueryResult(
     PageInfo PageInfo,
     Student[] Students);
 
-public class GetStudentsIndexQueryHandler : IRequestHandler<GetStudentsIndexQuery, GetStudentsIndexQueryResult>
+internal class GetStudentsIndexQueryHandler : IRequestHandler<GetStudentsIndexQuery, GetStudentsIndexQueryResult>
 {
     private readonly IStudentsRoRepository _studentsRepository;
 
