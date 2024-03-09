@@ -11,7 +11,8 @@ using MediatR;
 
 public record GetDepartmentsIndexQuery : IRequest<Department[]>;
 
-internal class GetDepartmentsIndexQueryHandler(IDepartmentsRoRepository departmentsRepository) : IRequestHandler<GetDepartmentsIndexQuery, Department[]>
+internal class GetDepartmentsIndexQueryHandler(IDepartmentsRoRepository departmentsRepository)
+    : IRequestHandler<GetDepartmentsIndexQuery, Department[]>
 {
     public async Task<Department[]> Handle(
         GetDepartmentsIndexQuery request,

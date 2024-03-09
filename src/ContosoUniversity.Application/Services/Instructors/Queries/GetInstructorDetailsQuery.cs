@@ -13,7 +13,8 @@ using MediatR;
 
 public record GetInstructorDetailsQuery(Guid Id) : IRequest<Instructor>;
 
-internal class GetInstructorDetailsQueryHandler(IInstructorsRoRepository instructorsRepository) : IRequestHandler<GetInstructorDetailsQuery, Instructor>
+internal class GetInstructorDetailsQueryHandler(IInstructorsRoRepository instructorsRepository)
+    : IRequestHandler<GetInstructorDetailsQuery, Instructor>
 {
     public async Task<Instructor> Handle(
         GetInstructorDetailsQuery request,

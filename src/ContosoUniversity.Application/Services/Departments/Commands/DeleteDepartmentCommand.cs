@@ -20,7 +20,8 @@ internal class DeleteDepartmentCommandHandler(
     IDepartmentsRwRepository departmentsRwRepository,
     IDepartmentsRoRepository departmentsRoRepository,
     ICoursesRoRepository coursesRepository,
-    IMediator mediator) : IRequestHandler<DeleteDepartmentCommand>
+    IMediator mediator)
+    : IRequestHandler<DeleteDepartmentCommand>
 {
     public async Task Handle(DeleteDepartmentCommand request, CancellationToken cancellationToken)
     {

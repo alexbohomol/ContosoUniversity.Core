@@ -13,7 +13,8 @@ using MediatR;
 
 public record GetDepartmentDetailsQuery(Guid Id) : IRequest<Department>;
 
-internal class GetDepartmentDetailsQueryHandler(IDepartmentsRoRepository departmentsRepository) : IRequestHandler<GetDepartmentDetailsQuery, Department>
+internal class GetDepartmentDetailsQueryHandler(IDepartmentsRoRepository departmentsRepository)
+    : IRequestHandler<GetDepartmentDetailsQuery, Department>
 {
     public async Task<Department> Handle(
         GetDepartmentDetailsQuery request,

@@ -18,7 +18,8 @@ public class EditCourseCommand : IRequest
     public Guid DepartmentId { get; set; }
 }
 
-internal class EditCourseCommandHandler(ICoursesRwRepository coursesRepository) : IRequestHandler<EditCourseCommand>
+internal class EditCourseCommandHandler(ICoursesRwRepository coursesRepository)
+    : IRequestHandler<EditCourseCommand>
 {
     public async Task Handle(EditCourseCommand request, CancellationToken cancellationToken)
     {

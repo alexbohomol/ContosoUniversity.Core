@@ -17,8 +17,8 @@ public record GetInstructorEditFormQueryResult(Instructor Instructor, Course[] C
 
 internal class GetInstructorEditFormQueryHandler(
     IInstructorsRoRepository instructorsRepository,
-    ICoursesRoRepository coursesRepository) :
-    IRequestHandler<GetInstructorEditFormQuery, GetInstructorEditFormQueryResult>
+    ICoursesRoRepository coursesRepository)
+    : IRequestHandler<GetInstructorEditFormQuery, GetInstructorEditFormQueryResult>
 {
     public async Task<GetInstructorEditFormQueryResult> Handle(
         GetInstructorEditFormQuery request,

@@ -18,7 +18,8 @@ public record GetCoursesIndexQueryResult(
 
 internal class GetCoursesIndexQueryHandler(
     ICoursesRoRepository coursesRepository,
-    IDepartmentsRoRepository departmentsRepository) : IRequestHandler<GetCoursesIndexQuery, GetCoursesIndexQueryResult>
+    IDepartmentsRoRepository departmentsRepository)
+    : IRequestHandler<GetCoursesIndexQuery, GetCoursesIndexQueryResult>
 {
     public async Task<GetCoursesIndexQueryResult> Handle(
         GetCoursesIndexQuery request,

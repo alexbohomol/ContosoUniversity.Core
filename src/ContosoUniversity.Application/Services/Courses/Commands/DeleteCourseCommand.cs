@@ -18,7 +18,8 @@ public record DeleteCourseCommand(Guid Id) : IRequest;
 internal class DeleteCourseCommandHandler(
     ICoursesRoRepository coursesRoRepository,
     ICoursesRwRepository coursesRwRepository,
-    IMediator mediator) : IRequestHandler<DeleteCourseCommand>
+    IMediator mediator)
+    : IRequestHandler<DeleteCourseCommand>
 {
     public async Task Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
     {

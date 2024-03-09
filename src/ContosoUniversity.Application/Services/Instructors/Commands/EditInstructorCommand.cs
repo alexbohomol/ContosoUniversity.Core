@@ -1,7 +1,6 @@
 namespace ContosoUniversity.Application.Services.Instructors.Commands;
 
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,16 +15,15 @@ using MediatR;
 public class EditInstructorCommand : IRequest
 {
     public Guid ExternalId { get; set; }
-
     public string LastName { get; set; }
     public string FirstName { get; set; }
     public DateTime HireDate { get; set; }
     public Guid[] SelectedCourses { get; set; }
-
     public string Location { get; set; }
-
     public bool HasAssignedOffice => !string.IsNullOrWhiteSpace(Location);
-    public bool HasAssignedCourses => SelectedCourses is not null && SelectedCourses.Any();
+    public bool HasAssignedCourses =>
+        SelectedCourses is not null
+        && SelectedCourses.Length != 0;
 }
 
 internal class EditInstructorCommandHandler(IInstructorsRwRepository instructorsRepository) : IRequestHandler<EditInstructorCommand>

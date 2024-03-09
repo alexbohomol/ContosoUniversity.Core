@@ -12,7 +12,8 @@ using Domain.Instructor;
 
 using MediatR;
 
-internal class CourseDeletedNotificationHandler(IInstructorsRwRepository instructorsRepository) : INotificationHandler<CourseDeletedNotification>
+internal class CourseDeletedNotificationHandler(IInstructorsRwRepository instructorsRepository)
+    : INotificationHandler<CourseDeletedNotification>
 {
     public async Task Handle(CourseDeletedNotification notification, CancellationToken cancellationToken)
     {

@@ -25,7 +25,8 @@ public class EditDepartmentCommand : IRequest
 
 internal class EditDepartmentCommandHandler(
     IInstructorsRoRepository instructorsRepository,
-    IDepartmentsRwRepository departmentsRepository) : IRequestHandler<EditDepartmentCommand>
+    IDepartmentsRwRepository departmentsRepository)
+    : IRequestHandler<EditDepartmentCommand>
 {
     public async Task Handle(EditDepartmentCommand request, CancellationToken cancellationToken)
     {

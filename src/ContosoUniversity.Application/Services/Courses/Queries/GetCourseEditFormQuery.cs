@@ -18,7 +18,8 @@ public record GetCourseEditFormQueryResult(Course Course, Dictionary<Guid, strin
 
 internal class GetCourseEditFormQueryHandler(
     ICoursesRoRepository coursesRepository,
-    IDepartmentsRoRepository departmentsRepository) : IRequestHandler<GetCourseEditFormQuery, GetCourseEditFormQueryResult>
+    IDepartmentsRoRepository departmentsRepository)
+    : IRequestHandler<GetCourseEditFormQuery, GetCourseEditFormQueryResult>
 {
     public async Task<GetCourseEditFormQueryResult> Handle(
         GetCourseEditFormQuery request,

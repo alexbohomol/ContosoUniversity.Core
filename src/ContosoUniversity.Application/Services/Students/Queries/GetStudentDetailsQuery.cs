@@ -21,7 +21,8 @@ public record GetStudentDetailsQueryResult(
 
 internal class GetStudentDetailsQueryHandler(
     IStudentsRoRepository studentsRepository,
-    ICoursesRoRepository coursesRepository) : IRequestHandler<GetStudentDetailsQuery, GetStudentDetailsQueryResult>
+    ICoursesRoRepository coursesRepository)
+    : IRequestHandler<GetStudentDetailsQuery, GetStudentDetailsQueryResult>
 {
     public async Task<GetStudentDetailsQueryResult> Handle(
         GetStudentDetailsQuery request,

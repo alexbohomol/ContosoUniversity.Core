@@ -18,7 +18,8 @@ public record DeleteInstructorCommand(Guid Id) : IRequest;
 internal class DeleteInstructorCommandHandler(
     IInstructorsRwRepository instructorsRwRepository,
     IInstructorsRoRepository instructorsRoRepository,
-    IDepartmentsRwRepository departmentsRepository) : IRequestHandler<DeleteInstructorCommand>
+    IDepartmentsRwRepository departmentsRepository)
+    : IRequestHandler<DeleteInstructorCommand>
 {
     public async Task Handle(DeleteInstructorCommand request, CancellationToken cancellationToken)
     {

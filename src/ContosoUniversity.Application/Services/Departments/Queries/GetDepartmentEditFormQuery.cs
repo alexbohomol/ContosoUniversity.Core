@@ -20,8 +20,8 @@ public record GetDepartmentEditFormQueryResult(
 
 internal class GetDepartmentEditFormQueryHandler(
     IInstructorsRoRepository instructorsRepository,
-    IDepartmentsRoRepository departmentsRepository) :
-    IRequestHandler<GetDepartmentEditFormQuery, GetDepartmentEditFormQueryResult>
+    IDepartmentsRoRepository departmentsRepository)
+    : IRequestHandler<GetDepartmentEditFormQuery, GetDepartmentEditFormQueryResult>
 {
     public async Task<GetDepartmentEditFormQueryResult> Handle(
         GetDepartmentEditFormQuery request,

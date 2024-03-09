@@ -18,7 +18,8 @@ public class CreateDepartmentCommand : IRequest
     public Guid? AdministratorId { get; set; }
 }
 
-internal class CreateDepartmentCommandHandler(IDepartmentsRwRepository departmentsRepository) : IRequestHandler<CreateDepartmentCommand>
+internal class CreateDepartmentCommandHandler(IDepartmentsRwRepository departmentsRepository)
+    : IRequestHandler<CreateDepartmentCommand>
 {
     public async Task Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
     {
