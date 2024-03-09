@@ -38,7 +38,7 @@ internal class EditStudentCommandHandler(IStudentsRwRepository studentsRepositor
     public async Task Handle(EditStudentCommand request, CancellationToken cancellationToken)
     {
         Student student = await studentsRepository.GetById(request.ExternalId, cancellationToken);
-        if (student == null)
+        if (student is null)
         {
             throw new EntityNotFoundException(nameof(student), request.ExternalId);
         }

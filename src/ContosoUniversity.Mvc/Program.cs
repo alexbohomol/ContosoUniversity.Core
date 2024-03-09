@@ -37,7 +37,7 @@ public class Program
             {
                 webBuilder.UseStartup<Startup>();
 
-                if (hostUrls != null)
+                if (hostUrls is not null)
                 {
                     webBuilder.UseUrls(hostUrls);
                 }
@@ -46,8 +46,6 @@ public class Program
 
 internal class Startup(IConfiguration configuration)
 {
-    private IConfiguration Configuration { get; } = configuration;
-
     public void ConfigureServices(IServiceCollection services)
     {
         services.Configure<CookiePolicyOptions>(options =>
@@ -58,7 +56,7 @@ internal class Startup(IConfiguration configuration)
         });
 
         SqlConnectionStringBuilder SqlBuilderFor(string connectionStringName) =>
-            new(Configuration.GetConnectionString(connectionStringName))
+            new(configuration.GetConnectionString(connectionStringName))
             {
                 DataSource = Environment.GetEnvironmentVariable("CONTOSO_DB_HOST") ?? "localhost,1433"
             };

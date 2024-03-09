@@ -26,13 +26,13 @@ internal class GetCourseDetailsQueryHandler(
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
         Course course = await coursesRepository.GetById(request.Id, cancellationToken);
-        if (course == null)
+        if (course is null)
         {
             throw new EntityNotFoundException(nameof(course), request.Id);
         }
 
         Department department = await departmentsRepository.GetById(course.DepartmentId, cancellationToken);
-        if (department == null)
+        if (department is null)
         {
             throw new EntityNotFoundException(nameof(department), course.DepartmentId);
         }

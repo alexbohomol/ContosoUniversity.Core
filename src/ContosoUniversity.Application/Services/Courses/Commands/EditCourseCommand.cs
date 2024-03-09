@@ -23,7 +23,7 @@ internal class EditCourseCommandHandler(ICoursesRwRepository coursesRepository) 
     public async Task Handle(EditCourseCommand request, CancellationToken cancellationToken)
     {
         Domain.Course.Course course = await coursesRepository.GetById(request.Id, cancellationToken);
-        if (course == null)
+        if (course is null)
         {
             throw new EntityNotFoundException(nameof(course), request.Id);
         }

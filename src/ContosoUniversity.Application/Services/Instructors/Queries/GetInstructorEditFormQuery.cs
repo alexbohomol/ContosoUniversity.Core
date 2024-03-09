@@ -27,7 +27,7 @@ internal class GetInstructorEditFormQueryHandler(
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
         Instructor instructor = await instructorsRepository.GetById(request.Id, cancellationToken);
-        if (instructor == null)
+        if (instructor is null)
         {
             throw new EntityNotFoundException(nameof(instructor), request.Id);
         }

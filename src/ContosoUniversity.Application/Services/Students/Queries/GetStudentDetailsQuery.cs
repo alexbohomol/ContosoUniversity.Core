@@ -30,7 +30,7 @@ internal class GetStudentDetailsQueryHandler(
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
         Student student = await studentsRepository.GetById(request.Id, cancellationToken);
-        if (student == null)
+        if (student is null)
         {
             throw new EntityNotFoundException(nameof(student), request.Id);
         }

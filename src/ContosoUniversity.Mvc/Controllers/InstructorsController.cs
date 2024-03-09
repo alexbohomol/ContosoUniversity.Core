@@ -112,7 +112,7 @@ public class InstructorsController(
 
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
-        if (id == null)
+        if (id is null)
         {
             return NotFound();
         }
@@ -238,7 +238,7 @@ public class InstructorsController(
 
     public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
     {
-        if (id == null)
+        if (id is null)
         {
             return NotFound();
         }

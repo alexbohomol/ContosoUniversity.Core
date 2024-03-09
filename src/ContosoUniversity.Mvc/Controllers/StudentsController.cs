@@ -21,7 +21,7 @@ public class StudentsController(IMediator mediator) : Controller
 {
     public async Task<IActionResult> Index(GetStudentsIndexQuery request, CancellationToken cancellationToken)
     {
-        if (request.SearchString != null)
+        if (request.SearchString is not null)
         {
             request.PageNumber = 1;
         }
@@ -37,7 +37,7 @@ public class StudentsController(IMediator mediator) : Controller
 
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
-        if (id == null)
+        if (id is null)
         {
             return NotFound();
         }
