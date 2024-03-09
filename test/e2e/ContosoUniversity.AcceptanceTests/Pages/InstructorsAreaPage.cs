@@ -9,12 +9,8 @@ using Microsoft.Playwright;
 
 using Models;
 
-public class InstructorsAreaPage : PageObject
+public class InstructorsAreaPage(IBrowser browser, IConfiguration configuration) : PageObject(browser, configuration)
 {
-    public InstructorsAreaPage(IBrowser browser, IConfiguration configuration) : base(browser, configuration)
-    {
-    }
-
     protected override string PagePath => $"{PageBaseUrl}/Instructors";
 
     public async Task<InstructorTableRowModel[]> ScrapRenderedInstructorsList()

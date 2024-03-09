@@ -4,13 +4,9 @@ using Domain.Student;
 
 using Microsoft.EntityFrameworkCore;
 
-public class ReadWriteContext : DbContext
+public class ReadWriteContext(DbContextOptions<ReadWriteContext> options) : DbContext(options)
 {
     public const string Schema = "std";
-
-    public ReadWriteContext(DbContextOptions<ReadWriteContext> options) : base(options)
-    {
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

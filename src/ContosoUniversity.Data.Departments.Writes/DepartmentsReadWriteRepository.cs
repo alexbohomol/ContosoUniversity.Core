@@ -11,12 +11,8 @@ using Domain.Department;
 
 using Microsoft.EntityFrameworkCore;
 
-internal class DepartmentsReadWriteRepository : EfRwRepository<Department>, IDepartmentsRwRepository
+internal class DepartmentsReadWriteRepository(ReadWriteContext dbContext) : EfRwRepository<Department>(dbContext), IDepartmentsRwRepository
 {
-    public DepartmentsReadWriteRepository(ReadWriteContext dbContext) : base(dbContext)
-    {
-    }
-
     public Task<Department[]> GetByAdministrator(Guid instructorId, CancellationToken cancellationToken = default)
     {
         return DbSet

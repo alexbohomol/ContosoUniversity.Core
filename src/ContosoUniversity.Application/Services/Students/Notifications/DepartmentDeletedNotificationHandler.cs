@@ -13,14 +13,9 @@ using Domain.Student;
 
 using MediatR;
 
-internal class DepartmentDeletedNotificationHandler : INotificationHandler<DepartmentDeletedNotification>
+internal class DepartmentDeletedNotificationHandler(IStudentsRwRepository studentsRepository) : INotificationHandler<DepartmentDeletedNotification>
 {
-    private readonly IStudentsRwRepository _studentsRepository;
-
-    public DepartmentDeletedNotificationHandler(IStudentsRwRepository studentsRepository)
-    {
-        _studentsRepository = studentsRepository;
-    }
+    private readonly IStudentsRwRepository _studentsRepository = studentsRepository;
 
     public async Task Handle(DepartmentDeletedNotification notification, CancellationToken cancellationToken)
     {

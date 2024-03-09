@@ -18,14 +18,9 @@ public class CreateCourseCommand : IRequest
     public Guid DepartmentId { get; set; }
 }
 
-internal class CreateCourseCommandHandler : IRequestHandler<CreateCourseCommand>
+internal class CreateCourseCommandHandler(ICoursesRwRepository coursesRepository) : IRequestHandler<CreateCourseCommand>
 {
-    private readonly ICoursesRwRepository _coursesRepository;
-
-    public CreateCourseCommandHandler(ICoursesRwRepository coursesRepository)
-    {
-        _coursesRepository = coursesRepository;
-    }
+    private readonly ICoursesRwRepository _coursesRepository = coursesRepository;
 
     public async Task Handle(CreateCourseCommand request, CancellationToken cancellationToken)
     {

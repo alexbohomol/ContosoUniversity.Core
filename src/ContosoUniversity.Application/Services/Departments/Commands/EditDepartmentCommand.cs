@@ -23,18 +23,12 @@ public class EditDepartmentCommand : IRequest
     public byte[] RowVersion { get; set; }
 }
 
-internal class EditDepartmentCommandHandler : IRequestHandler<EditDepartmentCommand>
+internal class EditDepartmentCommandHandler(
+    IInstructorsRoRepository instructorsRepository,
+    IDepartmentsRwRepository departmentsRepository) : IRequestHandler<EditDepartmentCommand>
 {
-    private readonly IDepartmentsRwRepository _departmentsRepository;
-    private readonly IInstructorsRoRepository _instructorsRepository;
-
-    public EditDepartmentCommandHandler(
-        IInstructorsRoRepository instructorsRepository,
-        IDepartmentsRwRepository departmentsRepository)
-    {
-        _instructorsRepository = instructorsRepository;
-        _departmentsRepository = departmentsRepository;
-    }
+    private readonly IDepartmentsRwRepository _departmentsRepository = departmentsRepository;
+    private readonly IInstructorsRoRepository _instructorsRepository = instructorsRepository;
 
     public async Task Handle(EditDepartmentCommand request, CancellationToken cancellationToken)
     {

@@ -22,27 +22,18 @@ using Microsoft.AspNetCore.Mvc;
 using ViewModels;
 using ViewModels.Instructors;
 
-public class InstructorsController : Controller
+public class InstructorsController(
+    IInstructorsRoRepository instructorsRepository,
+    IDepartmentsRoRepository departmentsRepository,
+    ICoursesRoRepository coursesRepository,
+    IStudentsRoRepository studentsRepository,
+    IMediator mediator) : Controller
 {
-    private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IDepartmentsRoRepository _departmentsRepository;
-    private readonly IInstructorsRoRepository _instructorsRepository;
-    private readonly IMediator _mediator;
-    private readonly IStudentsRoRepository _studentsRepository;
-
-    public InstructorsController(
-        IInstructorsRoRepository instructorsRepository,
-        IDepartmentsRoRepository departmentsRepository,
-        ICoursesRoRepository coursesRepository,
-        IStudentsRoRepository studentsRepository,
-        IMediator mediator)
-    {
-        _instructorsRepository = instructorsRepository;
-        _departmentsRepository = departmentsRepository;
-        _coursesRepository = coursesRepository;
-        _studentsRepository = studentsRepository;
-        _mediator = mediator;
-    }
+    private readonly ICoursesRoRepository _coursesRepository = coursesRepository;
+    private readonly IDepartmentsRoRepository _departmentsRepository = departmentsRepository;
+    private readonly IInstructorsRoRepository _instructorsRepository = instructorsRepository;
+    private readonly IMediator _mediator = mediator;
+    private readonly IStudentsRoRepository _studentsRepository = studentsRepository;
 
     public async Task<IActionResult> Index(Guid? id, Guid? courseExternalId, CancellationToken cancellationToken)
     {

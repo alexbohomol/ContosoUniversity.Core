@@ -15,18 +15,12 @@ public record GetCourseDetailsQuery(Guid Id) : IRequest<GetCourseDetailsQueryRes
 
 public record GetCourseDetailsQueryResult(Course Course, Department Department);
 
-internal class GetCourseDetailsQueryHandler : IRequestHandler<GetCourseDetailsQuery, GetCourseDetailsQueryResult>
+internal class GetCourseDetailsQueryHandler(
+    ICoursesRoRepository coursesRepository,
+    IDepartmentsRoRepository departmentsRepository) : IRequestHandler<GetCourseDetailsQuery, GetCourseDetailsQueryResult>
 {
-    private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IDepartmentsRoRepository _departmentsRepository;
-
-    public GetCourseDetailsQueryHandler(
-        ICoursesRoRepository coursesRepository,
-        IDepartmentsRoRepository departmentsRepository)
-    {
-        _coursesRepository = coursesRepository;
-        _departmentsRepository = departmentsRepository;
-    }
+    private readonly ICoursesRoRepository _coursesRepository = coursesRepository;
+    private readonly IDepartmentsRoRepository _departmentsRepository = departmentsRepository;
 
     public async Task<GetCourseDetailsQueryResult> Handle(
         GetCourseDetailsQuery request,

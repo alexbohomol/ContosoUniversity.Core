@@ -22,14 +22,9 @@ public record GetStudentsIndexQueryResult(
     PageInfo PageInfo,
     Student[] Students);
 
-internal class GetStudentsIndexQueryHandler : IRequestHandler<GetStudentsIndexQuery, GetStudentsIndexQueryResult>
+internal class GetStudentsIndexQueryHandler(IStudentsRoRepository studentsRepository) : IRequestHandler<GetStudentsIndexQuery, GetStudentsIndexQueryResult>
 {
-    private readonly IStudentsRoRepository _studentsRepository;
-
-    public GetStudentsIndexQueryHandler(IStudentsRoRepository studentsRepository)
-    {
-        _studentsRepository = studentsRepository;
-    }
+    private readonly IStudentsRoRepository _studentsRepository = studentsRepository;
 
     public async Task<GetStudentsIndexQueryResult> Handle(
         GetStudentsIndexQuery request,

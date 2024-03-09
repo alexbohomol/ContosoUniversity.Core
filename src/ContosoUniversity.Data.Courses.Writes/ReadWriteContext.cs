@@ -2,12 +2,8 @@ namespace ContosoUniversity.Data.Courses.Writes;
 
 using Microsoft.EntityFrameworkCore;
 
-public class ReadWriteContext : DbContext
+public class ReadWriteContext(DbContextOptions<ReadWriteContext> options) : DbContext(options)
 {
-    public ReadWriteContext(DbContextOptions<ReadWriteContext> options) : base(options)
-    {
-    }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("crs");

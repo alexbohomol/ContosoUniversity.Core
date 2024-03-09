@@ -17,14 +17,9 @@ using Microsoft.AspNetCore.Mvc;
 
 using ViewModels.Students;
 
-public class StudentsController : Controller
+public class StudentsController(IMediator mediator) : Controller
 {
-    private readonly IMediator _mediator;
-
-    public StudentsController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    private readonly IMediator _mediator = mediator;
 
     public async Task<IActionResult> Index(GetStudentsIndexQuery request, CancellationToken cancellationToken)
     {

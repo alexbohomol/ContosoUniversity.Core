@@ -17,14 +17,9 @@ public class CreateStudentCommand : IRequest
     public string FirstName { get; set; }
 }
 
-internal class CreateStudentCommandHandler : IRequestHandler<CreateStudentCommand>
+internal class CreateStudentCommandHandler(IStudentsRwRepository repository) : IRequestHandler<CreateStudentCommand>
 {
-    private readonly IStudentsRwRepository _repository;
-
-    public CreateStudentCommandHandler(IStudentsRwRepository repository)
-    {
-        _repository = repository;
-    }
+    private readonly IStudentsRwRepository _repository = repository;
 
     public async Task Handle(CreateStudentCommand request, CancellationToken cancellationToken)
     {

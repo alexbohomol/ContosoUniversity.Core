@@ -44,14 +44,9 @@ public class Program
             });
 }
 
-internal class Startup
+internal class Startup(IConfiguration configuration)
 {
-    private IConfiguration Configuration { get; }
-
-    public Startup(IConfiguration configuration)
-    {
-        Configuration = configuration;
-    }
+    private IConfiguration Configuration { get; } = configuration;
 
     public void ConfigureServices(IServiceCollection services)
     {

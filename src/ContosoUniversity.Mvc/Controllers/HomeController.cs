@@ -12,14 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 
 using ViewModels;
 
-public class HomeController : Controller
+public class HomeController(IStudentsRoRepository repository) : Controller
 {
-    private readonly IStudentsRoRepository _repository;
-
-    public HomeController(IStudentsRoRepository repository)
-    {
-        _repository = repository;
-    }
+    private readonly IStudentsRoRepository _repository = repository;
 
     public IActionResult Index()
     {

@@ -16,18 +16,12 @@ public record GetCoursesIndexQueryResult(
     Course[] Courses,
     Dictionary<Guid, string> DepartmentsReference);
 
-internal class GetCoursesIndexQueryHandler : IRequestHandler<GetCoursesIndexQuery, GetCoursesIndexQueryResult>
+internal class GetCoursesIndexQueryHandler(
+    ICoursesRoRepository coursesRepository,
+    IDepartmentsRoRepository departmentsRepository) : IRequestHandler<GetCoursesIndexQuery, GetCoursesIndexQueryResult>
 {
-    private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IDepartmentsRoRepository _departmentsRepository;
-
-    public GetCoursesIndexQueryHandler(
-        ICoursesRoRepository coursesRepository,
-        IDepartmentsRoRepository departmentsRepository)
-    {
-        _coursesRepository = coursesRepository;
-        _departmentsRepository = departmentsRepository;
-    }
+    private readonly ICoursesRoRepository _coursesRepository = coursesRepository;
+    private readonly IDepartmentsRoRepository _departmentsRepository = departmentsRepository;
 
     public async Task<GetCoursesIndexQueryResult> Handle(
         GetCoursesIndexQuery request,

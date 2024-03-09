@@ -16,24 +16,16 @@ using Notifications;
 
 public record DeleteDepartmentCommand(Guid Id) : IRequest;
 
-internal class DeleteDepartmentCommandHandler : IRequestHandler<DeleteDepartmentCommand>
+internal class DeleteDepartmentCommandHandler(
+    IDepartmentsRwRepository departmentsRwRepository,
+    IDepartmentsRoRepository departmentsRoRepository,
+    ICoursesRoRepository coursesRepository,
+    IMediator mediator) : IRequestHandler<DeleteDepartmentCommand>
 {
-    private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IDepartmentsRoRepository _departmentsRoRepository;
-    private readonly IDepartmentsRwRepository _departmentsRwRepository;
-    private readonly IMediator _mediator;
-
-    public DeleteDepartmentCommandHandler(
-        IDepartmentsRwRepository departmentsRwRepository,
-        IDepartmentsRoRepository departmentsRoRepository,
-        ICoursesRoRepository coursesRepository,
-        IMediator mediator)
-    {
-        _departmentsRwRepository = departmentsRwRepository;
-        _departmentsRoRepository = departmentsRoRepository;
-        _coursesRepository = coursesRepository;
-        _mediator = mediator;
-    }
+    private readonly ICoursesRoRepository _coursesRepository = coursesRepository;
+    private readonly IDepartmentsRoRepository _departmentsRoRepository = departmentsRoRepository;
+    private readonly IDepartmentsRwRepository _departmentsRwRepository = departmentsRwRepository;
+    private readonly IMediator _mediator = mediator;
 
     public async Task Handle(DeleteDepartmentCommand request, CancellationToken cancellationToken)
     {

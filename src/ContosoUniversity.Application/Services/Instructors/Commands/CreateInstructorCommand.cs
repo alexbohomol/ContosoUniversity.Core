@@ -23,14 +23,9 @@ public class CreateInstructorCommand : IRequest
     public bool HasAssignedCourses => SelectedCourses is not null && SelectedCourses.Any();
 }
 
-internal class CreateInstructorCommandHandler : IRequestHandler<CreateInstructorCommand>
+internal class CreateInstructorCommandHandler(IInstructorsRwRepository instructorsRepository) : IRequestHandler<CreateInstructorCommand>
 {
-    private readonly IInstructorsRwRepository _instructorsRepository;
-
-    public CreateInstructorCommandHandler(IInstructorsRwRepository instructorsRepository)
-    {
-        _instructorsRepository = instructorsRepository;
-    }
+    private readonly IInstructorsRwRepository _instructorsRepository = instructorsRepository;
 
     public async Task Handle(CreateInstructorCommand command, CancellationToken cancellationToken)
     {

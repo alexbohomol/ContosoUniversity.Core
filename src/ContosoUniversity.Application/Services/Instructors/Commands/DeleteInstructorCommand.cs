@@ -15,21 +15,14 @@ using MediatR;
 
 public record DeleteInstructorCommand(Guid Id) : IRequest;
 
-internal class DeleteInstructorCommandHandler : IRequestHandler<DeleteInstructorCommand>
+internal class DeleteInstructorCommandHandler(
+    IInstructorsRwRepository instructorsRwRepository,
+    IInstructorsRoRepository instructorsRoRepository,
+    IDepartmentsRwRepository departmentsRepository) : IRequestHandler<DeleteInstructorCommand>
 {
-    private readonly IDepartmentsRwRepository _departmentsRepository;
-    private readonly IInstructorsRoRepository _instructorsRoRepository;
-    private readonly IInstructorsRwRepository _instructorsRwRepository;
-
-    public DeleteInstructorCommandHandler(
-        IInstructorsRwRepository instructorsRwRepository,
-        IInstructorsRoRepository instructorsRoRepository,
-        IDepartmentsRwRepository departmentsRepository)
-    {
-        _instructorsRwRepository = instructorsRwRepository;
-        _instructorsRoRepository = instructorsRoRepository;
-        _departmentsRepository = departmentsRepository;
-    }
+    private readonly IDepartmentsRwRepository _departmentsRepository = departmentsRepository;
+    private readonly IInstructorsRoRepository _instructorsRoRepository = instructorsRoRepository;
+    private readonly IInstructorsRwRepository _instructorsRwRepository = instructorsRwRepository;
 
     public async Task Handle(DeleteInstructorCommand request, CancellationToken cancellationToken)
     {

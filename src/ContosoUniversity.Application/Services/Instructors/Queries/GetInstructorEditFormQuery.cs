@@ -15,19 +15,13 @@ public record GetInstructorEditFormQuery(Guid Id) : IRequest<GetInstructorEditFo
 
 public record GetInstructorEditFormQueryResult(Instructor Instructor, Course[] Courses);
 
-internal class GetInstructorEditFormQueryHandler :
+internal class GetInstructorEditFormQueryHandler(
+    IInstructorsRoRepository instructorsRepository,
+    ICoursesRoRepository coursesRepository) :
     IRequestHandler<GetInstructorEditFormQuery, GetInstructorEditFormQueryResult>
 {
-    private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IInstructorsRoRepository _instructorsRepository;
-
-    public GetInstructorEditFormQueryHandler(
-        IInstructorsRoRepository instructorsRepository,
-        ICoursesRoRepository coursesRepository)
-    {
-        _instructorsRepository = instructorsRepository;
-        _coursesRepository = coursesRepository;
-    }
+    private readonly ICoursesRoRepository _coursesRepository = coursesRepository;
+    private readonly IInstructorsRoRepository _instructorsRepository = instructorsRepository;
 
     public async Task<GetInstructorEditFormQueryResult> Handle(
         GetInstructorEditFormQuery request,

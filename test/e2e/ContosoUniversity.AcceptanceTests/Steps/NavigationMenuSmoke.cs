@@ -9,16 +9,11 @@ using Pages;
 using TechTalk.SpecFlow;
 
 [Binding]
-public class NavigationMenuSmoke
+public class NavigationMenuSmoke(ContosoUniversityPage page)
 {
     private const string FeatureTag = "Navigation";
 
-    private readonly ContosoUniversityPage _page;
-
-    public NavigationMenuSmoke(ContosoUniversityPage page)
-    {
-        _page = page;
-    }
+    private readonly ContosoUniversityPage _page = page;
 
     [Given(@"user is on the site landing page")]
     public async Task GivenUserIsOnTheSiteLandingPage()

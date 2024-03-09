@@ -13,14 +13,9 @@ using MediatR;
 
 public record GetStudentProjectionQuery(Guid Id) : IRequest<Student>;
 
-internal class GetStudentEditFormQueryHandler : IRequestHandler<GetStudentProjectionQuery, Student>
+internal class GetStudentEditFormQueryHandler(IStudentsRoRepository studentsRepository) : IRequestHandler<GetStudentProjectionQuery, Student>
 {
-    private readonly IStudentsRoRepository _studentsRepository;
-
-    public GetStudentEditFormQueryHandler(IStudentsRoRepository studentsRepository)
-    {
-        _studentsRepository = studentsRepository;
-    }
+    private readonly IStudentsRoRepository _studentsRepository = studentsRepository;
 
     public async Task<Student> Handle(
         GetStudentProjectionQuery request,

@@ -15,21 +15,14 @@ using Notifications;
 
 public record DeleteCourseCommand(Guid Id) : IRequest;
 
-internal class DeleteCourseCommandHandler : IRequestHandler<DeleteCourseCommand>
+internal class DeleteCourseCommandHandler(
+    ICoursesRoRepository coursesRoRepository,
+    ICoursesRwRepository coursesRwRepository,
+    IMediator mediator) : IRequestHandler<DeleteCourseCommand>
 {
-    private readonly ICoursesRoRepository _coursesRoRepository;
-    private readonly ICoursesRwRepository _coursesRwRepository;
-    private readonly IMediator _mediator;
-
-    public DeleteCourseCommandHandler(
-        ICoursesRoRepository coursesRoRepository,
-        ICoursesRwRepository coursesRwRepository,
-        IMediator mediator)
-    {
-        _coursesRoRepository = coursesRoRepository;
-        _coursesRwRepository = coursesRwRepository;
-        _mediator = mediator;
-    }
+    private readonly ICoursesRoRepository _coursesRoRepository = coursesRoRepository;
+    private readonly ICoursesRwRepository _coursesRwRepository = coursesRwRepository;
+    private readonly IMediator _mediator = mediator;
 
     public async Task Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
     {

@@ -18,19 +18,13 @@ public record GetDepartmentEditFormQueryResult(
     Department Department,
     Dictionary<Guid, string> InstructorsReference);
 
-internal class GetDepartmentEditFormQueryHandler :
+internal class GetDepartmentEditFormQueryHandler(
+    IInstructorsRoRepository instructorsRepository,
+    IDepartmentsRoRepository departmentsRepository) :
     IRequestHandler<GetDepartmentEditFormQuery, GetDepartmentEditFormQueryResult>
 {
-    private readonly IDepartmentsRoRepository _departmentsRepository;
-    private readonly IInstructorsRoRepository _instructorsRepository;
-
-    public GetDepartmentEditFormQueryHandler(
-        IInstructorsRoRepository instructorsRepository,
-        IDepartmentsRoRepository departmentsRepository)
-    {
-        _instructorsRepository = instructorsRepository;
-        _departmentsRepository = departmentsRepository;
-    }
+    private readonly IDepartmentsRoRepository _departmentsRepository = departmentsRepository;
+    private readonly IInstructorsRoRepository _instructorsRepository = instructorsRepository;
 
     public async Task<GetDepartmentEditFormQueryResult> Handle(
         GetDepartmentEditFormQuery request,

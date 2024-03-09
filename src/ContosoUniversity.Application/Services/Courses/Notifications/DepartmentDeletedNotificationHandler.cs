@@ -9,14 +9,9 @@ using Departments.Notifications;
 
 using MediatR;
 
-internal class DepartmentDeletedNotificationHandler : INotificationHandler<DepartmentDeletedNotification>
+internal class DepartmentDeletedNotificationHandler(ICoursesRwRepository coursesRepository) : INotificationHandler<DepartmentDeletedNotification>
 {
-    private readonly ICoursesRwRepository _coursesRepository;
-
-    public DepartmentDeletedNotificationHandler(ICoursesRwRepository coursesRepository)
-    {
-        _coursesRepository = coursesRepository;
-    }
+    private readonly ICoursesRwRepository _coursesRepository = coursesRepository;
 
     public async Task Handle(DepartmentDeletedNotification notification, CancellationToken cancellationToken)
     {

@@ -19,24 +19,16 @@ using Microsoft.AspNetCore.Mvc;
 
 using ViewModels.Courses;
 
-public class CoursesController : Controller
+public class CoursesController(
+    IDepartmentsRoRepository departmentsRepository,
+    ICoursesRoRepository coursesRoRepository,
+    ICoursesRwRepository coursesRwRepository,
+    IMediator mediator) : Controller
 {
-    private readonly ICoursesRoRepository _coursesRoRepository;
-    private readonly ICoursesRwRepository _coursesRwRepository;
-    private readonly IDepartmentsRoRepository _departmentsRepository;
-    private readonly IMediator _mediator;
-
-    public CoursesController(
-        IDepartmentsRoRepository departmentsRepository,
-        ICoursesRoRepository coursesRoRepository,
-        ICoursesRwRepository coursesRwRepository,
-        IMediator mediator)
-    {
-        _departmentsRepository = departmentsRepository;
-        _coursesRoRepository = coursesRoRepository;
-        _coursesRwRepository = coursesRwRepository;
-        _mediator = mediator;
-    }
+    private readonly ICoursesRoRepository _coursesRoRepository = coursesRoRepository;
+    private readonly ICoursesRwRepository _coursesRwRepository = coursesRwRepository;
+    private readonly IDepartmentsRoRepository _departmentsRepository = departmentsRepository;
+    private readonly IMediator _mediator = mediator;
 
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {

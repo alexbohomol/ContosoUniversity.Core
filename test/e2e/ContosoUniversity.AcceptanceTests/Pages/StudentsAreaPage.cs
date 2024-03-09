@@ -9,12 +9,8 @@ using Microsoft.Playwright;
 
 using Models;
 
-public class StudentsAreaPage : PageObject
+public class StudentsAreaPage(IBrowser browser, IConfiguration configuration) : PageObject(browser, configuration)
 {
-    public StudentsAreaPage(IBrowser browser, IConfiguration configuration) : base(browser, configuration)
-    {
-    }
-
     protected override string PagePath => $"{PageBaseUrl}/Students";
 
     public async Task<StudentTableRowModel[]> ScrapRenderedStudentsList()

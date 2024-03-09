@@ -14,12 +14,8 @@ using Extensions;
 
 using Microsoft.EntityFrameworkCore;
 
-internal class ReadWriteRepository : EfRwRepository<Course>, ICoursesRwRepository
+internal class ReadWriteRepository(ReadWriteContext dbContext) : EfRwRepository<Course>(dbContext), ICoursesRwRepository
 {
-    public ReadWriteRepository(ReadWriteContext dbContext) : base(dbContext)
-    {
-    }
-
     public Task<int> UpdateCourseCredits(int multiplier, CancellationToken cancellationToken = default)
     {
         return DbContext.Database

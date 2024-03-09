@@ -19,18 +19,12 @@ public record GetStudentDetailsQueryResult(
     Student Student,
     Dictionary<Guid, string> CourseTitles);
 
-internal class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQuery, GetStudentDetailsQueryResult>
+internal class GetStudentDetailsQueryHandler(
+    IStudentsRoRepository studentsRepository,
+    ICoursesRoRepository coursesRepository) : IRequestHandler<GetStudentDetailsQuery, GetStudentDetailsQueryResult>
 {
-    private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IStudentsRoRepository _studentsRepository;
-
-    public GetStudentDetailsQueryHandler(
-        IStudentsRoRepository studentsRepository,
-        ICoursesRoRepository coursesRepository)
-    {
-        _studentsRepository = studentsRepository;
-        _coursesRepository = coursesRepository;
-    }
+    private readonly ICoursesRoRepository _coursesRepository = coursesRepository;
+    private readonly IStudentsRoRepository _studentsRepository = studentsRepository;
 
     public async Task<GetStudentDetailsQueryResult> Handle(
         GetStudentDetailsQuery request,

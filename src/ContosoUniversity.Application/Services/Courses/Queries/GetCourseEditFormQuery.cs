@@ -16,18 +16,12 @@ public record GetCourseEditFormQuery(Guid Id) : IRequest<GetCourseEditFormQueryR
 
 public record GetCourseEditFormQueryResult(Course Course, Dictionary<Guid, string> DepartmentsReference);
 
-internal class GetCourseEditFormQueryHandler : IRequestHandler<GetCourseEditFormQuery, GetCourseEditFormQueryResult>
+internal class GetCourseEditFormQueryHandler(
+    ICoursesRoRepository coursesRepository,
+    IDepartmentsRoRepository departmentsRepository) : IRequestHandler<GetCourseEditFormQuery, GetCourseEditFormQueryResult>
 {
-    private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IDepartmentsRoRepository _departmentsRepository;
-
-    public GetCourseEditFormQueryHandler(
-        ICoursesRoRepository coursesRepository,
-        IDepartmentsRoRepository departmentsRepository)
-    {
-        _coursesRepository = coursesRepository;
-        _departmentsRepository = departmentsRepository;
-    }
+    private readonly ICoursesRoRepository _coursesRepository = coursesRepository;
+    private readonly IDepartmentsRoRepository _departmentsRepository = departmentsRepository;
 
     public async Task<GetCourseEditFormQueryResult> Handle(
         GetCourseEditFormQuery request,

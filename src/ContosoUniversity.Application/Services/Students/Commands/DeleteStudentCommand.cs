@@ -13,18 +13,12 @@ using MediatR;
 
 public record DeleteStudentCommand(Guid Id) : IRequest;
 
-internal class DeleteStudentCommandHandler : IRequestHandler<DeleteStudentCommand>
+internal class DeleteStudentCommandHandler(
+    IStudentsRoRepository studentsRoRepository,
+    IStudentsRwRepository studentsRwRepository) : IRequestHandler<DeleteStudentCommand>
 {
-    private readonly IStudentsRoRepository _studentsRoRepository;
-    private readonly IStudentsRwRepository _studentsRwRepository;
-
-    public DeleteStudentCommandHandler(
-        IStudentsRoRepository studentsRoRepository,
-        IStudentsRwRepository studentsRwRepository)
-    {
-        _studentsRoRepository = studentsRoRepository;
-        _studentsRwRepository = studentsRwRepository;
-    }
+    private readonly IStudentsRoRepository _studentsRoRepository = studentsRoRepository;
+    private readonly IStudentsRwRepository _studentsRwRepository = studentsRwRepository;
 
     public async Task Handle(DeleteStudentCommand request, CancellationToken cancellationToken)
     {

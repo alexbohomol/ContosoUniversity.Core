@@ -13,12 +13,8 @@ using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using Microsoft.EntityFrameworkCore;
 
-internal sealed class ReadOnlyRepository : EfRoRepository<Student>, IStudentsRoRepository
+internal sealed class ReadOnlyRepository(ReadOnlyContext dbContext) : EfRoRepository<Student>(dbContext), IStudentsRoRepository
 {
-    public ReadOnlyRepository(ReadOnlyContext dbContext) : base(dbContext)
-    {
-    }
-
     public async Task<EnrollmentDateGroup[]> GetEnrollmentDateGroups(CancellationToken cancellationToken = default)
     {
         var groups = new List<EnrollmentDateGroup>();

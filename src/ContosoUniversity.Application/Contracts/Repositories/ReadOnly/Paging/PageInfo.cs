@@ -2,16 +2,10 @@ namespace ContosoUniversity.Application.Contracts.Repositories.ReadOnly.Paging;
 
 using System;
 
-public class PageInfo
+public class PageInfo(PageRequest request, int count)
 {
-    public PageInfo(PageRequest request, int count)
-    {
-        PageIndex = request.PageNumber;
-        TotalPages = (int)Math.Ceiling(count / (double)request.PageSize);
-    }
-
-    public int PageIndex { get; }
-    private int TotalPages { get; }
+    public int PageIndex { get; } = request.PageNumber;
+    private int TotalPages { get; } = (int)Math.Ceiling(count / (double)request.PageSize);
     public bool HasPreviousPage => PageIndex > 1;
     public bool HasNextPage => PageIndex < TotalPages;
 }

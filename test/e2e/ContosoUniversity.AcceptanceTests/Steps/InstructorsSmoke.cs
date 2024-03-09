@@ -12,7 +12,7 @@ using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
 [Binding]
-public class InstructorsSmoke
+public class InstructorsSmoke(InstructorsAreaPage page, ScenarioContext scenarioContext)
 {
     private const string FeatureTag = "Instructors";
 
@@ -20,14 +20,8 @@ public class InstructorsSmoke
     private const string SubmittedInstructor = nameof(SubmittedInstructor);
     private const string ListAfterInstructorSubmitted = nameof(ListAfterInstructorSubmitted);
 
-    private readonly InstructorsAreaPage _page;
-    private readonly ScenarioContext _scenarioContext;
-
-    public InstructorsSmoke(InstructorsAreaPage page, ScenarioContext scenarioContext)
-    {
-        _page = page;
-        _scenarioContext = scenarioContext;
-    }
+    private readonly InstructorsAreaPage _page = page;
+    private readonly ScenarioContext _scenarioContext = scenarioContext;
 
     [Given(@"user is on the Instructors area landing page")]
     public async Task GivenUserIsOnTheInstructorsAreaLandingPage()
