@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 
-public class ContosoUniversityPage(IBrowser browser, IConfiguration configuration) : PageObject(browser, configuration)
+public class ContosoUniversityPage(IBrowser browser, IConfiguration configuration)
+    : PageObject(browser, configuration)
 {
     protected override string PagePath => PageBaseUrl;
 

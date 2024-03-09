@@ -9,7 +9,8 @@ using Microsoft.Playwright;
 
 using Models;
 
-public class InstructorsAreaPage(IBrowser browser, IConfiguration configuration) : PageObject(browser, configuration)
+public class InstructorsAreaPage(IBrowser browser, IConfiguration configuration)
+    : PageObject(browser, configuration)
 {
     protected override string PagePath => $"{PageBaseUrl}/Instructors";
 

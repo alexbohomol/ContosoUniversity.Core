@@ -26,7 +26,8 @@ public class EditInstructorCommand : IRequest
         && SelectedCourses.Length != 0;
 }
 
-internal class EditInstructorCommandHandler(IInstructorsRwRepository instructorsRepository) : IRequestHandler<EditInstructorCommand>
+internal class EditInstructorCommandHandler(IInstructorsRwRepository instructorsRepository)
+    : IRequestHandler<EditInstructorCommand>
 {
     public async Task Handle(EditInstructorCommand request, CancellationToken cancellationToken)
     {
