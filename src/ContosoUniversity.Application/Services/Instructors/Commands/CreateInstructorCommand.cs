@@ -25,8 +25,6 @@ public class CreateInstructorCommand : IRequest
 
 internal class CreateInstructorCommandHandler(IInstructorsRwRepository instructorsRepository) : IRequestHandler<CreateInstructorCommand>
 {
-    private readonly IInstructorsRwRepository _instructorsRepository = instructorsRepository;
-
     public async Task Handle(CreateInstructorCommand command, CancellationToken cancellationToken)
     {
         var instructor = Instructor.Create(
@@ -44,6 +42,6 @@ internal class CreateInstructorCommandHandler(IInstructorsRwRepository instructo
             instructor.AssignOffice(new OfficeAssignment(command.Location));
         }
 
-        await _instructorsRepository.Save(instructor, cancellationToken);
+        await instructorsRepository.Save(instructor, cancellationToken);
     }
 }

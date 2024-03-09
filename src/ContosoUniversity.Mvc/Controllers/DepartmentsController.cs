@@ -23,12 +23,9 @@ public class DepartmentsController(
     IInstructorsRoRepository instructorsRepository,
     IMediator mediator) : Controller
 {
-    private readonly IInstructorsRoRepository _instructorsRepository = instructorsRepository;
-    private readonly IMediator _mediator = mediator;
-
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        Department[] departments = await _mediator.Send(
+        Department[] departments = await mediator.Send(
             new GetDepartmentsIndexQuery(),
             cancellationToken);
 
@@ -42,7 +39,7 @@ public class DepartmentsController(
             return BadRequest();
         }
 
-        Department department = await _mediator.Send(
+        Department department = await mediator.Send(
             new GetDepartmentDetailsQuery(id.Value),
             cancellationToken);
 
@@ -54,7 +51,7 @@ public class DepartmentsController(
     public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {
         Dictionary<Guid, string> instructorNames =
-            await _instructorsRepository.GetInstructorNamesReference(cancellationToken);
+            await instructorsRepository.GetInstructorNamesReference(cancellationToken);
 
         return View(new CreateDepartmentForm
         {
@@ -80,7 +77,7 @@ public class DepartmentsController(
             return View(
                 new CreateDepartmentForm(
                     request,
-                    await _instructorsRepository.GetInstructorNamesReference(cancellationToken)));
+                    await instructorsRepository.GetInstructorNamesReference(cancellationToken)));
         }
 
         CreateDepartmentCommand command = new()
@@ -96,7 +93,7 @@ public class DepartmentsController(
             return BadRequest();
         }
 
-        await _mediator.Send(command, cancellationToken);
+        await mediator.Send(command, cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
@@ -108,7 +105,7 @@ public class DepartmentsController(
             return BadRequest();
         }
 
-        (Department department, Dictionary<Guid, string> instructorsReference) = await _mediator.Send(
+        (Department department, Dictionary<Guid, string> instructorsReference) = await mediator.Send(
             new GetDepartmentEditFormQuery(id.Value),
             cancellationToken);
 
@@ -134,7 +131,7 @@ public class DepartmentsController(
             return View(
                 new EditDepartmentForm(
                     request,
-                    await _instructorsRepository.GetInstructorNamesReference(cancellationToken)));
+                    await instructorsRepository.GetInstructorNamesReference(cancellationToken)));
         }
 
         EditDepartmentCommand command = new()
@@ -152,7 +149,7 @@ public class DepartmentsController(
             return BadRequest();
         }
 
-        await _mediator.Send(command, cancellationToken);
+        await mediator.Send(command, cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
@@ -164,7 +161,7 @@ public class DepartmentsController(
             return BadRequest();
         }
 
-        Department department = await _mediator.Send(
+        Department department = await mediator.Send(
             new GetDepartmentDetailsQuery(id.Value),
             cancellationToken);
 
@@ -177,7 +174,7 @@ public class DepartmentsController(
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _mediator.Send(
+        await mediator.Send(
             new DeleteDepartmentCommand(id),
             cancellationToken);
 

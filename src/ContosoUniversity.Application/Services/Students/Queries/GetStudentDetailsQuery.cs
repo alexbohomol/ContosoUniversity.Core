@@ -23,16 +23,13 @@ internal class GetStudentDetailsQueryHandler(
     IStudentsRoRepository studentsRepository,
     ICoursesRoRepository coursesRepository) : IRequestHandler<GetStudentDetailsQuery, GetStudentDetailsQueryResult>
 {
-    private readonly ICoursesRoRepository _coursesRepository = coursesRepository;
-    private readonly IStudentsRoRepository _studentsRepository = studentsRepository;
-
     public async Task<GetStudentDetailsQueryResult> Handle(
         GetStudentDetailsQuery request,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        Student student = await _studentsRepository.GetById(request.Id, cancellationToken);
+        Student student = await studentsRepository.GetById(request.Id, cancellationToken);
         if (student == null)
         {
             throw new EntityNotFoundException(nameof(student), request.Id);
@@ -40,7 +37,7 @@ internal class GetStudentDetailsQueryHandler(
 
         Guid[] coursesIds = student.Enrollments.Select(x => x.CourseId).ToArray();
 
-        Dictionary<Guid, string> courseTitles = await _coursesRepository
+        Dictionary<Guid, string> courseTitles = await coursesRepository
             .GetCourseTitlesReference(coursesIds, cancellationToken);
 
         Guid[] notFoundCourseIds = coursesIds.Except(courseTitles.Keys).ToArray();

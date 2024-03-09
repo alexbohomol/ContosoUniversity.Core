@@ -19,22 +19,19 @@ internal class GetCourseDetailsQueryHandler(
     ICoursesRoRepository coursesRepository,
     IDepartmentsRoRepository departmentsRepository) : IRequestHandler<GetCourseDetailsQuery, GetCourseDetailsQueryResult>
 {
-    private readonly ICoursesRoRepository _coursesRepository = coursesRepository;
-    private readonly IDepartmentsRoRepository _departmentsRepository = departmentsRepository;
-
     public async Task<GetCourseDetailsQueryResult> Handle(
         GetCourseDetailsQuery request,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        Course course = await _coursesRepository.GetById(request.Id, cancellationToken);
+        Course course = await coursesRepository.GetById(request.Id, cancellationToken);
         if (course == null)
         {
             throw new EntityNotFoundException(nameof(course), request.Id);
         }
 
-        Department department = await _departmentsRepository.GetById(course.DepartmentId, cancellationToken);
+        Department department = await departmentsRepository.GetById(course.DepartmentId, cancellationToken);
         if (department == null)
         {
             throw new EntityNotFoundException(nameof(department), course.DepartmentId);

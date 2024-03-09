@@ -19,8 +19,6 @@ using ViewModels.Students;
 
 public class StudentsController(IMediator mediator) : Controller
 {
-    private readonly IMediator _mediator = mediator;
-
     public async Task<IActionResult> Index(GetStudentsIndexQuery request, CancellationToken cancellationToken)
     {
         if (request.SearchString != null)
@@ -32,7 +30,7 @@ public class StudentsController(IMediator mediator) : Controller
             request.SearchString = request.CurrentFilter;
         }
 
-        (PageInfo pageInfo, Student[] students) = await _mediator.Send(request, cancellationToken);
+        (PageInfo pageInfo, Student[] students) = await mediator.Send(request, cancellationToken);
 
         return View(new StudentIndexViewModel(request, pageInfo, students));
     }
@@ -44,7 +42,7 @@ public class StudentsController(IMediator mediator) : Controller
             return NotFound();
         }
 
-        (Student student, Dictionary<Guid, string> courseTitles) = await _mediator.Send(
+        (Student student, Dictionary<Guid, string> courseTitles) = await mediator.Send(
             new GetStudentDetailsQuery(id.Value),
             cancellationToken);
 
@@ -85,7 +83,7 @@ public class StudentsController(IMediator mediator) : Controller
             return BadRequest();
         }
 
-        await _mediator.Send(command, cancellationToken);
+        await mediator.Send(command, cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
@@ -97,7 +95,7 @@ public class StudentsController(IMediator mediator) : Controller
             return BadRequest();
         }
 
-        Student student = await _mediator.Send(
+        Student student = await mediator.Send(
             new GetStudentProjectionQuery(id.Value),
             cancellationToken);
 
@@ -136,7 +134,7 @@ public class StudentsController(IMediator mediator) : Controller
             return BadRequest();
         }
 
-        await _mediator.Send(command, cancellationToken);
+        await mediator.Send(command, cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
@@ -148,7 +146,7 @@ public class StudentsController(IMediator mediator) : Controller
             return BadRequest();
         }
 
-        Student student = await _mediator.Send(
+        Student student = await mediator.Send(
             new GetStudentProjectionQuery(id.Value),
             cancellationToken);
 
@@ -161,7 +159,7 @@ public class StudentsController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _mediator.Send(
+        await mediator.Send(
             new DeleteStudentCommand(id),
             cancellationToken);
 

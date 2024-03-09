@@ -27,12 +27,9 @@ internal class EditDepartmentCommandHandler(
     IInstructorsRoRepository instructorsRepository,
     IDepartmentsRwRepository departmentsRepository) : IRequestHandler<EditDepartmentCommand>
 {
-    private readonly IDepartmentsRwRepository _departmentsRepository = departmentsRepository;
-    private readonly IInstructorsRoRepository _instructorsRepository = instructorsRepository;
-
     public async Task Handle(EditDepartmentCommand request, CancellationToken cancellationToken)
     {
-        Department department = await _departmentsRepository.GetById(request.ExternalId, cancellationToken);
+        Department department = await departmentsRepository.GetById(request.ExternalId, cancellationToken);
         if (department is null)
         {
             throw new EntityNotFoundException(nameof(department), request.ExternalId);
@@ -42,7 +39,7 @@ internal class EditDepartmentCommandHandler(
 
         if (request.AdministratorId.HasValue)
         {
-            if (!await _instructorsRepository.Exists(request.AdministratorId.Value, cancellationToken))
+            if (!await instructorsRepository.Exists(request.AdministratorId.Value, cancellationToken))
             {
                 throw new EntityNotFoundException("instructor", request.AdministratorId.Value);
             }
@@ -54,6 +51,6 @@ internal class EditDepartmentCommandHandler(
             department.DisassociateAdministrator();
         }
 
-        await _departmentsRepository.Save(department, cancellationToken);
+        await departmentsRepository.Save(department, cancellationToken);
     }
 }

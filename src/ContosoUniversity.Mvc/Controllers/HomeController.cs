@@ -14,8 +14,6 @@ using ViewModels;
 
 public class HomeController(IStudentsRoRepository repository) : Controller
 {
-    private readonly IStudentsRoRepository _repository = repository;
-
     public IActionResult Index()
     {
         return View();
@@ -23,7 +21,7 @@ public class HomeController(IStudentsRoRepository repository) : Controller
 
     public async Task<ActionResult> About(CancellationToken cancellationToken)
     {
-        EnrollmentDateGroup[] groups = await _repository.GetEnrollmentDateGroups(cancellationToken);
+        EnrollmentDateGroup[] groups = await repository.GetEnrollmentDateGroups(cancellationToken);
 
         ViewModels.Home.EnrollmentDateGroup[] viewModels = groups.Select(x => new ViewModels.Home.EnrollmentDateGroup
         {

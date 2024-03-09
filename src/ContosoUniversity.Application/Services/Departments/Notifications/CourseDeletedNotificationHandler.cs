@@ -14,20 +14,18 @@ using MediatR;
 
 internal class CourseDeletedNotificationHandler(IInstructorsRwRepository instructorsRepository) : INotificationHandler<CourseDeletedNotification>
 {
-    private readonly IInstructorsRwRepository _instructorsRepository = instructorsRepository;
-
     public async Task Handle(CourseDeletedNotification notification, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(notification, nameof(notification));
 
-        Instructor[] instructors = await _instructorsRepository.GetAllAssignedToCourses(
+        Instructor[] instructors = await instructorsRepository.GetAllAssignedToCourses(
             new[] { notification.Id },
             cancellationToken);
 
         foreach (Instructor instructor in instructors)
         {
             instructor.ResetCourseAssignment(notification.Id);
-            await _instructorsRepository.Save(instructor, cancellationToken);
+            await instructorsRepository.Save(instructor, cancellationToken);
         }
     }
 }

@@ -25,14 +25,9 @@ public class CoursesController(
     ICoursesRwRepository coursesRwRepository,
     IMediator mediator) : Controller
 {
-    private readonly ICoursesRoRepository _coursesRoRepository = coursesRoRepository;
-    private readonly ICoursesRwRepository _coursesRwRepository = coursesRwRepository;
-    private readonly IDepartmentsRoRepository _departmentsRepository = departmentsRepository;
-    private readonly IMediator _mediator = mediator;
-
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        (Course[] courses, Dictionary<Guid, string> departmentsReference) = await _mediator.Send(
+        (Course[] courses, Dictionary<Guid, string> departmentsReference) = await mediator.Send(
             new GetCoursesIndexQuery(),
             cancellationToken);
 
@@ -53,7 +48,7 @@ public class CoursesController(
             return BadRequest();
         }
 
-        (Course course, Department department) = await _mediator.Send(
+        (Course course, Department department) = await mediator.Send(
             new GetCourseDetailsQuery(id.Value),
             cancellationToken);
 
@@ -66,7 +61,7 @@ public class CoursesController(
     {
         return View(
             new CreateCourseForm(
-                await _departmentsRepository.GetDepartmentNamesReference(cancellationToken)));
+                await departmentsRepository.GetDepartmentNamesReference(cancellationToken)));
     }
 
     [HttpPost]
@@ -86,7 +81,7 @@ public class CoursesController(
             return View(
                 new CreateCourseForm(
                     request,
-                    await _departmentsRepository.GetDepartmentNamesReference(cancellationToken)));
+                    await departmentsRepository.GetDepartmentNamesReference(cancellationToken)));
         }
 
         CreateCourseCommand command = new()
@@ -102,7 +97,7 @@ public class CoursesController(
             return BadRequest();
         }
 
-        await _mediator.Send(command, cancellationToken);
+        await mediator.Send(command, cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
@@ -114,7 +109,7 @@ public class CoursesController(
             return BadRequest();
         }
 
-        (Course course, Dictionary<Guid, string> departmentsReference) = await _mediator.Send(
+        (Course course, Dictionary<Guid, string> departmentsReference) = await mediator.Send(
             new GetCourseEditFormQuery(id.Value),
             cancellationToken);
 
@@ -140,13 +135,13 @@ public class CoursesController(
 
         if (!ModelState.IsValid)
         {
-            Course course = await _coursesRoRepository.GetById(request.Id, cancellationToken);
+            Course course = await coursesRoRepository.GetById(request.Id, cancellationToken);
 
             return View(
                 new EditCourseForm(
                     request,
                     course.Code,
-                    await _departmentsRepository.GetDepartmentNamesReference(cancellationToken)));
+                    await departmentsRepository.GetDepartmentNamesReference(cancellationToken)));
         }
 
         EditCourseCommand command = new()
@@ -162,7 +157,7 @@ public class CoursesController(
             return BadRequest();
         }
 
-        await _mediator.Send(command, cancellationToken);
+        await mediator.Send(command, cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
@@ -174,7 +169,7 @@ public class CoursesController(
             return BadRequest();
         }
 
-        (Course course, Department department) = await _mediator.Send(
+        (Course course, Department department) = await mediator.Send(
             new GetCourseDetailsQuery(id.Value),
             cancellationToken);
 
@@ -187,7 +182,7 @@ public class CoursesController(
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _mediator.Send(
+        await mediator.Send(
             new DeleteCourseCommand(id),
             cancellationToken);
 
@@ -204,7 +199,7 @@ public class CoursesController(
     {
         if (multiplier.HasValue)
         {
-            ViewData["RowsAffected"] = await _coursesRwRepository.UpdateCourseCredits(
+            ViewData["RowsAffected"] = await coursesRwRepository.UpdateCourseCredits(
                 multiplier.Value,
                 cancellationToken);
         }

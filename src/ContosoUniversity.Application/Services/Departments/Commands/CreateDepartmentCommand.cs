@@ -20,8 +20,6 @@ public class CreateDepartmentCommand : IRequest
 
 internal class CreateDepartmentCommandHandler(IDepartmentsRwRepository departmentsRepository) : IRequestHandler<CreateDepartmentCommand>
 {
-    private readonly IDepartmentsRwRepository _departmentsRepository = departmentsRepository;
-
     public async Task Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
     {
         var department = Department.Create(
@@ -30,6 +28,6 @@ internal class CreateDepartmentCommandHandler(IDepartmentsRwRepository departmen
             request.StartDate,
             request.AdministratorId);
 
-        await _departmentsRepository.Save(department, cancellationToken);
+        await departmentsRepository.Save(department, cancellationToken);
     }
 }

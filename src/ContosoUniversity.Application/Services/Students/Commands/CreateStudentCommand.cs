@@ -19,11 +19,9 @@ public class CreateStudentCommand : IRequest
 
 internal class CreateStudentCommandHandler(IStudentsRwRepository repository) : IRequestHandler<CreateStudentCommand>
 {
-    private readonly IStudentsRwRepository _repository = repository;
-
     public async Task Handle(CreateStudentCommand request, CancellationToken cancellationToken)
     {
-        await _repository.Save(Student.Create(
+        await repository.Save(Student.Create(
                 request.LastName,
                 request.FirstName,
                 request.EnrollmentDate),

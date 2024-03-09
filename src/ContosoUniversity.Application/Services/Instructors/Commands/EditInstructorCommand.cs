@@ -30,11 +30,9 @@ public class EditInstructorCommand : IRequest
 
 internal class EditInstructorCommandHandler(IInstructorsRwRepository instructorsRepository) : IRequestHandler<EditInstructorCommand>
 {
-    private readonly IInstructorsRwRepository _instructorsRepository = instructorsRepository;
-
     public async Task Handle(EditInstructorCommand request, CancellationToken cancellationToken)
     {
-        Instructor instructor = await _instructorsRepository.GetById(request.ExternalId, cancellationToken);
+        Instructor instructor = await instructorsRepository.GetById(request.ExternalId, cancellationToken);
         if (instructor is null)
         {
             throw new EntityNotFoundException(nameof(instructor), request.ExternalId);
@@ -60,6 +58,6 @@ internal class EditInstructorCommandHandler(IInstructorsRwRepository instructors
             instructor.ResetOffice();
         }
 
-        await _instructorsRepository.Save(instructor, cancellationToken);
+        await instructorsRepository.Save(instructor, cancellationToken);
     }
 }

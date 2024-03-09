@@ -23,22 +23,19 @@ internal class GetDepartmentEditFormQueryHandler(
     IDepartmentsRoRepository departmentsRepository) :
     IRequestHandler<GetDepartmentEditFormQuery, GetDepartmentEditFormQueryResult>
 {
-    private readonly IDepartmentsRoRepository _departmentsRepository = departmentsRepository;
-    private readonly IInstructorsRoRepository _instructorsRepository = instructorsRepository;
-
     public async Task<GetDepartmentEditFormQueryResult> Handle(
         GetDepartmentEditFormQuery request,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        Department department = await _departmentsRepository.GetById(request.Id, cancellationToken);
+        Department department = await departmentsRepository.GetById(request.Id, cancellationToken);
         if (department is null)
         {
             throw new EntityNotFoundException(nameof(department));
         }
 
-        Dictionary<Guid, string> instructorNames = await _instructorsRepository
+        Dictionary<Guid, string> instructorNames = await instructorsRepository
             .GetInstructorNamesReference(cancellationToken);
 
         return new GetDepartmentEditFormQueryResult(department, instructorNames);

@@ -20,11 +20,9 @@ public class EditCourseCommand : IRequest
 
 internal class EditCourseCommandHandler(ICoursesRwRepository coursesRepository) : IRequestHandler<EditCourseCommand>
 {
-    private readonly ICoursesRwRepository _coursesRepository = coursesRepository;
-
     public async Task Handle(EditCourseCommand request, CancellationToken cancellationToken)
     {
-        Domain.Course.Course course = await _coursesRepository.GetById(request.Id, cancellationToken);
+        Domain.Course.Course course = await coursesRepository.GetById(request.Id, cancellationToken);
         if (course == null)
         {
             throw new EntityNotFoundException(nameof(course), request.Id);
@@ -35,6 +33,6 @@ internal class EditCourseCommandHandler(ICoursesRwRepository coursesRepository) 
             request.Credits,
             request.DepartmentId);
 
-        await _coursesRepository.Save(course, cancellationToken);
+        await coursesRepository.Save(course, cancellationToken);
     }
 }

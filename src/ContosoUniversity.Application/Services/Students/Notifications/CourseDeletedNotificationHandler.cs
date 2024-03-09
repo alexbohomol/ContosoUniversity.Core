@@ -15,13 +15,11 @@ using MediatR;
 
 internal class CourseDeletedNotificationHandler(IStudentsRwRepository studentsRepository) : INotificationHandler<CourseDeletedNotification>
 {
-    private readonly IStudentsRwRepository _studentsRepository = studentsRepository;
-
     public async Task Handle(CourseDeletedNotification notification, CancellationToken cancellationToken)
     {
         Guid[] courseIds = { notification.Id };
 
-        Student[] enrolledStudents = await _studentsRepository
+        Student[] enrolledStudents = await studentsRepository
             .GetStudentsEnrolledForCourses(courseIds, cancellationToken);
 
         if (enrolledStudents.Any())
@@ -29,7 +27,7 @@ internal class CourseDeletedNotificationHandler(IStudentsRwRepository studentsRe
             foreach (Student student in enrolledStudents)
             {
                 student.WithdrawCourses(courseIds);
-                await _studentsRepository.Save(student, cancellationToken);
+                await studentsRepository.Save(student, cancellationToken);
             }
         }
     }

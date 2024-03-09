@@ -29,19 +29,13 @@ public class InstructorsController(
     IStudentsRoRepository studentsRepository,
     IMediator mediator) : Controller
 {
-    private readonly ICoursesRoRepository _coursesRepository = coursesRepository;
-    private readonly IDepartmentsRoRepository _departmentsRepository = departmentsRepository;
-    private readonly IInstructorsRoRepository _instructorsRepository = instructorsRepository;
-    private readonly IMediator _mediator = mediator;
-    private readonly IStudentsRoRepository _studentsRepository = studentsRepository;
-
     public async Task<IActionResult> Index(Guid? id, Guid? courseExternalId, CancellationToken cancellationToken)
     {
-        Instructor[] instructors = (await _instructorsRepository.GetAll(cancellationToken))
+        Instructor[] instructors = (await instructorsRepository.GetAll(cancellationToken))
             .OrderBy(x => x.LastName)
             .ToArray();
 
-        Course[] courses = await _coursesRepository.GetAll(cancellationToken);
+        Course[] courses = await coursesRepository.GetAll(cancellationToken);
 
         CrossContextBoundariesValidator.EnsureInstructorsReferenceTheExistingCourses(instructors, courses);
 
@@ -72,7 +66,7 @@ public class InstructorsController(
             InstructorListItemViewModel instructor = viewModel.Instructors.Single(i => i.Id == id.Value);
             HashSet<Guid> instructorCourseIds = instructor.AssignedCourseIds.ToHashSet();
             Dictionary<Guid, string> departmentNames =
-                await _departmentsRepository.GetDepartmentNamesReference(cancellationToken);
+                await departmentsRepository.GetDepartmentNamesReference(cancellationToken);
 
             CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);
 
@@ -92,7 +86,7 @@ public class InstructorsController(
 
         if (courseExternalId is not null)
         {
-            Student[] students = await _studentsRepository.GetStudentsEnrolledForCourses(
+            Student[] students = await studentsRepository.GetStudentsEnrolledForCourses(
                 new[]
                 {
                     courseExternalId.Value
@@ -123,7 +117,7 @@ public class InstructorsController(
             return NotFound();
         }
 
-        Instructor instructor = await _mediator.Send(
+        Instructor instructor = await mediator.Send(
             new GetInstructorDetailsQuery(id.Value),
             cancellationToken);
 
@@ -134,7 +128,7 @@ public class InstructorsController(
 
     public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {
-        Course[] courses = await _coursesRepository.GetAll(cancellationToken);
+        Course[] courses = await coursesRepository.GetAll(cancellationToken);
 
         return View(new CreateInstructorForm
         {
@@ -157,7 +151,7 @@ public class InstructorsController(
 
         if (!ModelState.IsValid)
         {
-            Course[] courses = await _coursesRepository.GetAll(cancellationToken);
+            Course[] courses = await coursesRepository.GetAll(cancellationToken);
 
             return View(
                 new CreateInstructorForm(
@@ -179,7 +173,7 @@ public class InstructorsController(
             return BadRequest();
         }
 
-        await _mediator.Send(command, cancellationToken);
+        await mediator.Send(command, cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
@@ -191,7 +185,7 @@ public class InstructorsController(
             return BadRequest();
         }
 
-        (Instructor instructor, Course[] courses) = await _mediator.Send(
+        (Instructor instructor, Course[] courses) = await mediator.Send(
             new GetInstructorEditFormQuery(id.Value),
             cancellationToken);
 
@@ -214,7 +208,7 @@ public class InstructorsController(
 
         if (!ModelState.IsValid)
         {
-            Course[] courses = await _coursesRepository.GetAll(cancellationToken);
+            Course[] courses = await coursesRepository.GetAll(cancellationToken);
 
             return View(
                 new EditInstructorForm(
@@ -237,7 +231,7 @@ public class InstructorsController(
             return BadRequest();
         }
 
-        await _mediator.Send(command, cancellationToken);
+        await mediator.Send(command, cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
@@ -249,7 +243,7 @@ public class InstructorsController(
             return NotFound();
         }
 
-        Instructor instructor = await _mediator.Send(
+        Instructor instructor = await mediator.Send(
             new GetInstructorDetailsQuery(id.Value),
             cancellationToken);
 
@@ -262,7 +256,7 @@ public class InstructorsController(
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _mediator.Send(
+        await mediator.Send(
             new DeleteInstructorCommand(id),
             cancellationToken);
 

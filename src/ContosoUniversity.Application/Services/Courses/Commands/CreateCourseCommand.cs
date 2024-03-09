@@ -20,11 +20,9 @@ public class CreateCourseCommand : IRequest
 
 internal class CreateCourseCommandHandler(ICoursesRwRepository coursesRepository) : IRequestHandler<CreateCourseCommand>
 {
-    private readonly ICoursesRwRepository _coursesRepository = coursesRepository;
-
     public async Task Handle(CreateCourseCommand request, CancellationToken cancellationToken)
     {
-        await _coursesRepository.Save(
+        await coursesRepository.Save(
             Course.Create(
                 request.CourseCode,
                 request.Title,

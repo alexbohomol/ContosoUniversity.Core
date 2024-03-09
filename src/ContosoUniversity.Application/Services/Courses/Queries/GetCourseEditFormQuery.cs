@@ -20,23 +20,20 @@ internal class GetCourseEditFormQueryHandler(
     ICoursesRoRepository coursesRepository,
     IDepartmentsRoRepository departmentsRepository) : IRequestHandler<GetCourseEditFormQuery, GetCourseEditFormQueryResult>
 {
-    private readonly ICoursesRoRepository _coursesRepository = coursesRepository;
-    private readonly IDepartmentsRoRepository _departmentsRepository = departmentsRepository;
-
     public async Task<GetCourseEditFormQueryResult> Handle(
         GetCourseEditFormQuery request,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        Course course = await _coursesRepository.GetById(request.Id, cancellationToken);
+        Course course = await coursesRepository.GetById(request.Id, cancellationToken);
         if (course == null)
         {
             throw new EntityNotFoundException(nameof(course), request.Id);
         }
 
         Dictionary<Guid, string> departments =
-            await _departmentsRepository.GetDepartmentNamesReference(cancellationToken);
+            await departmentsRepository.GetDepartmentNamesReference(cancellationToken);
 
         CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(
             new[] { course },
