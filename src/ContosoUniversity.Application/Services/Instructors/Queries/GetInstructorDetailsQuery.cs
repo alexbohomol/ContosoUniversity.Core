@@ -13,22 +13,16 @@ using MediatR;
 
 public record GetInstructorDetailsQuery(Guid Id) : IRequest<Instructor>;
 
-internal class GetInstructorDetailsQueryHandler : IRequestHandler<GetInstructorDetailsQuery, Instructor>
+internal class GetInstructorDetailsQueryHandler(IInstructorsRoRepository instructorsRepository)
+    : IRequestHandler<GetInstructorDetailsQuery, Instructor>
 {
-    private readonly IInstructorsRoRepository _instructorsRepository;
-
-    public GetInstructorDetailsQueryHandler(IInstructorsRoRepository instructorsRepository)
-    {
-        _instructorsRepository = instructorsRepository;
-    }
-
     public async Task<Instructor> Handle(
         GetInstructorDetailsQuery request,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        Instructor instructor = await _instructorsRepository.GetById(request.Id, cancellationToken);
+        Instructor instructor = await instructorsRepository.GetById(request.Id, cancellationToken);
 
         return instructor ?? throw new EntityNotFoundException(nameof(instructor), request.Id);
     }

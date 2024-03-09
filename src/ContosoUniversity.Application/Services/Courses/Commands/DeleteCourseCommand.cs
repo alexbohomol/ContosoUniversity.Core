@@ -15,35 +15,25 @@ using Notifications;
 
 public record DeleteCourseCommand(Guid Id) : IRequest;
 
-internal class DeleteCourseCommandHandler : IRequestHandler<DeleteCourseCommand>
+internal class DeleteCourseCommandHandler(
+    ICoursesRoRepository coursesRoRepository,
+    ICoursesRwRepository coursesRwRepository,
+    IMediator mediator)
+    : IRequestHandler<DeleteCourseCommand>
 {
-    private readonly ICoursesRoRepository _coursesRoRepository;
-    private readonly ICoursesRwRepository _coursesRwRepository;
-    private readonly IMediator _mediator;
-
-    public DeleteCourseCommandHandler(
-        ICoursesRoRepository coursesRoRepository,
-        ICoursesRwRepository coursesRwRepository,
-        IMediator mediator)
-    {
-        _coursesRoRepository = coursesRoRepository;
-        _coursesRwRepository = coursesRwRepository;
-        _mediator = mediator;
-    }
-
     public async Task Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
     {
-        if (!await _coursesRoRepository.Exists(request.Id, cancellationToken))
+        if (!await coursesRoRepository.Exists(request.Id, cancellationToken))
         {
             throw new EntityNotFoundException("course", request.Id);
         }
 
-        await _coursesRwRepository.Remove(request.Id, cancellationToken);
+        await coursesRwRepository.Remove(request.Id, cancellationToken);
 
         /*
          * remove related assignments and enrollments
          */
-        await _mediator.Publish(
+        await mediator.Publish(
             new CourseDeletedNotification(request.Id),
             cancellationToken);
     }

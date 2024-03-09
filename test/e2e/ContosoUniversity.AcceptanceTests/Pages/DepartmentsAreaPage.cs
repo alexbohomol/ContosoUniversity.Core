@@ -9,12 +9,9 @@ using Microsoft.Playwright;
 
 using Models;
 
-public class DepartmentsAreaPage : PageObject
+public class DepartmentsAreaPage(IBrowser browser, IConfiguration configuration)
+    : PageObject(browser, configuration)
 {
-    public DepartmentsAreaPage(IBrowser browser, IConfiguration configuration) : base(browser, configuration)
-    {
-    }
-
     protected override string PagePath => $"{PageBaseUrl}/Departments";
 
     public async Task<DepartmentTableRowModel[]> ScrapRenderedDepartmentsList()

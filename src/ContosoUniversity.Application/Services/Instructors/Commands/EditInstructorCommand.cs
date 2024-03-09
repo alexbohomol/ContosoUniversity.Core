@@ -1,7 +1,6 @@
 namespace ContosoUniversity.Application.Services.Instructors.Commands;
 
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,30 +15,23 @@ using MediatR;
 public class EditInstructorCommand : IRequest
 {
     public Guid ExternalId { get; set; }
-
     public string LastName { get; set; }
     public string FirstName { get; set; }
     public DateTime HireDate { get; set; }
     public Guid[] SelectedCourses { get; set; }
-
     public string Location { get; set; }
-
     public bool HasAssignedOffice => !string.IsNullOrWhiteSpace(Location);
-    public bool HasAssignedCourses => SelectedCourses is not null && SelectedCourses.Any();
+    public bool HasAssignedCourses =>
+        SelectedCourses is not null
+        && SelectedCourses.Length != 0;
 }
 
-internal class EditInstructorCommandHandler : IRequestHandler<EditInstructorCommand>
+internal class EditInstructorCommandHandler(IInstructorsRwRepository instructorsRepository)
+    : IRequestHandler<EditInstructorCommand>
 {
-    private readonly IInstructorsRwRepository _instructorsRepository;
-
-    public EditInstructorCommandHandler(IInstructorsRwRepository instructorsRepository)
-    {
-        _instructorsRepository = instructorsRepository;
-    }
-
     public async Task Handle(EditInstructorCommand request, CancellationToken cancellationToken)
     {
-        Instructor instructor = await _instructorsRepository.GetById(request.ExternalId, cancellationToken);
+        Instructor instructor = await instructorsRepository.GetById(request.ExternalId, cancellationToken);
         if (instructor is null)
         {
             throw new EntityNotFoundException(nameof(instructor), request.ExternalId);
@@ -65,6 +57,6 @@ internal class EditInstructorCommandHandler : IRequestHandler<EditInstructorComm
             instructor.ResetOffice();
         }
 
-        await _instructorsRepository.Save(instructor, cancellationToken);
+        await instructorsRepository.Save(instructor, cancellationToken);
     }
 }

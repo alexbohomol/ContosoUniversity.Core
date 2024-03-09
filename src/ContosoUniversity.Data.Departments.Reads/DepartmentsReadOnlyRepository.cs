@@ -11,12 +11,8 @@ using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using Microsoft.EntityFrameworkCore;
 
-internal class DepartmentsReadOnlyRepository : EfRoRepository<Department>, IDepartmentsRoRepository
+internal class DepartmentsReadOnlyRepository(ReadOnlyContext dbContext) : EfRoRepository<Department>(dbContext), IDepartmentsRoRepository
 {
-    public DepartmentsReadOnlyRepository(ReadOnlyContext dbContext) : base(dbContext)
-    {
-    }
-
     public Task<Dictionary<Guid, string>> GetDepartmentNamesReference(CancellationToken cancellationToken = default)
     {
         return DbSet

@@ -9,12 +9,9 @@ using Microsoft.Playwright;
 
 using Models;
 
-public class CoursesAreaPage : PageObject
+public class CoursesAreaPage(IBrowser browser, IConfiguration configuration)
+    : PageObject(browser, configuration)
 {
-    public CoursesAreaPage(IBrowser browser, IConfiguration configuration) : base(browser, configuration)
-    {
-    }
-
     protected override string PagePath => $"{PageBaseUrl}/Courses";
 
     public async Task<CourseTableRowModel[]> ScrapRenderedCoursesList()

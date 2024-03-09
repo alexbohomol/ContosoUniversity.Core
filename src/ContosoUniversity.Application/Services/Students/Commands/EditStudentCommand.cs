@@ -33,19 +33,13 @@ public class EditStudentCommand : IRequest
     public Guid ExternalId { get; set; }
 }
 
-internal class EditStudentCommandHandler : IRequestHandler<EditStudentCommand>
+internal class EditStudentCommandHandler(IStudentsRwRepository studentsRepository)
+    : IRequestHandler<EditStudentCommand>
 {
-    private readonly IStudentsRwRepository _studentsRepository;
-
-    public EditStudentCommandHandler(IStudentsRwRepository studentsRepository)
-    {
-        _studentsRepository = studentsRepository;
-    }
-
     public async Task Handle(EditStudentCommand request, CancellationToken cancellationToken)
     {
-        Student student = await _studentsRepository.GetById(request.ExternalId, cancellationToken);
-        if (student == null)
+        Student student = await studentsRepository.GetById(request.ExternalId, cancellationToken);
+        if (student is null)
         {
             throw new EntityNotFoundException(nameof(student), request.ExternalId);
         }
@@ -53,6 +47,6 @@ internal class EditStudentCommandHandler : IRequestHandler<EditStudentCommand>
         student.UpdatePersonInfo(request.LastName, request.FirstName);
         student.Enroll(request.EnrollmentDate);
 
-        await _studentsRepository.Save(student, cancellationToken);
+        await studentsRepository.Save(student, cancellationToken);
     }
 }

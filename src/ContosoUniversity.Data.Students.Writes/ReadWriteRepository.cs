@@ -11,12 +11,8 @@ using Domain.Student;
 
 using Microsoft.EntityFrameworkCore;
 
-internal sealed class ReadWriteRepository : EfRwRepository<Student>, IStudentsRwRepository
+internal sealed class ReadWriteRepository(ReadWriteContext dbContext) : EfRwRepository<Student>(dbContext), IStudentsRwRepository
 {
-    public ReadWriteRepository(ReadWriteContext dbContext) : base(dbContext)
-    {
-    }
-
     public async Task<Student[]> GetStudentsEnrolledForCourses(Guid[] courseIds,
         CancellationToken cancellationToken = default)
     {
