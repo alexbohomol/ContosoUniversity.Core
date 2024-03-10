@@ -8,13 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 using Instructor = Application.Contracts.Repositories.ReadOnly.Projections.Instructor;
 
-internal class ReadOnlyContext : DbContext
+internal class ReadOnlyContext(DbContextOptions<ReadOnlyContext> options) : DbContext(options)
 {
     public const string Schema = "dpt";
-
-    public ReadOnlyContext(DbContextOptions<ReadOnlyContext> options) : base(options)
-    {
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

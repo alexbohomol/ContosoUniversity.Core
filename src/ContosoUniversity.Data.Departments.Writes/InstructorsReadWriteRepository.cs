@@ -11,12 +11,8 @@ using Domain.Instructor;
 
 using Microsoft.EntityFrameworkCore;
 
-internal class InstructorsReadWriteRepository : EfRwRepository<Instructor>, IInstructorsRwRepository
+internal class InstructorsReadWriteRepository(ReadWriteContext dbContext) : EfRwRepository<Instructor>(dbContext), IInstructorsRwRepository
 {
-    public InstructorsReadWriteRepository(ReadWriteContext dbContext) : base(dbContext)
-    {
-    }
-
     public async Task<Instructor[]> GetAllAssignedToCourses(
         Guid[] courseIds,
         CancellationToken cancellationToken = default)

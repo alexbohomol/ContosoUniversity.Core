@@ -1,7 +1,6 @@
 namespace ContosoUniversity.Application.Services.Instructors.Commands;
 
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,20 +17,15 @@ public class CreateInstructorCommand : IRequest
     public DateTime HireDate { get; set; }
     public Guid[] SelectedCourses { get; set; }
     public string Location { get; set; }
-
     public bool HasAssignedOffice => !string.IsNullOrWhiteSpace(Location);
-    public bool HasAssignedCourses => SelectedCourses is not null && SelectedCourses.Any();
+    public bool HasAssignedCourses =>
+        SelectedCourses is not null
+        && SelectedCourses.Length != 0;
 }
 
-internal class CreateInstructorCommandHandler : IRequestHandler<CreateInstructorCommand>
+internal class CreateInstructorCommandHandler(IInstructorsRwRepository instructorsRepository)
+    : IRequestHandler<CreateInstructorCommand>
 {
-    private readonly IInstructorsRwRepository _instructorsRepository;
-
-    public CreateInstructorCommandHandler(IInstructorsRwRepository instructorsRepository)
-    {
-        _instructorsRepository = instructorsRepository;
-    }
-
     public async Task Handle(CreateInstructorCommand command, CancellationToken cancellationToken)
     {
         var instructor = Instructor.Create(
@@ -49,6 +43,6 @@ internal class CreateInstructorCommandHandler : IRequestHandler<CreateInstructor
             instructor.AssignOffice(new OfficeAssignment(command.Location));
         }
 
-        await _instructorsRepository.Save(instructor, cancellationToken);
+        await instructorsRepository.Save(instructor, cancellationToken);
     }
 }

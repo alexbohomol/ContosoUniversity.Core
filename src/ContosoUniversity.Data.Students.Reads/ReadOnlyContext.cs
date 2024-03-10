@@ -6,13 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 using Student = Application.Contracts.Repositories.ReadOnly.Projections.Student;
 
-internal class ReadOnlyContext : DbContext
+internal class ReadOnlyContext(DbContextOptions<ReadOnlyContext> options) : DbContext(options)
 {
     public const string Schema = "std";
-
-    public ReadOnlyContext(DbContextOptions<ReadOnlyContext> options) : base(options)
-    {
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

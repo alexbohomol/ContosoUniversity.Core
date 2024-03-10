@@ -18,19 +18,13 @@ public class EditCourseCommand : IRequest
     public Guid DepartmentId { get; set; }
 }
 
-internal class EditCourseCommandHandler : IRequestHandler<EditCourseCommand>
+internal class EditCourseCommandHandler(ICoursesRwRepository coursesRepository)
+    : IRequestHandler<EditCourseCommand>
 {
-    private readonly ICoursesRwRepository _coursesRepository;
-
-    public EditCourseCommandHandler(ICoursesRwRepository coursesRepository)
-    {
-        _coursesRepository = coursesRepository;
-    }
-
     public async Task Handle(EditCourseCommand request, CancellationToken cancellationToken)
     {
-        Domain.Course.Course course = await _coursesRepository.GetById(request.Id, cancellationToken);
-        if (course == null)
+        Domain.Course.Course course = await coursesRepository.GetById(request.Id, cancellationToken);
+        if (course is null)
         {
             throw new EntityNotFoundException(nameof(course), request.Id);
         }
@@ -40,6 +34,6 @@ internal class EditCourseCommandHandler : IRequestHandler<EditCourseCommand>
             request.Credits,
             request.DepartmentId);
 
-        await _coursesRepository.Save(course, cancellationToken);
+        await coursesRepository.Save(course, cancellationToken);
     }
 }

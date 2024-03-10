@@ -16,28 +16,20 @@ public record GetCoursesIndexQueryResult(
     Course[] Courses,
     Dictionary<Guid, string> DepartmentsReference);
 
-internal class GetCoursesIndexQueryHandler : IRequestHandler<GetCoursesIndexQuery, GetCoursesIndexQueryResult>
+internal class GetCoursesIndexQueryHandler(
+    ICoursesRoRepository coursesRepository,
+    IDepartmentsRoRepository departmentsRepository)
+    : IRequestHandler<GetCoursesIndexQuery, GetCoursesIndexQueryResult>
 {
-    private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IDepartmentsRoRepository _departmentsRepository;
-
-    public GetCoursesIndexQueryHandler(
-        ICoursesRoRepository coursesRepository,
-        IDepartmentsRoRepository departmentsRepository)
-    {
-        _coursesRepository = coursesRepository;
-        _departmentsRepository = departmentsRepository;
-    }
-
     public async Task<GetCoursesIndexQueryResult> Handle(
         GetCoursesIndexQuery request,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        Course[] courses = await _coursesRepository.GetAll(cancellationToken);
+        Course[] courses = await coursesRepository.GetAll(cancellationToken);
 
-        Dictionary<Guid, string> departmentNames = await _departmentsRepository
+        Dictionary<Guid, string> departmentNames = await departmentsRepository
             .GetDepartmentNamesReference(cancellationToken);
 
         CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);

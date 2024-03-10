@@ -5,13 +5,9 @@ using Domain.Instructor;
 
 using Microsoft.EntityFrameworkCore;
 
-public class ReadWriteContext : DbContext
+public class ReadWriteContext(DbContextOptions<ReadWriteContext> options) : DbContext(options)
 {
     public const string Schema = "dpt";
-
-    public ReadWriteContext(DbContextOptions<ReadWriteContext> options) : base(options)
-    {
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

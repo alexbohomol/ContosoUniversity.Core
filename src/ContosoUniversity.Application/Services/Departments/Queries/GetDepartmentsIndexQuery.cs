@@ -11,21 +11,15 @@ using MediatR;
 
 public record GetDepartmentsIndexQuery : IRequest<Department[]>;
 
-internal class GetDepartmentsIndexQueryHandler : IRequestHandler<GetDepartmentsIndexQuery, Department[]>
+internal class GetDepartmentsIndexQueryHandler(IDepartmentsRoRepository departmentsRepository)
+    : IRequestHandler<GetDepartmentsIndexQuery, Department[]>
 {
-    private readonly IDepartmentsRoRepository _departmentsRepository;
-
-    public GetDepartmentsIndexQueryHandler(IDepartmentsRoRepository departmentsRepository)
-    {
-        _departmentsRepository = departmentsRepository;
-    }
-
     public async Task<Department[]> Handle(
         GetDepartmentsIndexQuery request,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        return await _departmentsRepository.GetAll(cancellationToken);
+        return await departmentsRepository.GetAll(cancellationToken);
     }
 }

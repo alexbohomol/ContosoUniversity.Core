@@ -23,22 +23,14 @@ public class EditDepartmentCommand : IRequest
     public byte[] RowVersion { get; set; }
 }
 
-internal class EditDepartmentCommandHandler : IRequestHandler<EditDepartmentCommand>
+internal class EditDepartmentCommandHandler(
+    IInstructorsRoRepository instructorsRepository,
+    IDepartmentsRwRepository departmentsRepository)
+    : IRequestHandler<EditDepartmentCommand>
 {
-    private readonly IDepartmentsRwRepository _departmentsRepository;
-    private readonly IInstructorsRoRepository _instructorsRepository;
-
-    public EditDepartmentCommandHandler(
-        IInstructorsRoRepository instructorsRepository,
-        IDepartmentsRwRepository departmentsRepository)
-    {
-        _instructorsRepository = instructorsRepository;
-        _departmentsRepository = departmentsRepository;
-    }
-
     public async Task Handle(EditDepartmentCommand request, CancellationToken cancellationToken)
     {
-        Department department = await _departmentsRepository.GetById(request.ExternalId, cancellationToken);
+        Department department = await departmentsRepository.GetById(request.ExternalId, cancellationToken);
         if (department is null)
         {
             throw new EntityNotFoundException(nameof(department), request.ExternalId);
@@ -48,7 +40,7 @@ internal class EditDepartmentCommandHandler : IRequestHandler<EditDepartmentComm
 
         if (request.AdministratorId.HasValue)
         {
-            if (!await _instructorsRepository.Exists(request.AdministratorId.Value, cancellationToken))
+            if (!await instructorsRepository.Exists(request.AdministratorId.Value, cancellationToken))
             {
                 throw new EntityNotFoundException("instructor", request.AdministratorId.Value);
             }
@@ -60,6 +52,6 @@ internal class EditDepartmentCommandHandler : IRequestHandler<EditDepartmentComm
             department.DisassociateAdministrator();
         }
 
-        await _departmentsRepository.Save(department, cancellationToken);
+        await departmentsRepository.Save(department, cancellationToken);
     }
 }

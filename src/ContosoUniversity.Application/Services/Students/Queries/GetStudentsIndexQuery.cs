@@ -22,22 +22,16 @@ public record GetStudentsIndexQueryResult(
     PageInfo PageInfo,
     Student[] Students);
 
-internal class GetStudentsIndexQueryHandler : IRequestHandler<GetStudentsIndexQuery, GetStudentsIndexQueryResult>
+internal class GetStudentsIndexQueryHandler(IStudentsRoRepository studentsRepository)
+    : IRequestHandler<GetStudentsIndexQuery, GetStudentsIndexQueryResult>
 {
-    private readonly IStudentsRoRepository _studentsRepository;
-
-    public GetStudentsIndexQueryHandler(IStudentsRoRepository studentsRepository)
-    {
-        _studentsRepository = studentsRepository;
-    }
-
     public async Task<GetStudentsIndexQueryResult> Handle(
         GetStudentsIndexQuery request,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        (Student[] students, PageInfo pageInfo) = await _studentsRepository.Search(
+        (Student[] students, PageInfo pageInfo) = await studentsRepository.Search(
             new SearchRequest(request.SearchString),
             new OrderRequest(request.SortOrder),
             new PageRequest(request.PageNumber ?? 1, 3),

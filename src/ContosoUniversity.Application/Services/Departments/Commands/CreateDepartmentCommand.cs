@@ -18,15 +18,9 @@ public class CreateDepartmentCommand : IRequest
     public Guid? AdministratorId { get; set; }
 }
 
-internal class CreateDepartmentCommandHandler : IRequestHandler<CreateDepartmentCommand>
+internal class CreateDepartmentCommandHandler(IDepartmentsRwRepository departmentsRepository)
+    : IRequestHandler<CreateDepartmentCommand>
 {
-    private readonly IDepartmentsRwRepository _departmentsRepository;
-
-    public CreateDepartmentCommandHandler(IDepartmentsRwRepository departmentsRepository)
-    {
-        _departmentsRepository = departmentsRepository;
-    }
-
     public async Task Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
     {
         var department = Department.Create(
@@ -35,6 +29,6 @@ internal class CreateDepartmentCommandHandler : IRequestHandler<CreateDepartment
             request.StartDate,
             request.AdministratorId);
 
-        await _departmentsRepository.Save(department, cancellationToken);
+        await departmentsRepository.Save(department, cancellationToken);
     }
 }

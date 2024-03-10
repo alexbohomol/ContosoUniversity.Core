@@ -19,34 +19,26 @@ public record GetStudentDetailsQueryResult(
     Student Student,
     Dictionary<Guid, string> CourseTitles);
 
-internal class GetStudentDetailsQueryHandler : IRequestHandler<GetStudentDetailsQuery, GetStudentDetailsQueryResult>
+internal class GetStudentDetailsQueryHandler(
+    IStudentsRoRepository studentsRepository,
+    ICoursesRoRepository coursesRepository)
+    : IRequestHandler<GetStudentDetailsQuery, GetStudentDetailsQueryResult>
 {
-    private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IStudentsRoRepository _studentsRepository;
-
-    public GetStudentDetailsQueryHandler(
-        IStudentsRoRepository studentsRepository,
-        ICoursesRoRepository coursesRepository)
-    {
-        _studentsRepository = studentsRepository;
-        _coursesRepository = coursesRepository;
-    }
-
     public async Task<GetStudentDetailsQueryResult> Handle(
         GetStudentDetailsQuery request,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        Student student = await _studentsRepository.GetById(request.Id, cancellationToken);
-        if (student == null)
+        Student student = await studentsRepository.GetById(request.Id, cancellationToken);
+        if (student is null)
         {
             throw new EntityNotFoundException(nameof(student), request.Id);
         }
 
         Guid[] coursesIds = student.Enrollments.Select(x => x.CourseId).ToArray();
 
-        Dictionary<Guid, string> courseTitles = await _coursesRepository
+        Dictionary<Guid, string> courseTitles = await coursesRepository
             .GetCourseTitlesReference(coursesIds, cancellationToken);
 
         Guid[] notFoundCourseIds = coursesIds.Except(courseTitles.Keys).ToArray();

@@ -11,12 +11,8 @@ using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using Microsoft.EntityFrameworkCore;
 
-internal class InstructorsReadOnlyRepository : EfRoRepository<Instructor>, IInstructorsRoRepository
+internal class InstructorsReadOnlyRepository(ReadOnlyContext dbContext) : EfRoRepository<Instructor>(dbContext), IInstructorsRoRepository
 {
-    public InstructorsReadOnlyRepository(ReadOnlyContext dbContext) : base(dbContext)
-    {
-    }
-
     public Task<Dictionary<Guid, string>> GetInstructorNamesReference(CancellationToken cancellationToken = default)
     {
         return DbSet

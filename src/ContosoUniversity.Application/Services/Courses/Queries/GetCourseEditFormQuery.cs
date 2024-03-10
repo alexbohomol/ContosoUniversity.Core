@@ -16,33 +16,25 @@ public record GetCourseEditFormQuery(Guid Id) : IRequest<GetCourseEditFormQueryR
 
 public record GetCourseEditFormQueryResult(Course Course, Dictionary<Guid, string> DepartmentsReference);
 
-internal class GetCourseEditFormQueryHandler : IRequestHandler<GetCourseEditFormQuery, GetCourseEditFormQueryResult>
+internal class GetCourseEditFormQueryHandler(
+    ICoursesRoRepository coursesRepository,
+    IDepartmentsRoRepository departmentsRepository)
+    : IRequestHandler<GetCourseEditFormQuery, GetCourseEditFormQueryResult>
 {
-    private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IDepartmentsRoRepository _departmentsRepository;
-
-    public GetCourseEditFormQueryHandler(
-        ICoursesRoRepository coursesRepository,
-        IDepartmentsRoRepository departmentsRepository)
-    {
-        _coursesRepository = coursesRepository;
-        _departmentsRepository = departmentsRepository;
-    }
-
     public async Task<GetCourseEditFormQueryResult> Handle(
         GetCourseEditFormQuery request,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        Course course = await _coursesRepository.GetById(request.Id, cancellationToken);
-        if (course == null)
+        Course course = await coursesRepository.GetById(request.Id, cancellationToken);
+        if (course is null)
         {
             throw new EntityNotFoundException(nameof(course), request.Id);
         }
 
         Dictionary<Guid, string> departments =
-            await _departmentsRepository.GetDepartmentNamesReference(cancellationToken);
+            await departmentsRepository.GetDepartmentNamesReference(cancellationToken);
 
         CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(
             new[] { course },

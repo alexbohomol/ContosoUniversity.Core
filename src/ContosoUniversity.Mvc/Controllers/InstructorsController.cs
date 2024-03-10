@@ -22,35 +22,20 @@ using Microsoft.AspNetCore.Mvc;
 using ViewModels;
 using ViewModels.Instructors;
 
-public class InstructorsController : Controller
+public class InstructorsController(
+    IInstructorsRoRepository instructorsRepository,
+    IDepartmentsRoRepository departmentsRepository,
+    ICoursesRoRepository coursesRepository,
+    IStudentsRoRepository studentsRepository,
+    IMediator mediator) : Controller
 {
-    private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IDepartmentsRoRepository _departmentsRepository;
-    private readonly IInstructorsRoRepository _instructorsRepository;
-    private readonly IMediator _mediator;
-    private readonly IStudentsRoRepository _studentsRepository;
-
-    public InstructorsController(
-        IInstructorsRoRepository instructorsRepository,
-        IDepartmentsRoRepository departmentsRepository,
-        ICoursesRoRepository coursesRepository,
-        IStudentsRoRepository studentsRepository,
-        IMediator mediator)
-    {
-        _instructorsRepository = instructorsRepository;
-        _departmentsRepository = departmentsRepository;
-        _coursesRepository = coursesRepository;
-        _studentsRepository = studentsRepository;
-        _mediator = mediator;
-    }
-
     public async Task<IActionResult> Index(Guid? id, Guid? courseExternalId, CancellationToken cancellationToken)
     {
-        Instructor[] instructors = (await _instructorsRepository.GetAll(cancellationToken))
+        Instructor[] instructors = (await instructorsRepository.GetAll(cancellationToken))
             .OrderBy(x => x.LastName)
             .ToArray();
 
-        Course[] courses = await _coursesRepository.GetAll(cancellationToken);
+        Course[] courses = await coursesRepository.GetAll(cancellationToken);
 
         CrossContextBoundariesValidator.EnsureInstructorsReferenceTheExistingCourses(instructors, courses);
 
@@ -81,7 +66,7 @@ public class InstructorsController : Controller
             InstructorListItemViewModel instructor = viewModel.Instructors.Single(i => i.Id == id.Value);
             HashSet<Guid> instructorCourseIds = instructor.AssignedCourseIds.ToHashSet();
             Dictionary<Guid, string> departmentNames =
-                await _departmentsRepository.GetDepartmentNamesReference(cancellationToken);
+                await departmentsRepository.GetDepartmentNamesReference(cancellationToken);
 
             CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);
 
@@ -101,7 +86,7 @@ public class InstructorsController : Controller
 
         if (courseExternalId is not null)
         {
-            Student[] students = await _studentsRepository.GetStudentsEnrolledForCourses(
+            Student[] students = await studentsRepository.GetStudentsEnrolledForCourses(
                 new[]
                 {
                     courseExternalId.Value
@@ -127,12 +112,12 @@ public class InstructorsController : Controller
 
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
-        if (id == null)
+        if (id is null)
         {
             return NotFound();
         }
 
-        Instructor instructor = await _mediator.Send(
+        Instructor instructor = await mediator.Send(
             new GetInstructorDetailsQuery(id.Value),
             cancellationToken);
 
@@ -143,7 +128,7 @@ public class InstructorsController : Controller
 
     public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {
-        Course[] courses = await _coursesRepository.GetAll(cancellationToken);
+        Course[] courses = await coursesRepository.GetAll(cancellationToken);
 
         return View(new CreateInstructorForm
         {
@@ -166,7 +151,7 @@ public class InstructorsController : Controller
 
         if (!ModelState.IsValid)
         {
-            Course[] courses = await _coursesRepository.GetAll(cancellationToken);
+            Course[] courses = await coursesRepository.GetAll(cancellationToken);
 
             return View(
                 new CreateInstructorForm(
@@ -188,7 +173,7 @@ public class InstructorsController : Controller
             return BadRequest();
         }
 
-        await _mediator.Send(command, cancellationToken);
+        await mediator.Send(command, cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
@@ -200,7 +185,7 @@ public class InstructorsController : Controller
             return BadRequest();
         }
 
-        (Instructor instructor, Course[] courses) = await _mediator.Send(
+        (Instructor instructor, Course[] courses) = await mediator.Send(
             new GetInstructorEditFormQuery(id.Value),
             cancellationToken);
 
@@ -223,7 +208,7 @@ public class InstructorsController : Controller
 
         if (!ModelState.IsValid)
         {
-            Course[] courses = await _coursesRepository.GetAll(cancellationToken);
+            Course[] courses = await coursesRepository.GetAll(cancellationToken);
 
             return View(
                 new EditInstructorForm(
@@ -246,19 +231,19 @@ public class InstructorsController : Controller
             return BadRequest();
         }
 
-        await _mediator.Send(command, cancellationToken);
+        await mediator.Send(command, cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
 
     public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
     {
-        if (id == null)
+        if (id is null)
         {
             return NotFound();
         }
 
-        Instructor instructor = await _mediator.Send(
+        Instructor instructor = await mediator.Send(
             new GetInstructorDetailsQuery(id.Value),
             cancellationToken);
 
@@ -271,7 +256,7 @@ public class InstructorsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _mediator.Send(
+        await mediator.Send(
             new DeleteInstructorCommand(id),
             cancellationToken);
 

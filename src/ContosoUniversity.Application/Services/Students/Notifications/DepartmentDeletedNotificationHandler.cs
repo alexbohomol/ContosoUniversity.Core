@@ -13,18 +13,12 @@ using Domain.Student;
 
 using MediatR;
 
-internal class DepartmentDeletedNotificationHandler : INotificationHandler<DepartmentDeletedNotification>
+internal class DepartmentDeletedNotificationHandler(IStudentsRwRepository studentsRepository)
+    : INotificationHandler<DepartmentDeletedNotification>
 {
-    private readonly IStudentsRwRepository _studentsRepository;
-
-    public DepartmentDeletedNotificationHandler(IStudentsRwRepository studentsRepository)
-    {
-        _studentsRepository = studentsRepository;
-    }
-
     public async Task Handle(DepartmentDeletedNotification notification, CancellationToken cancellationToken)
     {
-        Student[] students = await _studentsRepository.GetStudentsEnrolledForCourses(
+        Student[] students = await studentsRepository.GetStudentsEnrolledForCourses(
             notification.CourseIds,
             cancellationToken);
 
@@ -34,7 +28,7 @@ internal class DepartmentDeletedNotificationHandler : INotificationHandler<Depar
                 .Intersect(student.Enrollments.Select(x => x.CourseId))
                 .ToArray();
             student.WithdrawCourses(withdrawIds);
-            await _studentsRepository.Save(student, cancellationToken);
+            await studentsRepository.Save(student, cancellationToken);
         }
     }
 }

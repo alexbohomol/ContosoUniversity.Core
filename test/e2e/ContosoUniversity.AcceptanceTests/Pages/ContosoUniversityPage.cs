@@ -5,12 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 
-public class ContosoUniversityPage : PageObject
+public class ContosoUniversityPage(IBrowser browser, IConfiguration configuration)
+    : PageObject(browser, configuration)
 {
-    public ContosoUniversityPage(IBrowser browser, IConfiguration configuration) : base(browser, configuration)
-    {
-    }
-
     protected override string PagePath => PageBaseUrl;
 
     public async Task ClickBrandLink()

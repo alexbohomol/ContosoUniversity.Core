@@ -37,7 +37,7 @@ public class Program
             {
                 webBuilder.UseStartup<Startup>();
 
-                if (hostUrls != null)
+                if (hostUrls is not null)
                 {
                     webBuilder.UseUrls(hostUrls);
                 }

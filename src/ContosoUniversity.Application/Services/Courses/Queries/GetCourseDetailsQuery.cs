@@ -15,33 +15,25 @@ public record GetCourseDetailsQuery(Guid Id) : IRequest<GetCourseDetailsQueryRes
 
 public record GetCourseDetailsQueryResult(Course Course, Department Department);
 
-internal class GetCourseDetailsQueryHandler : IRequestHandler<GetCourseDetailsQuery, GetCourseDetailsQueryResult>
+internal class GetCourseDetailsQueryHandler(
+    ICoursesRoRepository coursesRepository,
+    IDepartmentsRoRepository departmentsRepository)
+    : IRequestHandler<GetCourseDetailsQuery, GetCourseDetailsQueryResult>
 {
-    private readonly ICoursesRoRepository _coursesRepository;
-    private readonly IDepartmentsRoRepository _departmentsRepository;
-
-    public GetCourseDetailsQueryHandler(
-        ICoursesRoRepository coursesRepository,
-        IDepartmentsRoRepository departmentsRepository)
-    {
-        _coursesRepository = coursesRepository;
-        _departmentsRepository = departmentsRepository;
-    }
-
     public async Task<GetCourseDetailsQueryResult> Handle(
         GetCourseDetailsQuery request,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        Course course = await _coursesRepository.GetById(request.Id, cancellationToken);
-        if (course == null)
+        Course course = await coursesRepository.GetById(request.Id, cancellationToken);
+        if (course is null)
         {
             throw new EntityNotFoundException(nameof(course), request.Id);
         }
 
-        Department department = await _departmentsRepository.GetById(course.DepartmentId, cancellationToken);
-        if (department == null)
+        Department department = await departmentsRepository.GetById(course.DepartmentId, cancellationToken);
+        if (department is null)
         {
             throw new EntityNotFoundException(nameof(department), course.DepartmentId);
         }
