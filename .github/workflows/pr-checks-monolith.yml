@@ -1,10 +1,11 @@
-name: Pull Request Checks
+name: Pull Request Checks (Monolith)
 
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+    paths: [ "apps/monolith/**" ]
 
 env:
   DOTNET_VERSION: 8.0.x
@@ -14,6 +15,11 @@ jobs:
   build_and_unit_testing:
     name: Build and Unit Testing
     runs-on: ubuntu-latest
+    env:
+      TEST_PROJ_PATH: ${{ vars.MONOLITH_SLN_PATH }}/test/unit/ContosoUniversity.Domain.Tests
+    defaults:
+      run:
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -29,12 +35,15 @@ jobs:
         dotnet build --no-restore
       
     - name: Run Unit Tests
-      working-directory: test/unit/ContosoUniversity.Domain.Tests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
       run: dotnet test --no-build --verbosity normal
       
   code_style_checks:
     name: Code style checks
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -73,6 +82,8 @@ jobs:
   integration_testing:
     name: Integration Testing
     runs-on: ubuntu-latest
+    env:
+      TEST_PROJ_PATH: ${{ vars.MONOLITH_SLN_PATH }}/test/integration/ContosoUniversity.Mvc.IntegrationTests
     services:
       cudb:
         image: mcr.microsoft.com/mssql/server
@@ -110,19 +121,21 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
       
     - name: Build Integration Tests
-      working-directory: test/integration/ContosoUniversity.Mvc.IntegrationTests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
       run: |
         dotnet restore
         dotnet build --no-restore
       
     - name: Run Integration Tests
-      working-directory: test/integration/ContosoUniversity.Mvc.IntegrationTests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
       run: |
         dotnet test --no-build --verbosity normal
       
   e2e_testing_in_process:
     name: E2E Testing | In-Process
     runs-on: ubuntu-latest
+    env:
+      TEST_PROJ_PATH: ${{ vars.MONOLITH_SLN_PATH }}/test/e2e/ContosoUniversity.AcceptanceTests
     services:
       cudb:
         image: mcr.microsoft.com/mssql/server
@@ -160,16 +173,16 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
       
     - name: Build Acceptance Tests
-      working-directory: test/e2e/ContosoUniversity.AcceptanceTests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
       run: |
         dotnet restore
         dotnet build --no-restore
       
     - name: Ensure browsers are installed
-      working-directory: test/e2e/ContosoUniversity.AcceptanceTests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
       run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
 
     - name: Run Acceptance Tests
-      working-directory: test/e2e/ContosoUniversity.AcceptanceTests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
       run: |
         dotnet test --no-build --verbosity normal
