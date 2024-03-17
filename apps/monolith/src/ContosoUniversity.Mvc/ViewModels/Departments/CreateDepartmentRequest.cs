@@ -2,10 +2,10 @@ namespace ContosoUniversity.Mvc.ViewModels.Departments;
 
 using System;
 
-public class CreateDepartmentRequest
+public record CreateDepartmentRequest
 {
-    public string Name { get; set; }
-    public decimal Budget { get; set; }
-    public DateTime StartDate { get; set; }
-    public Guid? AdministratorId { get; set; }
+    public string Name { get; init; }
+    public decimal Budget { get; init; }
+    public DateTime StartDate { get; init; } = DateTime.Today;
+    public Guid? AdministratorId { get; init; }
 }

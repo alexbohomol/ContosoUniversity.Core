@@ -16,12 +16,9 @@ using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
 
-using ViewModels;
 using ViewModels.Departments;
 
-public class DepartmentsController(
-    IInstructorsRoRepository instructorsRepository,
-    IMediator mediator) : Controller
+public class DepartmentsController(IMediator mediator) : Controller
 {
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
@@ -48,22 +45,21 @@ public class DepartmentsController(
             : NotFound();
     }
 
-    public async Task<IActionResult> Create(CancellationToken cancellationToken)
+    public async Task<IActionResult> Create(
+        [FromServices] IInstructorsRoRepository repository,
+        CancellationToken cancellationToken)
     {
-        Dictionary<Guid, string> instructorNames =
-            await instructorsRepository.GetInstructorNamesReference(cancellationToken);
+        Dictionary<Guid, string> instructorNames = await repository
+            .GetInstructorNamesReference(cancellationToken);
 
-        return View(new CreateDepartmentForm
-        {
-            StartDate = DateTime.Now,
-            InstructorsDropDown = instructorNames.ToSelectList()
-        });
+        return View(new CreateDepartmentForm(instructorNames));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
         CreateDepartmentRequest request,
+        [FromServices] IInstructorsRoRepository repository,
         [FromServices] CreateDepartmentCommandValidator validator,
         CancellationToken cancellationToken)
     {
@@ -74,10 +70,10 @@ public class DepartmentsController(
 
         if (!ModelState.IsValid)
         {
-            return View(
-                new CreateDepartmentForm(
-                    request,
-                    await instructorsRepository.GetInstructorNamesReference(cancellationToken)));
+            Dictionary<Guid, string> instructorNames = await repository
+                .GetInstructorNamesReference(cancellationToken);
+
+            return View(new CreateDepartmentForm(instructorNames));
         }
 
         CreateDepartmentCommand command = new()
@@ -111,13 +107,17 @@ public class DepartmentsController(
 
         return department is null
             ? NotFound()
-            : View(new EditDepartmentForm(department, instructorsReference));
+            : View(new EditDepartmentForm(instructorsReference)
+            {
+                Request = new EditDepartmentRequest(department)
+            });
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(
         EditDepartmentRequest request,
+        [FromServices] IInstructorsRoRepository repository,
         [FromServices] EditDepartmentCommandValidator validator,
         CancellationToken cancellationToken)
     {
@@ -128,10 +128,13 @@ public class DepartmentsController(
 
         if (!ModelState.IsValid)
         {
-            return View(
-                new EditDepartmentForm(
-                    request,
-                    await instructorsRepository.GetInstructorNamesReference(cancellationToken)));
+            Dictionary<Guid, string> instructorNames = await repository
+                .GetInstructorNamesReference(cancellationToken);
+
+            return View(new EditDepartmentForm(instructorNames)
+            {
+                Request = request
+            });
         }
 
         EditDepartmentCommand command = new()

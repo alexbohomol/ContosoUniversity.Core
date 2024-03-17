@@ -2,12 +2,26 @@ namespace ContosoUniversity.Mvc.ViewModels.Departments;
 
 using System;
 
-public class EditDepartmentRequest
+using Application.Contracts.Repositories.ReadOnly.Projections;
+
+public record EditDepartmentRequest
 {
-    public string Name { get; set; }
-    public decimal Budget { get; set; }
-    public DateTime StartDate { get; set; }
-    public Guid? AdministratorId { get; set; }
-    public Guid ExternalId { get; set; }
-    public byte[] RowVersion { get; set; }
+    public EditDepartmentRequest(Department department)
+    {
+        Name = department.Name;
+        Budget = department.Budget;
+        StartDate = department.StartDate;
+        AdministratorId = department.AdministratorId;
+        ExternalId = department.ExternalId;
+        // RowVersion = department.RowVersion,
+    }
+
+    public EditDepartmentRequest() { }
+
+    public string Name { get; init; }
+    public decimal Budget { get; init; }
+    public DateTime StartDate { get; init; }
+    public Guid? AdministratorId { get; init; }
+    public Guid ExternalId { get; init; }
+    public byte[] RowVersion { get; init; }
 }
