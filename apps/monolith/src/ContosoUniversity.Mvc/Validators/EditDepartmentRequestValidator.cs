@@ -6,9 +6,9 @@ using FluentValidation;
 
 using ViewModels.Departments;
 
-public class EditDepartmentFormValidator : AbstractValidator<EditDepartmentForm>
+internal class EditDepartmentRequestValidator : AbstractValidator<EditDepartmentRequest>
 {
-    public EditDepartmentFormValidator()
+    public EditDepartmentRequestValidator()
     {
         RuleFor(x => x.Name).SatisfiesNameRequirements();
     }

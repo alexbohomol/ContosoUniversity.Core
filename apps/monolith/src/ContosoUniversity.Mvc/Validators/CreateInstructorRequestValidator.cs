@@ -6,9 +6,9 @@ using FluentValidation;
 
 using ViewModels.Instructors;
 
-public class CreateInstructorFormValidator : AbstractValidator<CreateInstructorForm>
+internal class CreateInstructorRequestValidator : AbstractValidator<CreateInstructorRequest>
 {
-    public CreateInstructorFormValidator()
+    public CreateInstructorRequestValidator()
     {
         RuleFor(x => x.LastName).SatisfiesLastNameRequirements();
         RuleFor(x => x.FirstName).SatisfiesFirstNameRequirements();

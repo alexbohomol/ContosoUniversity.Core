@@ -6,9 +6,9 @@ using FluentValidation;
 
 using ViewModels.Instructors;
 
-public class EditInstructorFormValidator : AbstractValidator<EditInstructorForm>
+internal class EditInstructorRequestValidator : AbstractValidator<EditInstructorRequest>
 {
-    public EditInstructorFormValidator()
+    public EditInstructorRequestValidator()
     {
         RuleFor(x => x.LastName).SatisfiesLastNameRequirements();
         RuleFor(x => x.FirstName).SatisfiesFirstNameRequirements();

@@ -6,11 +6,10 @@ using FluentValidation;
 
 using ViewModels.Courses;
 
-public class CreateCourseFormValidator : AbstractValidator<CreateCourseForm>
+internal class EditCourseRequestValidator : AbstractValidator<EditCourseRequest>
 {
-    public CreateCourseFormValidator()
+    public EditCourseRequestValidator()
     {
-        RuleFor(x => x.CourseCode).SatisfiesCourseCodeRequirements();
         RuleFor(x => x.Title).SatisfiesTitleRequirements();
         RuleFor(x => x.Credits).SatisfiesCreditsRequirements();
         RuleFor(x => x.DepartmentId).Required();

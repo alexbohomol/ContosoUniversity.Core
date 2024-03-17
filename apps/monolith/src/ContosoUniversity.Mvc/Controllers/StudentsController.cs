@@ -53,10 +53,7 @@ public class StudentsController(IMediator mediator) : Controller
 
     public IActionResult Create()
     {
-        return View(new CreateStudentForm
-        {
-            EnrollmentDate = DateTime.Now
-        });
+        return View(new CreateStudentForm());
     }
 
     [HttpPost]
@@ -68,7 +65,10 @@ public class StudentsController(IMediator mediator) : Controller
     {
         if (!ModelState.IsValid)
         {
-            return View(request as CreateStudentForm);
+            return View(new CreateStudentForm
+            {
+                Request = request
+            });
         }
 
         CreateStudentCommand command = new()
@@ -101,7 +101,10 @@ public class StudentsController(IMediator mediator) : Controller
 
         return student is null
             ? NotFound()
-            : View(new EditStudentForm(student));
+            : View(new EditStudentForm
+            {
+                Request = new EditStudentRequest(student)
+            });
     }
 
     [HttpPost]
@@ -118,7 +121,10 @@ public class StudentsController(IMediator mediator) : Controller
 
         if (!ModelState.IsValid)
         {
-            return View(request as EditStudentForm);
+            return View(new EditStudentForm
+            {
+                Request = request
+            });
         }
 
         EditStudentCommand command = new()

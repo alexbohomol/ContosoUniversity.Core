@@ -12,29 +12,29 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ExternalId"/>
-            <input type="hidden" asp-for="RowVersion"/>
+            <input type="hidden" asp-for="Request.ExternalId"/>
+            <input type="hidden" asp-for="Request.RowVersion"/>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control"/>
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="Request.Name" class="control-label"></label>
+                <input asp-for="Request.Name" class="form-control"/>
+                <span asp-validation-for="Request.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Budget" class="control-label"></label>
-                <input asp-for="Budget" class="form-control"/>
-                <span asp-validation-for="Budget" class="text-danger"></span>
+                <label asp-for="Request.Budget" class="control-label"></label>
+                <input asp-for="Request.Budget" class="form-control"/>
+                <span asp-validation-for="Request.Budget" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Start Date</label>
-                <input asp-for="StartDate" type="date" class="form-control"/>
-                <span asp-validation-for="StartDate" class="text-danger"></span>
+                <input asp-for="Request.StartDate" type="date" class="form-control"/>
+                <span asp-validation-for="Request.StartDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Administrator</label>
-                <select asp-for="AdministratorId" class="form-control" asp-items="Model.InstructorsDropDown">
+                <select asp-for="Request.AdministratorId" class="form-control" asp-items="Model.InstructorsDropDown">
                     <option value="">-- Select Administrator --</option>
                 </select>
-                <span asp-validation-for="AdministratorId" class="text-danger"></span>
+                <span asp-validation-for="Request.AdministratorId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary"/>

@@ -5,22 +5,8 @@ using System.Collections.Generic;
 
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-public class CreateDepartmentForm : CreateDepartmentRequest
+public record CreateDepartmentForm(Dictionary<Guid, string> InstructorNames)
 {
-    public CreateDepartmentForm()
-    {
-    }
-
-    public CreateDepartmentForm(
-        CreateDepartmentRequest request,
-        IDictionary<Guid, string> instructorNames)
-    {
-        Name = request.Name;
-        Budget = request.Budget;
-        StartDate = request.StartDate;
-        AdministratorId = request.AdministratorId;
-        InstructorsDropDown = instructorNames.ToSelectList();
-    }
-
-    public SelectList InstructorsDropDown { get; set; }
+    public CreateDepartmentRequest Request { get; init; } = new();
+    public SelectList InstructorsDropDown => InstructorNames.ToSelectList();
 }

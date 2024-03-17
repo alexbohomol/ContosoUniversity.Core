@@ -12,6 +12,13 @@ using Models;
 public class StudentsAreaPage(IBrowser browser, IConfiguration configuration)
     : PageObject(browser, configuration)
 {
+    private static class Inputs
+    {
+        public const string LastName = "#Request_LastName";
+        public const string FirstName = "#Request_FirstName";
+        public const string EnrollmentDate = "#Request_EnrollmentDate";
+    }
+
     protected override string PagePath => $"{PageBaseUrl}/Students";
 
     public async Task<StudentTableRowModel[]> ScrapRenderedStudentsList()
@@ -33,9 +40,9 @@ public class StudentsAreaPage(IBrowser browser, IConfiguration configuration)
 
     public async Task EnterStudentDetails(StudentTableRowModel model)
     {
-        await Page.FillAsync("#LastName", model.LastName);
-        await Page.FillAsync("#FirstName", model.FirstName);
-        await Page.FillAsync("#EnrollmentDate", model.EnrollmentDate);
+        await Page.FillAsync(Inputs.LastName, model.LastName);
+        await Page.FillAsync(Inputs.FirstName, model.FirstName);
+        await Page.FillAsync(Inputs.EnrollmentDate, model.EnrollmentDate);
     }
 
     public async Task ClickLinkOnStudentsTable(string link, string studentName)
@@ -56,8 +63,8 @@ public class StudentsAreaPage(IBrowser browser, IConfiguration configuration)
     public async Task<StudentTableRowModel> ScrapRenderedStudentDetailsToEdit()
     {
         return new StudentTableRowModel(
-            await Page.InputValueAsync("#LastName"),
-            await Page.InputValueAsync("#FirstName"),
-            await Page.InputValueAsync("#EnrollmentDate"));
+            await Page.InputValueAsync(Inputs.LastName),
+            await Page.InputValueAsync(Inputs.FirstName),
+            await Page.InputValueAsync(Inputs.EnrollmentDate));
     }
 }

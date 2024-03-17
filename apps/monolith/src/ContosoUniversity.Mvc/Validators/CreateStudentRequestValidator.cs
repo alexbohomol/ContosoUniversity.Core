@@ -6,9 +6,9 @@ using FluentValidation;
 
 using ViewModels.Students;
 
-public class EditStudentFormValidator : AbstractValidator<EditStudentForm>
+internal class CreateStudentRequestValidator : AbstractValidator<CreateStudentRequest>
 {
-    public EditStudentFormValidator()
+    public CreateStudentRequestValidator()
     {
         RuleFor(x => x.LastName).SatisfiesLastNameRequirements();
         RuleFor(x => x.FirstName).SatisfiesFirstNameRequirements();

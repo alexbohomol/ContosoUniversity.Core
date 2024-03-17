@@ -12,6 +12,14 @@ using Models;
 public class CoursesAreaPage(IBrowser browser, IConfiguration configuration)
     : PageObject(browser, configuration)
 {
+    private static class Inputs
+    {
+        public const string CourseCode = "#Request_CourseCode";
+        public const string Title = "#Request_Title";
+        public const string Credits = "#Request_Credits";
+        public const string DepartmentId = "#Request_DepartmentId";
+    }
+
     protected override string PagePath => $"{PageBaseUrl}/Courses";
 
     public async Task<CourseTableRowModel[]> ScrapRenderedCoursesList()
@@ -37,13 +45,13 @@ public class CoursesAreaPage(IBrowser browser, IConfiguration configuration)
     {
         if (model.CourseCode is not null)
         {
-            await Page.FillAsync("#CourseCode", model.CourseCode);
+            await Page.FillAsync(Inputs.CourseCode, model.CourseCode);
         }
 
-        await Page.FillAsync("#Title", model.Title);
-        await Page.FillAsync("#Credits", model.Credits);
+        await Page.FillAsync(Inputs.Title, model.Title);
+        await Page.FillAsync(Inputs.Credits, model.Credits);
 
-        await Page.SelectOptionAsync("#DepartmentId", new[]
+        await Page.SelectOptionAsync(Inputs.DepartmentId, new[]
         {
             new SelectOptionValue { Label = model.Department }
         });
@@ -70,10 +78,10 @@ public class CoursesAreaPage(IBrowser browser, IConfiguration configuration)
     {
         return new CourseTableRowModel(
             await (await Page.QuerySelectorAsync("form div.form-group div"))?.InnerTextAsync()!,
-            await Page.InputValueAsync("#Title"),
-            await Page.InputValueAsync("#Credits"),
+            await Page.InputValueAsync(Inputs.Title),
+            await Page.InputValueAsync(Inputs.Credits),
             await Page.EvalOnSelectorAsync<string>(
-                "#DepartmentId",
+                Inputs.DepartmentId,
                 @"e => {
                     var opts = e.options;
                     return opts[opts.selectedIndex].text;

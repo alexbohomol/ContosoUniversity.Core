@@ -4,7 +4,7 @@ using System;
 
 using Application.Contracts.Repositories.ReadOnly.Projections;
 
-public class EditCourseRequest
+public record EditCourseRequest
 {
     public EditCourseRequest(Course course)
     {

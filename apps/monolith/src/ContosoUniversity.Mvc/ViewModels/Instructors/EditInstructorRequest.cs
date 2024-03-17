@@ -2,12 +2,26 @@ namespace ContosoUniversity.Mvc.ViewModels.Instructors;
 
 using System;
 
-public class EditInstructorRequest
+using Application.Contracts.Repositories.ReadOnly.Projections;
+
+public record EditInstructorRequest
 {
-    public Guid ExternalId { get; set; }
-    public string LastName { get; set; }
-    public string FirstName { get; set; }
-    public DateTime HireDate { get; set; }
-    public Guid[] SelectedCourses { get; set; }
-    public string Location { get; set; }
+    public EditInstructorRequest(Instructor instructor)
+    {
+        ExternalId = instructor.ExternalId;
+        LastName = instructor.LastName;
+        FirstName = instructor.FirstName;
+        HireDate = instructor.HireDate;
+        Location = instructor.Office;
+        SelectedCourses = instructor.Courses;
+    }
+
+    public EditInstructorRequest() { }
+
+    public Guid ExternalId { get; init; }
+    public string LastName { get; init; }
+    public string FirstName { get; init; }
+    public DateTime HireDate { get; init; }
+    public Guid[] SelectedCourses { get; init; }
+    public string Location { get; init; }
 }

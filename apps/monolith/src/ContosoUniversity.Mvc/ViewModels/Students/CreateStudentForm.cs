@@ -1,6 +1,6 @@
 namespace ContosoUniversity.Mvc.ViewModels.Students;
 
-public class CreateStudentForm : CreateStudentRequest
+public record CreateStudentForm
 {
-
+    public CreateStudentRequest Request { get; init; } = new();
 }

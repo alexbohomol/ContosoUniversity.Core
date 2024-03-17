@@ -12,6 +12,14 @@ using Models;
 public class DepartmentsAreaPage(IBrowser browser, IConfiguration configuration)
     : PageObject(browser, configuration)
 {
+    private static class Inputs
+    {
+        public const string Name = "#Request_Name";
+        public const string Budget = "#Request_Budget";
+        public const string StartDate = "#Request_StartDate";
+        public const string AdministratorId = "#Request_AdministratorId";
+    }
+
     protected override string PagePath => $"{PageBaseUrl}/Departments";
 
     public async Task<DepartmentTableRowModel[]> ScrapRenderedDepartmentsList()
@@ -35,11 +43,11 @@ public class DepartmentsAreaPage(IBrowser browser, IConfiguration configuration)
 
     public async Task EnterDepartmentDetails(DepartmentTableRowModel model)
     {
-        await Page.FillAsync("#Name", model.Name);
-        await Page.FillAsync("#Budget", model.Budget);
-        await Page.FillAsync("#StartDate", model.StartDate);
+        await Page.FillAsync(Inputs.Name, model.Name);
+        await Page.FillAsync(Inputs.Budget, model.Budget);
+        await Page.FillAsync(Inputs.StartDate, model.StartDate);
 
-        await Page.SelectOptionAsync("#AdministratorId", new[]
+        await Page.SelectOptionAsync(Inputs.AdministratorId, new[]
         {
             new SelectOptionValue { Label = model.Administrator }
         });
@@ -65,11 +73,10 @@ public class DepartmentsAreaPage(IBrowser browser, IConfiguration configuration)
     public async Task<DepartmentTableRowModel> ScrapRenderedDepartmentDetailsToEdit()
     {
         return new DepartmentTableRowModel(
-            await Page.InputValueAsync("#Name"),
-            await Page.InputValueAsync("#Budget"),
-            await Page.InputValueAsync("#StartDate"),
-            await Page.EvalOnSelectorAsync<string>(
-                "#AdministratorId",
+            await Page.InputValueAsync(Inputs.Name),
+            await Page.InputValueAsync(Inputs.Budget),
+            await Page.InputValueAsync(Inputs.StartDate),
+            await Page.EvalOnSelectorAsync<string>(Inputs.AdministratorId,
                 @"e => {
                     var opts = e.options;
                     return opts[opts.selectedIndex].text;

@@ -2,9 +2,9 @@ namespace ContosoUniversity.Mvc.ViewModels.Students;
 
 using System;
 
-public class CreateStudentRequest
+public record CreateStudentRequest
 {
-    public DateTime EnrollmentDate { get; set; }
-    public string LastName { get; set; }
-    public string FirstName { get; set; }
+    public DateTime EnrollmentDate { get; init; } = DateTime.Today;
+    public string LastName { get; init; }
+    public string FirstName { get; init; }
 }
