@@ -4,32 +4,11 @@ using System.ComponentModel.DataAnnotations;
 
 using Application.Contracts.Repositories.ReadOnly.Projections;
 
-public class EditInstructorForm : EditInstructorRequest
+public record EditInstructorForm(Instructor Instructor, Course[] Courses)
 {
-    public EditInstructorForm(
-        EditInstructorRequest command,
-        AssignedCourseOption[] assignedCourses)
-    {
-        LastName = command.LastName;
-        FirstName = command.FirstName;
-        HireDate = command.HireDate;
-        Location = command.Location;
-        AssignedCourses = assignedCourses;
-    }
+    public EditInstructorRequest Request { get; init; } = new();
 
-    public EditInstructorForm()
-    {
-    }
-
-    public EditInstructorForm(Instructor instructor, Course[] courses)
-    {
-        ExternalId = instructor.ExternalId;
-        LastName = instructor.LastName;
-        FirstName = instructor.FirstName;
-        HireDate = instructor.HireDate;
-        Location = instructor.Office;
-        AssignedCourses = courses.ToAssignedCourseOptions(instructor.Courses);
-    }
-
-    [Display(Name = "Assigned Courses")] public AssignedCourseOption[] AssignedCourses { get; }
+    [Display(Name = "Assigned Courses")]
+    public AssignedCourseOption[] AssignedCourses =>
+        Courses.ToAssignedCourseOptions(Instructor.Courses);
 }

@@ -22,14 +22,16 @@ using Microsoft.AspNetCore.Mvc;
 using ViewModels;
 using ViewModels.Instructors;
 
-public class InstructorsController(
-    IInstructorsRoRepository instructorsRepository,
-    IDepartmentsRoRepository departmentsRepository,
-    ICoursesRoRepository coursesRepository,
-    IStudentsRoRepository studentsRepository,
-    IMediator mediator) : Controller
+public class InstructorsController(IMediator mediator) : Controller
 {
-    public async Task<IActionResult> Index(Guid? id, Guid? courseExternalId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(
+        Guid? id,
+        Guid? courseExternalId,
+        [FromServices] IInstructorsRoRepository instructorsRepository,
+        [FromServices] IDepartmentsRoRepository departmentsRepository,
+        [FromServices] ICoursesRoRepository coursesRepository,
+        [FromServices] IStudentsRoRepository studentsRepository,
+        CancellationToken cancellationToken)
     {
         Instructor[] instructors = (await instructorsRepository.GetAll(cancellationToken))
             .OrderBy(x => x.LastName)
@@ -126,21 +128,20 @@ public class InstructorsController(
             : NotFound();
     }
 
-    public async Task<IActionResult> Create(CancellationToken cancellationToken)
+    public async Task<IActionResult> Create(
+        [FromServices] ICoursesRoRepository repository,
+        CancellationToken cancellationToken)
     {
-        Course[] courses = await coursesRepository.GetAll(cancellationToken);
+        Course[] courses = await repository.GetAll(cancellationToken);
 
-        return View(new CreateInstructorForm
-        {
-            HireDate = DateTime.Now,
-            AssignedCourses = courses.ToAssignedCourseOptions()
-        });
+        return View(new CreateInstructorForm(courses));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
         CreateInstructorRequest request,
+        [FromServices] ICoursesRoRepository repository,
         [FromServices] CreateInstructorCommandValidator validator,
         CancellationToken cancellationToken)
     {
@@ -151,12 +152,12 @@ public class InstructorsController(
 
         if (!ModelState.IsValid)
         {
-            Course[] courses = await coursesRepository.GetAll(cancellationToken);
+            Course[] courses = await repository.GetAll(cancellationToken);
 
-            return View(
-                new CreateInstructorForm(
-                    request,
-                    courses.ToAssignedCourseOptions()));
+            return View(new CreateInstructorForm(courses)
+            {
+                Request = request
+            });
         }
 
         CreateInstructorCommand command = new()
@@ -191,7 +192,10 @@ public class InstructorsController(
 
         return instructor is null
             ? NotFound()
-            : View(new EditInstructorForm(instructor, courses));
+            : View(new EditInstructorForm(instructor, courses)
+            {
+                Request = new EditInstructorRequest(instructor)
+            });
     }
 
     [HttpPost]
@@ -208,12 +212,14 @@ public class InstructorsController(
 
         if (!ModelState.IsValid)
         {
-            Course[] courses = await coursesRepository.GetAll(cancellationToken);
+            (Instructor instructor, Course[] courses) = await mediator.Send(
+                new GetInstructorEditFormQuery(request.ExternalId),
+                cancellationToken);
 
-            return View(
-                new EditInstructorForm(
-                    request,
-                    courses.ToAssignedCourseOptions( /* instructor? */)));
+            return View(new EditInstructorForm(instructor, courses)
+            {
+                Request = request
+            });
         }
 
         EditInstructorCommand command = new()

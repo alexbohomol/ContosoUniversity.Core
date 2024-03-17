@@ -2,20 +2,12 @@ namespace ContosoUniversity.Mvc.ViewModels.Instructors;
 
 using System.ComponentModel.DataAnnotations;
 
-public class CreateInstructorForm : CreateInstructorRequest
+using Application.Contracts.Repositories.ReadOnly.Projections;
+
+public record CreateInstructorForm(Course[] Courses)
 {
-    public CreateInstructorForm(CreateInstructorRequest command, AssignedCourseOption[] assignedCourses)
-    {
-        LastName = command.LastName;
-        FirstName = command.FirstName;
-        HireDate = command.HireDate;
-        Location = command.Location;
-        AssignedCourses = assignedCourses;
-    }
+    public CreateInstructorRequest Request { get; init; } = new();
 
-    public CreateInstructorForm()
-    {
-    }
-
-    [Display(Name = "Assigned Courses")] public AssignedCourseOption[] AssignedCourses { get; set; }
+    [Display(Name = "Assigned Courses")]
+    public AssignedCourseOption[] AssignedCourses => Courses.ToAssignedCourseOptions();
 }

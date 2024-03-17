@@ -12,26 +12,26 @@
     <div class="col-md-8">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ExternalId"/>
+            <input type="hidden" asp-for="Request.ExternalId"/>
             <div class="form-group">
                 <label class="control-label">Last Name</label>
-                <input asp-for="LastName" class="form-control"/>
-                <span asp-validation-for="LastName" class="text-danger"></span>
+                <input asp-for="Request.LastName" class="form-control"/>
+                <span asp-validation-for="Request.LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">First Name</label>
-                <input asp-for="FirstName" class="form-control"/>
-                <span asp-validation-for="FirstName" class="text-danger"></span>
+                <input asp-for="Request.FirstName" class="form-control"/>
+                <span asp-validation-for="Request.FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Hire Date</label>
-                <input asp-for="HireDate" type="date" class="form-control"/>
-                <span asp-validation-for="HireDate" class="text-danger"></span>
+                <input asp-for="Request.HireDate" type="date" class="form-control"/>
+                <span asp-validation-for="Request.HireDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Office Location</label>
-                <input asp-for="Location" class="form-control"/>
-                <span asp-validation-for="Location" class="text-danger"></span>
+                <input asp-for="Request.Location" class="form-control"/>
+                <span asp-validation-for="Request.Location" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
@@ -39,7 +39,6 @@
                         <tr>
                         @{
                             var cnt = 0;
-
                             foreach (var course in Model.AssignedCourses)
                             {
                                 if (cnt++ % 3 == 0)
@@ -48,7 +47,8 @@
                                 }
                                 @:<td>
                                 <input type="checkbox"
-                                       name="selectedCourses"
+                                       id="Request_selectedCourses"
+                                       name="Request.selectedCourses"
                                        value="@course.CourseExternalId"
                                        @(Html.Raw(course.Assigned ? "checked=\"checked\"" : ""))/>
                                 @course.CourseCode

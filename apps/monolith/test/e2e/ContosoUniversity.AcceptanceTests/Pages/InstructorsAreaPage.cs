@@ -12,6 +12,13 @@ using Models;
 public class InstructorsAreaPage(IBrowser browser, IConfiguration configuration)
     : PageObject(browser, configuration)
 {
+    private static class Inputs
+    {
+        public const string LastName = "#Request_LastName";
+        public const string FirstName = "#Request_FirstName";
+        public const string HireDate = "#Request_HireDate";
+    }
+
     protected override string PagePath => $"{PageBaseUrl}/Instructors";
 
     public async Task<InstructorTableRowModel[]> ScrapRenderedInstructorsList()
@@ -35,9 +42,9 @@ public class InstructorsAreaPage(IBrowser browser, IConfiguration configuration)
 
     public async Task EnterInstructorDetails(InstructorTableRowModel model)
     {
-        await Page.FillAsync("#LastName", model.LastName);
-        await Page.FillAsync("#FirstName", model.FirstName);
-        await Page.FillAsync("#HireDate", model.HireDate);
+        await Page.FillAsync(Inputs.LastName, model.LastName);
+        await Page.FillAsync(Inputs.FirstName, model.FirstName);
+        await Page.FillAsync(Inputs.HireDate, model.HireDate);
     }
 
     public async Task ClickLinkOnInstructorsTable(string link, string instructorName)
@@ -59,9 +66,9 @@ public class InstructorsAreaPage(IBrowser browser, IConfiguration configuration)
     public async Task<InstructorTableRowModel> ScrapRenderedInstructorDetailsToEdit()
     {
         return new InstructorTableRowModel(
-            await Page.InputValueAsync("#LastName"),
-            await Page.InputValueAsync("#FirstName"),
-            await Page.InputValueAsync("#HireDate"),
+            await Page.InputValueAsync(Inputs.LastName),
+            await Page.InputValueAsync(Inputs.FirstName),
+            await Page.InputValueAsync(Inputs.HireDate),
             null);
     }
 }
