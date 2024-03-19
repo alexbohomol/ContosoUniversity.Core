@@ -6,7 +6,7 @@ using FluentValidation;
 
 using ViewModels.Departments;
 
-internal class CreateDepartmentRequestValidator : AbstractValidator<CreateDepartmentRequest>
+public class CreateDepartmentRequestValidator : AbstractValidator<CreateDepartmentRequest>
 {
     public CreateDepartmentRequestValidator()
     {

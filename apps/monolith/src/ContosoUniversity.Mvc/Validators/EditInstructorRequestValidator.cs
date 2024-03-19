@@ -6,7 +6,7 @@ using FluentValidation;
 
 using ViewModels.Instructors;
 
-internal class EditInstructorRequestValidator : AbstractValidator<EditInstructorRequest>
+public class EditInstructorRequestValidator : AbstractValidator<EditInstructorRequest>
 {
     public EditInstructorRequestValidator()
     {

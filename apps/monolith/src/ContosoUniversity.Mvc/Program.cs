@@ -44,7 +44,7 @@ public class Program
             });
 }
 
-internal class Startup(IConfiguration configuration)
+internal class Startup(IConfiguration configuration, IWebHostEnvironment env)
 {
     public void ConfigureServices(IServiceCollection services)
     {
@@ -71,7 +71,10 @@ internal class Startup(IConfiguration configuration)
         services.AddControllersWithViews();
 
         services.AddFluentValidationAutoValidation();
-        services.AddFluentValidationClientsideAdapters();
+        if (!env.IsDevelopment())
+        {
+            services.AddFluentValidationClientsideAdapters();
+        }
         services.AddValidatorsFromAssemblyContaining<Program>();
         services.AddValidatorsFromAssemblyContaining<IApplicationLayerMarker>();
 
@@ -81,7 +84,7 @@ internal class Startup(IConfiguration configuration)
         });
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public void Configure(IApplicationBuilder app)
     {
         if (env.IsDevelopment())
         {

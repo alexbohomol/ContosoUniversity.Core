@@ -6,7 +6,7 @@ using FluentValidation;
 
 using ViewModels.Instructors;
 
-internal class CreateInstructorRequestValidator : AbstractValidator<CreateInstructorRequest>
+public class CreateInstructorRequestValidator : AbstractValidator<CreateInstructorRequest>
 {
     public CreateInstructorRequestValidator()
     {
