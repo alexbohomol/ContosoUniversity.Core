@@ -6,7 +6,7 @@ using FluentValidation;
 
 using ViewModels.Departments;
 
-internal class EditDepartmentRequestValidator : AbstractValidator<EditDepartmentRequest>
+public class EditDepartmentRequestValidator : AbstractValidator<EditDepartmentRequest>
 {
     public EditDepartmentRequestValidator()
     {
