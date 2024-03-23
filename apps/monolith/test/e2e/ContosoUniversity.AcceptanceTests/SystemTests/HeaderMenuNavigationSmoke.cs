@@ -8,7 +8,7 @@ using Microsoft.Playwright;
 
 using NUnit.Framework;
 
-[Parallelizable(ParallelScope.Self)]
+[TestFixture]
 public class HeaderMenuNavigationSmoke : SystemTest
 {
     [TestCase("/", "Home Page - Contoso University")]
