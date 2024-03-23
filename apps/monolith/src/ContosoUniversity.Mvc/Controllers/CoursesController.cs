@@ -17,7 +17,6 @@ using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
 
-using ViewModels;
 using ViewModels.Courses;
 
 public class CoursesController(IMediator mediator) : Controller
@@ -59,7 +58,7 @@ public class CoursesController(IMediator mediator) : Controller
         CancellationToken cancellationToken)
     {
         var departmentNames = await repository.GetDepartmentNamesReference(cancellationToken);
-        return View(new CreateCourseForm(departmentNames.ToSelectList()));
+        return View(new CreateCourseForm(departmentNames));
     }
 
     [HttpPost]
@@ -78,7 +77,7 @@ public class CoursesController(IMediator mediator) : Controller
         if (!ModelState.IsValid)
         {
             var departmentNames = await repository.GetDepartmentNamesReference(cancellationToken);
-            return View(new CreateCourseForm(departmentNames.ToSelectList())
+            return View(new CreateCourseForm(departmentNames)
             {
                 Request = request
             });
