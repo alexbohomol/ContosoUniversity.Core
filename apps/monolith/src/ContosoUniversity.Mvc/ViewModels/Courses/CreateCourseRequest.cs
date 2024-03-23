@@ -2,10 +2,10 @@ namespace ContosoUniversity.Mvc.ViewModels.Courses;
 
 using System;
 
-public class CreateCourseRequest
+public record CreateCourseRequest
 {
-    public int CourseCode { get; set; }
-    public string Title { get; set; }
-    public int Credits { get; set; }
-    public Guid DepartmentId { get; set; }
+    public int CourseCode { get; init; }
+    public string Title { get; init; }
+    public int Credits { get; init; }
+    public Guid DepartmentId { get; init; }
 }

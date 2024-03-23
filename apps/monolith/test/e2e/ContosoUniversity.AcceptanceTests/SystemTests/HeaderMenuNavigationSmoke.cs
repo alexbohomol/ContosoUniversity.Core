@@ -1,22 +1,16 @@
-namespace ContosoUniversity.AcceptanceTests;
+namespace ContosoUniversity.AcceptanceTests.SystemTests;
 
 using System.Threading.Tasks;
 
 using FluentAssertions;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
-using Microsoft.Playwright.NUnit;
 
 using NUnit.Framework;
 
 [Parallelizable(ParallelScope.Self)]
-public class HeaderMenuNavigationSmoke : PageTest
+public class HeaderMenuNavigationSmoke : SystemTest
 {
-    private static readonly IConfiguration Configuration = new ConfigurationBuilder()
-        .AddJsonFile($"testsettings.json", optional: false)
-        .Build();
-
     [TestCase("/", "Home Page - Contoso University")]
     [TestCase("/Home", "Home Page - Contoso University")]
     [TestCase("/Home/About", "Student Body Statistics - Contoso University")]
