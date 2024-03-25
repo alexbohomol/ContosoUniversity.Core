@@ -14,7 +14,7 @@ using Xunit;
 public class HeaderNavigationTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private static readonly IConfiguration Configuration = new ConfigurationBuilder()
-        .AddJsonFile($"testsettings.json", optional: false)
+        .AddJsonFile("testsettings.json", optional: false)
         .Build();
 
     private readonly HttpClient _httpClient;
