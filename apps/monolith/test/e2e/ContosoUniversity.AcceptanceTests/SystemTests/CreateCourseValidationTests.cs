@@ -33,7 +33,8 @@ public class CreateCourseValidationTests : SystemTest
 
         // Act
         await Page.ClickAsync("input[type=submit]");
-        await Page.WaitForURLAsync(FormUrl);
+        await Expect(Page).ToHaveURLAsync(FormUrl);
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // Assert
         await Expect(Page.GetByText(errorMessage)).ToBeVisibleAsync();
