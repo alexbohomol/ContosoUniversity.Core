@@ -8,6 +8,7 @@ on:
     paths: 
       - "apps/monolith/**"
       - "database/**"
+      - ".github/**"
 
 env:
   DOTNET_VERSION: 8.0.x
