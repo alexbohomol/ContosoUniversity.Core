@@ -15,7 +15,10 @@ using Data.Students.Writes;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 
+using HealthChecks.UI.Client;
+
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
@@ -54,6 +57,8 @@ internal class Startup(IConfiguration configuration, IWebHostEnvironment env)
             options.CheckConsentNeeded = _ => true;
             options.MinimumSameSitePolicy = SameSiteMode.None;
         });
+
+        services.AddHealthChecks();
 
         SqlConnectionStringBuilder SqlBuilderFor(string connectionStringName) =>
             new(configuration.GetConnectionString(connectionStringName))
@@ -117,6 +122,11 @@ internal class Startup(IConfiguration configuration, IWebHostEnvironment env)
         app.UseRouting();
 
         app.UseAuthorization();
+
+        app.UseHealthChecks(new PathString("/health"), new HealthCheckOptions
+        {
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
 
         app.UseEndpoints(endpoints =>
         {

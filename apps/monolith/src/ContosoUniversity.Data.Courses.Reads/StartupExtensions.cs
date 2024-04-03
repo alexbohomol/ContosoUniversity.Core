@@ -16,5 +16,9 @@ public static class StartupExtensions
         });
 
         services.AddScoped<ICoursesRoRepository, ReadOnlyRepository>();
+
+        services.AddHealthChecks().AddDbContextCheck<ReadOnlyContext>(
+            name: "sql-courses-reads",
+            tags: ["db", "sql", "courses", "reads"]);
     }
 }
