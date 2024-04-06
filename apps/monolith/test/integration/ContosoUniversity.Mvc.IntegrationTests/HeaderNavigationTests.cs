@@ -7,16 +7,11 @@ using System.Threading.Tasks;
 using FluentAssertions;
 
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Configuration;
 
 using Xunit;
 
-public class HeaderNavigationTests : IClassFixture<WebApplicationFactory<Program>>
+public class HeaderNavigationTests : SystemTest
 {
-    private static readonly IConfiguration Configuration = new ConfigurationBuilder()
-        .AddJsonFile($"testsettings.json", optional: false)
-        .Build();
-
     private readonly HttpClient _httpClient;
 
     public HeaderNavigationTests(WebApplicationFactory<Program> factory)
