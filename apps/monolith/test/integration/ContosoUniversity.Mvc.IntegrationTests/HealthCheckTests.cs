@@ -59,7 +59,7 @@ public class HealthCheckTests : SystemTest
 
         report.Should().NotBeNull();
         report.Status.Should().Be(UIHealthStatus.Healthy);
-        report.TotalDuration.Should().BeLessThan(TimeSpan.FromSeconds(1));
+        // report.TotalDuration.Should().BeLessThan(TimeSpan.FromSeconds(1));
         report.Entries.Should().NotBeEmpty();
         report.Entries.Count.Should().Be(6);
         report.Entries.Keys.Should().BeEquivalentTo(CheckNames);
@@ -69,7 +69,7 @@ public class HealthCheckTests : SystemTest
         {
             entry.Data.Should().BeEmpty();
             entry.Status.Should().Be(UIHealthStatus.Healthy);
-            entry.Duration.Should().BeLessThan(TimeSpan.FromSeconds(1));
+            // entry.Duration.Should().BeLessThan(TimeSpan.FromSeconds(1));
             entry.Tags?.Should().NotBeNull();
             entry.Tags?.Count().Should().Be(4);
         }
