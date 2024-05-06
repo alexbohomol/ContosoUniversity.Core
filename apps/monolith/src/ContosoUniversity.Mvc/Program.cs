@@ -47,6 +47,31 @@ public class Program
             });
 }
 
+/*
+public interface IConnectionResolver
+{
+    SqlConnectionStringBuilder SqlBuilderFor(string connectionStringName);
+}
+
+class DefaultConnectionResolver(IConfiguration configuration) : IConnectionResolver
+{
+    public SqlConnectionStringBuilder SqlBuilderFor(string connectionStringName)
+    {
+        var defaults = configuration
+            .GetSection(nameof(SqlConnectionStringBuilder))
+            .Get<SqlConnectionStringBuilder>();
+
+        return new(configuration.GetConnectionString(connectionStringName))
+        {
+            DataSource = Environment.GetEnvironmentVariable("CONTOSO_DB_HOST") ?? "localhost,1433",
+            InitialCatalog = defaults.InitialCatalog,
+            MultipleActiveResultSets = defaults.MultipleActiveResultSets,
+            TrustServerCertificate = defaults.TrustServerCertificate
+        };
+    }
+}
+*/
+
 internal class Startup(IConfiguration configuration, IWebHostEnvironment env)
 {
     public void ConfigureServices(IServiceCollection services)
@@ -60,11 +85,22 @@ internal class Startup(IConfiguration configuration, IWebHostEnvironment env)
 
         services.AddHealthChecks();
 
-        SqlConnectionStringBuilder SqlBuilderFor(string connectionStringName) =>
-            new(configuration.GetConnectionString(connectionStringName))
+        // services.AddSingleton<IConnectionResolver, DefaultConnectionResolver>();
+
+        SqlConnectionStringBuilder SqlBuilderFor(string connectionStringName)
+        {
+            var defaults = configuration
+                .GetSection(nameof(SqlConnectionStringBuilder))
+                .Get<SqlConnectionStringBuilder>();
+
+            return new(configuration.GetConnectionString(connectionStringName))
             {
-                DataSource = Environment.GetEnvironmentVariable("CONTOSO_DB_HOST") ?? "localhost,1433"
+                DataSource = Environment.GetEnvironmentVariable("CONTOSO_DB_HOST") ?? "localhost,1433",
+                InitialCatalog = defaults.InitialCatalog,
+                MultipleActiveResultSets = defaults.MultipleActiveResultSets,
+                TrustServerCertificate = defaults.TrustServerCertificate
             };
+        }
 
         services.AddCoursesSchemaReads(SqlBuilderFor("Courses-RO"));
         services.AddCoursesSchemaWrites(SqlBuilderFor("Courses-RW"));
