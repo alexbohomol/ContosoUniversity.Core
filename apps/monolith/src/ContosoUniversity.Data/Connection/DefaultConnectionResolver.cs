@@ -5,7 +5,8 @@ using System;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
-internal class DefaultConnectionResolver(IConfiguration configuration) : IConnectionResolver
+internal class DefaultConnectionResolver(IConfiguration configuration)
+    : IConnectionResolver
 {
     public SqlConnectionStringBuilder CreateFor(string connectionStringName)
     {
@@ -15,7 +16,8 @@ internal class DefaultConnectionResolver(IConfiguration configuration) : IConnec
 
         return new(configuration.GetConnectionString(connectionStringName))
         {
-            DataSource = Environment.GetEnvironmentVariable("CONTOSO_DB_HOST") ?? "localhost,1433",
+            DataSource = Environment.GetEnvironmentVariable("CONTOSO_DB_HOST")
+                         ?? defaults.DataSource,
             InitialCatalog = defaults.InitialCatalog,
             MultipleActiveResultSets = defaults.MultipleActiveResultSets,
             TrustServerCertificate = defaults.TrustServerCertificate
