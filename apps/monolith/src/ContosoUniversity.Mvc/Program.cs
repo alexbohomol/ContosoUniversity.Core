@@ -22,7 +22,6 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -46,7 +45,7 @@ public class Program
             });
 }
 
-internal class Startup(IConfiguration configuration, IWebHostEnvironment env)
+internal class Startup(IWebHostEnvironment env)
 {
     public void ConfigureServices(IServiceCollection services)
     {
