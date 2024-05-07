@@ -22,22 +22,14 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Xunit;
 
-public class HealthCheckTests// : SystemTest
+public class HealthCheckTests
 {
-    // private readonly HttpClient _httpClient;
-
     private static readonly IConfiguration Configuration = new ConfigurationBuilder()
         .AddJsonFile("testsettings.json", optional: false)
         .Build();
 
-    public HealthCheckTests()
-    {
-        // factory.ClientOptions.BaseAddress = new Uri(Configuration["PageBaseUrl:Https"]);
-        // _httpClient = factory.CreateClient();
-    }
-
     [Fact]
-    public async Task HealthCheck_ReturnsOk()
+    public async Task HealthCheck_ReturnsHealthy()
     {
         var factory = new WebApplicationFactory<Program>();
         factory.ClientOptions.BaseAddress = new Uri(Configuration["PageBaseUrl:Https"]);
@@ -49,11 +41,11 @@ public class HealthCheckTests// : SystemTest
 
         var report = await response.Content.ReadFromJsonAsync<UIHealthReport>(HealthChecksJsonOptions);
 
-        report.ShouldBeSuccessful();
+        report.ShouldBeHealthy();
     }
 
     [Fact]
-    public async Task HealthCheck_ReturnsFailed()
+    public async Task HealthCheck_ReturnsUnhealthy()
     {
         var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
@@ -61,14 +53,14 @@ public class HealthCheckTests// : SystemTest
             {
                 var resolver = collection.BuildServiceProvider().GetService<IConnectionResolver>();
                 collection.RemoveAll<IConnectionResolver>();
-                collection.AddSingleton<IConnectionResolver>(_ => new TestConnectionResolver(resolver)
-                {
-                    Configure = builder1 =>
-                    {
-                        builder1.DataSource = "wronghost,1234";
-                        builder1.ConnectTimeout = 5;
-                    }
-                });
+                collection.AddSingleton<IConnectionResolver>(
+                    new DecoratingConnectionResolver(
+                        resolver,
+                        sqlBuilder =>
+                        {
+                            sqlBuilder.DataSource = "wrong host,1234";
+                            sqlBuilder.ConnectTimeout = 5;
+                        }));
             });
         });
         factory.ClientOptions.BaseAddress = new Uri(Configuration["PageBaseUrl:Https"]);
@@ -81,7 +73,7 @@ public class HealthCheckTests// : SystemTest
 
         var report = await response.Content.ReadFromJsonAsync<UIHealthReport>(HealthChecksJsonOptions);
 
-        // report.ShouldBeSuccessful();
+        report.ShouldBeUnhealthy();
     }
 
     private static JsonSerializerOptions HealthChecksJsonOptions
@@ -96,15 +88,16 @@ public class HealthCheckTests// : SystemTest
         }
     }
 
-    private class TestConnectionResolver(IConnectionResolver resolver) : IConnectionResolver
+    private class DecoratingConnectionResolver(
+        IConnectionResolver originalResolver,
+        Action<SqlConnectionStringBuilder> decorate)
+        : IConnectionResolver
     {
         public SqlConnectionStringBuilder CreateFor(string connectionStringName)
         {
-            var builder = resolver.CreateFor(connectionStringName);
-            Configure(builder);
+            var builder = originalResolver.CreateFor(connectionStringName);
+            decorate(builder);
             return builder;
         }
-
-        public Action<SqlConnectionStringBuilder> Configure { get; set; } = _ => { };
     }
 }

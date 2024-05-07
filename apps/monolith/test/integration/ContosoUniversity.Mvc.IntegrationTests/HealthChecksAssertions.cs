@@ -29,7 +29,7 @@ public static class HealthChecksAssertions
         "writes"
     ];
 
-    public static void ShouldBeSuccessful(this UIHealthReport report)
+    public static void ShouldBeHealthy(this UIHealthReport report)
     {
         report.Should().NotBeNull();
         report.Status.Should().Be(UIHealthStatus.Healthy);
@@ -38,13 +38,34 @@ public static class HealthChecksAssertions
         report.Entries.Count.Should().Be(6);
         report.Entries.Keys.Should().BeEquivalentTo(CheckNames);
         report.Entries.Values.SelectMany(x => x.Tags).Distinct().Should().BeEquivalentTo(Tags);
-        report.Entries.Values.Should().AllSatisfy(x => x.ShouldBeSuccessful());
+        report.Entries.Values.Should().AllSatisfy(ShouldBeHealthy);
     }
 
-    private static void ShouldBeSuccessful(this UIHealthReportEntry entry)
+    private static void ShouldBeHealthy(this UIHealthReportEntry entry)
     {
         entry.Data.Should().BeEmpty();
         entry.Status.Should().Be(UIHealthStatus.Healthy);
+        // entry.Duration.Should().BeLessThan(TimeSpan.FromSeconds(1));
+        entry.Tags?.Should().NotBeNull();
+        entry.Tags?.Count().Should().Be(4);
+    }
+
+    public static void ShouldBeUnhealthy(this UIHealthReport report)
+    {
+        report.Should().NotBeNull();
+        report.Status.Should().Be(UIHealthStatus.Unhealthy);
+        // report.TotalDuration.Should().BeLessThan(TimeSpan.FromSeconds(1));
+        report.Entries.Should().NotBeEmpty();
+        report.Entries.Count.Should().Be(6);
+        report.Entries.Keys.Should().BeEquivalentTo(CheckNames);
+        report.Entries.Values.SelectMany(x => x.Tags).Distinct().Should().BeEquivalentTo(Tags);
+        report.Entries.Values.Should().AllSatisfy(ShouldBeUnhealthy);
+    }
+
+    private static void ShouldBeUnhealthy(this UIHealthReportEntry entry)
+    {
+        entry.Data.Should().BeEmpty();
+        entry.Status.Should().Be(UIHealthStatus.Unhealthy);
         // entry.Duration.Should().BeLessThan(TimeSpan.FromSeconds(1));
         entry.Tags?.Should().NotBeNull();
         entry.Tags?.Count().Should().Be(4);
