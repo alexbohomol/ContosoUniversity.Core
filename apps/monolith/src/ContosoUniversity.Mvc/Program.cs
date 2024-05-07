@@ -5,6 +5,7 @@ using System.Globalization;
 
 using Application;
 
+using Data;
 using Data.Courses.Reads;
 using Data.Courses.Writes;
 using Data.Departments.Reads;
@@ -47,31 +48,6 @@ public class Program
             });
 }
 
-/*
-public interface IConnectionResolver
-{
-    SqlConnectionStringBuilder SqlBuilderFor(string connectionStringName);
-}
-
-class DefaultConnectionResolver(IConfiguration configuration) : IConnectionResolver
-{
-    public SqlConnectionStringBuilder SqlBuilderFor(string connectionStringName)
-    {
-        var defaults = configuration
-            .GetSection(nameof(SqlConnectionStringBuilder))
-            .Get<SqlConnectionStringBuilder>();
-
-        return new(configuration.GetConnectionString(connectionStringName))
-        {
-            DataSource = Environment.GetEnvironmentVariable("CONTOSO_DB_HOST") ?? "localhost,1433",
-            InitialCatalog = defaults.InitialCatalog,
-            MultipleActiveResultSets = defaults.MultipleActiveResultSets,
-            TrustServerCertificate = defaults.TrustServerCertificate
-        };
-    }
-}
-*/
-
 internal class Startup(IConfiguration configuration, IWebHostEnvironment env)
 {
     public void ConfigureServices(IServiceCollection services)
@@ -84,8 +60,6 @@ internal class Startup(IConfiguration configuration, IWebHostEnvironment env)
         });
 
         services.AddHealthChecks();
-
-        // services.AddSingleton<IConnectionResolver, DefaultConnectionResolver>();
 
         SqlConnectionStringBuilder SqlBuilderFor(string connectionStringName)
         {
@@ -102,7 +76,8 @@ internal class Startup(IConfiguration configuration, IWebHostEnvironment env)
             };
         }
 
-        services.AddCoursesSchemaReads(SqlBuilderFor("Courses-RO"));
+        services.AddDataInfrastructure();
+        services.AddCoursesSchemaReads();
         services.AddCoursesSchemaWrites(SqlBuilderFor("Courses-RW"));
         services.AddStudentsSchemaReads(SqlBuilderFor("Students-RO"));
         services.AddStudentsSchemaWrites(SqlBuilderFor("Students-RW"));

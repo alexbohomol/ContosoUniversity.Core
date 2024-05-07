@@ -2,17 +2,23 @@ namespace ContosoUniversity.Data.Courses.Reads;
 
 using Application.Contracts.Repositories.ReadOnly;
 
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class StartupExtensions
 {
-    public static void AddCoursesSchemaReads(this IServiceCollection services, SqlConnectionStringBuilder builder)
+    public static void AddCoursesSchemaReads(this IServiceCollection services)
     {
-        services.AddDbContext<ReadOnlyContext>(options =>
+        services.AddScoped(provider =>
         {
-            options.UseSqlServer(builder.ConnectionString);
+            var connectionResolver = provider.GetService<IConnectionResolver>();
+
+            var builder = new DbContextOptionsBuilder<ReadOnlyContext>();
+            var connectionString = connectionResolver.CreateFor("Courses-RO");
+
+            builder.UseSqlServer(connectionString.ConnectionString);
+
+            return new ReadOnlyContext(builder.Options);
         });
 
         services.AddScoped<ICoursesRoRepository, ReadOnlyRepository>();
