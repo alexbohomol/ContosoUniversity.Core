@@ -1,7 +1,5 @@
 namespace ContosoUniversity.Data.Connection;
 
-using System;
-
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
@@ -16,8 +14,7 @@ internal class DefaultConnectionResolver(IConfiguration configuration)
 
         return new(configuration.GetConnectionString(connectionStringName))
         {
-            DataSource = Environment.GetEnvironmentVariable("CONTOSO_DB_HOST")
-                         ?? defaults.DataSource,
+            DataSource = defaults.DataSource,
             InitialCatalog = defaults.InitialCatalog,
             MultipleActiveResultSets = defaults.MultipleActiveResultSets,
             TrustServerCertificate = defaults.TrustServerCertificate
