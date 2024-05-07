@@ -1,6 +1,5 @@
 namespace ContosoUniversity.Mvc;
 
-using System;
 using System.Globalization;
 
 using Application;
@@ -23,7 +22,6 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -61,28 +59,13 @@ internal class Startup(IConfiguration configuration, IWebHostEnvironment env)
 
         services.AddHealthChecks();
 
-        SqlConnectionStringBuilder SqlBuilderFor(string connectionStringName)
-        {
-            var defaults = configuration
-                .GetSection(nameof(SqlConnectionStringBuilder))
-                .Get<SqlConnectionStringBuilder>();
-
-            return new(configuration.GetConnectionString(connectionStringName))
-            {
-                DataSource = Environment.GetEnvironmentVariable("CONTOSO_DB_HOST") ?? "localhost,1433",
-                InitialCatalog = defaults.InitialCatalog,
-                MultipleActiveResultSets = defaults.MultipleActiveResultSets,
-                TrustServerCertificate = defaults.TrustServerCertificate
-            };
-        }
-
         services.AddDataInfrastructure();
         services.AddCoursesSchemaReads();
-        services.AddCoursesSchemaWrites(SqlBuilderFor("Courses-RW"));
-        services.AddStudentsSchemaReads(SqlBuilderFor("Students-RO"));
-        services.AddStudentsSchemaWrites(SqlBuilderFor("Students-RW"));
-        services.AddDepartmentsSchemaReads(SqlBuilderFor("Departments-RO"));
-        services.AddDepartmentsSchemaWrites(SqlBuilderFor("Departments-RW"));
+        services.AddCoursesSchemaWrites();
+        services.AddStudentsSchemaReads();
+        services.AddStudentsSchemaWrites();
+        services.AddDepartmentsSchemaReads();
+        services.AddDepartmentsSchemaWrites();
 
         services.AddControllersWithViews();
 

@@ -2,17 +2,22 @@ namespace ContosoUniversity.Data.Courses.Writes;
 
 using Application.Contracts.Repositories.ReadWrite;
 
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class StartupExtensions
 {
-    public static void AddCoursesSchemaWrites(this IServiceCollection services, SqlConnectionStringBuilder builder)
+    public static void AddCoursesSchemaWrites(this IServiceCollection services)
     {
-        services.AddDbContext<ReadWriteContext>(options =>
+        services.AddScoped(provider =>
         {
-            options.UseSqlServer(builder.ConnectionString);
+            var connectionResolver = provider.GetService<IConnectionResolver>();
+            var connStringBuilder = connectionResolver.CreateFor("Courses-RW");
+
+            var optionsBuilder = new DbContextOptionsBuilder<ReadWriteContext>();
+            optionsBuilder.UseSqlServer(connStringBuilder.ConnectionString);
+
+            return new ReadWriteContext(optionsBuilder.Options);
         });
 
         services.AddScoped<ICoursesRwRepository, ReadWriteRepository>();

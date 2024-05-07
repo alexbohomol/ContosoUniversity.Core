@@ -12,13 +12,12 @@ public static class StartupExtensions
         services.AddScoped(provider =>
         {
             var connectionResolver = provider.GetService<IConnectionResolver>();
+            var connStringBuilder = connectionResolver.CreateFor("Courses-RO");
 
-            var builder = new DbContextOptionsBuilder<ReadOnlyContext>();
-            var connectionString = connectionResolver.CreateFor("Courses-RO");
+            var optionsBuilder = new DbContextOptionsBuilder<ReadOnlyContext>();
+            optionsBuilder.UseSqlServer(connStringBuilder.ConnectionString);
 
-            builder.UseSqlServer(connectionString.ConnectionString);
-
-            return new ReadOnlyContext(builder.Options);
+            return new ReadOnlyContext(optionsBuilder.Options);
         });
 
         services.AddScoped<ICoursesRoRepository, ReadOnlyRepository>();
