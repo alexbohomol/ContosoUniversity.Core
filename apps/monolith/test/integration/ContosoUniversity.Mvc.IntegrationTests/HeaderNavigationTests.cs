@@ -1,6 +1,5 @@
 namespace ContosoUniversity.Mvc.IntegrationTests;
 
-using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -11,14 +10,16 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
 public class HeaderNavigationTests :
-    IntegrationTest,
+    IClassFixture<TestsConfiguration>,
     IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly HttpClient _httpClient;
 
-    public HeaderNavigationTests(WebApplicationFactory<Program> factory)
+    public HeaderNavigationTests(
+        TestsConfiguration config,
+        WebApplicationFactory<Program> factory)
     {
-        factory.ClientOptions.BaseAddress = new Uri(Configuration["PageBaseUrl:Https"]);
+        factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         _httpClient = factory.CreateClient();
     }
 

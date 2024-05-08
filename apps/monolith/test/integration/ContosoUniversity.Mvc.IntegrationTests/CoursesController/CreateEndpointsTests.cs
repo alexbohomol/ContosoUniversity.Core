@@ -1,6 +1,5 @@
 namespace ContosoUniversity.Mvc.IntegrationTests.CoursesController;
 
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -15,14 +14,16 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Xunit;
 
 public class CreateEndpointsTests :
-    IntegrationTest,
+    IClassFixture<TestsConfiguration>,
     IClassFixture<NoAntiforgeryWebApplicationFactory>
 {
     private readonly HttpClient _client;
 
-    public CreateEndpointsTests(NoAntiforgeryWebApplicationFactory factory)
+    public CreateEndpointsTests(
+        TestsConfiguration config,
+        NoAntiforgeryWebApplicationFactory factory)
     {
-        factory.ClientOptions.BaseAddress = new Uri(Configuration["PageBaseUrl:Https"]);
+        factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         factory.ClientOptions.AllowAutoRedirect = true;
         _client = factory.CreateClient();
     }

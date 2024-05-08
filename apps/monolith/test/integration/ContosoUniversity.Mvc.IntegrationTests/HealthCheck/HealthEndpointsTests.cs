@@ -21,7 +21,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Xunit;
 
-public class HealthEndpointsTests : IntegrationTest
+public class HealthEndpointsTests(TestsConfiguration config) : IClassFixture<TestsConfiguration>
 {
     [Theory]
     [InlineData("/health/readiness")]
@@ -29,7 +29,7 @@ public class HealthEndpointsTests : IntegrationTest
     public async Task Health_ReturnsHealthy(string healthUrl)
     {
         var factory = new WebApplicationFactory<Program>();
-        factory.ClientOptions.BaseAddress = new Uri(Configuration["PageBaseUrl:Https"]);
+        factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         var client = factory.CreateClient();
         HttpResponseMessage response = await client.GetAsync(healthUrl);
 
@@ -62,7 +62,7 @@ public class HealthEndpointsTests : IntegrationTest
                         }));
             });
         });
-        factory.ClientOptions.BaseAddress = new Uri(Configuration["PageBaseUrl:Https"]);
+        factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         var client = factory.CreateClient();
 
         HttpResponseMessage response = await client.GetAsync(healthUrl);
