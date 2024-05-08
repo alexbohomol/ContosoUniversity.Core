@@ -116,10 +116,12 @@ internal class Startup(IWebHostEnvironment env)
 
         app.UseAuthorization();
 
-        app.UseHealthChecks(new PathString("/health"), new HealthCheckOptions
+        HealthCheckOptions checkOptions = new()
         {
             ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-        });
+        };
+        app.UseHealthChecks("/health/readiness", checkOptions);
+        app.UseHealthChecks("/health/liveness", checkOptions);
 
         app.UseEndpoints(endpoints =>
         {

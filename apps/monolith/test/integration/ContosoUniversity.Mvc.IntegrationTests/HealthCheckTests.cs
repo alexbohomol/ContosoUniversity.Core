@@ -28,13 +28,15 @@ public class HealthCheckTests
         .AddJsonFile("testsettings.json", optional: false)
         .Build();
 
-    [Fact]
-    public async Task HealthCheck_ReturnsHealthy()
+    [Theory]
+    [InlineData("/health/readiness")]
+    [InlineData("/health/liveness")]
+    public async Task HealthCheck_ReturnsHealthy(string healthUrl)
     {
         var factory = new WebApplicationFactory<Program>();
         factory.ClientOptions.BaseAddress = new Uri(Configuration["PageBaseUrl:Https"]);
         var client = factory.CreateClient();
-        HttpResponseMessage response = await client.GetAsync("health");
+        HttpResponseMessage response = await client.GetAsync(healthUrl);
 
         response.Should().BeSuccessful();
         response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
@@ -44,8 +46,10 @@ public class HealthCheckTests
         report.ShouldBeHealthy();
     }
 
-    [Fact]
-    public async Task HealthCheck_ReturnsUnhealthy()
+    [Theory]
+    [InlineData("/health/readiness")]
+    [InlineData("/health/liveness")]
+    public async Task HealthCheck_ReturnsUnhealthy(string healthUrl)
     {
         var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
@@ -66,7 +70,7 @@ public class HealthCheckTests
         factory.ClientOptions.BaseAddress = new Uri(Configuration["PageBaseUrl:Https"]);
         var client = factory.CreateClient();
 
-        HttpResponseMessage response = await client.GetAsync("health");
+        HttpResponseMessage response = await client.GetAsync(healthUrl);
 
         response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
         response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
