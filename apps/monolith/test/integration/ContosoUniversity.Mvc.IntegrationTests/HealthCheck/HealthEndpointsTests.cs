@@ -16,18 +16,13 @@ using HealthChecks.UI.Core;
 
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Xunit;
 
-public class HealthEndpointsTests
+public class HealthEndpointsTests : IntegrationTest
 {
-    private static readonly IConfiguration Configuration = new ConfigurationBuilder()
-        .AddJsonFile("testsettings.json", optional: false)
-        .Build();
-
     [Theory]
     [InlineData("/health/readiness")]
     [InlineData("/health/liveness")]
