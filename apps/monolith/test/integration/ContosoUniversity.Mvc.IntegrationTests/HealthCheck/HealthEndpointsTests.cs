@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Mvc.IntegrationTests;
+namespace ContosoUniversity.Mvc.IntegrationTests.HealthCheck;
 
 using System;
 using System.Net;
@@ -22,7 +22,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Xunit;
 
-public class HealthCheckTests
+public class HealthEndpointsTests
 {
     private static readonly IConfiguration Configuration = new ConfigurationBuilder()
         .AddJsonFile("testsettings.json", optional: false)
@@ -31,7 +31,7 @@ public class HealthCheckTests
     [Theory]
     [InlineData("/health/readiness")]
     [InlineData("/health/liveness")]
-    public async Task HealthCheck_ReturnsHealthy(string healthUrl)
+    public async Task Health_ReturnsHealthy(string healthUrl)
     {
         var factory = new WebApplicationFactory<Program>();
         factory.ClientOptions.BaseAddress = new Uri(Configuration["PageBaseUrl:Https"]);
@@ -49,7 +49,7 @@ public class HealthCheckTests
     [Theory]
     [InlineData("/health/readiness")]
     [InlineData("/health/liveness")]
-    public async Task HealthCheck_ReturnsUnhealthy(string healthUrl)
+    public async Task Health_ReturnsUnhealthy(string healthUrl)
     {
         var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
