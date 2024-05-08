@@ -7,7 +7,7 @@ services:
       - ASPNETCORE_PORT=https://+:443;http://+:80
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_HTTPS_PORT=10001
-      - CONTOSO_DB_HOST=db,1433
+      - SqlConnectionStringBuilder__DataSource=db,1433
     ports:
       - "10001:443"
       - "10000:80"

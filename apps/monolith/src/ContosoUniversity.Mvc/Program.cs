@@ -1,10 +1,10 @@
 namespace ContosoUniversity.Mvc;
 
-using System;
 using System.Globalization;
 
 using Application;
 
+using Data;
 using Data.Courses.Reads;
 using Data.Courses.Writes;
 using Data.Departments.Reads;
@@ -15,12 +15,13 @@ using Data.Students.Writes;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 
+using HealthChecks.UI.Client;
+
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -44,7 +45,7 @@ public class Program
             });
 }
 
-internal class Startup(IConfiguration configuration, IWebHostEnvironment env)
+internal class Startup(IWebHostEnvironment env)
 {
     public void ConfigureServices(IServiceCollection services)
     {
@@ -55,18 +56,15 @@ internal class Startup(IConfiguration configuration, IWebHostEnvironment env)
             options.MinimumSameSitePolicy = SameSiteMode.None;
         });
 
-        SqlConnectionStringBuilder SqlBuilderFor(string connectionStringName) =>
-            new(configuration.GetConnectionString(connectionStringName))
-            {
-                DataSource = Environment.GetEnvironmentVariable("CONTOSO_DB_HOST") ?? "localhost,1433"
-            };
+        services.AddHealthChecks();
 
-        services.AddCoursesSchemaReads(SqlBuilderFor("Courses-RO"));
-        services.AddCoursesSchemaWrites(SqlBuilderFor("Courses-RW"));
-        services.AddStudentsSchemaReads(SqlBuilderFor("Students-RO"));
-        services.AddStudentsSchemaWrites(SqlBuilderFor("Students-RW"));
-        services.AddDepartmentsSchemaReads(SqlBuilderFor("Departments-RO"));
-        services.AddDepartmentsSchemaWrites(SqlBuilderFor("Departments-RW"));
+        services.AddDataInfrastructure();
+        services.AddCoursesSchemaReads();
+        services.AddCoursesSchemaWrites();
+        services.AddStudentsSchemaReads();
+        services.AddStudentsSchemaWrites();
+        services.AddDepartmentsSchemaReads();
+        services.AddDepartmentsSchemaWrites();
 
         services.AddControllersWithViews();
 
@@ -117,6 +115,13 @@ internal class Startup(IConfiguration configuration, IWebHostEnvironment env)
         app.UseRouting();
 
         app.UseAuthorization();
+
+        HealthCheckOptions checkOptions = new()
+        {
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        };
+        app.UseHealthChecks("/health/readiness", checkOptions);
+        app.UseHealthChecks("/health/liveness", checkOptions);
 
         app.UseEndpoints(endpoints =>
         {

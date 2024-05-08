@@ -1,32 +1,30 @@
 namespace ContosoUniversity.Data.Departments.Writes;
 
-using System.Threading.Tasks;
-
 using Application.Contracts.Repositories.ReadWrite;
 
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class StartupExtensions
 {
-    public static void AddDepartmentsSchemaWrites(this IServiceCollection services, SqlConnectionStringBuilder builder)
+    public static void AddDepartmentsSchemaWrites(this IServiceCollection services)
     {
-        services.AddDbContext<ReadWriteContext>(options =>
+        services.AddScoped(provider =>
         {
-            options.UseSqlServer(builder.ConnectionString);
+            var connectionResolver = provider.GetService<IConnectionResolver>();
+            var connStringBuilder = connectionResolver.CreateFor("Departments-RW");
+
+            var optionsBuilder = new DbContextOptionsBuilder<ReadWriteContext>();
+            optionsBuilder.UseSqlServer(connStringBuilder.ConnectionString);
+
+            return new ReadWriteContext(optionsBuilder.Options);
         });
 
         services.AddScoped<IDepartmentsRwRepository, DepartmentsReadWriteRepository>();
         services.AddScoped<IInstructorsRwRepository, InstructorsReadWriteRepository>();
-    }
 
-    public static async Task<bool> EnsureDepartmentsSchemaIsAvailable(this IServiceCollection services)
-    {
-        using IServiceScope scope = services.BuildServiceProvider().CreateScope();
-
-        var context = scope.ServiceProvider.GetRequiredService<ReadWriteContext>();
-
-        return await context.Database.CanConnectAsync();
+        services.AddHealthChecks().AddDbContextCheck<ReadWriteContext>(
+            name: "sql-departments-writes",
+            tags: ["db", "sql", "departments", "writes"]);
     }
 }
