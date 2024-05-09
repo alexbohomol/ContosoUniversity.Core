@@ -10,7 +10,6 @@ using Mvc.ViewModels.Courses;
 
 using NUnit.Framework;
 
-[Parallelizable(ParallelScope.Self)]
 public class CreateCourseValidationTests : SystemTest
 {
     private static readonly string FormUrl = $"{Configuration["PageBaseUrl:Http"]}/Courses/Create";
