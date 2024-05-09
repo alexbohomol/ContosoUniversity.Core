@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 using BoDi;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 
 using TechTalk.SpecFlow;
@@ -12,14 +13,18 @@ using TechTalk.SpecFlow;
 public class PlaywrightHooks
 {
     [BeforeTestRun]
-    public static async Task BeforeTestRun(IObjectContainer container)
+    public static async Task BeforeTestRun(
+        IObjectContainer container,
+        IConfiguration configuration)
     {
         IPlaywright playwright = await Playwright.CreateAsync();
-        IBrowser browser = await playwright.Chromium.LaunchAsync(); //new BrowserTypeLaunchOptions
-        // {
-        //     Headless = false,
-        //     SlowMo = 2000
-        // });
+
+        var launchOptions = configuration
+            .GetSection(nameof(BrowserTypeLaunchOptions))
+            .Get<BrowserTypeLaunchOptions>();
+
+        IBrowser browser = await playwright.Chromium.LaunchAsync(launchOptions);
+
         container.RegisterInstanceAs(playwright);
         container.RegisterInstanceAs(browser);
     }
