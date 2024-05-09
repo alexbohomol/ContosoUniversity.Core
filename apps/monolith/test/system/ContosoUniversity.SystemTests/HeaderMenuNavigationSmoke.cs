@@ -1,4 +1,4 @@
-namespace ContosoUniversity.AcceptanceTests.SystemTests;
+namespace ContosoUniversity.SystemTests;
 
 using System.Threading.Tasks;
 
