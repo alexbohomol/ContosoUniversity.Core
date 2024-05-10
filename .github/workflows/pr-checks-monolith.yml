@@ -176,13 +176,17 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
-    - name: Build Integration Tests
+    - name: Build System Tests
       working-directory: ${{ env.TEST_PROJ_PATH }}
       run: |
         dotnet restore
         dotnet build --no-restore
 
-    - name: Run Integration Tests
+    - name: Ensure browsers are installed
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
+
+    - name: Run System Tests
       working-directory: ${{ env.TEST_PROJ_PATH }}
       run: |
         dotnet test --no-build --verbosity normal
