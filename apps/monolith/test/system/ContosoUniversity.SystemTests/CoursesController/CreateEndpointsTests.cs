@@ -60,14 +60,32 @@ public class CreateEndpointsTests : SystemTest
         await Expect(Page.GetByRole(AriaRole.Row, new() { Name = "1111 Computers 5" })).ToBeVisibleAsync();
 
         // Cleanup created course
+        await RemoveCourseByRowDescription("1111 Computers 5");
+    }
+
+    private async Task RemoveCourseByRowDescription(string rowDescription)
+    {
+        // Ensure we are on the list page and the course is present
+        await Expect(Page).ToHaveURLAsync($"{Configuration["PageBaseUrl:Http"]}/Courses");
+        await Expect(Page.GetByRole(AriaRole.Row, new() { Name = rowDescription })).ToBeVisibleAsync();
+
+        // Goto the delete page
         await Page
-            .GetByRole(AriaRole.Row, new() { Name = "1111 Computers 5" })
+            .GetByRole(AriaRole.Row, new() { Name = rowDescription })
             .GetByRole(AriaRole.Link, new() { Name = "Delete" })
             .ClickAsync();
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         Page.Url.Should().StartWith($"{Configuration["PageBaseUrl:Http"]}/Courses/Delete");
+
+        // Delete the course
         await Page
             .GetByRole(AriaRole.Button, new() { Name = "Delete" })
             .ClickAsync();
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        // Ensure we are on the list page and the course is not present
+        await Expect(Page).ToHaveURLAsync($"{Configuration["PageBaseUrl:Http"]}/Courses");
+        await Expect(Page.GetByRole(AriaRole.Row, new() { Name = rowDescription })).ToBeHiddenAsync();
     }
 
     public static IEnumerable<TestCaseData> ValidationRequests => new[]
