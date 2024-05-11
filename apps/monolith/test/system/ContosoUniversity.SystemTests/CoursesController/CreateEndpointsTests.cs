@@ -1,4 +1,4 @@
-namespace ContosoUniversity.SystemTests;
+namespace ContosoUniversity.SystemTests.CoursesController;
 
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using Mvc.ViewModels.Courses;
 
 using NUnit.Framework;
 
-public class CreateCourseValidationTests : SystemTest
+public class CreateEndpointsTests : SystemTest
 {
     private static readonly string FormUrl = $"{Configuration["PageBaseUrl:Http"]}/Courses/Create";
 
@@ -23,12 +23,14 @@ public class CreateCourseValidationTests : SystemTest
     };
 
     [TestCaseSource(nameof(ValidationRequests))]
-    public async Task Validate(CreateCourseRequest request, string errorMessage)
+    public async Task PostCreate_WhenInvalidRequest_ReturnsValidationErrorView(
+        CreateCourseRequest request,
+        string errorMessage)
     {
         // Arrange
         await Page.GotoAsync(FormUrl);
         await FillFormWith(request);
-        // await Expect(Page.GetByText(errorMessage)).ToBeHiddenAsync();
+        await Expect(Page.GetByText(errorMessage)).ToBeHiddenAsync();
 
         // Act
         await Page.ClickAsync("input[type=submit]");
@@ -37,6 +39,31 @@ public class CreateCourseValidationTests : SystemTest
 
         // Assert
         await Expect(Page.GetByText(errorMessage)).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task PostCreate_WhenValidRequest_CreatesCourseAndRedirectsToListPage()
+    {
+        // Arrange
+        await Page.GotoAsync(FormUrl);
+        await FillFormWith(ValidRequest);
+
+        // Act
+        await Page.ClickAsync("input[type=submit]");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        // Assert
+        await Expect(Page).ToHaveURLAsync($"{Configuration["PageBaseUrl:Http"]}/Courses");
+        await Expect(Page.GetByRole(AriaRole.Row, new() { Name = "1111 Computers 5" })).ToBeVisibleAsync();
+
+        // Cleanup created course
+        await Page
+            .GetByRole(AriaRole.Row, new() { Name = "1111 Computers 5" })
+            .GetByRole(AriaRole.Link, new() { Name = "Delete" })
+            .ClickAsync();
+        await Page
+            .GetByRole(AriaRole.Button, new() { Name = "Delete" })
+            .ClickAsync();
     }
 
     public static IEnumerable<TestCaseData> ValidationRequests => new[]

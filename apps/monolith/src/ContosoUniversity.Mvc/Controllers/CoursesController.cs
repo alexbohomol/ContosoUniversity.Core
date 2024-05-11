@@ -69,11 +69,6 @@ public class CoursesController(IMediator mediator) : Controller
         [FromServices] IDepartmentsRoRepository repository,
         CancellationToken cancellationToken)
     {
-        if (request is null)
-        {
-            return BadRequest();
-        }
-
         if (!ModelState.IsValid)
         {
             var departmentNames = await repository.GetDepartmentNamesReference(cancellationToken);
