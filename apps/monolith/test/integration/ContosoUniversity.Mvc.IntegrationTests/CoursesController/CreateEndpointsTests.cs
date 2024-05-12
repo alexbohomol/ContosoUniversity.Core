@@ -33,12 +33,12 @@ public class CreateEndpointsTests :
     {
         var response = await _client.PostAsync(
             "/Courses/Create",
-            new FormUrlEncodedContent(new[]
+            new FormUrlEncodedContent(new Dictionary<string, string>
             {
-                new KeyValuePair<string, string>("CourseCode", "1111"),
-                new KeyValuePair<string, string>("Title", "Computers"),
-                new KeyValuePair<string, string>("Credits", "10"),
-                new KeyValuePair<string, string>("DepartmentId", "dab7e678-e3e7-4471-8282-96fe52e5c16f")
+                ["CourseCode"] = "1111",
+                ["Title"] = "Computers",
+                ["Credits"] = "10",
+                ["DepartmentId"] = "dab7e678-e3e7-4471-8282-96fe52e5c16f"
             }));
 
         response.EnsureSuccessStatusCode();
