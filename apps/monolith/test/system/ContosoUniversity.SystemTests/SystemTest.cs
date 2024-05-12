@@ -39,8 +39,23 @@ public abstract class SystemTest : PageTest
         });
     }
 
+    protected async Task CreateCourse(CreateCourseRequest request)
+    {
+        await Page.GotoAsync($"{Configuration["PageBaseUrl:Http"]}/Courses/Create");
+        await FillFormWith(request);
+        await Page.ClickAsync("input[type=submit]");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        // Ensure we are on the list page
+        await Expect(Page).ToHaveURLAsync($"{Configuration["PageBaseUrl:Http"]}/Courses");
+    }
+
     protected async Task RemoveCourseByRowDescription(string rowDescription)
     {
+        // Goto the list page
+        await Page.GotoAsync($"{Configuration["PageBaseUrl:Http"]}/Courses");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
         // Ensure we are on the list page and the course is present
         await Expect(Page).ToHaveURLAsync($"{Configuration["PageBaseUrl:Http"]}/Courses");
         await Expect(Page.GetByRole(AriaRole.Row, new() { Name = rowDescription })).ToBeVisibleAsync();
@@ -62,5 +77,20 @@ public abstract class SystemTest : PageTest
         // Ensure we are on the list page and the course is not present
         await Expect(Page).ToHaveURLAsync($"{Configuration["PageBaseUrl:Http"]}/Courses");
         await Expect(Page.GetByRole(AriaRole.Row, new() { Name = rowDescription })).ToBeHiddenAsync();
+    }
+
+    protected async Task ClickEditLinkByRowDescription(string rowDescription)
+    {
+        // Ensure we are on the list page and the course is present
+        await Expect(Page).ToHaveURLAsync($"{Configuration["PageBaseUrl:Http"]}/Courses");
+        await Expect(Page.GetByRole(AriaRole.Row, new() { Name = rowDescription })).ToBeVisibleAsync();
+
+        // Goto the edit page
+        await Page
+            .GetByRole(AriaRole.Row, new() { Name = rowDescription })
+            .GetByRole(AriaRole.Link, new() { Name = "Edit" })
+            .ClickAsync();
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        Page.Url.Should().StartWith($"{Configuration["PageBaseUrl:Http"]}/Courses/Edit");
     }
 }
