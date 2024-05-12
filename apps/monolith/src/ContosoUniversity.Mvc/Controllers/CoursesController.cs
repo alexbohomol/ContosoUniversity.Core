@@ -122,11 +122,6 @@ public class CoursesController(IMediator mediator) : Controller
         [FromServices] EditCourseCommandValidator validator,
         CancellationToken cancellationToken)
     {
-        if (request is null)
-        {
-            return BadRequest();
-        }
-
         if (!ModelState.IsValid)
         {
             (Course course, Dictionary<Guid, string> departmentsReference) = await mediator.Send(
