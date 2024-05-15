@@ -12,6 +12,9 @@ using NUnit.Framework;
 
 public class HeaderMenuNavigationSmoke : PageTest
 {
+    private static readonly SutUrls Urls =
+        new(ServiceLocator.GetRequiredService<IConfiguration>());
+
     [TestCase("/", "Home Page - Contoso University")]
     [TestCase("/Home", "Home Page - Contoso University")]
     [TestCase("/Home/About", "Student Body Statistics - Contoso University")]
@@ -21,10 +24,7 @@ public class HeaderMenuNavigationSmoke : PageTest
     [TestCase("/Departments", "Departments - Contoso University")]
     public async Task Smoke_User_IsAbleTo_NavigateHeaderMenu(string pathUrl, string expectedTitle)
     {
-        IConfiguration configuration =
-            ServiceLocator.GetRequiredService<IConfiguration>();
-
-        var pageUrl = $"{configuration["PageBaseUrl:Http"]}{pathUrl}";
+        var pageUrl = $"{Urls.BaseAddress}{pathUrl}";
         IResponse gotoAsync = await Page.GotoAsync(pageUrl);
         string title = await Page.TitleAsync();
 

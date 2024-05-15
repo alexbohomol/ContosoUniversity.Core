@@ -14,7 +14,8 @@ using NUnit.Framework;
 
 public class CreateEndpointsTests : PageTest
 {
-    private static readonly string FormUrl;
+    private static readonly SutUrls Urls =
+        new(ServiceLocator.GetRequiredService<IConfiguration>());
 
     private static readonly CreateCourseRequest ValidRequest = new()
     {
@@ -24,28 +25,20 @@ public class CreateEndpointsTests : PageTest
         DepartmentId = new Guid("dab7e678-e3e7-4471-8282-96fe52e5c16f")
     };
 
-    static CreateEndpointsTests()
-    {
-        IConfiguration configuration =
-            ServiceLocator.GetRequiredService<IConfiguration>();
-
-        FormUrl = $"{configuration["PageBaseUrl:Http"]}/Courses/Create";
-    }
-
     [TestCaseSource(nameof(ValidationRequests))]
     public async Task PostCreate_WhenInvalidRequest_ReturnsValidationErrorView(
         CreateCourseRequest request,
         string errorMessage)
     {
         // Arrange
-        await Page.GotoAsync(FormUrl);
+        await Page.GotoAsync(Urls.CoursesCreatePage);
         await Page.FillFormWith(request);
         // await Expect(Page.GetByText(errorMessage)).ToBeHiddenAsync();
         // TODO: why this assertion passes on CI only for Credits validation?
 
         // Act
         await Page.ClickAsync("input[type=submit]");
-        await Expect(Page).ToHaveURLAsync(FormUrl);
+        await Expect(Page).ToHaveURLAsync(Urls.CoursesCreatePage);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // Assert
@@ -56,7 +49,7 @@ public class CreateEndpointsTests : PageTest
     public async Task PostCreate_WhenValidRequest_CreatesCourseAndRedirectsToListPage()
     {
         // Arrange
-        await Page.GotoAsync(FormUrl);
+        await Page.GotoAsync(Urls.CoursesCreatePage);
         await Page.FillFormWith(ValidRequest);
 
         // Act
@@ -64,7 +57,7 @@ public class CreateEndpointsTests : PageTest
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // Assert
-        // await Expect(Page).ToHaveURLAsync($"{Configuration["PageBaseUrl:Http"]}/Courses");
+        await Expect(Page).ToHaveURLAsync(Urls.CoursesListPage);
         await Expect(Page.GetByRole(AriaRole.Row, new() { Name = "1111 Computers 5" })).ToBeVisibleAsync();
 
         // Cleanup created course

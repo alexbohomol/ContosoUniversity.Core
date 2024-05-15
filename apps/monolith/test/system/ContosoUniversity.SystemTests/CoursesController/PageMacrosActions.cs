@@ -11,6 +11,9 @@ using Mvc.ViewModels.Courses;
 
 public static class PageMacrosActions
 {
+    private static readonly SutUrls Urls =
+        new(ServiceLocator.GetRequiredService<IConfiguration>());
+
     public static async Task FillFormWith(this IPage page, CreateCourseRequest request)
     {
         await page.FillAsync("#Request_CourseCode", request.CourseCode.ToString());
@@ -36,10 +39,7 @@ public static class PageMacrosActions
 
     public static async Task CreateCourse(this IPage page, CreateCourseRequest request)
     {
-        IConfiguration configuration =
-            ServiceLocator.GetRequiredService<IConfiguration>();
-
-        await page.GotoAsync($"{configuration["PageBaseUrl:Http"]}/Courses/Create");
+        await page.GotoAsync(Urls.CoursesCreatePage);
         await page.FillFormWith(request);
         await page.ClickAsync("input[type=submit]");
         await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
@@ -50,11 +50,8 @@ public static class PageMacrosActions
 
     public static async Task RemoveCourseByRowDescription(this IPage page, string rowDescription)
     {
-        IConfiguration configuration =
-            ServiceLocator.GetRequiredService<IConfiguration>();
-
         // Goto the list page
-        await page.GotoAsync($"{configuration["PageBaseUrl:Http"]}/Courses");
+        await page.GotoAsync(Urls.CoursesListPage);
         await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // Ensure we are on the list page and the course is present
@@ -67,7 +64,7 @@ public static class PageMacrosActions
             .GetByRole(AriaRole.Link, new() { Name = "Delete" })
             .ClickAsync();
         await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        page.Url.Should().StartWith($"{configuration["PageBaseUrl:Http"]}/Courses/Delete");
+        page.Url.Should().StartWith(Urls.CoursesDeletePage);
 
         // Delete the course
         await page
@@ -82,9 +79,6 @@ public static class PageMacrosActions
 
     public static async Task ClickEditLinkByRowDescription(this IPage page, string rowDescription)
     {
-        IConfiguration configuration =
-            ServiceLocator.GetRequiredService<IConfiguration>();
-
         // Ensure we are on the list page and the course is present
         // await Expect(page).ToHaveURLAsync($"{configuration["PageBaseUrl:Http"]}/Courses");
         // await Expect(page.GetByRole(AriaRole.Row, new() { Name = rowDescription })).ToBeVisibleAsync();
@@ -95,6 +89,6 @@ public static class PageMacrosActions
             .GetByRole(AriaRole.Link, new() { Name = "Edit" })
             .ClickAsync();
         await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        page.Url.Should().StartWith($"{configuration["PageBaseUrl:Http"]}/Courses/Edit");
+        page.Url.Should().StartWith(Urls.CoursesEditPage);
     }
 }

@@ -16,7 +16,8 @@ using NUnit.Framework;
 
 public class EditEndpointsTests : PageTest
 {
-    private static readonly string FormUrl;
+    private static readonly SutUrls Urls =
+        new(ServiceLocator.GetRequiredService<IConfiguration>());
 
     private static readonly EditCourseRequest ValidRequest = new()
     {
@@ -24,14 +25,6 @@ public class EditEndpointsTests : PageTest
         Credits = 3,
         DepartmentId = new Guid("dab7e678-e3e7-4471-8282-96fe52e5c16f")
     };
-
-    static EditEndpointsTests()
-    {
-        IConfiguration configuration =
-            ServiceLocator.GetRequiredService<IConfiguration>();
-
-        FormUrl = $"{configuration["PageBaseUrl:Http"]}/Courses/Edit";
-    }
 
     [TestCaseSource(nameof(ValidationRequests))]
     public async Task PostEdit_WhenInvalidRequest_ReturnsValidationErrorView(
@@ -52,7 +45,7 @@ public class EditEndpointsTests : PageTest
         // Act
         await Page.ClickAsync("input[type=submit]");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        Page.Url.Should().StartWith(FormUrl);
+        Page.Url.Should().StartWith(Urls.CoursesEditPage);
 
         // Assert
         await Expect(Page.GetByText(errorMessage)).ToBeVisibleAsync();
@@ -80,7 +73,7 @@ public class EditEndpointsTests : PageTest
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // Assert
-        // await Expect(Page).ToHaveURLAsync($"{Configuration["PageBaseUrl:Http"]}/Courses");
+        await Expect(Page).ToHaveURLAsync(Urls.CoursesListPage);
         await Expect(Page.GetByRole(AriaRole.Row, new() { Name = "1111 Computers Algebra 3" })).ToBeVisibleAsync();
 
         // Cleanup created course
