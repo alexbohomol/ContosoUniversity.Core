@@ -3,17 +3,19 @@ namespace ContosoUniversity.SystemTests.CoursesController;
 using System;
 using System.Threading.Tasks;
 
+using Microsoft.Playwright.NUnit;
+
 using Mvc.ViewModels.Courses;
 
 using NUnit.Framework;
 
-public class DeleteEndpointsTests : SystemTest
+public class DeleteEndpointsTests : PageTest
 {
     [Test]
     public async Task PostDelete_RemovesExistingCourse()
     {
         // Arrange
-        await CreateCourse(new CreateCourseRequest
+        await Page.CreateCourse(new CreateCourseRequest
         {
             CourseCode = 1111,
             Title = "Computers",
@@ -22,6 +24,6 @@ public class DeleteEndpointsTests : SystemTest
         });
 
         // Act & Assert
-        await RemoveCourseByRowDescription("1111 Computers 5");
+        await Page.RemoveCourseByRowDescription("1111 Computers 5");
     }
 }

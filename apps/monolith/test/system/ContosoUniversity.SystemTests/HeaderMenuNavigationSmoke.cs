@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 
 using FluentAssertions;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
+using Microsoft.Playwright.NUnit;
 
 using NUnit.Framework;
 
-public class HeaderMenuNavigationSmoke : SystemTest
+public class HeaderMenuNavigationSmoke : PageTest
 {
     [TestCase("/", "Home Page - Contoso University")]
     [TestCase("/Home", "Home Page - Contoso University")]
@@ -19,7 +21,10 @@ public class HeaderMenuNavigationSmoke : SystemTest
     [TestCase("/Departments", "Departments - Contoso University")]
     public async Task Smoke_User_IsAbleTo_NavigateHeaderMenu(string pathUrl, string expectedTitle)
     {
-        var pageUrl = $"{Configuration["PageBaseUrl:Http"]}{pathUrl}";
+        IConfiguration configuration =
+            ServiceLocator.GetRequiredService<IConfiguration>();
+
+        var pageUrl = $"{configuration["PageBaseUrl:Http"]}{pathUrl}";
         IResponse gotoAsync = await Page.GotoAsync(pageUrl);
         string title = await Page.TitleAsync();
 

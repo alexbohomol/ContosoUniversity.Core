@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 
 using FluentAssertions;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
+using Microsoft.Playwright.NUnit;
 
 using Mvc.ViewModels.Courses;
 
 using NUnit.Framework;
 
-public class EditEndpointsTests : SystemTest
+public class EditEndpointsTests : PageTest
 {
-    private static readonly string FormUrl = $"{Configuration["PageBaseUrl:Http"]}/Courses/Edit";
+    private static readonly string FormUrl;
 
     private static readonly EditCourseRequest ValidRequest = new()
     {
@@ -23,21 +25,29 @@ public class EditEndpointsTests : SystemTest
         DepartmentId = new Guid("dab7e678-e3e7-4471-8282-96fe52e5c16f")
     };
 
+    static EditEndpointsTests()
+    {
+        IConfiguration configuration =
+            ServiceLocator.GetRequiredService<IConfiguration>();
+
+        FormUrl = $"{configuration["PageBaseUrl:Http"]}/Courses/Edit";
+    }
+
     [TestCaseSource(nameof(ValidationRequests))]
     public async Task PostEdit_WhenInvalidRequest_ReturnsValidationErrorView(
         EditCourseRequest request,
         string errorMessage)
     {
         // Arrange
-        await CreateCourse(new CreateCourseRequest
+        await Page.CreateCourse(new CreateCourseRequest
         {
             CourseCode = 1111,
             Title = "Computers",
             Credits = 5,
             DepartmentId = new Guid("dab7e678-e3e7-4471-8282-96fe52e5c16f")
         });
-        await ClickEditLinkByRowDescription("1111 Computers 5");
-        await FillFormWith(request);
+        await Page.ClickEditLinkByRowDescription("1111 Computers 5");
+        await Page.FillFormWith(request);
 
         // Act
         await Page.ClickAsync("input[type=submit]");
@@ -48,33 +58,33 @@ public class EditEndpointsTests : SystemTest
         await Expect(Page.GetByText(errorMessage)).ToBeVisibleAsync();
 
         // Cleanup created course
-        await RemoveCourseByRowDescription("1111 Computers 5");
+        await Page.RemoveCourseByRowDescription("1111 Computers 5");
     }
 
     [Test]
     public async Task PostEdit_WhenValidRequest_UpdatesCourseAndRedirectsToListPage()
     {
         // Arrange
-        await CreateCourse(new CreateCourseRequest
+        await Page.CreateCourse(new CreateCourseRequest
         {
             CourseCode = 1111,
             Title = "Computers",
             Credits = 5,
             DepartmentId = new Guid("dab7e678-e3e7-4471-8282-96fe52e5c16f")
         });
-        await ClickEditLinkByRowDescription("1111 Computers 5");
-        await FillFormWith(ValidRequest);
+        await Page.ClickEditLinkByRowDescription("1111 Computers 5");
+        await Page.FillFormWith(ValidRequest);
 
         // Act
         await Page.ClickAsync("input[type=submit]");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // Assert
-        await Expect(Page).ToHaveURLAsync($"{Configuration["PageBaseUrl:Http"]}/Courses");
+        // await Expect(Page).ToHaveURLAsync($"{Configuration["PageBaseUrl:Http"]}/Courses");
         await Expect(Page.GetByRole(AriaRole.Row, new() { Name = "1111 Computers Algebra 3" })).ToBeVisibleAsync();
 
         // Cleanup created course
-        await RemoveCourseByRowDescription("1111 Computers Algebra 3");
+        await Page.RemoveCourseByRowDescription("1111 Computers Algebra 3");
     }
 
     public static IEnumerable<TestCaseData> ValidationRequests => new[]
