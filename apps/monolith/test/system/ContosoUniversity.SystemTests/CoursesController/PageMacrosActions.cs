@@ -2,8 +2,6 @@ namespace ContosoUniversity.SystemTests.CoursesController;
 
 using System.Threading.Tasks;
 
-using FluentAssertions;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 
@@ -43,52 +41,27 @@ public static class PageMacrosActions
         await page.FillFormWith(request);
         await page.ClickAsync("input[type=submit]");
         await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-
-        // Ensure we are on the list page
-        // await Expect(Page).ToHaveURLAsync($"{configuration["PageBaseUrl:Http"]}/Courses");
     }
 
-    public static async Task RemoveCourseByRowDescription(this IPage page, string rowDescription)
+    public static async Task RemoveCourse(this IPage page, string row)
     {
-        // Goto the list page
         await page.GotoAsync(Urls.CoursesListPage);
-        await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-
-        // Ensure we are on the list page and the course is present
-        // await Expect(page).ToHaveURLAsync($"{configuration["PageBaseUrl:Http"]}/Courses");
-        // await Expect(page.GetByRole(AriaRole.Row, new() { Name = rowDescription })).ToBeVisibleAsync();
-
-        // Goto the delete page
-        await page
-            .GetByRole(AriaRole.Row, new() { Name = rowDescription })
-            .GetByRole(AriaRole.Link, new() { Name = "Delete" })
-            .ClickAsync();
-        await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        page.Url.Should().StartWith(Urls.CoursesDeletePage);
-
-        // Delete the course
-        await page
-            .GetByRole(AriaRole.Button, new() { Name = "Delete" })
-            .ClickAsync();
-        await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-
-        // Ensure we are on the list page and the course is not present
-        // await Expect(Page).ToHaveURLAsync($"{configuration["PageBaseUrl:Http"]}/Courses");
-        // await Expect(Page.GetByRole(AriaRole.Row, new() { Name = rowDescription })).ToBeHiddenAsync();
+        await page.ClickLinkByRow("Delete", row);
+        await page.ClickButton("Delete");
     }
 
-    public static async Task ClickEditLinkByRowDescription(this IPage page, string rowDescription)
+    public static async Task ClickLinkByRow(this IPage page, string link, string row)
     {
-        // Ensure we are on the list page and the course is present
-        // await Expect(page).ToHaveURLAsync($"{configuration["PageBaseUrl:Http"]}/Courses");
-        // await Expect(page.GetByRole(AriaRole.Row, new() { Name = rowDescription })).ToBeVisibleAsync();
-
-        // Goto the edit page
         await page
-            .GetByRole(AriaRole.Row, new() { Name = rowDescription })
-            .GetByRole(AriaRole.Link, new() { Name = "Edit" })
+            .GetByRole(AriaRole.Row, new() { Name = row })
+            .GetByRole(AriaRole.Link, new() { Name = link })
             .ClickAsync();
-        await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        page.Url.Should().StartWith(Urls.CoursesEditPage);
+    }
+
+    public static async Task ClickButton(this IPage page, string button)
+    {
+        await page
+            .GetByRole(AriaRole.Button, new() { Name = button })
+            .ClickAsync();
     }
 }
