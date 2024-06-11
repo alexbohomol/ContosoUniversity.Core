@@ -1,4 +1,4 @@
-namespace ContosoUniversity.SystemTests.CoursesController;
+namespace ContosoUniversity.SystemTests.StudentsController;
 
 using System.Threading.Tasks;
 
@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 
-using Mvc.ViewModels.Courses;
+using Mvc.ViewModels.Students;
 
 using NUnit.Framework;
 
@@ -15,13 +15,13 @@ public class CreateEndpointsTests : PageTest
     private static readonly SutUrls Urls =
         new(ServiceLocator.GetRequiredService<IConfiguration>());
 
-    [TestCaseSource(typeof(CreateCourseRequests), nameof(CreateCourseRequests.Invalids))]
+    [TestCaseSource(typeof(CreateStudentRequests), nameof(CreateStudentRequests.Invalids))]
     public async Task PostCreate_WhenInvalidRequest_ReturnsValidationErrorView(
-        CreateCourseRequest request,
+        CreateStudentRequest request,
         string errorMessage)
     {
         // Arrange
-        await Page.GotoAsync(Urls.CoursesCreatePage);
+        await Page.GotoAsync(Urls.StudentsCreatePage);
         await Page.FillFormWith(request);
         // await Expect(Page.GetByText(errorMessage)).ToBeHiddenAsync();
         // TODO: why this assertion passes on CI only for Credits validation?
@@ -31,7 +31,7 @@ public class CreateEndpointsTests : PageTest
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // Assert
-        await Expect(Page).ToHaveURLAsync(Urls.CoursesCreatePage);
+        await Expect(Page).ToHaveURLAsync(Urls.StudentsCreatePage);
         await Expect(Page.GetByText(errorMessage)).ToBeVisibleAsync();
     }
 
@@ -39,18 +39,18 @@ public class CreateEndpointsTests : PageTest
     public async Task PostCreate_WhenValidRequest_CreatesCourseAndRedirectsToListPage()
     {
         // Arrange
-        await Page.GotoAsync(Urls.CoursesCreatePage);
-        await Page.FillFormWith(CreateCourseRequests.Valid);
+        await Page.GotoAsync(Urls.StudentsCreatePage);
+        await Page.FillFormWith(CreateStudentRequests.Valid);
 
         // Act
         await Page.ClickAsync("input[type=submit]");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // Assert
-        await Expect(Page).ToHaveURLAsync(Urls.CoursesListPage);
-        await Expect(Page.GetByRole(AriaRole.Row, new() { Name = "1111 Computers 5" })).ToBeVisibleAsync();
+        await Expect(Page).ToHaveURLAsync(Urls.StudentsListPage);
+        await Expect(Page.GetByRole(AriaRole.Row, new() { Name = "Alexander Alpert 2022-01-17" })).ToBeVisibleAsync();
 
         // Cleanup
-        await Page.RemoveCourse("1111 Computers 5");
+        await Page.RemoveStudent("Alexander Alpert 2022-01-17");
     }
 }

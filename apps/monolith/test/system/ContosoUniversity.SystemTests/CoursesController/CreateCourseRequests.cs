@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 public static class CreateCourseRequests
 {
-    public static CreateCourseRequest Valid = new()
+    public static readonly CreateCourseRequest Valid = new()
     {
         CourseCode = 1111,
         Title = "Computers",

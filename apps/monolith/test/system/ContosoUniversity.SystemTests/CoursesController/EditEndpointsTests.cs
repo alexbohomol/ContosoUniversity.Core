@@ -39,7 +39,7 @@ public class EditEndpointsTests : PageTest
         Page.Url.Should().StartWith(Urls.CoursesEditPage);
         await Expect(Page.GetByText(errorMessage)).ToBeVisibleAsync();
 
-        // Cleanup created course
+        // Cleanup
         await Page.RemoveCourse("1111 Computers 5");
     }
 
@@ -63,7 +63,7 @@ public class EditEndpointsTests : PageTest
         await Expect(Page).ToHaveURLAsync(Urls.CoursesListPage);
         await Expect(Page.GetByRole(AriaRole.Row, new() { Name = "1111 Computers Algebra 3" })).ToBeVisibleAsync();
 
-        // Cleanup created course
+        // Cleanup
         await Page.RemoveCourse("1111 Computers Algebra 3");
     }
 }
