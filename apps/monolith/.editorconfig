@@ -1,3 +1,8 @@
+#########################################################################
+# TODO:
+# prefer collection expression (with proper indentation in braces and new-line rules)
+#########################################################################
+
 [*]
 charset = utf-8
 end_of_line = lf

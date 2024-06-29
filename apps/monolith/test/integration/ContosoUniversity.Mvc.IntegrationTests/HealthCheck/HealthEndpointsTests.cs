@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Mvc.IntegrationTests;
+namespace ContosoUniversity.Mvc.IntegrationTests.HealthCheck;
 
 using System;
 using System.Net;
@@ -16,25 +16,20 @@ using HealthChecks.UI.Core;
 
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Xunit;
 
-public class HealthCheckTests
+public class HealthEndpointsTests(TestsConfiguration config) : IClassFixture<TestsConfiguration>
 {
-    private static readonly IConfiguration Configuration = new ConfigurationBuilder()
-        .AddJsonFile("testsettings.json", optional: false)
-        .Build();
-
     [Theory]
     [InlineData("/health/readiness")]
     [InlineData("/health/liveness")]
-    public async Task HealthCheck_ReturnsHealthy(string healthUrl)
+    public async Task Health_ReturnsHealthy(string healthUrl)
     {
         var factory = new WebApplicationFactory<Program>();
-        factory.ClientOptions.BaseAddress = new Uri(Configuration["PageBaseUrl:Https"]);
+        factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         var client = factory.CreateClient();
         HttpResponseMessage response = await client.GetAsync(healthUrl);
 
@@ -49,7 +44,7 @@ public class HealthCheckTests
     [Theory]
     [InlineData("/health/readiness")]
     [InlineData("/health/liveness")]
-    public async Task HealthCheck_ReturnsUnhealthy(string healthUrl)
+    public async Task Health_ReturnsUnhealthy(string healthUrl)
     {
         var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
@@ -67,7 +62,7 @@ public class HealthCheckTests
                         }));
             });
         });
-        factory.ClientOptions.BaseAddress = new Uri(Configuration["PageBaseUrl:Https"]);
+        factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         var client = factory.CreateClient();
 
         HttpResponseMessage response = await client.GetAsync(healthUrl);

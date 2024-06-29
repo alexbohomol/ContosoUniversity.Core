@@ -1,27 +1,25 @@
 namespace ContosoUniversity.Mvc.IntegrationTests;
 
-using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 using FluentAssertions;
 
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Configuration;
 
 using Xunit;
 
-public class HeaderNavigationTests : IClassFixture<WebApplicationFactory<Program>>
+public class HeaderNavigationTests :
+    IClassFixture<TestsConfiguration>,
+    IClassFixture<WebApplicationFactory<Program>>
 {
-    private static readonly IConfiguration Configuration = new ConfigurationBuilder()
-        .AddJsonFile($"testsettings.json", optional: false)
-        .Build();
-
     private readonly HttpClient _httpClient;
 
-    public HeaderNavigationTests(WebApplicationFactory<Program> factory)
+    public HeaderNavigationTests(
+        TestsConfiguration config,
+        WebApplicationFactory<Program> factory)
     {
-        factory.ClientOptions.BaseAddress = new Uri(Configuration["PageBaseUrl:Https"]);
+        factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         _httpClient = factory.CreateClient();
     }
 
