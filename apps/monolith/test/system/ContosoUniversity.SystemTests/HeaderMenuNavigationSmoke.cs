@@ -1,4 +1,4 @@
-namespace ContosoUniversity.AcceptanceTests;
+namespace ContosoUniversity.SystemTests;
 
 using System.Threading.Tasks;
 
@@ -10,12 +10,10 @@ using Microsoft.Playwright.NUnit;
 
 using NUnit.Framework;
 
-[Parallelizable(ParallelScope.Self)]
 public class HeaderMenuNavigationSmoke : PageTest
 {
-    private static readonly IConfiguration Configuration = new ConfigurationBuilder()
-        .AddJsonFile($"testsettings.json", optional: false)
-        .Build();
+    private static readonly SutUrls Urls =
+        new(ServiceLocator.GetRequiredService<IConfiguration>());
 
     [TestCase("/", "Home Page - Contoso University")]
     [TestCase("/Home", "Home Page - Contoso University")]
@@ -26,7 +24,7 @@ public class HeaderMenuNavigationSmoke : PageTest
     [TestCase("/Departments", "Departments - Contoso University")]
     public async Task Smoke_User_IsAbleTo_NavigateHeaderMenu(string pathUrl, string expectedTitle)
     {
-        var pageUrl = $"{Configuration["PageBaseUrl:Http"]}{pathUrl}";
+        var pageUrl = $"{Urls.BaseAddress}{pathUrl}";
         IResponse gotoAsync = await Page.GotoAsync(pageUrl);
         string title = await Page.TitleAsync();
 

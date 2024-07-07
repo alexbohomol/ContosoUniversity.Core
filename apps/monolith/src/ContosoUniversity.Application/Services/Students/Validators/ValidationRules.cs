@@ -6,14 +6,13 @@ using FluentValidation;
 
 public static class ValidationRules
 {
-    private static string ErrMsgFirstNameExceedsLength =>
-        $"First name cannot be longer than {Student.FirstNameMaxLength} characters.";
-
     public static void SatisfiesLastNameRequirements<T>(this IRuleBuilder<T, string> rule)
     {
         rule.NotNull()
             .NotEmpty()
-            .MaximumLength(Student.LastNameMaxLength);
+            .MaximumLength(Student.LastNameMaxLength)
+            .WithMessage($"Last name cannot be longer than {Student.LastNameMaxLength} characters.");
+        //TODO: default message creates locale issues between CI/local tests runs
     }
 
     public static void SatisfiesFirstNameRequirements<T>(this IRuleBuilder<T, string> rule)
@@ -21,6 +20,7 @@ public static class ValidationRules
         rule.NotNull()
             .NotEmpty()
             .MaximumLength(Student.FirstNameMaxLength)
-            .WithMessage(ErrMsgFirstNameExceedsLength);
+            .WithMessage($"First name cannot be longer than {Student.FirstNameMaxLength} characters.");
+        //TODO: default message creates locale issues between CI/local tests runs
     }
 }

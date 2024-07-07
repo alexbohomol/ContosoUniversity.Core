@@ -135,6 +135,62 @@ jobs:
       run: |
         dotnet test --no-build --verbosity normal
       
+  system_testing:
+    name: System Testing | In-Process
+    runs-on: ubuntu-latest
+    env:
+      TEST_PROJ_PATH: ${{ vars.MONOLITH_SLN_PATH }}/test/system/ContosoUniversity.SystemTests
+    services:
+      cudb:
+        image: mcr.microsoft.com/mssql/server
+        env:
+          ACCEPT_EULA: "Y"
+          SA_PASSWORD: ${{ env.MSSQL_SA_PASSWORD }}
+        ports:
+          - 1433:1433
+        volumes:
+          - sqlvolume:/var/opt/mssql
+        options: >-
+          --name cudb
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Resolve container network
+      id: get_network
+      run: |
+        echo "network=$(docker inspect cudb --format '{{range $key, $_ := .NetworkSettings.Networks}}{{$key}}{{end}}')" >> "$GITHUB_OUTPUT"
+
+    - name: Init container database
+      run: |
+        docker run --rm \
+        --entrypoint /opt/mssql-tools/bin/sqlcmd \
+        --workdir /scripts \
+        --volume "$(pwd)"/database:/scripts \
+        --network ${{ steps.get_network.outputs.network }} \
+        mcr.microsoft.com/mssql-tools \
+        -S cudb -U SA -P "${{ env.MSSQL_SA_PASSWORD }}" -i "db-init.sql"
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Build System Tests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+
+    - name: Ensure browsers are installed
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
+
+    - name: Run System Tests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: |
+        dotnet test --no-build --verbosity normal
+
   e2e_testing_in_process:
     name: E2E Testing | In-Process
     runs-on: ubuntu-latest

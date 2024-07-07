@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Mvc.IntegrationTests;
+namespace ContosoUniversity.Mvc.IntegrationTests.HealthCheck;
 
 using System.Linq;
 
@@ -6,7 +6,7 @@ using FluentAssertions;
 
 using HealthChecks.UI.Core;
 
-public static class HealthChecksAssertions
+public static class HealthReportAssertions
 {
     private static readonly string[] CheckNames =
     [
