@@ -11,6 +11,13 @@ insert_final_newline = true
 indent_style = space
 indent_size = 4
 
+[*.json]
+indent_size = 2
+
+[*.{yml,yaml}]
+indent_size = 2
+tab_width = 2
+
 #########################################################################
 #   .NET Rules
 #########################################################################
@@ -61,6 +68,3 @@ dotnet_diagnostic.IDE0005.severity = error # Remove unnecessary using directives
 dotnet_diagnostic.IDE0011.severity = error # Add braces
 dotnet_diagnostic.IDE0044.severity = error # Add readonly modifier
 dotnet_diagnostic.IDE0290.severity = error # Use primary constructor
-
-[*.json]
-indent_size = 2
