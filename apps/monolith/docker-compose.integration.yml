@@ -1,0 +1,58 @@
+networks:
+  cunetwork-int-test:
+    name: cunetwork-int-test
+
+volumes:
+  sqlvolume:
+    name: sqlvolume
+
+services:
+  web-int-test:
+    depends_on:
+      - "db-int-test"
+    build:
+      context: .
+      dockerfile: src/ContosoUniversity.Mvc/Dockerfile
+    networks:
+      - cunetwork-int-test
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_PORT=https://+:443;http://+:80
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=10001
+      - SqlConnectionStringBuilder__DataSource=db-int-test,1433
+    ports:
+      - "10001:443"
+      - "10000:80"
+    volumes:
+      - ~/.aspnet/https:/root/.aspnet/https:ro
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+
+  db-int-test:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: <YourStrong!Passw0rd>
+    ports:
+      - "1455:1433"
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P <YourStrong!Passw0rd> -Q "SELECT 1" -b -o /dev/null
+      interval: 2s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    volumes:
+      - sqlvolume:/var/opt/mssql
+    networks:
+      - cunetwork-int-test
+
+  db-migrator-int-test:
+    image: mcr.microsoft.com/mssql-tools
+    depends_on:
+      - "db-int-test"
+    networks:
+      - cunetwork-int-test
+    volumes:
+      - ../../database:/scripts:ro
+    working_dir: /scripts
+    entrypoint: /opt/mssql-tools/bin/sqlcmd -S db-int-test -U sa -P '<YourStrong!Passw0rd>' -i 'db-init.sql'
