@@ -9,7 +9,6 @@ using Xunit;
 
 [Collection(nameof(SharedTestCollection))]
 public class HeaderNavigationTests(SharedTestContext context)
-    : IClassFixture<TestsConfiguration>
 {
     [Theory]
     [InlineData("/")]
