@@ -2,10 +2,6 @@ networks:
   cunetwork-int-test:
     name: cunetwork-int-test
 
-volumes:
-  sqlvolume:
-    name: sqlvolume
-
 services:
   web-int-test:
     depends_on:
@@ -44,8 +40,6 @@ services:
       timeout: 5s
       retries: 10
       start_period: 5s
-    volumes:
-      - sqlvolume:/var/opt/mssql
     networks:
       - cunetwork-int-test
 
