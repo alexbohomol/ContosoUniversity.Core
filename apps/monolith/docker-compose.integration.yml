@@ -11,6 +11,8 @@ services:
     depends_on:
       db-int-test:
         condition: service_healthy
+      db-migrator-int-test:
+        condition: service_completed_successfully
     build:
       context: .
       dockerfile: src/ContosoUniversity.Mvc/Dockerfile
@@ -37,8 +39,7 @@ services:
     ports:
       - "1455:1433"
     healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '<YourStrong!Passw0rd>' -Q "IF EXISTS (SELECT name FROM sys.databases WHERE name = N'ContosoUniversity') BEGIN PRINT 'Database exists'; EXIT(0); END ELSE BEGIN PRINT 'Database does not exist'; EXIT(1); END"
-#      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '<YourStrong!Passw0rd>' -Q "SELECT 1" -b -o /dev/null
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '<YourStrong!Passw0rd>' -Q "SELECT 1" -b -o /dev/null
       interval: 2s
       timeout: 5s
       retries: 10
