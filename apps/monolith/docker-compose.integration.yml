@@ -35,7 +35,7 @@ services:
     ports:
       - "1455:1433"
     healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '<YourStrong!Passw0rd>' -Q "SELECT 1" -b -o /dev/null
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '<YourStrong!Passw0rd>' -Q "SELECT 1" -C
       interval: 2s
       timeout: 5s
       retries: 10
