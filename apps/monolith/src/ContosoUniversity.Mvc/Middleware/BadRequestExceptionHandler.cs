@@ -24,7 +24,7 @@ public class BadRequestExceptionHandler : IExceptionHandler
     {
         if (exception is not ValidationException validationException)
         {
-            return true;
+            return false;
         }
 
         httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
