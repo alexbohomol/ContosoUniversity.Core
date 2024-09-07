@@ -11,7 +11,6 @@ using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Contracts.Repositories.ReadWrite;
 using Application.Services.Courses.Commands;
 using Application.Services.Courses.Queries;
-using Application.Services.Courses.Validators;
 
 using MediatR;
 
@@ -65,7 +64,6 @@ public class CoursesController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
         CreateCourseRequest request,
-        [FromServices] CreateCourseCommandValidator validator,
         [FromServices] IDepartmentsRoRepository repository,
         CancellationToken cancellationToken)
     {
@@ -78,20 +76,13 @@ public class CoursesController(IMediator mediator) : Controller
             });
         }
 
-        CreateCourseCommand command = new()
-        {
-            CourseCode = request.CourseCode,
-            Credits = request.Credits,
-            DepartmentId = request.DepartmentId,
-            Title = request.Title
-        };
-        var result = await validator.ValidateAsync(command, cancellationToken);
-        if (!result.IsValid)
-        {
-            return BadRequest();
-        }
-
-        await mediator.Send(command, cancellationToken);
+        await mediator.Send(
+            new CreateCourseCommand(
+                request.CourseCode,
+                request.Title,
+                request.Credits,
+                request.DepartmentId),
+            cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
@@ -119,7 +110,6 @@ public class CoursesController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(
         EditCourseRequest request,
-        [FromServices] EditCourseCommandValidator validator,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -134,20 +124,13 @@ public class CoursesController(IMediator mediator) : Controller
             });
         }
 
-        EditCourseCommand command = new()
-        {
-            Id = request.Id,
-            Credits = request.Credits,
-            DepartmentId = request.DepartmentId,
-            Title = request.Title
-        };
-        var result = await validator.ValidateAsync(command, cancellationToken);
-        if (!result.IsValid)
-        {
-            return BadRequest();
-        }
-
-        await mediator.Send(command, cancellationToken);
+        await mediator.Send(
+            new EditCourseCommand(
+                request.Id,
+                request.Title,
+                request.Credits,
+                request.DepartmentId),
+            cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }

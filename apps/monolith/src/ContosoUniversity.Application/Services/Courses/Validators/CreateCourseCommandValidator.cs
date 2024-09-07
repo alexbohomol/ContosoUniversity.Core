@@ -10,7 +10,7 @@ using Contracts.Repositories.ReadOnly;
 
 using FluentValidation;
 
-public class CreateCourseCommandValidator : AbstractValidator<CreateCourseCommand>
+internal class CreateCourseCommandValidator : AbstractValidator<CreateCourseCommand>
 {
     private readonly ICoursesRoRepository _coursesRepository;
     private readonly IDepartmentsRoRepository _departmentsRepository;

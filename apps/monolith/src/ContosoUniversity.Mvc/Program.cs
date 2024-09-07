@@ -25,6 +25,8 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using Middleware;
+
 public class Program
 {
     public static void Main(string[] args)
@@ -79,7 +81,11 @@ internal class Startup(IWebHostEnvironment env)
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(IApplicationLayerMarker).Assembly);
+            cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
+
+        services.AddExceptionHandler<BadRequestExceptionHandler>();
+        services.AddProblemDetails();
     }
 
     public void Configure(IApplicationBuilder app)
@@ -122,6 +128,8 @@ internal class Startup(IWebHostEnvironment env)
         };
         app.UseHealthChecks("/health/readiness", checkOptions);
         app.UseHealthChecks("/health/liveness", checkOptions);
+
+        app.UseExceptionHandler();
 
         app.UseEndpoints(endpoints =>
         {
