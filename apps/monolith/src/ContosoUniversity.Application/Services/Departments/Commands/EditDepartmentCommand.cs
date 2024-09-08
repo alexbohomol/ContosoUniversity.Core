@@ -4,47 +4,38 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Contracts.Repositories.ReadOnly;
 using Contracts.Repositories.ReadWrite;
 
 using Domain.Department;
 
-using Exceptions;
-
 using MediatR;
 
-public class EditDepartmentCommand : IRequest
-{
-    public string Name { get; set; }
-    public decimal Budget { get; set; }
-    public DateTime StartDate { get; set; }
-    public Guid? AdministratorId { get; set; }
-    public Guid ExternalId { get; set; }
-    public byte[] RowVersion { get; set; }
-}
+public record EditDepartmentCommand(
+    string Name,
+    decimal Budget,
+    DateTime StartDate,
+    Guid? AdministratorId,
+    Guid ExternalId,
+    byte[] RowVersion) : IRequest;
 
 internal class EditDepartmentCommandHandler(
-    IInstructorsRoRepository instructorsRepository,
-    IDepartmentsRwRepository departmentsRepository)
+    IDepartmentsRwRepository repository)
     : IRequestHandler<EditDepartmentCommand>
 {
-    public async Task Handle(EditDepartmentCommand request, CancellationToken cancellationToken)
+    public async Task Handle(
+        EditDepartmentCommand request,
+        CancellationToken cancellationToken)
     {
-        Department department = await departmentsRepository.GetById(request.ExternalId, cancellationToken);
-        if (department is null)
-        {
-            throw new EntityNotFoundException(nameof(department), request.ExternalId);
-        }
+        ArgumentNullException.ThrowIfNull(request);
+
+        Department department = await repository.GetById(request.ExternalId, cancellationToken);
+
+        ArgumentNullException.ThrowIfNull(department);
 
         department.UpdateGeneralInfo(request.Name, request.Budget, request.StartDate);
 
         if (request.AdministratorId.HasValue)
         {
-            if (!await instructorsRepository.Exists(request.AdministratorId.Value, cancellationToken))
-            {
-                throw new EntityNotFoundException("instructor", request.AdministratorId.Value);
-            }
-
             department.AssociateAdministrator(request.AdministratorId.Value);
         }
         else
@@ -52,6 +43,6 @@ internal class EditDepartmentCommandHandler(
             department.DisassociateAdministrator();
         }
 
-        await departmentsRepository.Save(department, cancellationToken);
+        await repository.Save(department, cancellationToken);
     }
 }

@@ -14,7 +14,8 @@ public class CreateDepartmentCommandValidator : AbstractValidator<CreateDepartme
 {
     private readonly IInstructorsRoRepository _repository;
 
-    public CreateDepartmentCommandValidator(IInstructorsRoRepository repository)
+    public CreateDepartmentCommandValidator(
+        IInstructorsRoRepository repository)
     {
         _repository = repository;
 
@@ -28,8 +29,6 @@ public class CreateDepartmentCommandValidator : AbstractValidator<CreateDepartme
         });
     }
 
-    private async Task<bool> BeAnExistingInstructor(Guid administratorId, CancellationToken token)
-    {
-        return await _repository.Exists(administratorId, token);
-    }
+    private async Task<bool> BeAnExistingInstructor(Guid administratorId, CancellationToken token) =>
+        await _repository.Exists(administratorId, token);
 }
