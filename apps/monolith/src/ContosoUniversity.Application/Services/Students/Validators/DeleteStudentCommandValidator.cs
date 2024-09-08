@@ -12,17 +12,14 @@ using Courses.Validators;
 
 using FluentValidation;
 
-internal class EditStudentCommandValidator : AbstractValidator<EditStudentCommand>
+internal class DeleteStudentCommandValidator : AbstractValidator<EditStudentCommand>
 {
     private readonly IStudentsRoRepository _studentsRoRepository;
 
-    public EditStudentCommandValidator(
+    public DeleteStudentCommandValidator(
         IStudentsRoRepository studentsRoRepository)
     {
         _studentsRoRepository = studentsRoRepository;
-
-        RuleFor(x => x.LastName).SatisfiesLastNameRequirements();
-        RuleFor(x => x.FirstName).SatisfiesFirstNameRequirements();
 
         RuleFor(x => x.ExternalId)
             .NotEmpty()

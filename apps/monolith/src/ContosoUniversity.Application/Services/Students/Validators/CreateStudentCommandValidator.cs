@@ -4,7 +4,7 @@ using Commands;
 
 using FluentValidation;
 
-public class CreateStudentCommandValidator : AbstractValidator<CreateStudentCommand>
+internal class CreateStudentCommandValidator : AbstractValidator<CreateStudentCommand>
 {
     public CreateStudentCommandValidator()
     {

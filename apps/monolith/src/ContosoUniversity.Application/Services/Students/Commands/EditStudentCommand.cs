@@ -9,40 +9,41 @@ using Contracts.Repositories.ReadWrite;
 
 using Domain.Student;
 
-using Exceptions;
-
 using MediatR;
 
-public class EditStudentCommand : IRequest
+public record EditStudentCommand : IRequest
 {
     [DataType(DataType.Date)]
     [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
     [Display(Name = "Enrollment Date")]
-    public DateTime EnrollmentDate { get; set; }
+    public DateTime EnrollmentDate { get; init; }
 
     [Required]
     [StringLength(50)]
     [Display(Name = "Last Name")]
-    public string LastName { get; set; }
+    public string LastName { get; init; }
 
     [Required]
     [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
     [Display(Name = "First Name")]
-    public string FirstName { get; set; }
+    public string FirstName { get; init; }
 
-    public Guid ExternalId { get; set; }
+    public Guid ExternalId { get; init; }
 }
 
-internal class EditStudentCommandHandler(IStudentsRwRepository studentsRepository)
+internal class EditStudentCommandHandler(
+    IStudentsRwRepository studentsRepository)
     : IRequestHandler<EditStudentCommand>
 {
-    public async Task Handle(EditStudentCommand request, CancellationToken cancellationToken)
+    public async Task Handle(
+        EditStudentCommand request,
+        CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         Student student = await studentsRepository.GetById(request.ExternalId, cancellationToken);
-        if (student is null)
-        {
-            throw new EntityNotFoundException(nameof(student), request.ExternalId);
-        }
+
+        ArgumentNullException.ThrowIfNull(student);
 
         student.UpdatePersonInfo(request.LastName, request.FirstName);
         student.Enroll(request.EnrollmentDate);
