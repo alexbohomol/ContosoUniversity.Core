@@ -12,7 +12,7 @@ using Courses.Validators;
 
 using FluentValidation;
 
-internal class DeleteStudentCommandValidator : AbstractValidator<EditStudentCommand>
+internal class DeleteStudentCommandValidator : AbstractValidator<DeleteStudentCommand>
 {
     private readonly IStudentsRoRepository _studentsRoRepository;
 
@@ -21,13 +21,13 @@ internal class DeleteStudentCommandValidator : AbstractValidator<EditStudentComm
     {
         _studentsRoRepository = studentsRoRepository;
 
-        RuleFor(x => x.ExternalId)
+        RuleFor(x => x.Id)
             .NotEmpty()
             .MustAsync(BeAnExistingStudent)
             .WithMessage("Please select an existing student.")
             .Required();
     }
 
-    private async Task<bool> BeAnExistingStudent(Guid externalId, CancellationToken cancellationToken) =>
-        await _studentsRoRepository.Exists(externalId, cancellationToken);
+    private async Task<bool> BeAnExistingStudent(Guid id, CancellationToken cancellationToken) =>
+        await _studentsRoRepository.Exists(id, cancellationToken);
 }
