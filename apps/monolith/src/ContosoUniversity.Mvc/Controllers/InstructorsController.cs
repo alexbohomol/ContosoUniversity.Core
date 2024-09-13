@@ -11,9 +11,6 @@ using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Services;
 using Application.Services.Instructors.Commands;
 using Application.Services.Instructors.Queries;
-using Application.Services.Instructors.Validators;
-
-using FluentValidation.Results;
 
 using MediatR;
 
@@ -142,14 +139,8 @@ public class InstructorsController(IMediator mediator) : Controller
     public async Task<IActionResult> Create(
         CreateInstructorRequest request,
         [FromServices] ICoursesRoRepository repository,
-        [FromServices] CreateInstructorCommandValidator validator,
         CancellationToken cancellationToken)
     {
-        if (request is null)
-        {
-            return BadRequest();
-        }
-
         if (!ModelState.IsValid)
         {
             Course[] courses = await repository.GetAll(cancellationToken);
@@ -160,21 +151,14 @@ public class InstructorsController(IMediator mediator) : Controller
             });
         }
 
-        CreateInstructorCommand command = new()
-        {
-            LastName = request.LastName,
-            FirstName = request.FirstName,
-            HireDate = request.HireDate,
-            SelectedCourses = request.SelectedCourses,
-            Location = request.Location
-        };
-        ValidationResult result = validator.Validate(command);
-        if (!result.IsValid)
-        {
-            return BadRequest();
-        }
-
-        await mediator.Send(command, cancellationToken);
+        await mediator.Send(
+            new CreateInstructorCommand(
+                request.LastName,
+                request.FirstName,
+                request.HireDate,
+                request.SelectedCourses,
+                request.Location),
+            cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
@@ -202,14 +186,8 @@ public class InstructorsController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(
         EditInstructorRequest request,
-        [FromServices] EditInstructorCommandValidator validator,
         CancellationToken cancellationToken)
     {
-        if (request is null)
-        {
-            return BadRequest();
-        }
-
         if (!ModelState.IsValid)
         {
             (Instructor instructor, Course[] courses) = await mediator.Send(
@@ -222,22 +200,15 @@ public class InstructorsController(IMediator mediator) : Controller
             });
         }
 
-        EditInstructorCommand command = new()
-        {
-            ExternalId = request.ExternalId,
-            LastName = request.LastName,
-            FirstName = request.FirstName,
-            HireDate = request.HireDate,
-            SelectedCourses = request.SelectedCourses,
-            Location = request.Location
-        };
-        ValidationResult result = validator.Validate(command);
-        if (!result.IsValid)
-        {
-            return BadRequest();
-        }
-
-        await mediator.Send(command, cancellationToken);
+        await mediator.Send(
+            new EditInstructorCommand(
+                request.ExternalId,
+                request.LastName,
+                request.FirstName,
+                request.HireDate,
+                request.SelectedCourses,
+                request.Location),
+            cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
