@@ -84,6 +84,7 @@ internal class Startup(IWebHostEnvironment env)
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
 
+        services.AddExceptionHandler<EntityNotFoundExceptionHandler>();
         services.AddExceptionHandler<BadRequestExceptionHandler>();
         services.AddProblemDetails();
     }

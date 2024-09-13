@@ -10,11 +10,6 @@ using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 
-/// <summary>
-/// https://www.milanjovanovic.tech/blog/cqrs-validation-with-mediatr-pipeline-and-fluentvalidation
-/// https://codewithmukesh.com/blog/validation-with-mediatr-pipeline-behavior-and-fluentvalidation/
-/// https://codewithmukesh.com/blog/global-exception-handling-in-aspnet-core/
-/// </summary>
 public class BadRequestExceptionHandler : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
