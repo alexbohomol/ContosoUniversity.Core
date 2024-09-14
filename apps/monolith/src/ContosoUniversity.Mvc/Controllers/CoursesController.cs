@@ -6,8 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.ReadOnly;
 using Application.Contracts.Repositories.ReadOnly.Projections;
+using Application.Contracts.Repositories.ReadOnly.Queries;
 using Application.Contracts.Repositories.ReadWrite;
 using Application.Services.Courses.Commands;
 using Application.Services.Courses.Queries;
@@ -36,44 +36,21 @@ public class CoursesController(IMediator mediator) : Controller
         }));
     }
 
-    public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
-    {
-        if (id is null)
-        {
-            return BadRequest();
-        }
+    public async Task<IActionResult> Details(Guid id, CancellationToken cancellationToken)
+        => await RenderDetailsPage(id, cancellationToken);
 
-        (Course course, Department department) = await mediator.Send(
-            new GetCourseDetailsQuery(id.Value),
-            cancellationToken);
-
-        return course is not null
-            ? View(new CourseDetailsViewModel(course, department))
-            : NotFound();
-    }
-
-    public async Task<IActionResult> Create(
-        [FromServices] IDepartmentsRoRepository repository,
-        CancellationToken cancellationToken)
-    {
-        var departmentNames = await repository.GetDepartmentNamesReference(cancellationToken);
-        return View(new CreateCourseForm(departmentNames));
-    }
+    public async Task<IActionResult> Create(CancellationToken cancellationToken)
+        => await RenderCreateForm(cancellationToken);
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
         CreateCourseRequest request,
-        [FromServices] IDepartmentsRoRepository repository,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
-            var departmentNames = await repository.GetDepartmentNamesReference(cancellationToken);
-            return View(new CreateCourseForm(departmentNames)
-            {
-                Request = request
-            });
+            return await RenderCreateForm(cancellationToken, request);
         }
 
         await mediator.Send(
@@ -87,24 +64,8 @@ public class CoursesController(IMediator mediator) : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    public async Task<IActionResult> Edit(Guid? id, CancellationToken cancellationToken)
-    {
-        if (id is null)
-        {
-            return BadRequest();
-        }
-
-        (Course course, Dictionary<Guid, string> departmentsReference) = await mediator.Send(
-            new GetCourseEditFormQuery(id.Value),
-            cancellationToken);
-
-        return course is null
-            ? NotFound()
-            : View(new EditCourseForm(course.Code, departmentsReference)
-            {
-                Request = new EditCourseRequest(course)
-            });
-    }
+    public async Task<IActionResult> Edit(Guid id, CancellationToken cancellationToken)
+        => await RenderEditForm(id, cancellationToken);
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -114,14 +75,7 @@ public class CoursesController(IMediator mediator) : Controller
     {
         if (!ModelState.IsValid)
         {
-            (Course course, Dictionary<Guid, string> departmentsReference) = await mediator.Send(
-                new GetCourseEditFormQuery(request.Id),
-                cancellationToken);
-
-            return View(new EditCourseForm(course.Code, departmentsReference)
-            {
-                Request = request
-            });
+            return await RenderEditForm(request.Id, cancellationToken, request);
         }
 
         await mediator.Send(
@@ -135,21 +89,8 @@ public class CoursesController(IMediator mediator) : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
-    {
-        if (id is null)
-        {
-            return BadRequest();
-        }
-
-        (Course course, Department department) = await mediator.Send(
-            new GetCourseDetailsQuery(id.Value),
-            cancellationToken);
-
-        return course is not null
-            ? View(new CourseDetailsViewModel(course, department))
-            : NotFound();
-    }
+    public async Task<IActionResult> DeletePage(Guid id, CancellationToken cancellationToken)
+        => await RenderDetailsPage(id, cancellationToken);
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -182,4 +123,52 @@ public class CoursesController(IMediator mediator) : Controller
 
         return View();
     }
+
+    #region Helpers
+
+    private async Task<IActionResult> RenderCreateForm(
+        CancellationToken cancellationToken,
+        CreateCourseRequest request = null)
+    {
+        var departmentNames = await mediator.Send(
+            new GetDepartmentNamesQuery(),
+            cancellationToken);
+
+        return View(new CreateCourseForm(departmentNames)
+        {
+            Request = request
+        });
+    }
+
+    private async Task<IActionResult> RenderEditForm(
+        Guid id,
+        CancellationToken cancellationToken,
+        EditCourseRequest request = null)
+    {
+        (Course course, Dictionary<Guid, string> departmentsReference) = await mediator.Send(
+            new GetCourseEditFormQuery(id),
+            cancellationToken);
+
+        return course is null
+            ? NotFound()
+            : View(new EditCourseForm(course.Code, departmentsReference)
+            {
+                Request = request ?? new EditCourseRequest(course)
+            });
+    }
+
+    private async Task<IActionResult> RenderDetailsPage(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        (Course course, Department department) = await mediator.Send(
+            new GetCourseDetailsQuery(id),
+            cancellationToken);
+
+        return course is not null
+            ? View(new CourseDetailsViewModel(course, department))
+            : NotFound();
+    }
+
+    #endregion
 }

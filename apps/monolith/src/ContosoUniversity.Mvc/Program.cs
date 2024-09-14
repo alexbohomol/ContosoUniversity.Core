@@ -81,6 +81,7 @@ internal class Startup(IWebHostEnvironment env)
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(IApplicationLayerMarker).Assembly);
+            cfg.RegisterServicesFromAssembly(typeof(IDataLayerMarker).Assembly);
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
 
