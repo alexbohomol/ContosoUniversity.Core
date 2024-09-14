@@ -10,25 +10,28 @@ using Domain.Department;
 
 using MediatR;
 
-public class CreateDepartmentCommand : IRequest
-{
-    public string Name { get; set; }
-    public decimal Budget { get; set; }
-    public DateTime StartDate { get; set; }
-    public Guid? AdministratorId { get; set; }
-}
+public record CreateDepartmentCommand(
+    string Name,
+    decimal Budget,
+    DateTime StartDate,
+    Guid? AdministratorId) : IRequest;
 
-internal class CreateDepartmentCommandHandler(IDepartmentsRwRepository departmentsRepository)
+internal class CreateDepartmentCommandHandler(
+    IDepartmentsRwRepository departmentsRepository)
     : IRequestHandler<CreateDepartmentCommand>
 {
-    public async Task Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
+    public async Task Handle(
+        CreateDepartmentCommand request,
+        CancellationToken cancellationToken)
     {
-        var department = Department.Create(
-            request.Name,
-            request.Budget,
-            request.StartDate,
-            request.AdministratorId);
+        ArgumentNullException.ThrowIfNull(request);
 
-        await departmentsRepository.Save(department, cancellationToken);
+        await departmentsRepository.Save(
+            Department.Create(
+                request.Name,
+                request.Budget,
+                request.StartDate,
+                request.AdministratorId),
+            cancellationToken);
     }
 }

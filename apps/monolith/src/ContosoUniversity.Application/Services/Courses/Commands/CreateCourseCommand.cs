@@ -10,20 +10,23 @@ using Domain.Course;
 
 using MediatR;
 
-public class CreateCourseCommand : IRequest
-{
-    public int CourseCode { get; set; }
-    public string Title { get; set; }
-    public int Credits { get; set; }
-    public Guid DepartmentId { get; set; }
-}
+public record CreateCourseCommand(
+    int CourseCode,
+    string Title,
+    int Credits,
+    Guid DepartmentId) : IRequest;
 
-internal class CreateCourseCommandHandler(ICoursesRwRepository coursesRepository)
+internal class CreateCourseCommandHandler(
+    ICoursesRwRepository repository)
     : IRequestHandler<CreateCourseCommand>
 {
-    public async Task Handle(CreateCourseCommand request, CancellationToken cancellationToken)
+    public async Task Handle(
+        CreateCourseCommand request,
+        CancellationToken cancellationToken)
     {
-        await coursesRepository.Save(
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+
+        await repository.Save(
             Course.Create(
                 request.CourseCode,
                 request.Title,

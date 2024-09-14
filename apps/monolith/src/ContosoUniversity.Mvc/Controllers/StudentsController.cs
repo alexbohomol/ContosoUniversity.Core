@@ -9,7 +9,6 @@ using Application.Contracts.Repositories.ReadOnly.Paging;
 using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Services.Students.Commands;
 using Application.Services.Students.Queries;
-using Application.Services.Students.Validators;
 
 using MediatR;
 
@@ -60,7 +59,6 @@ public class StudentsController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
         CreateStudentRequest request,
-        [FromServices] CreateStudentCommandValidator validator,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -71,19 +69,12 @@ public class StudentsController(IMediator mediator) : Controller
             });
         }
 
-        CreateStudentCommand command = new()
-        {
-            EnrollmentDate = request.EnrollmentDate,
-            FirstName = request.FirstName,
-            LastName = request.LastName
-        };
-        var result = validator.Validate(command);
-        if (!result.IsValid)
-        {
-            return BadRequest();
-        }
-
-        await mediator.Send(command, cancellationToken);
+        await mediator.Send(
+            new CreateStudentCommand(
+                request.EnrollmentDate,
+                request.LastName,
+                request.FirstName),
+            cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
@@ -111,14 +102,8 @@ public class StudentsController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(
         EditStudentRequest request,
-        [FromServices] EditStudentCommandValidator validator,
         CancellationToken cancellationToken)
     {
-        if (request is null)
-        {
-            return BadRequest();
-        }
-
         if (!ModelState.IsValid)
         {
             return View(new EditStudentForm
@@ -127,20 +112,13 @@ public class StudentsController(IMediator mediator) : Controller
             });
         }
 
-        EditStudentCommand command = new()
+        await mediator.Send(new EditStudentCommand
         {
             ExternalId = request.ExternalId,
             LastName = request.LastName,
             FirstName = request.FirstName,
             EnrollmentDate = request.EnrollmentDate
-        };
-        var result = validator.Validate(command);
-        if (!result.IsValid)
-        {
-            return BadRequest();
-        }
-
-        await mediator.Send(command, cancellationToken);
+        }, cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }

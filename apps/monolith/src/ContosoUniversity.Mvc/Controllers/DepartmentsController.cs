@@ -10,7 +10,6 @@ using Application.Contracts.Repositories.ReadOnly;
 using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Services.Departments.Commands;
 using Application.Services.Departments.Queries;
-using Application.Services.Departments.Validators;
 
 using MediatR;
 
@@ -60,14 +59,8 @@ public class DepartmentsController(IMediator mediator) : Controller
     public async Task<IActionResult> Create(
         CreateDepartmentRequest request,
         [FromServices] IInstructorsRoRepository repository,
-        [FromServices] CreateDepartmentCommandValidator validator,
         CancellationToken cancellationToken)
     {
-        if (request is null)
-        {
-            return BadRequest();
-        }
-
         if (!ModelState.IsValid)
         {
             Dictionary<Guid, string> instructorNames = await repository
@@ -76,20 +69,13 @@ public class DepartmentsController(IMediator mediator) : Controller
             return View(new CreateDepartmentForm(instructorNames));
         }
 
-        CreateDepartmentCommand command = new()
-        {
-            AdministratorId = request.AdministratorId,
-            Budget = request.Budget,
-            Name = request.Name,
-            StartDate = request.StartDate
-        };
-        var result = await validator.ValidateAsync(command, cancellationToken);
-        if (!result.IsValid)
-        {
-            return BadRequest();
-        }
-
-        await mediator.Send(command, cancellationToken);
+        await mediator.Send(
+            new CreateDepartmentCommand(
+                request.Name,
+                request.Budget,
+                request.StartDate,
+                request.AdministratorId),
+            cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
@@ -118,14 +104,8 @@ public class DepartmentsController(IMediator mediator) : Controller
     public async Task<IActionResult> Edit(
         EditDepartmentRequest request,
         [FromServices] IInstructorsRoRepository repository,
-        [FromServices] EditDepartmentCommandValidator validator,
         CancellationToken cancellationToken)
     {
-        if (request is null)
-        {
-            return BadRequest();
-        }
-
         if (!ModelState.IsValid)
         {
             Dictionary<Guid, string> instructorNames = await repository
@@ -137,22 +117,15 @@ public class DepartmentsController(IMediator mediator) : Controller
             });
         }
 
-        EditDepartmentCommand command = new()
-        {
-            AdministratorId = request.AdministratorId,
-            Budget = request.Budget,
-            ExternalId = request.ExternalId,
-            Name = request.Name,
-            RowVersion = request.RowVersion,
-            StartDate = request.StartDate
-        };
-        var result = await validator.ValidateAsync(command, cancellationToken);
-        if (!result.IsValid)
-        {
-            return BadRequest();
-        }
-
-        await mediator.Send(command, cancellationToken);
+        await mediator.Send(
+            new EditDepartmentCommand(
+                request.Name,
+                request.Budget,
+                request.StartDate,
+                request.AdministratorId,
+                request.ExternalId,
+                request.RowVersion),
+            cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }

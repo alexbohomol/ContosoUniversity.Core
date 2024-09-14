@@ -10,18 +10,21 @@ using Domain.Student;
 
 using MediatR;
 
-public class CreateStudentCommand : IRequest
-{
-    public DateTime EnrollmentDate { get; set; }
-    public string LastName { get; set; }
-    public string FirstName { get; set; }
-}
+public record CreateStudentCommand(
+    DateTime EnrollmentDate,
+    string LastName,
+    string FirstName) : IRequest;
 
-internal class CreateStudentCommandHandler(IStudentsRwRepository repository)
+internal class CreateStudentCommandHandler(
+    IStudentsRwRepository repository)
     : IRequestHandler<CreateStudentCommand>
 {
-    public async Task Handle(CreateStudentCommand request, CancellationToken cancellationToken)
+    public async Task Handle(
+        CreateStudentCommand request,
+        CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         await repository.Save(Student.Create(
                 request.LastName,
                 request.FirstName,

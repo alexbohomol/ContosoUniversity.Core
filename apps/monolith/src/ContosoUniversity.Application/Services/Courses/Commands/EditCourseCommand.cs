@@ -6,28 +6,25 @@ using System.Threading.Tasks;
 
 using Contracts.Repositories.ReadWrite;
 
-using Exceptions;
-
 using MediatR;
 
-public class EditCourseCommand : IRequest
-{
-    public Guid Id { get; set; }
-    public string Title { get; set; }
-    public int Credits { get; set; }
-    public Guid DepartmentId { get; set; }
-}
+public record EditCourseCommand(
+    Guid Id,
+    string Title,
+    int Credits,
+    Guid DepartmentId) : IRequest;
 
-internal class EditCourseCommandHandler(ICoursesRwRepository coursesRepository)
+internal class EditCourseCommandHandler(
+    ICoursesRwRepository coursesRepository)
     : IRequestHandler<EditCourseCommand>
 {
     public async Task Handle(EditCourseCommand request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         Domain.Course.Course course = await coursesRepository.GetById(request.Id, cancellationToken);
-        if (course is null)
-        {
-            throw new EntityNotFoundException(nameof(course), request.Id);
-        }
+
+        ArgumentNullException.ThrowIfNull(course);
 
         course.Update(
             request.Title,

@@ -8,28 +8,47 @@ using Commands;
 
 using Contracts.Repositories.ReadOnly;
 
+using Courses.Validators;
+
 using FluentValidation;
 
-public class EditDepartmentCommandValidator : AbstractValidator<EditDepartmentCommand>
+internal class EditDepartmentCommandValidator : AbstractValidator<EditDepartmentCommand>
 {
-    private readonly IInstructorsRoRepository _repository;
+    private readonly IDepartmentsRoRepository _departmentsRoRepository;
+    private readonly IInstructorsRoRepository _instructorsRoRepository;
 
-    public EditDepartmentCommandValidator(IInstructorsRoRepository repository)
+    public EditDepartmentCommandValidator(
+        IDepartmentsRoRepository departmentsRoRepository,
+        IInstructorsRoRepository instructorsRoRepository)
     {
-        _repository = repository;
+        _departmentsRoRepository = departmentsRoRepository;
+        _instructorsRoRepository = instructorsRoRepository;
 
         RuleFor(x => x.Name).SatisfiesNameRequirements();
+
+        RuleFor(x => x.Budget).GreaterThan(0);
+
+        RuleFor(x => x.StartDate).NotEmpty();
 
         When(x => x.AdministratorId.HasValue, () =>
         {
             RuleFor(x => x.AdministratorId)
-                .MustAsync((guid, token) => BeAnExistingInstructor(guid.Value, token))
+                .MustAsync((guid, token) => BeAnExistingInstructor(guid!.Value, token))
                 .WithMessage("Please select an existing instructor.");
         });
+
+        RuleFor(x => x.ExternalId)
+            .NotEmpty()
+            .MustAsync(BeAnExistingDepartment)
+            .WithMessage("Please select an existing department.")
+            .Required();
+
+        RuleFor(x => x.RowVersion).NotEmpty(); // TODO: extend to version check
     }
 
-    private async Task<bool> BeAnExistingInstructor(Guid administratorId, CancellationToken token)
-    {
-        return await _repository.Exists(administratorId, token);
-    }
+    private async Task<bool> BeAnExistingDepartment(Guid externalId, CancellationToken token) =>
+        await _departmentsRoRepository.Exists(externalId, token);
+
+    private async Task<bool> BeAnExistingInstructor(Guid administratorId, CancellationToken token) =>
+        await _instructorsRoRepository.Exists(administratorId, token);
 }
