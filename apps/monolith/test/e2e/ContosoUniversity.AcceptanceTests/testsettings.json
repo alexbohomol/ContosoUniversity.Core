@@ -1,7 +1,7 @@
 {
   "ApplicationUrls": "https://localhost:10001;http://localhost:10000",
   "PageBaseUrl": {
-    "Http": "http://localhost:10000",
-    "Https": "https://localhost:10001"
+    "Http": "http://web-int-test:10000",
+    "Https": "https://web-int-test:10001"
   }
 }
