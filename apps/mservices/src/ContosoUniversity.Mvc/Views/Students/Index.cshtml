@@ -64,14 +64,14 @@
 }
 
 <a asp-action="Index"
-   asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-sortOrder="@Html.Encode(Model.CurrentSort)"
    asp-route-pageNumber="@(Model.PageInfo.PageIndex - 1)"
    asp-route-currentFilter="@Html.Encode(Model.CurrentFilter)"
    class="btn btn-secondary @prevDisabled">
     Previous
 </a>
 <a asp-action="Index"
-   asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-sortOrder="@Html.Encode(Model.CurrentSort)"
    asp-route-pageNumber="@(Model.PageInfo.PageIndex + 1)"
    asp-route-currentFilter="@Html.Encode(Model.CurrentFilter)"
    class="btn btn-secondary @nextDisabled">
