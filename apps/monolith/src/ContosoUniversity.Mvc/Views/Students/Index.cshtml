@@ -65,7 +65,7 @@
 }
 
 <a asp-action="Index"
-   asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-sortOrder="@Html.Raw(WebUtility.HtmlEncode(Model.CurrentSort))"
    asp-route-pageNumber="@(Model.PageInfo.PageIndex - 1)"
    asp-route-currentFilter="@Html.Raw(WebUtility.HtmlEncode(Model.CurrentFilter))"
    class="btn btn-secondary @prevDisabled">
