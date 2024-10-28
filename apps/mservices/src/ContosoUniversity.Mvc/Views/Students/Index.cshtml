@@ -13,7 +13,7 @@
 <form asp-action="Index" method="get">
     <div class="form-actions no-color">
         <p>
-            Find by name: <input type="text" name="SearchString" value="@Model.CurrentFilter"/>
+            Find by name: <input type="text" name="SearchString" value="@Html.Encode(Model.CurrentFilter)"/>
             <input type="submit" value="Search" class="btn btn-secondary"/> |
             <a asp-action="Index">Back to Full List</a>
         </p>
@@ -24,13 +24,13 @@
     <thead>
     <tr>
         <th>
-            <a asp-action="Index" asp-route-sortOrder="@Model.NameSortParm" asp-route-currentFilter="@Model.CurrentFilter">Last Name</a>
+            <a asp-action="Index" asp-route-sortOrder="@Model.NameSortParm" asp-route-currentFilter="@Html.Encode(Model.CurrentFilter)">Last Name</a>
         </th>
         <th>
             First Name
         </th>
         <th>
-            <a asp-action="Index" asp-route-sortOrder="@Model.DateSortParm" asp-route-currentFilter="@Model.CurrentFilter">Enrollment Date</a>
+            <a asp-action="Index" asp-route-sortOrder="@Model.DateSortParm" asp-route-currentFilter="@Html.Encode(Model.CurrentFilter)">Enrollment Date</a>
         </th>
         <th></th>
     </tr>
@@ -66,14 +66,14 @@
 <a asp-action="Index"
    asp-route-sortOrder="@Model.CurrentSort"
    asp-route-pageNumber="@(Model.PageInfo.PageIndex - 1)"
-   asp-route-currentFilter="@Model.CurrentFilter"
+   asp-route-currentFilter="@Html.Encode(Model.CurrentFilter)"
    class="btn btn-secondary @prevDisabled">
     Previous
 </a>
 <a asp-action="Index"
    asp-route-sortOrder="@Model.CurrentSort"
    asp-route-pageNumber="@(Model.PageInfo.PageIndex + 1)"
-   asp-route-currentFilter="@Model.CurrentFilter"
+   asp-route-currentFilter="@Html.Encode(Model.CurrentFilter)"
    class="btn btn-secondary @nextDisabled">
     Next
 </a>
