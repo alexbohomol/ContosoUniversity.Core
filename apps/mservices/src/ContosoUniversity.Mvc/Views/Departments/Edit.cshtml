@@ -1,0 +1,52 @@
+﻿@model ContosoUniversity.Mvc.ViewModels.Departments.EditDepartmentForm
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Department</h4>
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Request.ExternalId"/>
+            <input type="hidden" asp-for="Request.RowVersion"/>
+            <div class="form-group">
+                <label asp-for="Request.Name" class="control-label"></label>
+                <input asp-for="Request.Name" class="form-control"/>
+                <span asp-validation-for="Request.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Request.Budget" class="control-label"></label>
+                <input asp-for="Request.Budget" class="form-control"/>
+                <span asp-validation-for="Request.Budget" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Start Date</label>
+                <input asp-for="Request.StartDate" type="date" class="form-control"/>
+                <span asp-validation-for="Request.StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Administrator</label>
+                <select asp-for="Request.AdministratorId" class="form-control" asp-items="Model.InstructorsDropDown">
+                    <option value="">-- Select Administrator --</option>
+                </select>
+                <span asp-validation-for="Request.AdministratorId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
