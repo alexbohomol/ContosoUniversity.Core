@@ -1,0 +1,34 @@
+networks:
+  cunetwork:
+    name: cunetwork
+
+volumes:
+  sqlvolume:
+    name: sqlvolume
+
+services:
+  web:
+    image: cuweb
+    container_name: cuweb
+    hostname: web
+    depends_on:
+      - "db"
+    build:
+      context: .
+      dockerfile: src/ContosoUniversity.Mvc/Dockerfile
+    networks:
+      - cunetwork
+
+  db:
+    image: mcr.microsoft.com/mssql/server
+    container_name: cudb
+    hostname: db
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: <YourStrong!Passw0rd>
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlvolume:/var/opt/mssql
+    networks:
+      - cunetwork

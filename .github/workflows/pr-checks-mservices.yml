@@ -1,0 +1,248 @@
+name: Pull Request Checks (Microservices)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    paths: 
+      - "apps/mservices/**"
+      - "database/**"
+      - ".github/**"
+
+env:
+  DOTNET_VERSION: 8.0.x
+  MSSQL_SA_PASSWORD: 5up3r53cr2tP@55w0rd
+
+jobs:
+
+  build_and_unit_testing:
+    name: Build and Unit Testing
+    runs-on: ubuntu-latest
+    env:
+      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/unit/ContosoUniversity.Domain.Tests
+    defaults:
+      run:
+        working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Build Solution
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+      
+    - name: Run Unit Tests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: dotnet test --no-build --verbosity normal
+      
+  code_style_checks:
+    name: Code style checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Build Solution
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+      
+    - name: Dotnet Format Checks (Whitespaces)
+      run: |
+        dotnet format whitespace \
+        --no-restore \
+        --exclude ./src/*/Migrations \
+        --verify-no-changes
+      
+    - name: Dotnet Format Checks (Style)
+      run: |
+        dotnet format style \
+        --no-restore \
+        --exclude ./src/*/Migrations \
+        --verify-no-changes
+      
+    - name: Dotnet Format Checks (Analizers)
+      run: |
+        dotnet format analyzers \
+        --no-restore \
+        --exclude ./src/*/Migrations \
+        --verify-no-changes
+      
+  integration_testing:
+    name: Integration Testing
+    runs-on: ubuntu-latest
+    env:
+      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/integration/ContosoUniversity.Mvc.IntegrationTests
+    services:
+      cudb:
+        image: mcr.microsoft.com/mssql/server
+        env:
+          ACCEPT_EULA: "Y"
+          SA_PASSWORD: ${{ env.MSSQL_SA_PASSWORD }}
+        ports:
+          - 1433:1433
+        volumes:
+          - sqlvolume:/var/opt/mssql
+        options: >-
+          --name cudb
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Resolve container network
+      id: get_network
+      run: |
+        echo "network=$(docker inspect cudb --format '{{range $key, $_ := .NetworkSettings.Networks}}{{$key}}{{end}}')" >> "$GITHUB_OUTPUT"
+        
+    - name: Init container database
+      run: |
+        docker run --rm \
+        --entrypoint /opt/mssql-tools/bin/sqlcmd \
+        --workdir /scripts \
+        --volume "$(pwd)"/database:/scripts \
+        --network ${{ steps.get_network.outputs.network }} \
+        mcr.microsoft.com/mssql-tools \
+        -S cudb -U SA -P "${{ env.MSSQL_SA_PASSWORD }}" -i "db-init.sql"
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+      
+    - name: Build Integration Tests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+      
+    - name: Run Integration Tests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: |
+        dotnet test --no-build --verbosity normal
+      
+  system_testing:
+    name: System Testing | In-Process
+    runs-on: ubuntu-latest
+    env:
+      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/system/ContosoUniversity.SystemTests
+    services:
+      cudb:
+        image: mcr.microsoft.com/mssql/server
+        env:
+          ACCEPT_EULA: "Y"
+          SA_PASSWORD: ${{ env.MSSQL_SA_PASSWORD }}
+        ports:
+          - 1433:1433
+        volumes:
+          - sqlvolume:/var/opt/mssql
+        options: >-
+          --name cudb
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Resolve container network
+      id: get_network
+      run: |
+        echo "network=$(docker inspect cudb --format '{{range $key, $_ := .NetworkSettings.Networks}}{{$key}}{{end}}')" >> "$GITHUB_OUTPUT"
+
+    - name: Init container database
+      run: |
+        docker run --rm \
+        --entrypoint /opt/mssql-tools/bin/sqlcmd \
+        --workdir /scripts \
+        --volume "$(pwd)"/database:/scripts \
+        --network ${{ steps.get_network.outputs.network }} \
+        mcr.microsoft.com/mssql-tools \
+        -S cudb -U SA -P "${{ env.MSSQL_SA_PASSWORD }}" -i "db-init.sql"
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Build System Tests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+
+    - name: Ensure browsers are installed
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
+
+    - name: Run System Tests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: |
+        dotnet test --no-build --verbosity normal
+
+  e2e_testing_in_process:
+    name: E2E Testing | In-Process
+    runs-on: ubuntu-latest
+    env:
+      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/e2e/ContosoUniversity.AcceptanceTests
+    services:
+      cudb:
+        image: mcr.microsoft.com/mssql/server
+        env:
+          ACCEPT_EULA: "Y"
+          SA_PASSWORD: ${{ env.MSSQL_SA_PASSWORD }}
+        ports:
+          - 1433:1433
+        volumes:
+          - sqlvolume:/var/opt/mssql
+        options: >-
+          --name cudb
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Resolve container network
+      id: get_network
+      run: |
+        echo "network=$(docker inspect cudb --format '{{range $key, $_ := .NetworkSettings.Networks}}{{$key}}{{end}}')" >> "$GITHUB_OUTPUT"
+        
+    - name: Init container database
+      run: |
+        docker run --rm \
+        --entrypoint /opt/mssql-tools/bin/sqlcmd \
+        --workdir /scripts \
+        --volume "$(pwd)"/database:/scripts \
+        --network ${{ steps.get_network.outputs.network }} \
+        mcr.microsoft.com/mssql-tools \
+        -S cudb -U SA -P "${{ env.MSSQL_SA_PASSWORD }}" -i "db-init.sql"
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+      
+    - name: Build Acceptance Tests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+      
+    - name: Ensure browsers are installed
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
+
+    - name: Run Acceptance Tests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: |
+        dotnet test --no-build --verbosity normal
