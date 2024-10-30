@@ -2,9 +2,9 @@ namespace ContosoUniversity.Application.Services.Courses.Validators;
 
 using System;
 
-using Domain.Course;
-
 using FluentValidation;
+
+using global::Courses.Core.Domain;
 
 /// <summary>
 ///     https://github.com/FluentValidation/FluentValidation/issues/184#issuecomment-197952324

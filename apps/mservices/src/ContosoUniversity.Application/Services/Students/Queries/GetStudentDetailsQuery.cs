@@ -11,6 +11,8 @@ using Contracts.Repositories.ReadOnly.Projections;
 
 using Exceptions;
 
+using global::Courses.Core;
+
 using MediatR;
 
 public record GetStudentDetailsQuery(Guid Id) : IRequest<GetStudentDetailsQueryResult>;

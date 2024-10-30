@@ -4,7 +4,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Contracts.Repositories.ReadWrite;
+using global::Courses.Core;
+using global::Courses.Core.Domain;
 
 using MediatR;
 
@@ -22,7 +23,7 @@ internal class EditCourseCommandHandler(
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        Domain.Course.Course course = await coursesRepository.GetById(request.Id, cancellationToken);
+        Course course = await coursesRepository.GetById(request.Id, cancellationToken);
 
         ArgumentNullException.ThrowIfNull(course);
 

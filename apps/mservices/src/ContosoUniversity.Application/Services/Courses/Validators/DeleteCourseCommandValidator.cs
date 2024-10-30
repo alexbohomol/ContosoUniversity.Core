@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 using Commands;
 
-using Contracts.Repositories.ReadOnly;
-
 using FluentValidation;
+
+using global::Courses.Core;
 
 internal class DeleteCourseCommandValidator : AbstractValidator<DeleteCourseCommand>
 {

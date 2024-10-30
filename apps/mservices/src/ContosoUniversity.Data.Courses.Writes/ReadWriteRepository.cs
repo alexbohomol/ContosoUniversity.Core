@@ -5,12 +5,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.ReadWrite;
 using Application.Exceptions;
 
-using Domain.Course;
-
 using Extensions;
+
+using global::Courses.Core;
+using global::Courses.Core.Domain;
 
 using Microsoft.EntityFrameworkCore;
 

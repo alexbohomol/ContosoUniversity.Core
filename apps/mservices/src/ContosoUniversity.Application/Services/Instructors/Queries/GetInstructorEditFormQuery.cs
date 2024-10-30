@@ -9,6 +9,9 @@ using Contracts.Repositories.ReadOnly.Projections;
 
 using Exceptions;
 
+using global::Courses.Core;
+using global::Courses.Core.Projections;
+
 using MediatR;
 
 public record GetInstructorEditFormQuery(Guid Id) : IRequest<GetInstructorEditFormQueryResult>;

@@ -1,6 +1,8 @@
-namespace ContosoUniversity.Domain.Course;
+namespace Courses.Core.Domain;
 
 using System;
+
+using ContosoUniversity.Domain;
 
 public class Course : IIdentifiable<Guid>
 {

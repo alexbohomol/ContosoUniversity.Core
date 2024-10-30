@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations;
 
 using Application.Contracts.Repositories.ReadOnly.Projections;
 
+using global::Courses.Core.Projections;
+
 public class CourseDetailsViewModel
 {
     public CourseDetailsViewModel(Course course, Department department)

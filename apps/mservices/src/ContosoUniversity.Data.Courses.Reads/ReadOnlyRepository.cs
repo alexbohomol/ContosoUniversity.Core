@@ -6,8 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.ReadOnly;
-using Application.Contracts.Repositories.ReadOnly.Projections;
+using global::Courses.Core;
+using global::Courses.Core.Projections;
 
 using Microsoft.EntityFrameworkCore;
 

@@ -12,6 +12,9 @@ using Application.Services;
 using Application.Services.Instructors.Commands;
 using Application.Services.Instructors.Queries;
 
+using Courses.Core;
+using Courses.Core.Projections;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;

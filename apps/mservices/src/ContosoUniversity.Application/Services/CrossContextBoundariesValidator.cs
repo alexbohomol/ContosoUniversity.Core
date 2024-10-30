@@ -9,6 +9,8 @@ using Contracts.Repositories.ReadOnly.Projections;
 using Domain;
 using Domain.Student;
 
+using global::Courses.Core.Projections;
+
 /// <summary>
 ///     TODO: these checks should be implemented in domain/service layers later
 /// </summary>

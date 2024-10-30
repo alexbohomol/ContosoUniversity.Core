@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 
 using Application.Contracts.Repositories.ReadOnly;
 using Application.Contracts.Repositories.ReadOnly.Projections;
-using Application.Contracts.Repositories.ReadWrite;
 using Application.Services.Courses.Commands;
 using Application.Services.Courses.Queries;
+
+using Courses.Core;
+using Courses.Core.Projections;
 
 using MediatR;
 

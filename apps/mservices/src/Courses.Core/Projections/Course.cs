@@ -1,8 +1,8 @@
-namespace ContosoUniversity.Application.Contracts.Repositories.ReadOnly.Projections;
+namespace Courses.Core.Projections;
 
 using System;
 
-using Domain;
+using ContosoUniversity.Domain;
 
 public record Course(
     int Code,

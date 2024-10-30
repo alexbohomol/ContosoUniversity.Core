@@ -1,6 +1,6 @@
 namespace ContosoUniversity.Data.Courses.Writes;
 
-using Application.Contracts.Repositories.ReadWrite;
+using global::Courses.Core;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

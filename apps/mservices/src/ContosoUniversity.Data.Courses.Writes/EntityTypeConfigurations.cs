@@ -1,6 +1,6 @@
 namespace ContosoUniversity.Data.Courses.Writes;
 
-using Domain.Course;
+using global::Courses.Core.Domain;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

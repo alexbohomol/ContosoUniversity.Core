@@ -10,6 +10,8 @@ using Contracts.Repositories.ReadOnly;
 
 using FluentValidation;
 
+using global::Courses.Core;
+
 internal class EditCourseCommandValidator : AbstractValidator<EditCourseCommand>
 {
     private readonly IDepartmentsRoRepository _departmentsRepository;

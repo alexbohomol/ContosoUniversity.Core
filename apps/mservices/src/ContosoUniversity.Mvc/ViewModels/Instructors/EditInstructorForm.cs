@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 
 using Application.Contracts.Repositories.ReadOnly.Projections;
 
+using global::Courses.Core.Projections;
+
 public record EditInstructorForm(Instructor Instructor, Course[] Courses)
 {
     public EditInstructorRequest Request { get; init; } = new();
