@@ -4,12 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Contracts.Repositories.ReadOnly.Projections;
-
 using Domain;
 using Domain.Student;
 
 using global::Courses.Core.Projections;
+
+using global::Departments.Core.Projections;
 
 /// <summary>
 ///     TODO: these checks should be implemented in domain/service layers later

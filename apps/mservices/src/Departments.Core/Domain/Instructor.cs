@@ -1,8 +1,10 @@
-namespace ContosoUniversity.Domain.Instructor;
+namespace Departments.Core.Domain;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ContosoUniversity.Domain;
 
 public class Instructor : IIdentifiable<Guid>
 {

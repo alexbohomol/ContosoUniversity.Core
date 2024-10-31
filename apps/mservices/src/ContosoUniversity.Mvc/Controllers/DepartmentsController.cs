@@ -6,10 +6,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.ReadOnly;
-using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Services.Departments.Commands;
 using Application.Services.Departments.Queries;
+
+using Departments.Core;
+using Departments.Core.Projections;
 
 using MediatR;
 

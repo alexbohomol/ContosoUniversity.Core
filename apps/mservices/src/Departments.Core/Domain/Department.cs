@@ -1,6 +1,8 @@
-namespace ContosoUniversity.Domain.Department;
+namespace Departments.Core.Domain;
 
 using System;
+
+using ContosoUniversity.Domain;
 
 public class Department : IIdentifiable<Guid>
 {

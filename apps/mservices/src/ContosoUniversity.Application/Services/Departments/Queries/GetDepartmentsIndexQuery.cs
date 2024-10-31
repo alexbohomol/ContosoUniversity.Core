@@ -4,8 +4,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Contracts.Repositories.ReadOnly;
-using Contracts.Repositories.ReadOnly.Projections;
+using global::Departments.Core;
+using global::Departments.Core.Projections;
 
 using MediatR;
 

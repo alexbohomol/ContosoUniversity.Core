@@ -1,7 +1,6 @@
 namespace ContosoUniversity.Data.Departments.Writes;
 
-using Domain.Department;
-using Domain.Instructor;
+using global::Departments.Core.Domain;
 
 using Microsoft.EntityFrameworkCore;
 

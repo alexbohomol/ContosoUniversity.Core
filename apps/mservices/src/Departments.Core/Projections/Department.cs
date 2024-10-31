@@ -1,8 +1,8 @@
-namespace ContosoUniversity.Application.Contracts.Repositories.ReadOnly.Projections;
+namespace Departments.Core.Projections;
 
 using System;
 
-using Domain;
+using ContosoUniversity.Domain;
 
 public record Department(
     string Name,

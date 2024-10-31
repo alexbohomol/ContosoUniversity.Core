@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Contracts.Repositories.ReadOnly;
-
 using global::Courses.Core;
 using global::Courses.Core.Projections;
+
+using global::Departments.Core;
 
 using MediatR;
 

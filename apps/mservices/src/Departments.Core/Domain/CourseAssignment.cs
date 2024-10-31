@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Domain.Instructor;
+namespace Departments.Core.Domain;
 
 using System;
 

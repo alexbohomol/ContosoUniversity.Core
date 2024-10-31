@@ -1,8 +1,8 @@
-namespace ContosoUniversity.Domain.Tests.Instructor;
+namespace Departments.Core.Tests.Instructor;
 
 using System;
 
-using Domain.Instructor;
+using Departments.Core.Domain;
 
 using FluentAssertions;
 

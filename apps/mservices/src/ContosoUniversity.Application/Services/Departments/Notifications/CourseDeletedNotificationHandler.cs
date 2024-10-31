@@ -4,11 +4,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Contracts.Repositories.ReadWrite;
-
 using Courses.Notifications;
 
-using Domain.Instructor;
+using global::Departments.Core;
+using global::Departments.Core.Domain;
 
 using MediatR;
 

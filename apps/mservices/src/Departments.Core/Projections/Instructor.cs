@@ -1,11 +1,12 @@
-namespace ContosoUniversity.Application.Contracts.Repositories.ReadOnly.Projections;
+namespace Departments.Core.Projections;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ContosoUniversity.Domain;
+
 using Domain;
-using Domain.Instructor;
 
 public record Instructor(
     string FirstName,

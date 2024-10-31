@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 using Commands;
 
-using Contracts.Repositories.ReadOnly;
-
 using FluentValidation;
 
 using global::Courses.Core;
+
+using global::Departments.Core;
 
 internal class CreateCourseCommandValidator : AbstractValidator<CreateCourseCommand>
 {

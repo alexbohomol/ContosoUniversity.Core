@@ -33,7 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "unit", "unit", "{4CF332CE-8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Mvc.IntegrationTests", "test\integration\ContosoUniversity.Mvc.IntegrationTests\ContosoUniversity.Mvc.IntegrationTests.csproj", "{0CEA6DD9-9CAA-41DB-B8C8-2E1123773CA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Domain.Tests", "test\unit\ContosoUniversity.Domain.Tests\ContosoUniversity.Domain.Tests.csproj", "{528A7D8C-9F2B-454A-8E24-F40AA8D82F17}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Departments.Core.Tests", "test\unit\Departments.Core.Tests\Departments.Core.Tests.csproj", "{528A7D8C-9F2B-454A-8E24-F40AA8D82F17}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "e2e", "e2e", "{9A8A315F-D321-4729-B8E9-08283046CF98}"
 EndProject
@@ -50,6 +50,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "students", "students", "{6B89851E-4652-42E9-8B59-D6FA3583F6DF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Courses.Core", "src\Courses.Core\Courses.Core.csproj", "{C3B48D05-D69A-4020-8CF7-27584880B5DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Departments.Core", "src\Departments.Core\Departments.Core.csproj", "{3E2EEAE1-C768-419D-B237-CB063DEE9E99}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +119,10 @@ Global
 		{C3B48D05-D69A-4020-8CF7-27584880B5DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3B48D05-D69A-4020-8CF7-27584880B5DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3B48D05-D69A-4020-8CF7-27584880B5DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E2EEAE1-C768-419D-B237-CB063DEE9E99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E2EEAE1-C768-419D-B237-CB063DEE9E99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E2EEAE1-C768-419D-B237-CB063DEE9E99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E2EEAE1-C768-419D-B237-CB063DEE9E99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -147,5 +153,6 @@ Global
 		{9B39B759-6CBF-4E43-981E-AB20447355A3} = {6B89851E-4652-42E9-8B59-D6FA3583F6DF}
 		{DA9CEE9A-1102-4005-BF7D-D13C57530386} = {6B89851E-4652-42E9-8B59-D6FA3583F6DF}
 		{C3B48D05-D69A-4020-8CF7-27584880B5DD} = {52E76B79-FD2B-4DED-9F3D-3E2410AB4163}
+		{3E2EEAE1-C768-419D-B237-CB063DEE9E99} = {1C3E4CC6-23F1-4652-BF0C-14A4D84D6F22}
 	EndGlobalSection
 EndGlobal

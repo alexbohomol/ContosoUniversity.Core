@@ -1,8 +1,8 @@
 namespace ContosoUniversity.Application.Services.Departments.Validators;
 
-using Domain.Department;
-
 using FluentValidation;
+
+using global::Departments.Core.Domain;
 
 /// <summary>
 ///     https://github.com/FluentValidation/FluentValidation/issues/184#issuecomment-197952324

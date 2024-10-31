@@ -1,12 +1,11 @@
 namespace ContosoUniversity.Data.Departments.Reads;
 
-using Application.Contracts.Repositories.ReadOnly.Projections;
-
-using Domain.Instructor;
+using global::Departments.Core.Domain;
 
 using Microsoft.EntityFrameworkCore;
 
-using Instructor = Application.Contracts.Repositories.ReadOnly.Projections.Instructor;
+using Department = global::Departments.Core.Projections.Department;
+using Instructor = global::Departments.Core.Projections.Instructor;
 
 internal class ReadOnlyContext(DbContextOptions<ReadOnlyContext> options) : DbContext(options)
 {

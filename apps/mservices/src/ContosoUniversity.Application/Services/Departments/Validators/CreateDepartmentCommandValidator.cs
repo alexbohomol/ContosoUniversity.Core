@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 using Commands;
 
-using Contracts.Repositories.ReadOnly;
-
 using FluentValidation;
+
+using global::Departments.Core;
 
 public class CreateDepartmentCommandValidator : AbstractValidator<CreateDepartmentCommand>
 {

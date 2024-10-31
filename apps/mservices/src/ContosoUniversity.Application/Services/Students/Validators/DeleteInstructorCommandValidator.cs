@@ -4,11 +4,11 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Contracts.Repositories.ReadOnly;
-
 using Courses.Validators;
 
 using FluentValidation;
+
+using global::Departments.Core;
 
 using Instructors.Commands;
 

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Contracts.Repositories.ReadWrite;
-
 using global::Courses.Core;
+
+using global::Departments.Core;
 
 using MediatR;
 
