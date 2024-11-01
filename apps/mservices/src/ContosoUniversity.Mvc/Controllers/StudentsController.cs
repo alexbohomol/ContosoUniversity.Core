@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Services.Students.Commands;
-using Application.Services.Students.Queries;
+using Application.Students.Commands;
+using Application.Students.Queries;
 
 using MediatR;
 

@@ -6,8 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Services.Departments.Commands;
-using Application.Services.Departments.Queries;
+using Application.Departments.Commands;
+using Application.Departments.Queries;
 
 using Departments.Core;
 using Departments.Core.Projections;

@@ -3,7 +3,7 @@ namespace ContosoUniversity.Mvc.ViewModels.Students;
 using System;
 using System.Linq;
 
-using Application.Services.Students.Queries;
+using Application.Students.Queries;
 
 using global::Students.Core.Projections;
 
