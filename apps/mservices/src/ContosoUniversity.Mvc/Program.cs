@@ -4,13 +4,13 @@ using System.Globalization;
 
 using Application;
 
+using Courses.Data.Reads;
+using Courses.Data.Writes;
+
 using Data;
-using Data.Courses.Reads;
-using Data.Courses.Writes;
-using Data.Departments.Reads;
-using Data.Departments.Writes;
-using Data.Students.Reads;
-using Data.Students.Writes;
+
+using Departments.Data.Reads;
+using Departments.Data.Writes;
 
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -26,6 +26,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Middleware;
+
+using Students.Data.Reads;
+using Students.Data.Writes;
 
 public class Program
 {

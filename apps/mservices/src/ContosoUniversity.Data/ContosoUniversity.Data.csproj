@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ContosoUniversity.Application\ContosoUniversity.Application.csproj"/>
+        <ProjectReference Include="..\ContosoUniversity.SharedKernel\ContosoUniversity.SharedKernel.csproj"/>
     </ItemGroup>
 
 </Project>

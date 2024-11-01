@@ -3,7 +3,7 @@ namespace ContosoUniversity.Mvc.ViewModels.Students;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-using Application.Contracts.Repositories.ReadOnly.Projections;
+using global::Students.Core.Projections;
 
 public class StudentDeletePageViewModel
 {

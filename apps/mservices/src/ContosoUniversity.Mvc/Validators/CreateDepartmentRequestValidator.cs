@@ -1,6 +1,6 @@
 namespace ContosoUniversity.Mvc.Validators;
 
-using Application.Services.Departments.Validators;
+using Application.Departments.Validators;
 
 using FluentValidation;
 

@@ -12,12 +12,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ContosoUniversity.Data.Courses.Reads\ContosoUniversity.Data.Courses.Reads.csproj"/>
-        <ProjectReference Include="..\ContosoUniversity.Data.Courses.Writes\ContosoUniversity.Data.Courses.Writes.csproj"/>
-        <ProjectReference Include="..\ContosoUniversity.Data.Departments.Reads\ContosoUniversity.Data.Departments.Reads.csproj"/>
-        <ProjectReference Include="..\ContosoUniversity.Data.Departments.Writes\ContosoUniversity.Data.Departments.Writes.csproj"/>
-        <ProjectReference Include="..\ContosoUniversity.Data.Students.Reads\ContosoUniversity.Data.Students.Reads.csproj"/>
-        <ProjectReference Include="..\ContosoUniversity.Data.Students.Writes\ContosoUniversity.Data.Students.Writes.csproj"/>
+        <ProjectReference Include="..\Courses.Data.Reads\Courses.Data.Reads.csproj" />
+        <ProjectReference Include="..\Courses.Data.Writes\Courses.Data.Writes.csproj" />
+        <ProjectReference Include="..\Departments.Data.Reads\Departments.Data.Reads.csproj" />
+        <ProjectReference Include="..\Departments.Data.Writes\Departments.Data.Writes.csproj" />
+        <ProjectReference Include="..\Students.Data.Reads\Students.Data.Reads.csproj" />
+        <ProjectReference Include="..\Students.Data.Writes\Students.Data.Writes.csproj" />
         <ProjectReference Include="..\ContosoUniversity.Application\ContosoUniversity.Application.csproj"/>
     </ItemGroup>
 

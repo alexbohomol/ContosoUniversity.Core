@@ -20,7 +20,7 @@ jobs:
     name: Build and Unit Testing
     runs-on: ubuntu-latest
     env:
-      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/unit/ContosoUniversity.Domain.Tests
+      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/unit/Departments.Core.Tests
     defaults:
       run:
         working-directory: ${{ vars.MSERVICES_SLN_PATH }}

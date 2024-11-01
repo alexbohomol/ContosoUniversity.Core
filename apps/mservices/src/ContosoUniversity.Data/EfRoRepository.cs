@@ -5,11 +5,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.ReadOnly;
-
-using Domain;
-
 using Microsoft.EntityFrameworkCore;
+
+using SharedKernel;
 
 public abstract class EfRoRepository<TProjection> : IRoRepository<TProjection>
     where TProjection : class, IIdentifiable<Guid>

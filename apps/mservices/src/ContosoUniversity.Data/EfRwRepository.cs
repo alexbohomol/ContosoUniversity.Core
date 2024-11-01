@@ -5,11 +5,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.ReadWrite;
-
-using Domain;
-
 using Microsoft.EntityFrameworkCore;
+
+using SharedKernel;
 
 public abstract class EfRwRepository<TDomainEntity> : IRwRepository<TDomainEntity>
     where TDomainEntity : class, IIdentifiable<Guid>

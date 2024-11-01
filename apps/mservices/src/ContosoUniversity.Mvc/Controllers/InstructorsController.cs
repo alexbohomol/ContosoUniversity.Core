@@ -6,15 +6,22 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.ReadOnly;
-using Application.Contracts.Repositories.ReadOnly.Projections;
-using Application.Services;
-using Application.Services.Instructors.Commands;
-using Application.Services.Instructors.Queries;
+using Application;
+using Application.Instructors.Commands;
+using Application.Instructors.Queries;
+
+using Courses.Core;
+using Courses.Core.Projections;
+
+using Departments.Core;
+using Departments.Core.Projections;
 
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
+
+using Students.Core;
+using Students.Core.Projections;
 
 using ViewModels;
 using ViewModels.Instructors;
