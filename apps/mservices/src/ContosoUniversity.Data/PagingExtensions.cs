@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 
-using Students.Core.Paging;
+using SharedKernel.Paging;
 
 public static class PagingExtensions
 {

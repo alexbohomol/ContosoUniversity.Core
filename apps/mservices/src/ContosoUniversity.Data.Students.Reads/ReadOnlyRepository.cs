@@ -8,10 +8,11 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using global::Students.Core;
-using global::Students.Core.Paging;
 using global::Students.Core.Projections;
 
 using Microsoft.EntityFrameworkCore;
+
+using SharedKernel.Paging;
 
 internal sealed class ReadOnlyRepository(ReadOnlyContext dbContext) : EfRoRepository<Student>(dbContext), IStudentsRoRepository
 {

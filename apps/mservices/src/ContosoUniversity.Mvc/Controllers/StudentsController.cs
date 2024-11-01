@@ -12,7 +12,8 @@ using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
 
-using Students.Core.Paging;
+using SharedKernel.Paging;
+
 using Students.Core.Projections;
 
 using ViewModels.Students;

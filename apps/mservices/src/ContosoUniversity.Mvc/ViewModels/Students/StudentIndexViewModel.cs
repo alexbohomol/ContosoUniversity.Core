@@ -5,8 +5,9 @@ using System.Linq;
 
 using Application.Services.Students.Queries;
 
-using global::Students.Core.Paging;
 using global::Students.Core.Projections;
+
+using SharedKernel.Paging;
 
 public class StudentIndexViewModel
 {

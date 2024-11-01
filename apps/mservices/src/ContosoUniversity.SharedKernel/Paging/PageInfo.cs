@@ -1,4 +1,4 @@
-namespace Students.Core.Paging;
+namespace ContosoUniversity.SharedKernel.Paging;
 
 using System;
 

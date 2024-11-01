@@ -5,10 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using global::Students.Core;
-using global::Students.Core.Paging;
 using global::Students.Core.Projections;
 
 using MediatR;
+
+using SharedKernel.Paging;
 
 public class GetStudentsIndexQuery : IRequest<GetStudentsIndexQueryResult>
 {
