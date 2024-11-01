@@ -4,13 +4,11 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ContosoUniversity.SharedKernel;
+
 using Domain;
 
-public interface IDepartmentsRwRepository
+public interface IDepartmentsRwRepository : IRwRepository<Department>
 {
     Task<Department[]> GetByAdministrator(Guid instructorId, CancellationToken cancellationToken = default);
-
-    Task<Department> GetById(Guid entityId, CancellationToken cancellationToken = default);
-    Task Save(Department entity, CancellationToken cancellationToken = default);
-    Task Remove(Guid entityId, CancellationToken cancellationToken = default);
 }

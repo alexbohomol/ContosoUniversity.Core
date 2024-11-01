@@ -4,14 +4,12 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ContosoUniversity.SharedKernel;
+
 using Domain;
 
-public interface ICoursesRwRepository
+public interface ICoursesRwRepository : IRwRepository<Course>
 {
     Task<int> UpdateCourseCredits(int multiplier, CancellationToken cancellationToken = default);
     Task Remove(Guid[] entityIds, CancellationToken cancellationToken = default);
-
-    Task<Course> GetById(Guid entityId, CancellationToken cancellationToken = default);
-    Task Save(Course entity, CancellationToken cancellationToken = default);
-    Task Remove(Guid entityId, CancellationToken cancellationToken = default);
 }

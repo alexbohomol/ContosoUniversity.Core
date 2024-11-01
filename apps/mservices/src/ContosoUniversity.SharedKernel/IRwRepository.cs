@@ -1,10 +1,8 @@
-namespace ContosoUniversity.Application.Contracts.Repositories.ReadWrite;
+namespace ContosoUniversity.SharedKernel;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-
-using SharedKernel;
 
 public interface IRwRepository<TEntity> where TEntity : IIdentifiable<Guid>
 {

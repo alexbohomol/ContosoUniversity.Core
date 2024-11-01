@@ -5,13 +5,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ContosoUniversity.SharedKernel;
+
 using Projections;
 
-public interface IDepartmentsRoRepository
+public interface IDepartmentsRoRepository : IRoRepository<Department>
 {
     Task<Dictionary<Guid, string>> GetDepartmentNamesReference(CancellationToken cancellationToken = default);
-
-    Task<bool> Exists(Guid entityId, CancellationToken cancellationToken = default);
-    Task<Department> GetById(Guid entityId, CancellationToken cancellationToken = default);
-    Task<Department[]> GetAll(CancellationToken cancellationToken = default);
 }

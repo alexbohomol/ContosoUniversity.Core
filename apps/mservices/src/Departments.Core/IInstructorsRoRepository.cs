@@ -5,13 +5,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ContosoUniversity.SharedKernel;
+
 using Projections;
 
-public interface IInstructorsRoRepository
+public interface IInstructorsRoRepository : IRoRepository<Instructor>
 {
     Task<Dictionary<Guid, string>> GetInstructorNamesReference(CancellationToken cancellationToken = default);
-
-    Task<bool> Exists(Guid entityId, CancellationToken cancellationToken = default);
-    Task<Instructor> GetById(Guid entityId, CancellationToken cancellationToken = default);
-    Task<Instructor[]> GetAll(CancellationToken cancellationToken = default);
 }

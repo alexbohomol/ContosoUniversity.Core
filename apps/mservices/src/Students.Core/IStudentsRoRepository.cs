@@ -4,11 +4,13 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ContosoUniversity.SharedKernel;
+
 using Paging;
 
 using Projections;
 
-public interface IStudentsRoRepository
+public interface IStudentsRoRepository : IRoRepository<Student>
 {
     Task<Student[]> GetStudentsEnrolledForCourses(
         Guid[] courseIds,
@@ -21,7 +23,4 @@ public interface IStudentsRoRepository
         OrderRequest orderRequest,
         PageRequest pageRequest,
         CancellationToken cancellationToken = default);
-
-    Task<bool> Exists(Guid entityId, CancellationToken cancellationToken = default);
-    Task<Student> GetById(Guid entityId, CancellationToken cancellationToken = default);
 }

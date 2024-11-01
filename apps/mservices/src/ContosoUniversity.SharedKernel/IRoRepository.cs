@@ -1,10 +1,8 @@
-namespace ContosoUniversity.Application.Contracts.Repositories.ReadOnly;
+namespace ContosoUniversity.SharedKernel;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-
-using SharedKernel;
 
 public interface IRoRepository<TProjection> where TProjection : IIdentifiable<Guid>
 {
