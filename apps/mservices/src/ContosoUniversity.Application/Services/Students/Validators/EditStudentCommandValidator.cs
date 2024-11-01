@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 using Commands;
 
-using Contracts.Repositories.ReadOnly;
-
 using Courses.Validators;
 
 using FluentValidation;
+
+using global::Students.Core;
 
 internal class EditStudentCommandValidator : AbstractValidator<EditStudentCommand>
 {

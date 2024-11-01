@@ -1,8 +1,8 @@
 namespace ContosoUniversity.Application.Services.Students.Validators;
 
-using Domain.Student;
-
 using FluentValidation;
+
+using global::Students.Core.Domain;
 
 public static class ValidationRules
 {

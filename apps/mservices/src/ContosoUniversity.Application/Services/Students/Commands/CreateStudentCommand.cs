@@ -4,9 +4,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Contracts.Repositories.ReadWrite;
-
-using Domain.Student;
+using global::Students.Core;
+using global::Students.Core.Domain;
 
 using MediatR;
 

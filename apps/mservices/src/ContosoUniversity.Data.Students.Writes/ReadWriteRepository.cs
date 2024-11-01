@@ -5,9 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.ReadWrite;
-
-using Domain.Student;
+using global::Students.Core;
+using global::Students.Core.Domain;
 
 using Microsoft.EntityFrameworkCore;
 

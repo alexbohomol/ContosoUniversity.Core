@@ -1,8 +1,10 @@
-namespace ContosoUniversity.Domain.Student;
+namespace Students.Core.Domain;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ContosoUniversity.Domain;
 
 public class Student : IIdentifiable<Guid>
 {

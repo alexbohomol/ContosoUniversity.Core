@@ -4,10 +4,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Contracts.Repositories.ReadOnly;
-using Contracts.Repositories.ReadOnly.Projections;
-
 using Exceptions;
+
+using global::Students.Core;
+using global::Students.Core.Projections;
 
 using MediatR;
 

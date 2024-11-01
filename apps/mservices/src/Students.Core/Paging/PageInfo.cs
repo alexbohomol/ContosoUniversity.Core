@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Application.Contracts.Repositories.ReadOnly.Paging;
+namespace Students.Core.Paging;
 
 using System;
 

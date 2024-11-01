@@ -5,11 +5,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Contracts.Repositories.ReadWrite;
-
 using Courses.Notifications;
 
-using Domain.Student;
+using global::Students.Core;
+using global::Students.Core.Domain;
 
 using MediatR;
 

@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Domain;
-using Domain.Student;
 
 using global::Courses.Core.Projections;
 
 using global::Departments.Core.Projections;
+
+using global::Students.Core.Domain;
 
 /// <summary>
 ///     TODO: these checks should be implemented in domain/service layers later

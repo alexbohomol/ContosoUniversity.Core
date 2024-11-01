@@ -7,9 +7,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.ReadOnly;
-using Application.Contracts.Repositories.ReadOnly.Paging;
-using Application.Contracts.Repositories.ReadOnly.Projections;
+using global::Students.Core;
+using global::Students.Core.Paging;
+using global::Students.Core.Projections;
 
 using Microsoft.EntityFrameworkCore;
 

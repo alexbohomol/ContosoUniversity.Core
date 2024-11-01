@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Application.Contracts.Repositories.ReadOnly.Projections;
+namespace Students.Core.Projections;
 
 using System;
 

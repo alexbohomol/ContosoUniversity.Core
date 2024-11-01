@@ -4,9 +4,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Contracts.Repositories.ReadOnly;
-using Contracts.Repositories.ReadOnly.Paging;
-using Contracts.Repositories.ReadOnly.Projections;
+using global::Students.Core;
+using global::Students.Core.Paging;
+using global::Students.Core.Projections;
 
 using MediatR;
 

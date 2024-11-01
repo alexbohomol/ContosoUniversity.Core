@@ -1,6 +1,6 @@
 namespace ContosoUniversity.Data.Students.Writes;
 
-using Domain.Student;
+using global::Students.Core.Domain;
 
 using Microsoft.EntityFrameworkCore;
 

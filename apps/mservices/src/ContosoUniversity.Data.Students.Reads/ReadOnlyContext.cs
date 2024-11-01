@@ -1,10 +1,10 @@
 namespace ContosoUniversity.Data.Students.Reads;
 
-using Domain.Student;
+using global::Students.Core.Domain;
 
 using Microsoft.EntityFrameworkCore;
 
-using Student = Application.Contracts.Repositories.ReadOnly.Projections.Student;
+using Student = global::Students.Core.Projections.Student;
 
 internal class ReadOnlyContext(DbContextOptions<ReadOnlyContext> options) : DbContext(options)
 {

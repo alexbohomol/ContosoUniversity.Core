@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Domain.Student;
+namespace Students.Core.Domain;
 
 public enum Grade
 {
