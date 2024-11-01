@@ -4,12 +4,12 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Exceptions;
-
 using global::Students.Core;
 using global::Students.Core.Projections;
 
 using MediatR;
+
+using SharedKernel.Exceptions;
 
 public record GetStudentProjectionQuery(Guid Id) : IRequest<Student>;
 

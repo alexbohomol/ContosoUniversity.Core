@@ -4,8 +4,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Exceptions;
-
 using global::Courses.Core;
 using global::Courses.Core.Projections;
 
@@ -13,6 +11,8 @@ using global::Departments.Core;
 using global::Departments.Core.Projections;
 
 using MediatR;
+
+using SharedKernel.Exceptions;
 
 public record GetCourseDetailsQuery(Guid Id) : IRequest<GetCourseDetailsQueryResult>;
 

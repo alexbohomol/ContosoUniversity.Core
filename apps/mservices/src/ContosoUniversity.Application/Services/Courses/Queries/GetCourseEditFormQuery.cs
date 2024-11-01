@@ -5,14 +5,14 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Exceptions;
-
 using global::Courses.Core;
 using global::Courses.Core.Projections;
 
 using global::Departments.Core;
 
 using MediatR;
+
+using SharedKernel.Exceptions;
 
 public record GetCourseEditFormQuery(Guid Id) : IRequest<GetCourseEditFormQueryResult>;
 

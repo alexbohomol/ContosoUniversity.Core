@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Exceptions;
-
 using global::Departments.Core;
 using global::Departments.Core.Projections;
 
 using MediatR;
+
+using SharedKernel.Exceptions;
 
 public record GetDepartmentEditFormQuery(Guid Id) : IRequest<GetDepartmentEditFormQueryResult>;
 

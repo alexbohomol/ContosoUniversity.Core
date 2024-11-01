@@ -4,12 +4,12 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Exceptions;
-
 using global::Departments.Core;
 using global::Departments.Core.Projections;
 
 using MediatR;
+
+using SharedKernel.Exceptions;
 
 public record GetDepartmentDetailsQuery(Guid Id) : IRequest<Department>;
 

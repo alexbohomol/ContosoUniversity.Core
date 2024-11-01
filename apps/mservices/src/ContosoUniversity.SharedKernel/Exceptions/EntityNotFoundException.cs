@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Application.Exceptions;
+namespace ContosoUniversity.SharedKernel.Exceptions;
 
 using System;
 

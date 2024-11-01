@@ -6,14 +6,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Exceptions;
-
 using global::Courses.Core;
 
 using global::Students.Core;
 using global::Students.Core.Projections;
 
 using MediatR;
+
+using SharedKernel.Exceptions;
 
 public record GetStudentDetailsQuery(Guid Id) : IRequest<GetStudentDetailsQueryResult>;
 

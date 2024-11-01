@@ -5,14 +5,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Exceptions;
-
 using Extensions;
 
 using global::Courses.Core;
 using global::Courses.Core.Domain;
 
 using Microsoft.EntityFrameworkCore;
+
+using SharedKernel.Exceptions;
 
 internal class ReadWriteRepository(ReadWriteContext dbContext) : EfRwRepository<Course>(dbContext), ICoursesRwRepository
 {

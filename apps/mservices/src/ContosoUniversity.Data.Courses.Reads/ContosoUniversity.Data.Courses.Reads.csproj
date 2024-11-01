@@ -6,6 +6,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\ContosoUniversity.Data\ContosoUniversity.Data.csproj"/>
+        <ProjectReference Include="..\Courses.Core\Courses.Core.csproj" />
     </ItemGroup>
 
 </Project>
