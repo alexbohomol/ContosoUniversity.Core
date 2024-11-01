@@ -25,7 +25,7 @@ namespace ContosoUniversity.Data.Courses.Writes.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("ContosoUniversity.Domain.Course.Course", b =>
+            modelBuilder.Entity("ContosoUniversity.SharedKernel.Course.Course", b =>
                 {
                     b.Property<Guid>("ExternalId")
                         .ValueGeneratedOnAdd()

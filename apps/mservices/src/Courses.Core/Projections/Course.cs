@@ -2,7 +2,7 @@ namespace Courses.Core.Projections;
 
 using System;
 
-using ContosoUniversity.Domain;
+using ContosoUniversity.SharedKernel;
 
 public record Course(
     int Code,

@@ -2,7 +2,7 @@ namespace Courses.Core.Domain;
 
 using System;
 
-using ContosoUniversity.Domain;
+using ContosoUniversity.SharedKernel;
 
 public class Course : IIdentifiable<Guid>
 {

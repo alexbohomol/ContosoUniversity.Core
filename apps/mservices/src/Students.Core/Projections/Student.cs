@@ -3,7 +3,7 @@ namespace Students.Core.Projections;
 using System;
 using System.Collections.Generic;
 
-using ContosoUniversity.Domain;
+using ContosoUniversity.SharedKernel;
 
 using Domain;
 

@@ -23,7 +23,7 @@ namespace ContosoUniversity.Data.Departments.Writes.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("ContosoUniversity.Domain.Department.Department", b =>
+            modelBuilder.Entity("ContosoUniversity.SharedKernel.Department.Department", b =>
                 {
                     b.Property<Guid>("ExternalId")
                         .ValueGeneratedOnAdd()
@@ -50,7 +50,7 @@ namespace ContosoUniversity.Data.Departments.Writes.Migrations
                     b.ToTable("Department", "dpt");
                 });
 
-            modelBuilder.Entity("ContosoUniversity.Domain.Instructor.CourseAssignment", b =>
+            modelBuilder.Entity("ContosoUniversity.SharedKernel.Instructor.CourseAssignment", b =>
                 {
                     b.Property<Guid>("InstructorId")
                         .HasColumnType("uniqueidentifier");
@@ -63,7 +63,7 @@ namespace ContosoUniversity.Data.Departments.Writes.Migrations
                     b.ToTable("CourseAssignment", "dpt");
                 });
 
-            modelBuilder.Entity("ContosoUniversity.Domain.Instructor.Instructor", b =>
+            modelBuilder.Entity("ContosoUniversity.SharedKernel.Instructor.Instructor", b =>
                 {
                     b.Property<Guid>("ExternalId")
                         .ValueGeneratedOnAdd()
@@ -88,7 +88,7 @@ namespace ContosoUniversity.Data.Departments.Writes.Migrations
                     b.ToTable("Instructor", "dpt");
                 });
 
-            modelBuilder.Entity("ContosoUniversity.Domain.Instructor.OfficeAssignment", b =>
+            modelBuilder.Entity("ContosoUniversity.SharedKernel.Instructor.OfficeAssignment", b =>
                 {
                     b.Property<Guid>("InstructorId")
                         .HasColumnType("uniqueidentifier");
@@ -103,25 +103,25 @@ namespace ContosoUniversity.Data.Departments.Writes.Migrations
                     b.ToTable("OfficeAssignment", "dpt");
                 });
 
-            modelBuilder.Entity("ContosoUniversity.Domain.Instructor.CourseAssignment", b =>
+            modelBuilder.Entity("ContosoUniversity.SharedKernel.Instructor.CourseAssignment", b =>
                 {
-                    b.HasOne("ContosoUniversity.Domain.Instructor.Instructor", null)
+                    b.HasOne("ContosoUniversity.SharedKernel.Instructor.Instructor", null)
                         .WithMany("CourseAssignments")
                         .HasForeignKey("InstructorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ContosoUniversity.Domain.Instructor.OfficeAssignment", b =>
+            modelBuilder.Entity("ContosoUniversity.SharedKernel.Instructor.OfficeAssignment", b =>
                 {
-                    b.HasOne("ContosoUniversity.Domain.Instructor.Instructor", null)
+                    b.HasOne("ContosoUniversity.SharedKernel.Instructor.Instructor", null)
                         .WithOne("_officeAssignment")
-                        .HasForeignKey("ContosoUniversity.Domain.Instructor.OfficeAssignment", "InstructorId")
+                        .HasForeignKey("ContosoUniversity.SharedKernel.Instructor.OfficeAssignment", "InstructorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ContosoUniversity.Domain.Instructor.Instructor", b =>
+            modelBuilder.Entity("ContosoUniversity.SharedKernel.Instructor.Instructor", b =>
                 {
                     b.Navigation("CourseAssignments");
 

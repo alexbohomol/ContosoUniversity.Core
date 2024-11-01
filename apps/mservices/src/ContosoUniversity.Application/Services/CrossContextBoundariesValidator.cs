@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Domain;
-
 using global::Courses.Core.Projections;
 
 using global::Departments.Core.Projections;
@@ -68,5 +66,13 @@ public static class CrossContextBoundariesValidator
             throw new Exception(
                 $"Unbound contexts inconsistency. Course not found: {notFoundCourses.ToDisplayString()}.");
         }
+    }
+}
+
+static file class Extensions
+{
+    public static string ToDisplayString(this IEnumerable<Guid> guids)
+    {
+        return string.Join(", ", guids);
     }
 }

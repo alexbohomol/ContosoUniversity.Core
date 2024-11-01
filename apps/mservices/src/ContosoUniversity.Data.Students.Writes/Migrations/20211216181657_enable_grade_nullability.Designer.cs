@@ -25,7 +25,7 @@ namespace ContosoUniversity.Data.Students.Writes.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("ContosoUniversity.Domain.Student.Enrollment", b =>
+            modelBuilder.Entity("ContosoUniversity.SharedKernel.Student.Enrollment", b =>
                 {
                     b.Property<Guid>("StudentId")
                         .HasColumnType("uniqueidentifier");
@@ -41,7 +41,7 @@ namespace ContosoUniversity.Data.Students.Writes.Migrations
                     b.ToTable("Enrollment", "std");
                 });
 
-            modelBuilder.Entity("ContosoUniversity.Domain.Student.Student", b =>
+            modelBuilder.Entity("ContosoUniversity.SharedKernel.Student.Student", b =>
                 {
                     b.Property<Guid>("ExternalId")
                         .ValueGeneratedOnAdd()
@@ -66,16 +66,16 @@ namespace ContosoUniversity.Data.Students.Writes.Migrations
                     b.ToTable("Student", "std");
                 });
 
-            modelBuilder.Entity("ContosoUniversity.Domain.Student.Enrollment", b =>
+            modelBuilder.Entity("ContosoUniversity.SharedKernel.Student.Enrollment", b =>
                 {
-                    b.HasOne("ContosoUniversity.Domain.Student.Student", null)
+                    b.HasOne("ContosoUniversity.SharedKernel.Student.Student", null)
                         .WithMany("Enrollments")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ContosoUniversity.Domain.Student.Student", b =>
+            modelBuilder.Entity("ContosoUniversity.SharedKernel.Student.Student", b =>
                 {
                     b.Navigation("Enrollments");
                 });

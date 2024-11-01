@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Domain;
+using SharedKernel;
 
 public interface IRwRepository<TEntity> where TEntity : IIdentifiable<Guid>
 {

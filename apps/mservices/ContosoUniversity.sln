@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Data", "src\ContosoUniversity.Data\ContosoUniversity.Data.csproj", "{13CC66B8-A2C5-4017-99BA-B0348552ED70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.Domain", "src\ContosoUniversity.Domain\ContosoUniversity.Domain.csproj", "{D20B0BA9-54BB-4E3D-A580-447AF01BD1A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.SharedKernel", "src\ContosoUniversity.SharedKernel\ContosoUniversity.SharedKernel.csproj", "{D20B0BA9-54BB-4E3D-A580-447AF01BD1A2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E4EA226A-2BCD-4BEE-844C-0429AC749000}"
 EndProject

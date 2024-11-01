@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\ContosoUniversity.Domain\ContosoUniversity.Domain.csproj"/>
+        <ProjectReference Include="..\..\..\src\ContosoUniversity.SharedKernel\ContosoUniversity.SharedKernel.csproj" />
         <ProjectReference Include="..\..\..\src\Departments.Core\Departments.Core.csproj" />
     </ItemGroup>
 

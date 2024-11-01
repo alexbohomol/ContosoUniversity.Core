@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ContosoUniversity.Domain;
+using ContosoUniversity.SharedKernel;
 
 using Domain;
 

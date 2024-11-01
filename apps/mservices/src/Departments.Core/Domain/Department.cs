@@ -2,7 +2,7 @@ namespace Departments.Core.Domain;
 
 using System;
 
-using ContosoUniversity.Domain;
+using ContosoUniversity.SharedKernel;
 
 public class Department : IIdentifiable<Guid>
 {
