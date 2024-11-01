@@ -2,7 +2,7 @@ namespace Departments.Core.Tests.Instructor;
 
 using System;
 
-using Departments.Core.Domain;
+using Domain;
 
 using FluentAssertions;
 
