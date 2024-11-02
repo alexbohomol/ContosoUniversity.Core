@@ -1,13 +1,12 @@
-using IInstructorsRwRepository = Departments.Core.IInstructorsRwRepository;
 using Instructor = Departments.Core.Domain.Instructor;
 
-namespace ContosoUniversity.Application.Instructors.Notifications;
+namespace Departments.Core.Handlers.Notifications;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Departments.Notifications;
+using ContosoUniversity.Messaging.Contracts.Notifications;
 
 using MediatR;
 

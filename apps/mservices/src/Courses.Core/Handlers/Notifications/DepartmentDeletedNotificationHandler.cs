@@ -1,11 +1,9 @@
-using ICoursesRwRepository = Courses.Core.ICoursesRwRepository;
-
-namespace ContosoUniversity.Application.Courses.Notifications;
+namespace Courses.Core.Handlers.Notifications;
 
 using System.Threading;
 using System.Threading.Tasks;
 
-using Departments.Notifications;
+using ContosoUniversity.Messaging.Contracts.Notifications;
 
 using MediatR;
 

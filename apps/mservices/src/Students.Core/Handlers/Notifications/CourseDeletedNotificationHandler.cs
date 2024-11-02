@@ -1,14 +1,13 @@
-using IStudentsRwRepository = Students.Core.IStudentsRwRepository;
 using Student = Students.Core.Domain.Student;
 
-namespace ContosoUniversity.Application.Students.Notifications;
+namespace Students.Core.Handlers.Notifications;
 
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Courses.Notifications;
+using ContosoUniversity.Messaging.Contracts.Notifications;
 
 using MediatR;
 

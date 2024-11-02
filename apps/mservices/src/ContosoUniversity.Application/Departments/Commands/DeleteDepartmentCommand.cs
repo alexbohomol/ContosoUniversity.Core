@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 using MediatR;
 
-using Notifications;
+using Messaging.Contracts.Notifications;
 
 public record DeleteDepartmentCommand(Guid Id) : IRequest;
 
