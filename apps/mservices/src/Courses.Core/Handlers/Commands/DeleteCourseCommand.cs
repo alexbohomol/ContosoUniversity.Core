@@ -1,16 +1,13 @@
-using ICoursesRwRepository = Courses.Core.ICoursesRwRepository;
-
-namespace ContosoUniversity.Application.Courses.Commands;
+namespace Courses.Core.Handlers.Commands;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ContosoUniversity.Messaging.Contracts.Commands;
+using ContosoUniversity.Messaging.Contracts.Notifications;
+
 using MediatR;
-
-using Messaging.Contracts.Notifications;
-
-public record DeleteCourseCommand(Guid Id) : IRequest;
 
 internal class DeleteCourseCommandHandler(
     ICoursesRwRepository coursesRwRepository,

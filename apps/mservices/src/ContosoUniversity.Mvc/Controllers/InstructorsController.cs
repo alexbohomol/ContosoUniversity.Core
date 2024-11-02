@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Application;
-using Application.Instructors.Commands;
 using Application.Instructors.Queries;
 
 using Courses.Core;
@@ -17,6 +16,8 @@ using Departments.Core;
 using Departments.Core.Projections;
 
 using MediatR;
+
+using Messaging.Contracts.Commands;
 
 using Microsoft.AspNetCore.Mvc;
 

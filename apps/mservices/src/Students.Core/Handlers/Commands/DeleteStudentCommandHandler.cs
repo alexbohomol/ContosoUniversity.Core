@@ -1,14 +1,12 @@
-using IStudentsRwRepository = Students.Core.IStudentsRwRepository;
-
-namespace ContosoUniversity.Application.Students.Commands;
+namespace Students.Core.Handlers.Commands;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using MediatR;
+using ContosoUniversity.Messaging.Contracts.Commands;
 
-public record DeleteStudentCommand(Guid Id) : IRequest;
+using MediatR;
 
 internal class DeleteStudentCommandHandler(
     IStudentsRwRepository studentsRwRepository)

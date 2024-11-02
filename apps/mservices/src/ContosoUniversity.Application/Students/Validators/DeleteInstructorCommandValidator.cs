@@ -10,7 +10,7 @@ using Courses.Validators;
 
 using FluentValidation;
 
-using Instructors.Commands;
+using Messaging.Contracts.Commands;
 
 internal class DeleteInstructorCommandValidator : AbstractValidator<DeleteInstructorCommand>
 {

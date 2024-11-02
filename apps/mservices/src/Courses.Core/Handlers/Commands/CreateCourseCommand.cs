@@ -1,19 +1,14 @@
 using Course = Courses.Core.Domain.Course;
-using ICoursesRwRepository = Courses.Core.ICoursesRwRepository;
 
-namespace ContosoUniversity.Application.Courses.Commands;
+namespace Courses.Core.Handlers.Commands;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using MediatR;
+using ContosoUniversity.Messaging.Contracts.Commands;
 
-public record CreateCourseCommand(
-    int CourseCode,
-    string Title,
-    int Credits,
-    Guid DepartmentId) : IRequest;
+using MediatR;
 
 internal class CreateCourseCommandHandler(
     ICoursesRwRepository repository)

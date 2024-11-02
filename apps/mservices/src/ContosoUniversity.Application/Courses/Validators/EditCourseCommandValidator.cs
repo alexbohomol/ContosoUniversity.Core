@@ -7,9 +7,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Commands;
-
 using FluentValidation;
+
+using Messaging.Contracts.Commands;
 
 internal class EditCourseCommandValidator : AbstractValidator<EditCourseCommand>
 {

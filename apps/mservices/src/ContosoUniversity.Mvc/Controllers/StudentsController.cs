@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Students.Commands;
 using Application.Students.Queries;
 
 using MediatR;
+
+using Messaging.Contracts.Commands;
 
 using Microsoft.AspNetCore.Mvc;
 

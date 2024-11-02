@@ -1,19 +1,14 @@
 using Department = Departments.Core.Domain.Department;
-using IDepartmentsRwRepository = Departments.Core.IDepartmentsRwRepository;
 
-namespace ContosoUniversity.Application.Departments.Commands;
+namespace Departments.Core.Handlers.Commands;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using MediatR;
+using ContosoUniversity.Messaging.Contracts.Commands;
 
-public record CreateDepartmentCommand(
-    string Name,
-    decimal Budget,
-    DateTime StartDate,
-    Guid? AdministratorId) : IRequest;
+using MediatR;
 
 internal class CreateDepartmentCommandHandler(
     IDepartmentsRwRepository departmentsRepository)

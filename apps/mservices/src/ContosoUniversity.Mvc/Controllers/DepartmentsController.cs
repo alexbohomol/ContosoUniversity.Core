@@ -6,13 +6,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Departments.Commands;
 using Application.Departments.Queries;
 
 using Departments.Core;
 using Departments.Core.Projections;
 
 using MediatR;
+
+using Messaging.Contracts.Commands;
 
 using Microsoft.AspNetCore.Mvc;
 

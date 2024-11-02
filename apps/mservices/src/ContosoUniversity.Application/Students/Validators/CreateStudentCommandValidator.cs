@@ -1,8 +1,8 @@
 namespace ContosoUniversity.Application.Students.Validators;
 
-using Commands;
-
 using FluentValidation;
+
+using Messaging.Contracts.Commands;
 
 internal class CreateStudentCommandValidator : AbstractValidator<CreateStudentCommand>
 {

@@ -7,11 +7,11 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Commands;
-
 using Courses.Validators;
 
 using FluentValidation;
+
+using Messaging.Contracts.Commands;
 
 internal class EditDepartmentCommandValidator : AbstractValidator<EditDepartmentCommand>
 {

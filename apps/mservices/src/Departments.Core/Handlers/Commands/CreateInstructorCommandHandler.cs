@@ -1,27 +1,15 @@
-using IInstructorsRwRepository = Departments.Core.IInstructorsRwRepository;
 using Instructor = Departments.Core.Domain.Instructor;
 using OfficeAssignment = Departments.Core.Domain.OfficeAssignment;
 
-namespace ContosoUniversity.Application.Instructors.Commands;
+namespace Departments.Core.Handlers.Commands;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using MediatR;
+using ContosoUniversity.Messaging.Contracts.Commands;
 
-public record CreateInstructorCommand(
-    string LastName,
-    string FirstName,
-    DateTime HireDate,
-    Guid[] SelectedCourses,
-    string Location) : IRequest
-{
-    public bool HasAssignedOffice => !string.IsNullOrWhiteSpace(Location);
-    public bool HasAssignedCourses =>
-        SelectedCourses is not null
-        && SelectedCourses.Length > 0;
-}
+using MediatR;
 
 internal class CreateInstructorCommandHandler(
     IInstructorsRwRepository instructorsRepository)

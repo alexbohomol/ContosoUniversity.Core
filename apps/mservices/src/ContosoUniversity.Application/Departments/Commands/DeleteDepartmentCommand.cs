@@ -10,9 +10,8 @@ using System.Threading.Tasks;
 
 using MediatR;
 
+using Messaging.Contracts.Commands;
 using Messaging.Contracts.Notifications;
-
-public record DeleteDepartmentCommand(Guid Id) : IRequest;
 
 internal class DeleteDepartmentCommandHandler(
     IDepartmentsRwRepository departmentsRepository,

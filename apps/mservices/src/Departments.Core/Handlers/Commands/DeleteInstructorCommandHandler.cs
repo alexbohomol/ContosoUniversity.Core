@@ -1,16 +1,14 @@
 using Department = Departments.Core.Domain.Department;
-using IDepartmentsRwRepository = Departments.Core.IDepartmentsRwRepository;
-using IInstructorsRwRepository = Departments.Core.IInstructorsRwRepository;
 
-namespace ContosoUniversity.Application.Instructors.Commands;
+namespace Departments.Core.Handlers.Commands;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using MediatR;
+using ContosoUniversity.Messaging.Contracts.Commands;
 
-public record DeleteInstructorCommand(Guid Id) : IRequest;
+using MediatR;
 
 internal class DeleteInstructorCommandHandler(
     IInstructorsRwRepository instructorsRwRepository,
