@@ -1,4 +1,3 @@
-using ICoursesRoRepository = Courses.Core.ICoursesRoRepository;
 using IStudentsRoRepository = Students.Core.IStudentsRoRepository;
 using Student = Students.Core.Projections.Student;
 
@@ -9,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
+using ApiClients;
 
 using MediatR;
 
@@ -22,7 +23,7 @@ public record GetStudentDetailsQueryResult(
 
 internal class GetStudentDetailsQueryHandler(
     IStudentsRoRepository studentsRepository,
-    ICoursesRoRepository coursesRepository)
+    ICoursesApiClient coursesApiClient)
     : IRequestHandler<GetStudentDetailsQuery, GetStudentDetailsQueryResult>
 {
     public async Task<GetStudentDetailsQueryResult> Handle(
@@ -39,7 +40,7 @@ internal class GetStudentDetailsQueryHandler(
 
         Guid[] coursesIds = student.Enrollments.Select(x => x.CourseId).ToArray();
 
-        Dictionary<Guid, string> courseTitles = await coursesRepository
+        Dictionary<Guid, string> courseTitles = await coursesApiClient
             .GetCourseTitlesReference(coursesIds, cancellationToken);
 
         Guid[] notFoundCourseIds = coursesIds.Except(courseTitles.Keys).ToArray();

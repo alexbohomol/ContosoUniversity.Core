@@ -1,14 +1,10 @@
-using ICoursesRoRepository = Courses.Core.ICoursesRoRepository;
-
-namespace ContosoUniversity.Application.Courses.Validators;
+namespace Courses.Core.Handlers;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 using FluentValidation;
-
-using Messaging.Contracts.Commands;
 
 internal class DeleteCourseCommandValidator : AbstractValidator<DeleteCourseCommand>
 {

@@ -1,5 +1,3 @@
-using Course = Courses.Core.Projections.Course;
-using ICoursesRoRepository = Courses.Core.ICoursesRoRepository;
 using IDepartmentsRoRepository = Departments.Core.IDepartmentsRoRepository;
 
 namespace ContosoUniversity.Application.Courses.Queries;
@@ -8,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+
+using ApiClients;
 
 using MediatR;
 
@@ -18,7 +18,7 @@ public record GetCourseEditFormQuery(Guid Id) : IRequest<GetCourseEditFormQueryR
 public record GetCourseEditFormQueryResult(Course Course, Dictionary<Guid, string> DepartmentsReference);
 
 internal class GetCourseEditFormQueryHandler(
-    ICoursesRoRepository coursesRepository,
+    ICoursesApiClient coursesApiClient,
     IDepartmentsRoRepository departmentsRepository)
     : IRequestHandler<GetCourseEditFormQuery, GetCourseEditFormQueryResult>
 {
@@ -28,7 +28,7 @@ internal class GetCourseEditFormQueryHandler(
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        Course course = await coursesRepository.GetById(request.Id, cancellationToken);
+        Course course = await coursesApiClient.GetById(request.Id, cancellationToken);
         if (course is null)
         {
             throw new EntityNotFoundException(nameof(course), request.Id);

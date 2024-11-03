@@ -10,8 +10,8 @@ public static class HealthReportAssertions
 {
     private static readonly string[] CheckNames =
     [
-        "sql-courses-reads",
-        "sql-courses-writes",
+        // "sql-courses-reads",
+        // "sql-courses-writes",
         "sql-students-reads",
         "sql-students-writes",
         "sql-departments-reads",
@@ -22,7 +22,7 @@ public static class HealthReportAssertions
     [
         "db",
         "sql",
-        "courses",
+        // "courses",
         "students",
         "departments",
         "reads",
@@ -35,7 +35,7 @@ public static class HealthReportAssertions
         report.Status.Should().Be(UIHealthStatus.Healthy);
         // report.TotalDuration.Should().BeLessThan(TimeSpan.FromSeconds(1));
         report.Entries.Should().NotBeEmpty();
-        report.Entries.Count.Should().Be(6);
+        report.Entries.Count.Should().Be(4);
         report.Entries.Keys.Should().BeEquivalentTo(CheckNames);
         report.Entries.Values.SelectMany(x => x.Tags).Distinct().Should().BeEquivalentTo(Tags);
         report.Entries.Values.Should().AllSatisfy(ShouldBeHealthy);
@@ -56,7 +56,7 @@ public static class HealthReportAssertions
         report.Status.Should().Be(UIHealthStatus.Unhealthy);
         // report.TotalDuration.Should().BeLessThan(TimeSpan.FromSeconds(1));
         report.Entries.Should().NotBeEmpty();
-        report.Entries.Count.Should().Be(6);
+        report.Entries.Count.Should().Be(4);
         report.Entries.Keys.Should().BeEquivalentTo(CheckNames);
         report.Entries.Values.SelectMany(x => x.Tags).Distinct().Should().BeEquivalentTo(Tags);
         report.Entries.Values.Should().AllSatisfy(ShouldBeUnhealthy);

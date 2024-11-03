@@ -1,4 +1,3 @@
-using Course = Courses.Core.Projections.Course;
 using Enrollment = Students.Core.Domain.Enrollment;
 using Instructor = Departments.Core.Projections.Instructor;
 
@@ -7,6 +6,8 @@ namespace ContosoUniversity.Application;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ApiClients;
 
 /// <summary>
 ///     TODO: these checks should be implemented in domain/service layers later

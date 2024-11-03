@@ -2,10 +2,9 @@ namespace ContosoUniversity.Mvc;
 
 using System.Globalization;
 
-using Application;
+using ApiClients;
 
-using Courses.Data.Reads;
-using Courses.Data.Writes;
+using Application;
 
 using Data;
 
@@ -64,8 +63,6 @@ internal class Startup(IWebHostEnvironment env)
         services.AddHealthChecks();
 
         services.AddDataInfrastructure();
-        services.AddCoursesSchemaReads();
-        services.AddCoursesSchemaWrites();
         services.AddStudentsSchemaReads();
         services.AddStudentsSchemaWrites();
         services.AddDepartmentsSchemaReads();
@@ -79,15 +76,13 @@ internal class Startup(IWebHostEnvironment env)
             services.AddFluentValidationClientsideAdapters();
         }
         services.AddValidatorsFromAssemblyContaining<Program>();
-        services.AddValidatorsFromAssemblyContaining<IApplicationLayerMarker>();
-        services.AddValidatorsFromAssemblyContaining<Courses.Core.IAssemblyMarker>();
+        services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
         services.AddValidatorsFromAssemblyContaining<Departments.Core.IAssemblyMarker>();
         services.AddValidatorsFromAssemblyContaining<Students.Core.IAssemblyMarker>();
 
         services.AddMediatR(cfg =>
         {
-            cfg.RegisterServicesFromAssembly(typeof(IApplicationLayerMarker).Assembly);
-            cfg.RegisterServicesFromAssembly(typeof(Courses.Core.IAssemblyMarker).Assembly);
+            cfg.RegisterServicesFromAssembly(typeof(IAssemblyMarker).Assembly);
             cfg.RegisterServicesFromAssembly(typeof(Departments.Core.IAssemblyMarker).Assembly);
             cfg.RegisterServicesFromAssembly(typeof(Students.Core.IAssemblyMarker).Assembly);
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
@@ -96,6 +91,8 @@ internal class Startup(IWebHostEnvironment env)
         services.AddExceptionHandler<EntityNotFoundExceptionHandler>();
         services.AddExceptionHandler<BadRequestExceptionHandler>();
         services.AddProblemDetails();
+
+        services.AddCoursesApiClient();
     }
 
     public void Configure(IApplicationBuilder app)

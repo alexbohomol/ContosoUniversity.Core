@@ -4,7 +4,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ContosoUniversity.Messaging.Contracts.Commands;
 using ContosoUniversity.Messaging.Contracts.Notifications;
 
 using MediatR;

@@ -1,5 +1,3 @@
-using Course = Courses.Core.Projections.Course;
-using ICoursesRoRepository = Courses.Core.ICoursesRoRepository;
 using IDepartmentsRoRepository = Departments.Core.IDepartmentsRoRepository;
 
 namespace ContosoUniversity.Application.Courses.Queries;
@@ -8,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+
+using ApiClients;
 
 using MediatR;
 
@@ -18,7 +18,7 @@ public record GetCoursesIndexQueryResult(
     Dictionary<Guid, string> DepartmentsReference);
 
 internal class GetCoursesIndexQueryHandler(
-    ICoursesRoRepository coursesRepository,
+    ICoursesApiClient coursesApiClient,
     IDepartmentsRoRepository departmentsRepository)
     : IRequestHandler<GetCoursesIndexQuery, GetCoursesIndexQueryResult>
 {
@@ -28,7 +28,7 @@ internal class GetCoursesIndexQueryHandler(
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        Course[] courses = await coursesRepository.GetAll(cancellationToken);
+        Course[] courses = await coursesApiClient.GetAll(cancellationToken);
 
         Dictionary<Guid, string> departmentNames = await departmentsRepository
             .GetDepartmentNamesReference(cancellationToken);

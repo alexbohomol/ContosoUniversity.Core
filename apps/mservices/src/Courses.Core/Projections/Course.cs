@@ -4,7 +4,7 @@ using System;
 
 using ContosoUniversity.SharedKernel;
 
-public record Course(
+internal record Course(
     int Code,
     string Title,
     int Credits,

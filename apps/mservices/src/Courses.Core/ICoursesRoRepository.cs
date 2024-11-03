@@ -9,7 +9,7 @@ using ContosoUniversity.SharedKernel;
 
 using Projections;
 
-public interface ICoursesRoRepository : IRoRepository<Course>
+internal interface ICoursesRoRepository : IRoRepository<Course>
 {
     Task<Course[]> GetByDepartmentId(Guid departmentId, CancellationToken cancellationToken = default);
 

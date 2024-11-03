@@ -12,12 +12,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Courses.Data.Reads\Courses.Data.Reads.csproj" />
-        <ProjectReference Include="..\Courses.Data.Writes\Courses.Data.Writes.csproj" />
+        <ProjectReference Include="..\Courses.Core\Courses.Core.csproj" />
         <ProjectReference Include="..\Departments.Data.Reads\Departments.Data.Reads.csproj" />
         <ProjectReference Include="..\Departments.Data.Writes\Departments.Data.Writes.csproj" />
         <ProjectReference Include="..\Students.Data.Reads\Students.Data.Reads.csproj" />
         <ProjectReference Include="..\Students.Data.Writes\Students.Data.Writes.csproj" />
+        <ProjectReference Include="..\ContosoUniversity.ApiClients\ContosoUniversity.ApiClients.csproj" />
         <ProjectReference Include="..\ContosoUniversity.Application\ContosoUniversity.Application.csproj"/>
     </ItemGroup>
 

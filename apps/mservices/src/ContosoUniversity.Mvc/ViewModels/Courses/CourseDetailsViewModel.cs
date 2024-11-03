@@ -3,7 +3,7 @@ namespace ContosoUniversity.Mvc.ViewModels.Courses;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-using global::Courses.Core.Projections;
+using Application.ApiClients;
 
 using global::Departments.Core.Projections;
 

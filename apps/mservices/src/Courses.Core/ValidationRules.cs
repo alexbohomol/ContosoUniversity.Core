@@ -1,10 +1,6 @@
-using Course = Courses.Core.Domain.Course;
-using CourseCode = Courses.Core.Domain.CourseCode;
-using Credits = Courses.Core.Domain.Credits;
+namespace Courses.Core;
 
-namespace ContosoUniversity.Application.Courses.Validators;
-
-using System;
+using Domain;
 
 using FluentValidation;
 
@@ -41,12 +37,5 @@ public static class ValidationRules
         rule
             .InclusiveBetween(Credits.MinValue, Credits.MaxValue)
             .WithMessage(ErrMsgCredits);
-    }
-
-    public static void Required<T>(this IRuleBuilder<T, Guid> rule)
-    {
-        rule
-            .NotEmpty()
-            .WithMessage("Please select a course department.");
     }
 }

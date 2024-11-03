@@ -1,5 +1,3 @@
-using Course = Courses.Core.Projections.Course;
-using ICoursesRoRepository = Courses.Core.ICoursesRoRepository;
 using IInstructorsRoRepository = Departments.Core.IInstructorsRoRepository;
 using Instructor = Departments.Core.Projections.Instructor;
 
@@ -8,6 +6,8 @@ namespace ContosoUniversity.Application.Instructors.Queries;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+
+using ApiClients;
 
 using MediatR;
 
@@ -19,7 +19,7 @@ public record GetInstructorEditFormQueryResult(Instructor Instructor, Course[] C
 
 internal class GetInstructorEditFormQueryHandler(
     IInstructorsRoRepository instructorsRepository,
-    ICoursesRoRepository coursesRepository)
+    ICoursesApiClient coursesApiClient)
     : IRequestHandler<GetInstructorEditFormQuery, GetInstructorEditFormQueryResult>
 {
     public async Task<GetInstructorEditFormQueryResult> Handle(
@@ -34,7 +34,7 @@ internal class GetInstructorEditFormQueryHandler(
             throw new EntityNotFoundException(nameof(instructor), request.Id);
         }
 
-        Course[] courses = await coursesRepository.GetAll(cancellationToken);
+        Course[] courses = await coursesApiClient.GetAll(cancellationToken);
 
         return new GetInstructorEditFormQueryResult(instructor, courses);
     }
