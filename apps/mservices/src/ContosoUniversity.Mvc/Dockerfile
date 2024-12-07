@@ -31,4 +31,5 @@ RUN dotnet publish "ContosoUniversity.Mvc.csproj" -c $BUILD_CONFIGURATION -o /ap
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY src/ContosoUniversity.Mvc/cert.pfx /https/
 ENTRYPOINT ["dotnet", "ContosoUniversity.Mvc.dll"]

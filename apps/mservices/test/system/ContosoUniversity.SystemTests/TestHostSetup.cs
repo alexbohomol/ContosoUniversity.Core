@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
-using NUnit.Framework;
+// using NUnit.Framework;
 
 using Program = Mvc.Program;
 
-[SetUpFixture]
+// [SetUpFixture]
 public class TestHostSetup
 {
     private static readonly IConfiguration Configuration = new ConfigurationBuilder()
@@ -20,7 +20,7 @@ public class TestHostSetup
 
     private static IHost _host;
 
-    [OneTimeSetUp]
+    // [OneTimeSetUp]
     public async Task OneTimeSetUp()
     {
         var hostUrls = Configuration["ApplicationUrls"].Split(';');
@@ -35,7 +35,7 @@ public class TestHostSetup
         await _host.StartAsync();
     }
 
-    [OneTimeTearDown]
+    // [OneTimeTearDown]
     public async Task OneTimeTearDown()
     {
         await _host.StopAsync();

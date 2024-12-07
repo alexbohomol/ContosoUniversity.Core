@@ -40,7 +40,7 @@ services:
       SA_PASSWORD: <YourStrong!Passw0rd>
     ports:
       - "1433:1433"
-    volumes:
-      - sqlvolume:/var/opt/mssql
+#    volumes:
+#      - sqlvolume:/var/opt/mssql
     networks:
       - cunetwork
