@@ -1,0 +1,6 @@
+{
+  "PageBaseUrl": {
+    "Http": "http://localhost:1234",
+    "Https": "https://localhost:12345"
+  }
+}

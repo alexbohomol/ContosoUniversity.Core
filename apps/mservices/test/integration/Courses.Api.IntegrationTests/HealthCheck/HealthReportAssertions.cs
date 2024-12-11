@@ -1,6 +1,4 @@
-namespace ContosoUniversity.Mvc.IntegrationTests.HealthCheck;
-
-using System.Linq;
+namespace Courses.Api.IntegrationTests.HealthCheck;
 
 using FluentAssertions;
 
@@ -10,18 +8,15 @@ public static class HealthReportAssertions
 {
     private static readonly string[] CheckNames =
     [
-        "sql-students-reads",
-        "sql-students-writes",
-        "sql-departments-reads",
-        "sql-departments-writes"
+        "sql-courses-reads",
+        "sql-courses-writes"
     ];
 
     private static readonly string[] Tags =
     [
         "db",
         "sql",
-        "students",
-        "departments",
+        "courses",
         "reads",
         "writes"
     ];
@@ -32,7 +27,7 @@ public static class HealthReportAssertions
         report.Status.Should().Be(UIHealthStatus.Healthy);
         // report.TotalDuration.Should().BeLessThan(TimeSpan.FromSeconds(1));
         report.Entries.Should().NotBeEmpty();
-        report.Entries.Count.Should().Be(4);
+        report.Entries.Count.Should().Be(2);
         report.Entries.Keys.Should().BeEquivalentTo(CheckNames);
         report.Entries.Values.SelectMany(x => x.Tags).Distinct().Should().BeEquivalentTo(Tags);
         report.Entries.Values.Should().AllSatisfy(ShouldBeHealthy);
@@ -53,7 +48,7 @@ public static class HealthReportAssertions
         report.Status.Should().Be(UIHealthStatus.Unhealthy);
         // report.TotalDuration.Should().BeLessThan(TimeSpan.FromSeconds(1));
         report.Entries.Should().NotBeEmpty();
-        report.Entries.Count.Should().Be(4);
+        report.Entries.Count.Should().Be(2);
         report.Entries.Keys.Should().BeEquivalentTo(CheckNames);
         report.Entries.Values.SelectMany(x => x.Tags).Distinct().Should().BeEquivalentTo(Tags);
         report.Entries.Values.Should().AllSatisfy(ShouldBeUnhealthy);

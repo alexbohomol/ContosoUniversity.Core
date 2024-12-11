@@ -61,6 +61,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Courses.Api", "src\Courses.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.ApiClients", "src\ContosoUniversity.ApiClients\ContosoUniversity.ApiClients.csproj", "{784AE254-1FBC-4B46-84D8-E095ADEC9E50}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Courses.Api.IntegrationTests", "test\integration\Courses.Api.IntegrationTests\Courses.Api.IntegrationTests.csproj", "{0ED51D4E-D6E0-48AA-8836-CABFADFDD54C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -147,6 +149,10 @@ Global
 		{784AE254-1FBC-4B46-84D8-E095ADEC9E50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{784AE254-1FBC-4B46-84D8-E095ADEC9E50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{784AE254-1FBC-4B46-84D8-E095ADEC9E50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0ED51D4E-D6E0-48AA-8836-CABFADFDD54C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0ED51D4E-D6E0-48AA-8836-CABFADFDD54C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0ED51D4E-D6E0-48AA-8836-CABFADFDD54C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0ED51D4E-D6E0-48AA-8836-CABFADFDD54C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -182,5 +188,6 @@ Global
 		{2D13F0C3-FB23-4664-8CF6-A5A1A7013FC2} = {E4EA226A-2BCD-4BEE-844C-0429AC749000}
 		{3E983AEB-1E36-452F-9F7B-4AC47C117C89} = {52E76B79-FD2B-4DED-9F3D-3E2410AB4163}
 		{784AE254-1FBC-4B46-84D8-E095ADEC9E50} = {E4EA226A-2BCD-4BEE-844C-0429AC749000}
+		{0ED51D4E-D6E0-48AA-8836-CABFADFDD54C} = {42293EC1-EA5A-4BDF-A35F-3F74D78940A5}
 	EndGlobalSection
 EndGlobal

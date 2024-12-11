@@ -134,6 +134,53 @@ jobs:
       if: always()
       run: docker logs courses-api
 
+  integration_testing_courses_api:
+    if: true
+    name: Integration Testing | Courses.Api
+    runs-on: ubuntu-latest
+    env:
+      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/integration/Courses.Api.IntegrationTests
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Explore Environment
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+      run: |
+        docker version
+        docker compose version
+        ls -lah
+
+    - name: Start Docker Infrastructure
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+      run: docker compose up -d db
+
+    - name: Init test database
+      run: |
+        docker run --rm \
+        --entrypoint /opt/mssql-tools/bin/sqlcmd \
+        --workdir /scripts \
+        --volume "$(pwd)"/database:/scripts \
+        --network cunetwork \
+        mcr.microsoft.com/mssql-tools \
+        -S cudb -U SA -P "${{ env.MSSQL_SA_PASSWORD }}" -i "db-init.sql"
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Build Integration Tests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+
+    - name: Run Integration Tests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: |
+        dotnet test --no-build --verbosity normal
+
   system_testing:
     if: true
     name: System Testing | External-Process

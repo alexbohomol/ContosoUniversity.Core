@@ -5,12 +5,15 @@ using Courses.Core.Handlers;
 using Courses.Data.Reads;
 using Courses.Data.Writes;
 
+using HealthChecks.UI.Client;
+
 using MediatR;
 
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddHealthChecks();
 builder.Services.AddDataInfrastructure();
 builder.Services.AddCoursesSchemaReads();
 builder.Services.AddCoursesSchemaWrites();
@@ -27,6 +30,13 @@ if (app.Environment.IsDevelopment())
 {
     // ...
 }
+
+HealthCheckOptions checkOptions = new()
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+};
+app.UseHealthChecks("/health/readiness", checkOptions);
+app.UseHealthChecks("/health/liveness", checkOptions);
 
 //Read-Only
 
