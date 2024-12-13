@@ -31,6 +31,18 @@ services:
     networks:
       - cunetwork
 
+  departments-api:
+    image: departments-api
+    container_name: departments-api
+    hostname: departments-api
+    depends_on:
+      - "db"
+    build:
+      context: .
+      dockerfile: src/Departments.Api/Dockerfile
+    networks:
+      - cunetwork
+
   db:
     image: mcr.microsoft.com/mssql/server
     container_name: cudb

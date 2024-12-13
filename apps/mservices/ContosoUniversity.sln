@@ -63,6 +63,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversity.ApiClient
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Courses.Api.IntegrationTests", "test\integration\Courses.Api.IntegrationTests\Courses.Api.IntegrationTests.csproj", "{0ED51D4E-D6E0-48AA-8836-CABFADFDD54C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Departments.Api", "src\Departments.Api\Departments.Api.csproj", "{645AD4AE-71E6-4D54-979B-4EA764CA0893}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Departments.Api.IntegrationTests", "test\integration\Departments.Api.IntegrationTests\Departments.Api.IntegrationTests.csproj", "{E8651996-3CCE-49D0-BA55-9C2B9776E798}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +157,14 @@ Global
 		{0ED51D4E-D6E0-48AA-8836-CABFADFDD54C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0ED51D4E-D6E0-48AA-8836-CABFADFDD54C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0ED51D4E-D6E0-48AA-8836-CABFADFDD54C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{645AD4AE-71E6-4D54-979B-4EA764CA0893}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{645AD4AE-71E6-4D54-979B-4EA764CA0893}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{645AD4AE-71E6-4D54-979B-4EA764CA0893}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{645AD4AE-71E6-4D54-979B-4EA764CA0893}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8651996-3CCE-49D0-BA55-9C2B9776E798}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8651996-3CCE-49D0-BA55-9C2B9776E798}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8651996-3CCE-49D0-BA55-9C2B9776E798}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8651996-3CCE-49D0-BA55-9C2B9776E798}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -189,5 +201,7 @@ Global
 		{3E983AEB-1E36-452F-9F7B-4AC47C117C89} = {52E76B79-FD2B-4DED-9F3D-3E2410AB4163}
 		{784AE254-1FBC-4B46-84D8-E095ADEC9E50} = {E4EA226A-2BCD-4BEE-844C-0429AC749000}
 		{0ED51D4E-D6E0-48AA-8836-CABFADFDD54C} = {42293EC1-EA5A-4BDF-A35F-3F74D78940A5}
+		{645AD4AE-71E6-4D54-979B-4EA764CA0893} = {1C3E4CC6-23F1-4652-BF0C-14A4D84D6F22}
+		{E8651996-3CCE-49D0-BA55-9C2B9776E798} = {42293EC1-EA5A-4BDF-A35F-3F74D78940A5}
 	EndGlobalSection
 EndGlobal
