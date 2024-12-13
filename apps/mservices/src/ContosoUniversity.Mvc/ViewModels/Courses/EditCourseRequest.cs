@@ -2,7 +2,7 @@ namespace ContosoUniversity.Mvc.ViewModels.Courses;
 
 using System;
 
-using Application.Contracts.Repositories.ReadOnly.Projections;
+using Application.ApiClients;
 
 public record EditCourseRequest
 {

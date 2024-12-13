@@ -10,7 +10,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ContosoUniversity.Domain\ContosoUniversity.Domain.csproj"/>
+        <ProjectReference Include="..\Departments.Core\Departments.Core.csproj" />
+        <ProjectReference Include="..\Students.Core\Students.Core.csproj" />
     </ItemGroup>
 
 </Project>

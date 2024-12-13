@@ -6,15 +6,21 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.ReadOnly;
-using Application.Contracts.Repositories.ReadOnly.Projections;
-using Application.Services;
-using Application.Services.Instructors.Commands;
-using Application.Services.Instructors.Queries;
+using Application;
+using Application.ApiClients;
+using Application.Instructors.Queries;
+
+using Departments.Core;
+using Departments.Core.Projections;
 
 using MediatR;
 
+using Messaging.Contracts.Commands;
+
 using Microsoft.AspNetCore.Mvc;
+
+using Students.Core;
+using Students.Core.Projections;
 
 using ViewModels;
 using ViewModels.Instructors;
@@ -26,7 +32,7 @@ public class InstructorsController(IMediator mediator) : Controller
         Guid? courseExternalId,
         [FromServices] IInstructorsRoRepository instructorsRepository,
         [FromServices] IDepartmentsRoRepository departmentsRepository,
-        [FromServices] ICoursesRoRepository coursesRepository,
+        [FromServices] ICoursesApiClient coursesApiClient,
         [FromServices] IStudentsRoRepository studentsRepository,
         CancellationToken cancellationToken)
     {
@@ -34,7 +40,7 @@ public class InstructorsController(IMediator mediator) : Controller
             .OrderBy(x => x.LastName)
             .ToArray();
 
-        Course[] courses = await coursesRepository.GetAll(cancellationToken);
+        Course[] courses = await coursesApiClient.GetAll(cancellationToken);
 
         CrossContextBoundariesValidator.EnsureInstructorsReferenceTheExistingCourses(instructors, courses);
 
@@ -126,10 +132,10 @@ public class InstructorsController(IMediator mediator) : Controller
     }
 
     public async Task<IActionResult> Create(
-        [FromServices] ICoursesRoRepository repository,
+        [FromServices] ICoursesApiClient coursesApiClient,
         CancellationToken cancellationToken)
     {
-        Course[] courses = await repository.GetAll(cancellationToken);
+        Course[] courses = await coursesApiClient.GetAll(cancellationToken);
 
         return View(new CreateInstructorForm(courses));
     }
@@ -138,12 +144,12 @@ public class InstructorsController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
         CreateInstructorRequest request,
-        [FromServices] ICoursesRoRepository repository,
+        [FromServices] ICoursesApiClient coursesApiClient,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
-            Course[] courses = await repository.GetAll(cancellationToken);
+            Course[] courses = await coursesApiClient.GetAll(cancellationToken);
 
             return View(new CreateInstructorForm(courses)
             {

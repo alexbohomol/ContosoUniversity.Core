@@ -19,6 +19,18 @@ services:
     networks:
       - cunetwork
 
+  courses-api:
+    image: courses-api
+    container_name: courses-api
+    hostname: courses-api
+    depends_on:
+      - "db"
+    build:
+      context: .
+      dockerfile: src/Courses.Api/Dockerfile
+    networks:
+      - cunetwork
+
   db:
     image: mcr.microsoft.com/mssql/server
     container_name: cudb
@@ -28,7 +40,5 @@ services:
       SA_PASSWORD: <YourStrong!Passw0rd>
     ports:
       - "1433:1433"
-    volumes:
-      - sqlvolume:/var/opt/mssql
     networks:
       - cunetwork

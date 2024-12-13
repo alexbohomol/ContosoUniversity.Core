@@ -6,11 +6,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.ReadOnly;
-using Application.Contracts.Repositories.ReadOnly.Projections;
-using Application.Contracts.Repositories.ReadWrite;
-using Application.Services.Courses.Commands;
-using Application.Services.Courses.Queries;
+using Application.ApiClients;
+using Application.Courses.Queries;
+
+using Departments.Core;
+using Departments.Core.Projections;
 
 using MediatR;
 
@@ -64,6 +64,7 @@ public class CoursesController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
         CreateCourseRequest request,
+        [FromServices] ICoursesApiClient coursesApiClient,
         [FromServices] IDepartmentsRoRepository repository,
         CancellationToken cancellationToken)
     {
@@ -76,8 +77,8 @@ public class CoursesController(IMediator mediator) : Controller
             });
         }
 
-        await mediator.Send(
-            new CreateCourseCommand(
+        await coursesApiClient.Create(
+            new CourseCreateModel(
                 request.CourseCode,
                 request.Title,
                 request.Credits,
@@ -110,6 +111,7 @@ public class CoursesController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(
         EditCourseRequest request,
+        [FromServices] ICoursesApiClient coursesApiClient,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -124,8 +126,8 @@ public class CoursesController(IMediator mediator) : Controller
             });
         }
 
-        await mediator.Send(
-            new EditCourseCommand(
+        await coursesApiClient.Update(
+            new CourseEditModel(
                 request.Id,
                 request.Title,
                 request.Credits,
@@ -153,10 +155,13 @@ public class CoursesController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(
+        Guid id,
+        [FromServices] ICoursesApiClient coursesApiClient,
+        CancellationToken cancellationToken)
     {
-        await mediator.Send(
-            new DeleteCourseCommand(id),
+        await coursesApiClient.Delete(
+            new CourseDeleteModel(id),
             cancellationToken);
 
         return RedirectToAction(nameof(Index));
@@ -170,12 +175,12 @@ public class CoursesController(IMediator mediator) : Controller
     [HttpPost]
     public async Task<IActionResult> UpdateCourseCredits(
         int? multiplier,
-        [FromServices] ICoursesRwRepository coursesRepository,
+        [FromServices] ICoursesApiClient coursesApiClient,
         CancellationToken cancellationToken)
     {
         if (multiplier.HasValue)
         {
-            ViewData["RowsAffected"] = await coursesRepository.UpdateCourseCredits(
+            ViewData["RowsAffected"] = await coursesApiClient.UpdateCoursesCredits(
                 multiplier.Value,
                 cancellationToken);
         }

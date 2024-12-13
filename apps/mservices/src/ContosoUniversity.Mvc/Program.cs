@@ -2,15 +2,14 @@ namespace ContosoUniversity.Mvc;
 
 using System.Globalization;
 
+using ApiClients;
+
 using Application;
 
 using Data;
-using Data.Courses.Reads;
-using Data.Courses.Writes;
-using Data.Departments.Reads;
-using Data.Departments.Writes;
-using Data.Students.Reads;
-using Data.Students.Writes;
+
+using Departments.Data.Reads;
+using Departments.Data.Writes;
 
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -26,6 +25,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Middleware;
+
+using Students.Data.Reads;
+using Students.Data.Writes;
 
 public class Program
 {
@@ -61,8 +63,6 @@ internal class Startup(IWebHostEnvironment env)
         services.AddHealthChecks();
 
         services.AddDataInfrastructure();
-        services.AddCoursesSchemaReads();
-        services.AddCoursesSchemaWrites();
         services.AddStudentsSchemaReads();
         services.AddStudentsSchemaWrites();
         services.AddDepartmentsSchemaReads();
@@ -76,17 +76,23 @@ internal class Startup(IWebHostEnvironment env)
             services.AddFluentValidationClientsideAdapters();
         }
         services.AddValidatorsFromAssemblyContaining<Program>();
-        services.AddValidatorsFromAssemblyContaining<IApplicationLayerMarker>();
+        services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
+        services.AddValidatorsFromAssemblyContaining<Departments.Core.IAssemblyMarker>();
+        services.AddValidatorsFromAssemblyContaining<Students.Core.IAssemblyMarker>();
 
         services.AddMediatR(cfg =>
         {
-            cfg.RegisterServicesFromAssembly(typeof(IApplicationLayerMarker).Assembly);
+            cfg.RegisterServicesFromAssembly(typeof(IAssemblyMarker).Assembly);
+            cfg.RegisterServicesFromAssembly(typeof(Departments.Core.IAssemblyMarker).Assembly);
+            cfg.RegisterServicesFromAssembly(typeof(Students.Core.IAssemblyMarker).Assembly);
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
 
         services.AddExceptionHandler<EntityNotFoundExceptionHandler>();
         services.AddExceptionHandler<BadRequestExceptionHandler>();
         services.AddProblemDetails();
+
+        services.AddCoursesApiClient();
     }
 
     public void Configure(IApplicationBuilder app)

@@ -7,15 +7,18 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/ContosoUniversity.Mvc/ContosoUniversity.Mvc.csproj", "src/ContosoUniversity.Mvc/"]
-COPY ["src/ContosoUniversity.Data.Courses.Reads/ContosoUniversity.Data.Courses.Reads.csproj", "src/ContosoUniversity.Data.Courses.Reads/"]
+COPY ["src/ContosoUniversity.SharedKernel/ContosoUniversity.SharedKernel.csproj", "src/ContosoUniversity.SharedKernel/"]
+COPY ["src/ContosoUniversity.Messaging.Contracts/ContosoUniversity.Messaging.Contracts.csproj", "src/ContosoUniversity.Messaging.Contracts/"]
 COPY ["src/ContosoUniversity.Data/ContosoUniversity.Data.csproj", "src/ContosoUniversity.Data/"]
+COPY ["src/Courses.Core/Courses.Core.csproj", "src/Courses.Core/"]
+COPY ["src/Students.Data.Reads/Students.Data.Reads.csproj", "src/Students.Data.Reads/"]
+COPY ["src/Students.Core/Students.Core.csproj", "src/Students.Core/"]
+COPY ["src/Students.Data.Writes/Students.Data.Writes.csproj", "src/Students.Data.Writes/"]
 COPY ["src/ContosoUniversity.Application/ContosoUniversity.Application.csproj", "src/ContosoUniversity.Application/"]
-COPY ["src/ContosoUniversity.Domain/ContosoUniversity.Domain.csproj", "src/ContosoUniversity.Domain/"]
-COPY ["src/ContosoUniversity.Data.Courses.Writes/ContosoUniversity.Data.Courses.Writes.csproj", "src/ContosoUniversity.Data.Courses.Writes/"]
-COPY ["src/ContosoUniversity.Data.Departments.Reads/ContosoUniversity.Data.Departments.Reads.csproj", "src/ContosoUniversity.Data.Departments.Reads/"]
-COPY ["src/ContosoUniversity.Data.Departments.Writes/ContosoUniversity.Data.Departments.Writes.csproj", "src/ContosoUniversity.Data.Departments.Writes/"]
-COPY ["src/ContosoUniversity.Data.Students.Reads/ContosoUniversity.Data.Students.Reads.csproj", "src/ContosoUniversity.Data.Students.Reads/"]
-COPY ["src/ContosoUniversity.Data.Students.Writes/ContosoUniversity.Data.Students.Writes.csproj", "src/ContosoUniversity.Data.Students.Writes/"]
+COPY ["src/Departments.Core/Departments.Core.csproj", "src/Departments.Core/"]
+COPY ["src/Departments.Data.Reads/Departments.Data.Reads.csproj", "src/Departments.Data.Reads/"]
+COPY ["src/Departments.Data.Writes/Departments.Data.Writes.csproj", "src/Departments.Data.Writes/"]
+COPY ["src/ContosoUniversity.ApiClients/ContosoUniversity.ApiClients.csproj", "src/ContosoUniversity.ApiClients/"]
 RUN dotnet restore "src/ContosoUniversity.Mvc/ContosoUniversity.Mvc.csproj"
 COPY . .
 WORKDIR "/src/src/ContosoUniversity.Mvc"
@@ -28,4 +31,5 @@ RUN dotnet publish "ContosoUniversity.Mvc.csproj" -c $BUILD_CONFIGURATION -o /ap
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY src/ContosoUniversity.Mvc/cert.pfx /https/
 ENTRYPOINT ["dotnet", "ContosoUniversity.Mvc.dll"]

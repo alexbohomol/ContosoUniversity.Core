@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Application.Contracts.Repositories.ReadOnly.Projections;
+using Application.ApiClients;
 
-using Domain.Student;
+using global::Students.Core.Domain;
 
 using Instructors;
 

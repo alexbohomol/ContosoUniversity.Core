@@ -4,10 +4,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Exceptions;
-
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+
+using SharedKernel.Exceptions;
 
 public class EntityNotFoundExceptionHandler : IExceptionHandler
 {

@@ -10,7 +10,7 @@ using Mvc;
 
 using TechTalk.SpecFlow;
 
-[Binding]
+// [Binding]
 public class TestHostHooks
 {
     private static IHost _host;

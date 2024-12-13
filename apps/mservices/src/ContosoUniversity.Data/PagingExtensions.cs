@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.ReadOnly.Paging;
-
 using Microsoft.EntityFrameworkCore;
+
+using SharedKernel.Paging;
 
 public static class PagingExtensions
 {

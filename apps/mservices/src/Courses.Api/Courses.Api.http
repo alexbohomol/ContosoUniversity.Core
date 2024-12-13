@@ -1,0 +1,45 @@
+@Courses.Api_HostAddress = http://localhost:5006
+@id = 8ebb5543-371a-4c5b-a72b-09bc9f615e36
+
+GET {{Courses.Api_HostAddress}}/api/courses/{{id}}/
+Accept: application/json
+
+###
+
+GET {{Courses.Api_HostAddress}}/api/courses/existsByCourseCode/1010/
+Accept: application/json
+
+###
+
+GET {{Courses.Api_HostAddress}}/api/courses/title?entityIds=f3e9966c-467b-4b99-90ca-a29bae85ca94&entityIds=42153736-0a08-49ef-84a1-7718189945ca
+Accept: application/json
+
+###
+
+POST {{Courses.Api_HostAddress}}/api/courses
+Content-Type: application/json
+
+{
+    "CourseCode": "1010",
+    "Title": "Computers",
+    "Credits": "5",
+    "DepartmentId": "dab7e678-e3e7-4471-8282-96fe52e5c16f"
+}
+
+###
+
+PUT {{Courses.Api_HostAddress}}/api/courses
+Content-Type: application/json
+
+{
+    "Id": "1fb6d2b5-d3a3-412d-b4d3-2b8d04ad9131",
+    "Title": "Computers 101",
+    "Credits": "2",
+    "DepartmentId": "dab7e678-e3e7-4471-8282-96fe52e5c16f"
+}
+
+###
+
+@deleteId = c402ea0c-aeca-4aea-ac41-f85180b5de63
+DELETE {{Courses.Api_HostAddress}}/api/courses/{{deleteId}}
+Accept: application/json

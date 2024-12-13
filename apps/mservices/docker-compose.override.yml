@@ -5,10 +5,22 @@ services:
       - ASPNETCORE_PORT=https://+:443;http://+:80
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_HTTPS_PORT=10001
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Test1234!
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/cert.pfx
       - SqlConnectionStringBuilder__DataSource=db,1433
+      - CoursesApiSettings__BaseUrl=http://courses-api
     ports:
       - "10001:443"
       - "10000:80"
+
+  courses-api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_PORT=http://+:80
+      - ASPNETCORE_URLS=http://+:80
+      - SqlConnectionStringBuilder__DataSource=db,1433
+    ports:
+      - "5006:80"
     volumes:
       - ~/.aspnet/https:/root/.aspnet/https:ro
       - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
