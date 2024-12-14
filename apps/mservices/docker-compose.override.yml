@@ -36,3 +36,15 @@ services:
     volumes:
       - ~/.aspnet/https:/root/.aspnet/https:ro
       - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+
+  students-api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_PORT=http://+:80
+      - ASPNETCORE_URLS=http://+:80
+      - SqlConnectionStringBuilder__DataSource=db,1433
+    ports:
+      - "5110:80"
+    volumes:
+      - ~/.aspnet/https:/root/.aspnet/https:ro
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro

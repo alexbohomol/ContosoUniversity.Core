@@ -43,6 +43,18 @@ services:
     networks:
       - cunetwork
 
+  students-api:
+    image: students-api
+    container_name: students-api
+    hostname: students-api
+    depends_on:
+      - "db"
+    build:
+      context: .
+      dockerfile: src/Students.Api/Dockerfile
+    networks:
+      - cunetwork
+
   db:
     image: mcr.microsoft.com/mssql/server
     container_name: cudb
