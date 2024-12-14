@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Messaging.Contracts.Commands;
+namespace Students.Core.Handlers.Commands;
 
 using System;
 using System.ComponentModel.DataAnnotations;

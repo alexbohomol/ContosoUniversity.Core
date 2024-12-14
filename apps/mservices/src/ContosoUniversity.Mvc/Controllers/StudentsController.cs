@@ -9,12 +9,11 @@ using Application.Students.Queries;
 
 using MediatR;
 
-using Messaging.Contracts.Commands;
-
 using Microsoft.AspNetCore.Mvc;
 
 using SharedKernel.Paging;
 
+using Students.Core.Handlers.Commands;
 using Students.Core.Projections;
 
 using ViewModels.Students;

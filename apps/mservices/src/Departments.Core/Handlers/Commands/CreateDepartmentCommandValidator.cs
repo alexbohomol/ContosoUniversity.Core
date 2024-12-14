@@ -1,14 +1,10 @@
-using IInstructorsRoRepository = Departments.Core.IInstructorsRoRepository;
-
-namespace ContosoUniversity.Application.Departments.Validators;
+namespace Departments.Core.Handlers.Commands;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 using FluentValidation;
-
-using Messaging.Contracts.Commands;
 
 public class CreateDepartmentCommandValidator : AbstractValidator<CreateDepartmentCommand>
 {

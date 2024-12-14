@@ -1,4 +1,4 @@
-namespace Courses.Core.Handlers;
+namespace Courses.Core.Handlers.Commands;
 
 using MediatR;
 

@@ -1,12 +1,32 @@
-using Instructor = Departments.Core.Domain.Instructor;
-using OfficeAssignment = Departments.Core.Domain.OfficeAssignment;
+namespace Departments.Core.Handlers.Commands;
 
-namespace ContosoUniversity.Application.Instructors.Validators;
+using System;
+
+using Domain;
 
 using FluentValidation;
 
+/// <summary>
+///     https://github.com/FluentValidation/FluentValidation/issues/184#issuecomment-197952324
+/// </summary>
 public static class ValidationRules
 {
+    // Departments
+
+    public static void SatisfiesNameRequirements<T>(this IRuleBuilder<T, string> rule)
+    {
+        rule.Length(Department.NameMinLength, Department.NameMaxLength);
+    }
+
+    public static void Required<T>(this IRuleBuilder<T, Guid> rule)
+    {
+        rule
+            .NotEmpty()
+            .WithMessage("Please select an existing entity.");
+    }
+
+    // Instructors
+
     public static void SatisfiesLastNameRequirements<T>(this IRuleBuilder<T, string> rule)
     {
         rule.MinimumLength(Instructor.LastNameMinLength)

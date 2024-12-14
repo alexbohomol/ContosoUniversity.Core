@@ -1,8 +1,8 @@
 namespace ContosoUniversity.Mvc.Validators;
 
-using Application.Students.Validators;
-
 using FluentValidation;
+
+using Students.Core.Handlers.Commands;
 
 using ViewModels.Students;
 

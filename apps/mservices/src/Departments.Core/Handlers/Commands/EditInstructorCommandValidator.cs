@@ -1,14 +1,10 @@
-using IInstructorsRoRepository = Departments.Core.IInstructorsRoRepository;
-
-namespace ContosoUniversity.Application.Instructors.Validators;
+namespace Departments.Core.Handlers.Commands;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 using FluentValidation;
-
-using Messaging.Contracts.Commands;
 
 public class EditInstructorCommandValidator : AbstractValidator<EditInstructorCommand>
 {

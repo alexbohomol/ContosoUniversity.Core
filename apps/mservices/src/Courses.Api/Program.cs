@@ -1,7 +1,7 @@
 using ContosoUniversity.Data;
 
 using Courses.Core;
-using Courses.Core.Handlers;
+using Courses.Core.Handlers.Commands;
 using Courses.Data.Reads;
 using Courses.Data.Writes;
 

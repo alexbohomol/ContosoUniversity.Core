@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Messaging.Contracts.Commands;
+namespace Departments.Core.Handlers.Commands;
 
 using System;
 

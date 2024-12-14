@@ -1,14 +1,10 @@
-using IStudentsRoRepository = Students.Core.IStudentsRoRepository;
-
-namespace ContosoUniversity.Application.Students.Validators;
+namespace Students.Core.Handlers.Commands;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 using FluentValidation;
-
-using Messaging.Contracts.Commands;
 
 internal class EditStudentCommandValidator : AbstractValidator<EditStudentCommand>
 {
