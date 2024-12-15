@@ -1,3 +1,4 @@
+using DeleteDepartmentCommand = Departments.Core.Handlers.Commands.DeleteDepartmentCommand;
 using IDepartmentsRwRepository = Departments.Core.IDepartmentsRwRepository;
 
 namespace ContosoUniversity.Application.Departments.Commands;
@@ -11,7 +12,6 @@ using ApiClients;
 
 using MediatR;
 
-using Messaging.Contracts.Commands;
 using Messaging.Contracts.Notifications;
 
 internal class DeleteDepartmentCommandHandler(

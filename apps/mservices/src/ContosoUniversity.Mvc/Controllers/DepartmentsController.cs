@@ -9,11 +9,10 @@ using System.Threading.Tasks;
 using Application.Departments.Queries;
 
 using Departments.Core;
+using Departments.Core.Handlers.Commands;
 using Departments.Core.Projections;
 
 using MediatR;
-
-using Messaging.Contracts.Commands;
 
 using Microsoft.AspNetCore.Mvc;
 

@@ -6,8 +6,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ContosoUniversity.Messaging.Contracts.Commands;
-
 using MediatR;
 
 internal class EditStudentCommandHandler(
