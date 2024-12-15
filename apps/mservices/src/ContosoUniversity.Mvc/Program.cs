@@ -77,14 +77,10 @@ internal class Startup(IWebHostEnvironment env)
         }
         services.AddValidatorsFromAssemblyContaining<Program>();
         services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
-        services.AddValidatorsFromAssemblyContaining<Departments.Core.IAssemblyMarker>();
-        services.AddValidatorsFromAssemblyContaining<Students.Core.IAssemblyMarker>();
 
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(IAssemblyMarker).Assembly);
-            cfg.RegisterServicesFromAssembly(typeof(Departments.Core.IAssemblyMarker).Assembly);
-            cfg.RegisterServicesFromAssembly(typeof(Students.Core.IAssemblyMarker).Assembly);
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
 

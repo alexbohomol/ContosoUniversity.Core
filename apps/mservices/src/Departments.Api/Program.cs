@@ -1,5 +1,6 @@
 using ContosoUniversity.Data;
 
+using Departments.Core;
 using Departments.Data.Reads;
 using Departments.Data.Writes;
 
@@ -12,6 +13,12 @@ builder.Services.AddHealthChecks();
 builder.Services.AddDataInfrastructure();
 builder.Services.AddDepartmentsSchemaReads();
 builder.Services.AddDepartmentsSchemaWrites();
+
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(IAssemblyMarker).Assembly);
+    // cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+});
 
 var app = builder.Build();
 

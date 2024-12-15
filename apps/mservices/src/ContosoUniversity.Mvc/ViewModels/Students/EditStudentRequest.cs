@@ -3,7 +3,7 @@ namespace ContosoUniversity.Mvc.ViewModels.Students;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-using global::Students.Core.Projections;
+using Application.ApiClients;
 
 public record EditStudentRequest
 {

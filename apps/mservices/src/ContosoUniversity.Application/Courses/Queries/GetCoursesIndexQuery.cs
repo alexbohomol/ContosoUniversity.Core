@@ -1,5 +1,3 @@
-using IDepartmentsRoRepository = Departments.Core.IDepartmentsRoRepository;
-
 namespace ContosoUniversity.Application.Courses.Queries;
 
 using System;
@@ -19,7 +17,7 @@ public record GetCoursesIndexQueryResult(
 
 internal class GetCoursesIndexQueryHandler(
     ICoursesApiClient coursesApiClient,
-    IDepartmentsRoRepository departmentsRepository)
+    IDepartmentsApiClient departmentsApiClient)
     : IRequestHandler<GetCoursesIndexQuery, GetCoursesIndexQueryResult>
 {
     public async Task<GetCoursesIndexQueryResult> Handle(
@@ -30,8 +28,7 @@ internal class GetCoursesIndexQueryHandler(
 
         Course[] courses = await coursesApiClient.GetAll(cancellationToken);
 
-        Dictionary<Guid, string> departmentNames = await departmentsRepository
-            .GetDepartmentNamesReference(cancellationToken);
+        Dictionary<Guid, string> departmentNames = await departmentsApiClient.GetDepartmentNamesReference(cancellationToken);
 
         CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);
 

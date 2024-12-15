@@ -6,11 +6,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Application.ApiClients;
 using Application.Departments.Queries;
 
-using Departments.Core;
 using Departments.Core.Handlers.Commands;
-using Departments.Core.Projections;
 
 using MediatR;
 
@@ -46,11 +45,10 @@ public class DepartmentsController(IMediator mediator) : Controller
     }
 
     public async Task<IActionResult> Create(
-        [FromServices] IInstructorsRoRepository repository,
+        [FromServices] IInstructorsApiClient client,
         CancellationToken cancellationToken)
     {
-        Dictionary<Guid, string> instructorNames = await repository
-            .GetInstructorNamesReference(cancellationToken);
+        Dictionary<Guid, string> instructorNames = await client.GetInstructorNamesReference(cancellationToken);
 
         return View(new CreateDepartmentForm(instructorNames));
     }
@@ -59,13 +57,12 @@ public class DepartmentsController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
         CreateDepartmentRequest request,
-        [FromServices] IInstructorsRoRepository repository,
+        [FromServices] IInstructorsApiClient client,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
-            Dictionary<Guid, string> instructorNames = await repository
-                .GetInstructorNamesReference(cancellationToken);
+            Dictionary<Guid, string> instructorNames = await client.GetInstructorNamesReference(cancellationToken);
 
             return View(new CreateDepartmentForm(instructorNames));
         }
@@ -104,13 +101,12 @@ public class DepartmentsController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(
         EditDepartmentRequest request,
-        [FromServices] IInstructorsRoRepository repository,
+        [FromServices] IInstructorsApiClient client,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
-            Dictionary<Guid, string> instructorNames = await repository
-                .GetInstructorNamesReference(cancellationToken);
+            Dictionary<Guid, string> instructorNames = await client.GetInstructorNamesReference(cancellationToken);
 
             return View(new EditDepartmentForm(instructorNames)
             {

@@ -10,16 +10,11 @@ using Application;
 using Application.ApiClients;
 using Application.Instructors.Queries;
 
-using Departments.Core;
 using Departments.Core.Handlers.Commands;
-using Departments.Core.Projections;
 
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
-
-using Students.Core;
-using Students.Core.Projections;
 
 using ViewModels;
 using ViewModels.Instructors;
@@ -29,13 +24,13 @@ public class InstructorsController(IMediator mediator) : Controller
     public async Task<IActionResult> Index(
         Guid? id,
         Guid? courseExternalId,
-        [FromServices] IInstructorsRoRepository instructorsRepository,
-        [FromServices] IDepartmentsRoRepository departmentsRepository,
+        [FromServices] IInstructorsApiClient instructorsApiClient,
+        [FromServices] IDepartmentsApiClient departmentsApiClient,
         [FromServices] ICoursesApiClient coursesApiClient,
-        [FromServices] IStudentsRoRepository studentsRepository,
+        [FromServices] IStudentsApiClient studentsApiClient,
         CancellationToken cancellationToken)
     {
-        Instructor[] instructors = (await instructorsRepository.GetAll(cancellationToken))
+        Instructor[] instructors = (await instructorsApiClient.GetAll(cancellationToken))
             .OrderBy(x => x.LastName)
             .ToArray();
 
@@ -70,7 +65,7 @@ public class InstructorsController(IMediator mediator) : Controller
             InstructorListItemViewModel instructor = viewModel.Instructors.Single(i => i.Id == id.Value);
             HashSet<Guid> instructorCourseIds = instructor.AssignedCourseIds.ToHashSet();
             Dictionary<Guid, string> departmentNames =
-                await departmentsRepository.GetDepartmentNamesReference(cancellationToken);
+                await departmentsApiClient.GetDepartmentNamesReference(cancellationToken);
 
             CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);
 
@@ -90,7 +85,7 @@ public class InstructorsController(IMediator mediator) : Controller
 
         if (courseExternalId is not null)
         {
-            Student[] students = await studentsRepository.GetStudentsEnrolledForCourses(
+            Student[] students = await studentsApiClient.GetStudentsEnrolledForCourses(
                 new[]
                 {
                     courseExternalId.Value

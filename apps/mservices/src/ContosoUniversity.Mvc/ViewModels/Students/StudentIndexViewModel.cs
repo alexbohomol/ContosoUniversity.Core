@@ -3,9 +3,8 @@ namespace ContosoUniversity.Mvc.ViewModels.Students;
 using System;
 using System.Linq;
 
+using Application.ApiClients;
 using Application.Students.Queries;
-
-using global::Students.Core.Projections;
 
 using SharedKernel.Paging;
 

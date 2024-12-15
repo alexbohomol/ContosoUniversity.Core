@@ -1,6 +1,3 @@
-using Department = Departments.Core.Projections.Department;
-using IDepartmentsRoRepository = Departments.Core.IDepartmentsRoRepository;
-
 namespace ContosoUniversity.Application.Courses.Queries;
 
 using System;
@@ -19,7 +16,7 @@ public record GetCourseDetailsQueryResult(Course Course, Department Department);
 
 internal class GetCourseDetailsQueryHandler(
     ICoursesApiClient coursesApiClient,
-    IDepartmentsRoRepository departmentsRepository)
+    IDepartmentsApiClient departmentsApiClient)
     : IRequestHandler<GetCourseDetailsQuery, GetCourseDetailsQueryResult>
 {
     public async Task<GetCourseDetailsQueryResult> Handle(
@@ -34,7 +31,7 @@ internal class GetCourseDetailsQueryHandler(
             throw new EntityNotFoundException(nameof(course), request.Id);
         }
 
-        Department department = await departmentsRepository.GetById(course.DepartmentId, cancellationToken);
+        Department department = await departmentsApiClient.GetById(course.DepartmentId, cancellationToken);
         if (department is null)
         {
             throw new EntityNotFoundException(nameof(department), course.DepartmentId);

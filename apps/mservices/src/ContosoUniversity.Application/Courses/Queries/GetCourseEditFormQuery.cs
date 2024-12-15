@@ -1,5 +1,3 @@
-using IDepartmentsRoRepository = Departments.Core.IDepartmentsRoRepository;
-
 namespace ContosoUniversity.Application.Courses.Queries;
 
 using System;
@@ -19,7 +17,7 @@ public record GetCourseEditFormQueryResult(Course Course, Dictionary<Guid, strin
 
 internal class GetCourseEditFormQueryHandler(
     ICoursesApiClient coursesApiClient,
-    IDepartmentsRoRepository departmentsRepository)
+    IDepartmentsApiClient departmentsApiClient)
     : IRequestHandler<GetCourseEditFormQuery, GetCourseEditFormQueryResult>
 {
     public async Task<GetCourseEditFormQueryResult> Handle(
@@ -34,8 +32,7 @@ internal class GetCourseEditFormQueryHandler(
             throw new EntityNotFoundException(nameof(course), request.Id);
         }
 
-        Dictionary<Guid, string> departments =
-            await departmentsRepository.GetDepartmentNamesReference(cancellationToken);
+        Dictionary<Guid, string> departments = await departmentsApiClient.GetDepartmentNamesReference(cancellationToken);
 
         CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(
             new[] { course },

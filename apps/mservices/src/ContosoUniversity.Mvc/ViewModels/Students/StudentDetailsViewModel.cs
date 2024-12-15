@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-using global::Students.Core.Projections;
+using Application.ApiClients;
 
 public class StudentDetailsViewModel
 {
