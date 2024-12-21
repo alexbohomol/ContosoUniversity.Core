@@ -89,6 +89,8 @@ internal class Startup(IWebHostEnvironment env)
         services.AddProblemDetails();
 
         services.AddCoursesApiClient();
+        services.AddDepartmentsApiClients();
+        services.AddStudentsApiClient();
     }
 
     public void Configure(IApplicationBuilder app)
