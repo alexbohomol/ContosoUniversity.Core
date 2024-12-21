@@ -2,7 +2,7 @@ namespace ContosoUniversity.Mvc.ViewModels.Departments;
 
 using System;
 
-using global::Departments.Core.Projections;
+using Application.ApiClients;
 
 public record EditDepartmentRequest
 {

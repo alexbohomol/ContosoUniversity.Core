@@ -6,9 +6,9 @@ using System.Linq;
 
 using Application.ApiClients;
 
-using global::Students.Core.Domain;
-
 using Instructors;
+
+using Grade = Application.ApiClients.Grade;
 
 public static class DomainExtensions
 {

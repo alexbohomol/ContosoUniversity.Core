@@ -9,14 +9,13 @@ using System.Threading.Tasks;
 using Application.ApiClients;
 using Application.Courses.Queries;
 
-using Departments.Core;
-using Departments.Core.Projections;
-
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
 
 using ViewModels.Courses;
+
+using Department = Application.ApiClients.Department;
 
 public class CoursesController(IMediator mediator) : Controller
 {
@@ -53,10 +52,10 @@ public class CoursesController(IMediator mediator) : Controller
     }
 
     public async Task<IActionResult> Create(
-        [FromServices] IDepartmentsRoRepository repository,
+        [FromServices] IDepartmentsApiClient client,
         CancellationToken cancellationToken)
     {
-        var departmentNames = await repository.GetDepartmentNamesReference(cancellationToken);
+        var departmentNames = await client.GetDepartmentNamesReference(cancellationToken);
         return View(new CreateCourseForm(departmentNames));
     }
 
@@ -65,12 +64,12 @@ public class CoursesController(IMediator mediator) : Controller
     public async Task<IActionResult> Create(
         CreateCourseRequest request,
         [FromServices] ICoursesApiClient coursesApiClient,
-        [FromServices] IDepartmentsRoRepository repository,
+        [FromServices] IDepartmentsApiClient departmentsApiClient,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
-            var departmentNames = await repository.GetDepartmentNamesReference(cancellationToken);
+            var departmentNames = await departmentsApiClient.GetDepartmentNamesReference(cancellationToken);
             return View(new CreateCourseForm(departmentNames)
             {
                 Request = request

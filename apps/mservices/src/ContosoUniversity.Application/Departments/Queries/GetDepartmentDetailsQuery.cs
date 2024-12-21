@@ -1,11 +1,10 @@
-using Department = Departments.Core.Projections.Department;
-using IDepartmentsRoRepository = Departments.Core.IDepartmentsRoRepository;
-
 namespace ContosoUniversity.Application.Departments.Queries;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+
+using ApiClients;
 
 using MediatR;
 
@@ -13,7 +12,7 @@ using SharedKernel.Exceptions;
 
 public record GetDepartmentDetailsQuery(Guid Id) : IRequest<Department>;
 
-internal class GetDepartmentDetailsQueryHandler(IDepartmentsRoRepository departmentsRepository)
+internal class GetDepartmentDetailsQueryHandler(IDepartmentsApiClient departmentsApiClient)
     : IRequestHandler<GetDepartmentDetailsQuery, Department>
 {
     public async Task<Department> Handle(
@@ -22,7 +21,7 @@ internal class GetDepartmentDetailsQueryHandler(IDepartmentsRoRepository departm
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        Department department = await departmentsRepository.GetById(request.Id, cancellationToken);
+        Department department = await departmentsApiClient.GetById(request.Id, cancellationToken);
 
         return department ?? throw new EntityNotFoundException(nameof(department), request.Id);
     }

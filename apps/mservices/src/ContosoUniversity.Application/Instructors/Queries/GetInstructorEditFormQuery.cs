@@ -1,6 +1,3 @@
-using IInstructorsRoRepository = Departments.Core.IInstructorsRoRepository;
-using Instructor = Departments.Core.Projections.Instructor;
-
 namespace ContosoUniversity.Application.Instructors.Queries;
 
 using System;
@@ -18,7 +15,7 @@ public record GetInstructorEditFormQuery(Guid Id) : IRequest<GetInstructorEditFo
 public record GetInstructorEditFormQueryResult(Instructor Instructor, Course[] Courses);
 
 internal class GetInstructorEditFormQueryHandler(
-    IInstructorsRoRepository instructorsRepository,
+    IInstructorsApiClient instructorsApiClient,
     ICoursesApiClient coursesApiClient)
     : IRequestHandler<GetInstructorEditFormQuery, GetInstructorEditFormQueryResult>
 {
@@ -28,7 +25,7 @@ internal class GetInstructorEditFormQueryHandler(
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        Instructor instructor = await instructorsRepository.GetById(request.Id, cancellationToken);
+        Instructor instructor = await instructorsApiClient.GetById(request.Id, cancellationToken);
         if (instructor is null)
         {
             throw new EntityNotFoundException(nameof(instructor), request.Id);

@@ -5,17 +5,16 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Application.ApiClients;
 using Application.Students.Queries;
 
 using MediatR;
-
-using Messaging.Contracts.Commands;
 
 using Microsoft.AspNetCore.Mvc;
 
 using SharedKernel.Paging;
 
-using Students.Core.Projections;
+using Students.Core.Handlers.Commands;
 
 using ViewModels.Students;
 

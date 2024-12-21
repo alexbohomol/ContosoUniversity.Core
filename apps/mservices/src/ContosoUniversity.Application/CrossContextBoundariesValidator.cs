@@ -1,6 +1,3 @@
-using Enrollment = Students.Core.Domain.Enrollment;
-using Instructor = Departments.Core.Projections.Instructor;
-
 namespace ContosoUniversity.Application;
 
 using System;

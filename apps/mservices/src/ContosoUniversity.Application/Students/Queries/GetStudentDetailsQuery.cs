@@ -1,6 +1,3 @@
-using IStudentsRoRepository = Students.Core.IStudentsRoRepository;
-using Student = Students.Core.Projections.Student;
-
 namespace ContosoUniversity.Application.Students.Queries;
 
 using System;
@@ -22,7 +19,7 @@ public record GetStudentDetailsQueryResult(
     Dictionary<Guid, string> CourseTitles);
 
 internal class GetStudentDetailsQueryHandler(
-    IStudentsRoRepository studentsRepository,
+    IStudentsApiClient studentsApiClient,
     ICoursesApiClient coursesApiClient)
     : IRequestHandler<GetStudentDetailsQuery, GetStudentDetailsQueryResult>
 {
@@ -32,7 +29,7 @@ internal class GetStudentDetailsQueryHandler(
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        Student student = await studentsRepository.GetById(request.Id, cancellationToken);
+        Student student = await studentsApiClient.GetById(request.Id, cancellationToken);
         if (student is null)
         {
             throw new EntityNotFoundException(nameof(student), request.Id);
