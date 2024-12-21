@@ -44,7 +44,7 @@ public record Student(
     DateTime EnrollmentDate,
     Guid ExternalId)
 {
-    public IList<Enrollment> Enrollments { get; }
+    public IList<Enrollment> Enrollments { get; set; }
     public string FullName => $"{FirstName}, {LastName}";
 }
 

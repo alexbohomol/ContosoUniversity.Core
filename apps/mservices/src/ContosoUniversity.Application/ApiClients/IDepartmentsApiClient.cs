@@ -10,7 +10,7 @@ public interface IDepartmentsApiClient
     // Read-Only
 
     Task<Dictionary<Guid, string>> GetDepartmentNamesReference(CancellationToken cancellationToken);
-    Task<Department> GetById(Guid entityId, CancellationToken cancellationToken);
+    Task<Department> GetById(Guid externalId, CancellationToken cancellationToken);
     Task<Department[]> GetAll(CancellationToken cancellationToken);
 
     // Read-Write

@@ -6,20 +6,47 @@ using Application.ApiClients;
 
 internal class DepartmentsApiClient(HttpClient client) : IDepartmentsApiClient
 {
+    private const string ApiRoot = "api/departments";
+
     // Read-Only
 
     public async Task<Dictionary<Guid, string>> GetDepartmentNamesReference(CancellationToken cancellationToken)
-        => await client.GetFromJsonAsync<Dictionary<Guid, string>>("/api/departments/names", cancellationToken);
+        => await client.GetFromJsonAsync<Dictionary<Guid, string>>($"{ApiRoot}/names", cancellationToken);
 
-    public Task<Department> GetById(Guid entityId, CancellationToken cancellationToken)
+    public async Task<Department> GetById(Guid externalId, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var dto = await client.GetFromJsonAsync<DepartmentDto>($"{ApiRoot}/{externalId}", cancellationToken);
+
+        return dto.ToDomain();
     }
 
-    public Task<Department[]> GetAll(CancellationToken cancellationToken)
+    public async Task<Department[]> GetAll(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var dtos = await client.GetFromJsonAsync<DepartmentDto[]>(ApiRoot, cancellationToken);
+
+        return dtos.Select(x => x.ToDomain()).ToArray();
     }
 
     // Read-Write
+}
+
+file record DepartmentDto(
+    string Name,
+    decimal Budget,
+    DateTime StartDate,
+    Guid? AdministratorId,
+    string AdministratorLastName,
+    string AdministratorFirstName,
+    Guid ExternalId);
+
+static file class Extensions
+{
+    internal static Department ToDomain(this DepartmentDto dto) => new(
+        dto.Name,
+        dto.Budget,
+        dto.StartDate,
+        dto.AdministratorId,
+        dto.AdministratorLastName,
+        dto.AdministratorFirstName,
+        dto.ExternalId);
 }
