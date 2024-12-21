@@ -11,9 +11,4 @@ public record Department(
     Guid? AdministratorId,
     string AdministratorLastName,
     string AdministratorFirstName,
-    Guid ExternalId) : IIdentifiable<Guid>
-{
-    public string AdministratorFullName => AdministratorId.HasValue
-        ? $"{AdministratorLastName}, {AdministratorFirstName}"
-        : string.Empty;
-}
+    Guid ExternalId) : IIdentifiable<Guid>;

@@ -1,6 +1,31 @@
 @Departments.Api_HostAddress = http://localhost:5079
+@Departments.Api = {{Departments.Api_HostAddress}}/api/departments
+@Instructors.Api = {{Departments.Api_HostAddress}}/api/instructors
 
-GET {{Departments.Api_HostAddress}}/weatherforecast/
+GET {{Departments.Api}}/names
 Accept: application/json
 
 ###
+
+GET {{Departments.Api}}/dab7e678-e3e7-4471-8282-96fe52e5c16f
+Accept: application/json
+
+###
+
+GET {{Departments.Api}}
+Accept: application/json
+
+###
+
+GET {{Instructors.Api}}/names
+Accept: application/json
+
+###
+
+GET {{Instructors.Api}}/43f2feeb-5aae-4a57-b38c-b2e1c1a7b294
+Accept: application/json
+
+###
+
+GET {{Instructors.Api}}
+Accept: application/json
