@@ -6,11 +6,6 @@ using ApiClients;
 
 using Application;
 
-using Data;
-
-using Departments.Data.Reads;
-using Departments.Data.Writes;
-
 using FluentValidation;
 using FluentValidation.AspNetCore;
 
@@ -25,9 +20,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Middleware;
-
-using Students.Data.Reads;
-using Students.Data.Writes;
 
 public class Program
 {
@@ -61,12 +53,6 @@ internal class Startup(IWebHostEnvironment env)
         });
 
         services.AddHealthChecks();
-
-        services.AddDataInfrastructure();
-        services.AddStudentsSchemaReads();
-        services.AddStudentsSchemaWrites();
-        services.AddDepartmentsSchemaReads();
-        services.AddDepartmentsSchemaWrites();
 
         services.AddControllersWithViews();
 
