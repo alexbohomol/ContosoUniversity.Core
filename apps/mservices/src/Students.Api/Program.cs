@@ -1,8 +1,10 @@
 using ContosoUniversity.Data;
+using ContosoUniversity.SharedKernel.Paging;
 
 using HealthChecks.UI.Client;
 
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Mvc;
 
 using Students.Core;
 using Students.Data.Reads;
@@ -37,6 +39,38 @@ app.UseHealthChecks("/health/liveness", checkOptions);
 
 //Read-Only
 
+app.MapGet("/api/students/{externalId:guid}", async (
+        Guid externalId,
+        [FromServices] IStudentsRoRepository repository,
+        CancellationToken cancellationToken)
+    => await repository.GetById(externalId, cancellationToken));
+
+app.MapGet("/api/students/enrolled/groups", async (
+        [FromServices] IStudentsRoRepository repository,
+        CancellationToken cancellationToken)
+    => await repository.GetEnrollmentDateGroups(cancellationToken));
+
+app.MapGet("/api/students/enrolled", async (
+        [FromQuery] Guid[] courseIds,
+        [FromServices] IStudentsRoRepository repository,
+        CancellationToken cancellationToken)
+    => await repository.GetStudentsEnrolledForCourses(courseIds, cancellationToken));
+
+app.MapPost("/api/students/search", async (
+        [FromBody] SearchModel searchModel,
+        [FromServices] IStudentsRoRepository repository,
+        CancellationToken cancellationToken)
+    => await repository.Search(
+        searchModel.SearchRequest,
+        searchModel.OrderRequest,
+        searchModel.PageRequest,
+        cancellationToken));
+
 //Read-Write
 
 app.Run();
+
+internal record SearchModel(
+    SearchRequest SearchRequest,
+    OrderRequest OrderRequest,
+    PageRequest PageRequest);
