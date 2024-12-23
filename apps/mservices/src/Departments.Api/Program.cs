@@ -1,5 +1,6 @@
 using ContosoUniversity.Data;
 
+using Departments.Api.Models;
 using Departments.Core;
 using Departments.Core.Handlers.Commands;
 using Departments.Data.Reads;
@@ -162,33 +163,4 @@ app.MapDelete("/api/instructors/{externalId:guid}", async (
         cancellationToken);
 });
 
-app.Run();
-
-file record CreateDepartmentRequest(
-    string Name,
-    decimal Budget,
-    DateTime StartDate,
-    Guid? AdministratorId);
-
-file record EditDepartmentRequest(
-    string Name,
-    decimal Budget,
-    DateTime StartDate,
-    Guid? AdministratorId,
-    Guid ExternalId,
-    byte[] RowVersion);
-
-public record CreateInstructorRequest(
-    string LastName,
-    string FirstName,
-    DateTime HireDate,
-    Guid[] SelectedCourses,
-    string Location);
-
-public record EditInstructorRequest(
-    Guid ExternalId,
-    string LastName,
-    string FirstName,
-    DateTime HireDate,
-    Guid[] SelectedCourses,
-    string Location);
+await app.RunAsync();

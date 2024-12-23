@@ -1,5 +1,4 @@
 using ContosoUniversity.Data;
-using ContosoUniversity.SharedKernel.Paging;
 
 using HealthChecks.UI.Client;
 
@@ -8,6 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 
+using Students.Api.Models;
 using Students.Core;
 using Students.Core.Handlers.Commands;
 using Students.Data.Reads;
@@ -111,20 +111,4 @@ app.MapDelete("/api/students/{externalId:guid}", async (
         cancellationToken);
 });
 
-app.Run();
-
-file record SearchModel(
-    SearchRequest SearchRequest,
-    OrderRequest OrderRequest,
-    PageRequest PageRequest);
-
-file record CreateStudentRequest(
-    DateTime EnrollmentDate,
-    string LastName,
-    string FirstName);
-
-file record EditStudentRequest(
-    DateTime EnrollmentDate,
-    string LastName,
-    string FirstName,
-    Guid ExternalId);
+await app.RunAsync();
