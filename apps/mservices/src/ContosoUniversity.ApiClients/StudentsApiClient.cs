@@ -91,7 +91,7 @@ static file class Extensions
     private static Enrollment ToDomain(this EnrollmentDto dto) => new(
         dto.StudentId,
         dto.CourseId,
-        (Grade)dto.Grade);
+        dto.Grade.HasValue ? (Grade?)dto.Grade.Value : null);
 
     internal static EnrollmentDateGroup ToDomain(this EnrollmentDateGroupDto dto) => new(
         dto.EnrollmentDate,
