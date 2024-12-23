@@ -3,10 +3,13 @@ using ContosoUniversity.SharedKernel.Paging;
 
 using HealthChecks.UI.Client;
 
+using MediatR;
+
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 
 using Students.Core;
+using Students.Core.Handlers.Commands;
 using Students.Data.Reads;
 using Students.Data.Writes;
 
@@ -68,9 +71,60 @@ app.MapPost("/api/students/search", async (
 
 //Read-Write
 
+app.MapPost("/api/students", async (
+    [FromBody] CreateStudentRequest request,
+    [FromServices] IMediator mediator,
+    CancellationToken cancellationToken) =>
+{
+    await mediator.Send(
+        new CreateStudentCommand(
+            request.EnrollmentDate,
+            request.LastName,
+            request.FirstName),
+        cancellationToken);
+});
+
+app.MapPut("/api/students/{externalId:guid}", async (
+    Guid externalId,
+    [FromBody] EditStudentRequest request,
+    [FromServices] IMediator mediator,
+    CancellationToken cancellationToken) =>
+{
+    await mediator.Send(
+        new EditStudentCommand
+        {
+            EnrollmentDate = request.EnrollmentDate,
+            ExternalId = externalId,
+            FirstName = request.FirstName,
+            LastName = request.LastName
+        },
+        cancellationToken);
+});
+
+app.MapDelete("/api/students/{externalId:guid}", async (
+    Guid externalId,
+    [FromServices] IMediator mediator,
+    CancellationToken cancellationToken) =>
+{
+    await mediator.Send(
+        new DeleteStudentCommand(externalId),
+        cancellationToken);
+});
+
 app.Run();
 
-internal record SearchModel(
+file record SearchModel(
     SearchRequest SearchRequest,
     OrderRequest OrderRequest,
     PageRequest PageRequest);
+
+file record CreateStudentRequest(
+    DateTime EnrollmentDate,
+    string LastName,
+    string FirstName);
+
+file record EditStudentRequest(
+    DateTime EnrollmentDate,
+    string LastName,
+    string FirstName,
+    Guid ExternalId);

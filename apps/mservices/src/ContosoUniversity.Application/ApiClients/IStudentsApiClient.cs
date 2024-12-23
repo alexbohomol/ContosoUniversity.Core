@@ -9,6 +9,8 @@ using SharedKernel.Paging;
 
 public interface IStudentsApiClient
 {
+    // Read-Only
+
     Task<Student[]> GetStudentsEnrolledForCourses(
         Guid[] courseIds,
         CancellationToken cancellationToken);
@@ -22,6 +24,12 @@ public interface IStudentsApiClient
         CancellationToken cancellationToken);
 
     Task<Student> GetById(Guid externalId, CancellationToken cancellationToken);
+
+    // Read-Write
+
+    Task Create(StudentCreateModel model, CancellationToken cancellationToken);
+    Task Update(StudentEditModel model, CancellationToken cancellationToken);
+    Task Delete(StudentDeleteModel model, CancellationToken cancellationToken);
 }
 
 public enum Grade
@@ -49,3 +57,17 @@ public record Student(
 }
 
 public record EnrollmentDateGroup(DateTime EnrollmentDate, int StudentCount);
+
+
+public record StudentCreateModel(
+    DateTime EnrollmentDate,
+    string LastName,
+    string FirstName);
+
+public record StudentEditModel(
+    DateTime EnrollmentDate,
+    string LastName,
+    string FirstName,
+    Guid ExternalId);
+
+public record StudentDeleteModel(Guid Id);

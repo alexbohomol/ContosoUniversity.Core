@@ -10,6 +10,8 @@ internal class StudentsApiClient(HttpClient client) : IStudentsApiClient
 {
     private const string ApiRoot = "api/students";
 
+    // Read-Only
+
     public async Task<Student[]> GetStudentsEnrolledForCourses(Guid[] courseIds, CancellationToken cancellationToken)
     {
         var queryString = string.Join("&", courseIds.Select(x => $"courseIds={x}"));
@@ -52,6 +54,17 @@ internal class StudentsApiClient(HttpClient client) : IStudentsApiClient
 
         return dto.ToDomain();
     }
+
+    // Read-Write
+
+    public async Task Create(StudentCreateModel model, CancellationToken cancellationToken)
+        => await client.PostAsJsonAsync(ApiRoot, model, cancellationToken);
+
+    public async Task Update(StudentEditModel model, CancellationToken cancellationToken)
+        => await client.PutAsJsonAsync($"{ApiRoot}/{model.ExternalId}", model, cancellationToken);
+
+    public async Task Delete(StudentDeleteModel model, CancellationToken cancellationToken)
+        => await client.DeleteAsync($"{ApiRoot}/{model.Id}", cancellationToken);
 }
 
 file enum GradeDto

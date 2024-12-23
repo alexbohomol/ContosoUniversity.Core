@@ -28,6 +28,15 @@ internal class InstructorsApiClient(HttpClient client) : IInstructorsApiClient
     }
 
     // Read-Write
+
+    public async Task Create(InstructorCreateModel model, CancellationToken cancellationToken)
+        => await client.PostAsJsonAsync(ApiRoot, model, cancellationToken);
+
+    public async Task Update(InstructorEditModel model, CancellationToken cancellationToken)
+        => await client.PutAsJsonAsync($"{ApiRoot}/{model.ExternalId}", model, cancellationToken);
+
+    public async Task Delete(InstructorDeleteModel model, CancellationToken cancellationToken)
+        => await client.DeleteAsync($"{ApiRoot}/{model.Id}", cancellationToken);
 }
 
 file record InstructorDto(

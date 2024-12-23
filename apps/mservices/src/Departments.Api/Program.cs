@@ -1,10 +1,13 @@
 using ContosoUniversity.Data;
 
 using Departments.Core;
+using Departments.Core.Handlers.Commands;
 using Departments.Data.Reads;
 using Departments.Data.Writes;
 
 using HealthChecks.UI.Client;
+
+using MediatR;
 
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
@@ -56,6 +59,47 @@ app.MapGet("/api/departments", async (
         CancellationToken cancellationToken)
     => await repository.GetAll(cancellationToken));
 
+app.MapPost("/api/departments", async (
+    [FromBody] CreateDepartmentRequest request,
+    [FromServices] IMediator mediator,
+    CancellationToken cancellationToken) =>
+{
+    await mediator.Send(
+        new CreateDepartmentCommand(
+            request.Name,
+            request.Budget,
+            request.StartDate,
+            request.AdministratorId),
+        cancellationToken);
+});
+
+app.MapPut("/api/departments/{externalId:guid}", async (
+    Guid externalId,
+    [FromBody] EditDepartmentRequest request,
+    [FromServices] IMediator mediator,
+    CancellationToken cancellationToken) =>
+{
+    await mediator.Send(
+        new EditDepartmentCommand(
+            request.Name,
+            request.Budget,
+            request.StartDate,
+            request.AdministratorId,
+            externalId,
+            request.RowVersion),
+        cancellationToken);
+});
+
+app.MapDelete("/api/departments/{externalId:guid}", async (
+    Guid externalId,
+    [FromServices] IMediator mediator,
+    CancellationToken cancellationToken) =>
+{
+    await mediator.Send(
+        new DeleteDepartmentCommand(externalId),
+        cancellationToken);
+});
+
 // Instructors
 
 app.MapGet("/api/instructors/names", async (
@@ -76,4 +120,75 @@ app.MapGet("/api/instructors", async (
 
 //Read-Write
 
+app.MapPost("/api/instructors", async (
+    [FromBody] CreateInstructorRequest request,
+    [FromServices] IMediator mediator,
+    CancellationToken cancellationToken) =>
+{
+    await mediator.Send(
+        new CreateInstructorCommand(
+            request.LastName,
+            request.FirstName,
+            request.HireDate,
+            request.SelectedCourses,
+            request.Location),
+        cancellationToken);
+});
+
+app.MapPut("/api/instructors/{externalId:guid}", async (
+    Guid externalId,
+    [FromBody] EditInstructorRequest request,
+    [FromServices] IMediator mediator,
+    CancellationToken cancellationToken) =>
+{
+    await mediator.Send(
+        new EditInstructorCommand(
+            externalId,
+            request.LastName,
+            request.FirstName,
+            request.HireDate,
+            request.SelectedCourses,
+            request.Location),
+        cancellationToken);
+});
+
+app.MapDelete("/api/instructors/{externalId:guid}", async (
+    Guid externalId,
+    [FromServices] IMediator mediator,
+    CancellationToken cancellationToken) =>
+{
+    await mediator.Send(
+        new DeleteInstructorCommand(externalId),
+        cancellationToken);
+});
+
 app.Run();
+
+file record CreateDepartmentRequest(
+    string Name,
+    decimal Budget,
+    DateTime StartDate,
+    Guid? AdministratorId);
+
+file record EditDepartmentRequest(
+    string Name,
+    decimal Budget,
+    DateTime StartDate,
+    Guid? AdministratorId,
+    Guid ExternalId,
+    byte[] RowVersion);
+
+public record CreateInstructorRequest(
+    string LastName,
+    string FirstName,
+    DateTime HireDate,
+    Guid[] SelectedCourses,
+    string Location);
+
+public record EditInstructorRequest(
+    Guid ExternalId,
+    string LastName,
+    string FirstName,
+    DateTime HireDate,
+    Guid[] SelectedCourses,
+    string Location);

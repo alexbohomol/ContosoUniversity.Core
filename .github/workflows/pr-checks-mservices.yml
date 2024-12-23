@@ -102,7 +102,7 @@ jobs:
 
     - name: Start Docker Infrastructure
       working-directory: ${{ vars.MSERVICES_SLN_PATH }}
-      run: docker compose up -d courses-api
+      run: docker compose up -d courses-api departments-api students-api
       
     - name: Init test database
       run: |
@@ -133,6 +133,14 @@ jobs:
     - name: Grab container logs | courses-api
       if: always()
       run: docker logs courses-api
+
+    - name: Grab container logs | departments-api
+      if: always()
+      run: docker logs departments-api
+
+    - name: Grab container logs | students-api
+      if: always()
+      run: docker logs students-api
 
   integration_testing_courses_api:
     if: true
@@ -351,6 +359,14 @@ jobs:
       if: always()
       run: docker logs courses-api
 
+    - name: Grab container logs | departments-api
+      if: always()
+      run: docker logs departments-api
+
+    - name: Grab container logs | students-api
+      if: always()
+      run: docker logs students-api
+
     - name: Grab container logs | cuweb
       if: always()
       run: docker logs cuweb
@@ -430,6 +446,14 @@ jobs:
     - name: Grab container logs | courses-api
       if: always()
       run: docker logs courses-api
+
+    - name: Grab container logs | departments-api
+      if: always()
+      run: docker logs departments-api
+
+    - name: Grab container logs | students-api
+      if: always()
+      run: docker logs students-api
 
     - name: Grab container logs | cuweb
       if: always()

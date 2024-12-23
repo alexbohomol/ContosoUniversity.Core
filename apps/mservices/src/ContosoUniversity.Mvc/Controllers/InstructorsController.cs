@@ -10,8 +10,6 @@ using Application;
 using Application.ApiClients;
 using Application.Instructors.Queries;
 
-using Departments.Core.Handlers.Commands;
-
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
@@ -138,6 +136,7 @@ public class InstructorsController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
         CreateInstructorRequest request,
+        [FromServices] IInstructorsApiClient instructorsApiClient,
         [FromServices] ICoursesApiClient coursesApiClient,
         CancellationToken cancellationToken)
     {
@@ -151,8 +150,8 @@ public class InstructorsController(IMediator mediator) : Controller
             });
         }
 
-        await mediator.Send(
-            new CreateInstructorCommand(
+        await instructorsApiClient.Create(
+            new InstructorCreateModel(
                 request.LastName,
                 request.FirstName,
                 request.HireDate,
@@ -186,6 +185,7 @@ public class InstructorsController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(
         EditInstructorRequest request,
+        [FromServices] IInstructorsApiClient instructorsApiClient,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -200,8 +200,8 @@ public class InstructorsController(IMediator mediator) : Controller
             });
         }
 
-        await mediator.Send(
-            new EditInstructorCommand(
+        await instructorsApiClient.Update(
+            new InstructorEditModel(
                 request.ExternalId,
                 request.LastName,
                 request.FirstName,
@@ -231,10 +231,13 @@ public class InstructorsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(
+        Guid id,
+        [FromServices] IInstructorsApiClient instructorsApiClient,
+        CancellationToken cancellationToken)
     {
-        await mediator.Send(
-            new DeleteInstructorCommand(id),
+        await instructorsApiClient.Delete(
+            new InstructorDeleteModel(id),
             cancellationToken);
 
         return RedirectToAction(nameof(Index));

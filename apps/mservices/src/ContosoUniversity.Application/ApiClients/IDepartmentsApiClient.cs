@@ -14,6 +14,11 @@ public interface IDepartmentsApiClient
     Task<Department[]> GetAll(CancellationToken cancellationToken);
 
     // Read-Write
+
+    Task Create(DepartmentCreateModel model, CancellationToken cancellationToken);
+    Task Update(DepartmentEditModel model, CancellationToken cancellationToken);
+    Task Delete(DepartmentDeleteModel model, CancellationToken cancellationToken);
+
 }
 
 public record Department(
@@ -29,3 +34,19 @@ public record Department(
         ? $"{AdministratorLastName}, {AdministratorFirstName}"
         : string.Empty;
 }
+
+public record DepartmentCreateModel(
+    string Name,
+    decimal Budget,
+    DateTime StartDate,
+    Guid? AdministratorId);
+
+public record DepartmentEditModel(
+    string Name,
+    decimal Budget,
+    DateTime StartDate,
+    Guid? AdministratorId,
+    Guid ExternalId,
+    byte[] RowVersion);
+
+public record DepartmentDeleteModel(Guid Id);
