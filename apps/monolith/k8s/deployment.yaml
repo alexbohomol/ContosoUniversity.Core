@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cuweb-deployment
+  namespace: contoso
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cuweb
+  template:
+    metadata:
+      labels:
+        app: cuweb
+    spec:
+      containers:
+      - name: cuweb
+        image: cuweb:latest
+        imagePullPolicy: Never  # Ensure the local image is used
+        ports:
+        - containerPort: 80
