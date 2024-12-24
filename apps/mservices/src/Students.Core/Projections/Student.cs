@@ -14,5 +14,4 @@ public record Student(
     Guid ExternalId) : IIdentifiable<Guid>
 {
     public IList<Enrollment> Enrollments { get; }
-    public string FullName => $"{FirstName}, {LastName}";
 }

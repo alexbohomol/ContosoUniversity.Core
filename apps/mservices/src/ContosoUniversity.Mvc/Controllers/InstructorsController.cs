@@ -10,17 +10,9 @@ using Application;
 using Application.ApiClients;
 using Application.Instructors.Queries;
 
-using Departments.Core;
-using Departments.Core.Projections;
-
 using MediatR;
 
-using Messaging.Contracts.Commands;
-
 using Microsoft.AspNetCore.Mvc;
-
-using Students.Core;
-using Students.Core.Projections;
 
 using ViewModels;
 using ViewModels.Instructors;
@@ -30,13 +22,13 @@ public class InstructorsController(IMediator mediator) : Controller
     public async Task<IActionResult> Index(
         Guid? id,
         Guid? courseExternalId,
-        [FromServices] IInstructorsRoRepository instructorsRepository,
-        [FromServices] IDepartmentsRoRepository departmentsRepository,
+        [FromServices] IInstructorsApiClient instructorsApiClient,
+        [FromServices] IDepartmentsApiClient departmentsApiClient,
         [FromServices] ICoursesApiClient coursesApiClient,
-        [FromServices] IStudentsRoRepository studentsRepository,
+        [FromServices] IStudentsApiClient studentsApiClient,
         CancellationToken cancellationToken)
     {
-        Instructor[] instructors = (await instructorsRepository.GetAll(cancellationToken))
+        Instructor[] instructors = (await instructorsApiClient.GetAll(cancellationToken))
             .OrderBy(x => x.LastName)
             .ToArray();
 
@@ -71,7 +63,7 @@ public class InstructorsController(IMediator mediator) : Controller
             InstructorListItemViewModel instructor = viewModel.Instructors.Single(i => i.Id == id.Value);
             HashSet<Guid> instructorCourseIds = instructor.AssignedCourseIds.ToHashSet();
             Dictionary<Guid, string> departmentNames =
-                await departmentsRepository.GetDepartmentNamesReference(cancellationToken);
+                await departmentsApiClient.GetDepartmentNamesReference(cancellationToken);
 
             CrossContextBoundariesValidator.EnsureCoursesReferenceTheExistingDepartments(courses, departmentNames.Keys);
 
@@ -91,7 +83,7 @@ public class InstructorsController(IMediator mediator) : Controller
 
         if (courseExternalId is not null)
         {
-            Student[] students = await studentsRepository.GetStudentsEnrolledForCourses(
+            Student[] students = await studentsApiClient.GetStudentsEnrolledForCourses(
                 new[]
                 {
                     courseExternalId.Value
@@ -144,6 +136,7 @@ public class InstructorsController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
         CreateInstructorRequest request,
+        [FromServices] IInstructorsApiClient instructorsApiClient,
         [FromServices] ICoursesApiClient coursesApiClient,
         CancellationToken cancellationToken)
     {
@@ -157,8 +150,8 @@ public class InstructorsController(IMediator mediator) : Controller
             });
         }
 
-        await mediator.Send(
-            new CreateInstructorCommand(
+        await instructorsApiClient.Create(
+            new InstructorCreateModel(
                 request.LastName,
                 request.FirstName,
                 request.HireDate,
@@ -192,6 +185,7 @@ public class InstructorsController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(
         EditInstructorRequest request,
+        [FromServices] IInstructorsApiClient instructorsApiClient,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -206,8 +200,8 @@ public class InstructorsController(IMediator mediator) : Controller
             });
         }
 
-        await mediator.Send(
-            new EditInstructorCommand(
+        await instructorsApiClient.Update(
+            new InstructorEditModel(
                 request.ExternalId,
                 request.LastName,
                 request.FirstName,
@@ -237,10 +231,13 @@ public class InstructorsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(
+        Guid id,
+        [FromServices] IInstructorsApiClient instructorsApiClient,
+        CancellationToken cancellationToken)
     {
-        await mediator.Send(
-            new DeleteInstructorCommand(id),
+        await instructorsApiClient.Delete(
+            new InstructorDeleteModel(id),
             cancellationToken);
 
         return RedirectToAction(nameof(Index));

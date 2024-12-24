@@ -2,7 +2,7 @@ namespace ContosoUniversity.Mvc.ViewModels.Instructors;
 
 using System;
 
-using global::Departments.Core.Projections;
+using Application.ApiClients;
 
 public record EditInstructorRequest
 {

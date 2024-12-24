@@ -5,17 +5,14 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Application.ApiClients;
 using Application.Students.Queries;
 
 using MediatR;
 
-using Messaging.Contracts.Commands;
-
 using Microsoft.AspNetCore.Mvc;
 
 using SharedKernel.Paging;
-
-using Students.Core.Projections;
 
 using ViewModels.Students;
 
@@ -62,6 +59,7 @@ public class StudentsController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
         CreateStudentRequest request,
+        [FromServices] IStudentsApiClient studentsApiClient,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -72,8 +70,8 @@ public class StudentsController(IMediator mediator) : Controller
             });
         }
 
-        await mediator.Send(
-            new CreateStudentCommand(
+        await studentsApiClient.Create(
+            new StudentCreateModel(
                 request.EnrollmentDate,
                 request.LastName,
                 request.FirstName),
@@ -105,6 +103,7 @@ public class StudentsController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(
         EditStudentRequest request,
+        [FromServices] IStudentsApiClient studentsApiClient,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -115,13 +114,13 @@ public class StudentsController(IMediator mediator) : Controller
             });
         }
 
-        await mediator.Send(new EditStudentCommand
-        {
-            ExternalId = request.ExternalId,
-            LastName = request.LastName,
-            FirstName = request.FirstName,
-            EnrollmentDate = request.EnrollmentDate
-        }, cancellationToken);
+        await studentsApiClient.Update(
+            new StudentEditModel(
+                request.EnrollmentDate,
+                request.LastName,
+                request.FirstName,
+                request.ExternalId)
+            , cancellationToken);
 
         return RedirectToAction(nameof(Index));
     }
@@ -144,10 +143,13 @@ public class StudentsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(
+        Guid id,
+        [FromServices] IStudentsApiClient studentsApiClient,
+        CancellationToken cancellationToken)
     {
-        await mediator.Send(
-            new DeleteStudentCommand(id),
+        await studentsApiClient.Delete(
+            new StudentDeleteModel(id),
             cancellationToken);
 
         return RedirectToAction(nameof(Index));

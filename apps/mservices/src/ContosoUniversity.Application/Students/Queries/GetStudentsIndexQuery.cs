@@ -1,11 +1,10 @@
-using IStudentsRoRepository = Students.Core.IStudentsRoRepository;
-using Student = Students.Core.Projections.Student;
-
 namespace ContosoUniversity.Application.Students.Queries;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+
+using ApiClients;
 
 using MediatR;
 
@@ -23,7 +22,7 @@ public record GetStudentsIndexQueryResult(
     PageInfo PageInfo,
     Student[] Students);
 
-internal class GetStudentsIndexQueryHandler(IStudentsRoRepository studentsRepository)
+internal class GetStudentsIndexQueryHandler(IStudentsApiClient client)
     : IRequestHandler<GetStudentsIndexQuery, GetStudentsIndexQueryResult>
 {
     public async Task<GetStudentsIndexQueryResult> Handle(
@@ -32,7 +31,7 @@ internal class GetStudentsIndexQueryHandler(IStudentsRoRepository studentsReposi
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        (Student[] students, PageInfo pageInfo) = await studentsRepository.Search(
+        (Student[] students, PageInfo pageInfo) = await client.Search(
             new SearchRequest(request.SearchString),
             new OrderRequest(request.SortOrder),
             new PageRequest(request.PageNumber ?? 1, 3),

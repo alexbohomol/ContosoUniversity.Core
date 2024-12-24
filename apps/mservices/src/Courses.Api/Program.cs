@@ -1,7 +1,8 @@
 using ContosoUniversity.Data;
 
+using Courses.Api.Models;
 using Courses.Core;
-using Courses.Core.Handlers;
+using Courses.Core.Handlers.Commands;
 using Courses.Data.Reads;
 using Courses.Data.Writes;
 
@@ -126,16 +127,3 @@ app.MapPut("/api/courses/credits/update",
         cancellationToken));
 
 await app.RunAsync();
-
-public record CreateCourseRequest(
-    int CourseCode,
-    string Title,
-    int Credits,
-    Guid DepartmentId);
-
-public record UpdateCourseRequest(
-    string Title,
-    int Credits,
-    Guid DepartmentId);
-
-public record UpdateCoursesCreditsRequest(int Multiplier);

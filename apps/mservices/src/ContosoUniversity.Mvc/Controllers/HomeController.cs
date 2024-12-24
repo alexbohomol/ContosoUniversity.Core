@@ -5,14 +5,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.AspNetCore.Mvc;
+using Application.ApiClients;
 
-using Students.Core;
-using Students.Core.Projections;
+using Microsoft.AspNetCore.Mvc;
 
 using ViewModels;
 
-public class HomeController(IStudentsRoRepository repository) : Controller
+public class HomeController(IStudentsApiClient client) : Controller
 {
     public IActionResult Index()
     {
@@ -21,7 +20,7 @@ public class HomeController(IStudentsRoRepository repository) : Controller
 
     public async Task<ActionResult> About(CancellationToken cancellationToken)
     {
-        EnrollmentDateGroup[] groups = await repository.GetEnrollmentDateGroups(cancellationToken);
+        EnrollmentDateGroup[] groups = await client.GetEnrollmentDateGroups(cancellationToken);
 
         ViewModels.Home.EnrollmentDateGroup[] viewModels = groups.Select(x => new ViewModels.Home.EnrollmentDateGroup
         {

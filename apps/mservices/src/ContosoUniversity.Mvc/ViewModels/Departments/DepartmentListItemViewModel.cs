@@ -3,7 +3,7 @@ namespace ContosoUniversity.Mvc.ViewModels.Departments;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-using global::Departments.Core.Projections;
+using Application.ApiClients;
 
 public class DepartmentListItemViewModel
 {

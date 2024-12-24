@@ -72,8 +72,8 @@ file record CourseDto(
 
 static file class Extensions
 {
-    public static Course ToDomain(this CourseDto dto)
+    internal static Course ToDomain(this CourseDto dto)
         => new(dto.Code, dto.Title, dto.Credits, dto.DepartmentId, dto.ExternalId);
 }
 
-public record UpdateCoursesCreditsModel(int Multiplier);
+file record UpdateCoursesCreditsModel(int Multiplier);

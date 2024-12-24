@@ -6,14 +6,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Application.ApiClients;
 using Application.Departments.Queries;
 
-using Departments.Core;
-using Departments.Core.Projections;
-
 using MediatR;
-
-using Messaging.Contracts.Commands;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,11 +43,10 @@ public class DepartmentsController(IMediator mediator) : Controller
     }
 
     public async Task<IActionResult> Create(
-        [FromServices] IInstructorsRoRepository repository,
+        [FromServices] IInstructorsApiClient client,
         CancellationToken cancellationToken)
     {
-        Dictionary<Guid, string> instructorNames = await repository
-            .GetInstructorNamesReference(cancellationToken);
+        Dictionary<Guid, string> instructorNames = await client.GetInstructorNamesReference(cancellationToken);
 
         return View(new CreateDepartmentForm(instructorNames));
     }
@@ -60,19 +55,19 @@ public class DepartmentsController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
         CreateDepartmentRequest request,
-        [FromServices] IInstructorsRoRepository repository,
+        [FromServices] IDepartmentsApiClient departmentsApiClient,
+        [FromServices] IInstructorsApiClient instructorsApiClient,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
-            Dictionary<Guid, string> instructorNames = await repository
-                .GetInstructorNamesReference(cancellationToken);
+            Dictionary<Guid, string> instructorNames = await instructorsApiClient.GetInstructorNamesReference(cancellationToken);
 
             return View(new CreateDepartmentForm(instructorNames));
         }
 
-        await mediator.Send(
-            new CreateDepartmentCommand(
+        await departmentsApiClient.Create(
+            new DepartmentCreateModel(
                 request.Name,
                 request.Budget,
                 request.StartDate,
@@ -105,13 +100,13 @@ public class DepartmentsController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(
         EditDepartmentRequest request,
-        [FromServices] IInstructorsRoRepository repository,
+        [FromServices] IDepartmentsApiClient departmentsApiClient,
+        [FromServices] IInstructorsApiClient instructorsApiClient,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
-            Dictionary<Guid, string> instructorNames = await repository
-                .GetInstructorNamesReference(cancellationToken);
+            Dictionary<Guid, string> instructorNames = await instructorsApiClient.GetInstructorNamesReference(cancellationToken);
 
             return View(new EditDepartmentForm(instructorNames)
             {
@@ -119,8 +114,8 @@ public class DepartmentsController(IMediator mediator) : Controller
             });
         }
 
-        await mediator.Send(
-            new EditDepartmentCommand(
+        await departmentsApiClient.Update(
+            new DepartmentEditModel(
                 request.Name,
                 request.Budget,
                 request.StartDate,
@@ -150,10 +145,13 @@ public class DepartmentsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(
+        Guid id,
+        [FromServices] IDepartmentsApiClient departmentsApiClient,
+        CancellationToken cancellationToken)
     {
-        await mediator.Send(
-            new DeleteDepartmentCommand(id),
+        await departmentsApiClient.Delete(
+            new DepartmentDeleteModel(id),
             cancellationToken);
 
         return RedirectToAction(nameof(Index));

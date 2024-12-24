@@ -1,0 +1,26 @@
+@Students.Api_HostAddress = http://localhost:5110
+@Students.Api = {{ Students.Api_HostAddress }}/api/students
+
+GET {{Students.Api}}/0135624d-2325-4a9c-933e-90cc24dbef48
+Accept: application/json
+
+###
+
+GET {{Students.Api}}/enrolled/groups
+Accept: application/json
+
+###
+
+GET {{Students.Api}}/enrolled?courseIds=1a95b2f1-7f2c-41b4-befb-b0f9c6d991e4&courseIds=51f60b7d-fb0c-40eb-a74b-b2d90157afa0
+Accept: application/json
+
+###
+
+POST {{Students.Api}}/search
+Content-Type: application/json
+
+{
+    "SearchRequest": { "SearchString": "al" },
+    "OrderRequest": { "SortOrder": "date_desc" },
+    "PageRequest": { "PageNumber": 1, "PageSize": 3 }
+}

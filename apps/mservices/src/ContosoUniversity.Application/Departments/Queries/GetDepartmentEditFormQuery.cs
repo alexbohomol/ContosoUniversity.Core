@@ -1,13 +1,11 @@
-using Department = Departments.Core.Projections.Department;
-using IDepartmentsRoRepository = Departments.Core.IDepartmentsRoRepository;
-using IInstructorsRoRepository = Departments.Core.IInstructorsRoRepository;
-
 namespace ContosoUniversity.Application.Departments.Queries;
 
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+
+using ApiClients;
 
 using MediatR;
 
@@ -20,8 +18,8 @@ public record GetDepartmentEditFormQueryResult(
     Dictionary<Guid, string> InstructorsReference);
 
 internal class GetDepartmentEditFormQueryHandler(
-    IInstructorsRoRepository instructorsRepository,
-    IDepartmentsRoRepository departmentsRepository)
+    IInstructorsApiClient instructorsApiClient,
+    IDepartmentsApiClient departmentsApiClient)
     : IRequestHandler<GetDepartmentEditFormQuery, GetDepartmentEditFormQueryResult>
 {
     public async Task<GetDepartmentEditFormQueryResult> Handle(
@@ -30,14 +28,13 @@ internal class GetDepartmentEditFormQueryHandler(
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        Department department = await departmentsRepository.GetById(request.Id, cancellationToken);
+        Department department = await departmentsApiClient.GetById(request.Id, cancellationToken);
         if (department is null)
         {
             throw new EntityNotFoundException(nameof(department));
         }
 
-        Dictionary<Guid, string> instructorNames = await instructorsRepository
-            .GetInstructorNamesReference(cancellationToken);
+        Dictionary<Guid, string> instructorNames = await instructorsApiClient.GetInstructorNamesReference(cancellationToken);
 
         return new GetDepartmentEditFormQueryResult(department, instructorNames);
     }

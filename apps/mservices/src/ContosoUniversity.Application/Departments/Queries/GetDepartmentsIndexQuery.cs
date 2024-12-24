@@ -1,17 +1,16 @@
-using Department = Departments.Core.Projections.Department;
-using IDepartmentsRoRepository = Departments.Core.IDepartmentsRoRepository;
-
 namespace ContosoUniversity.Application.Departments.Queries;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ApiClients;
+
 using MediatR;
 
 public record GetDepartmentsIndexQuery : IRequest<Department[]>;
 
-internal class GetDepartmentsIndexQueryHandler(IDepartmentsRoRepository departmentsRepository)
+internal class GetDepartmentsIndexQueryHandler(IDepartmentsApiClient departmentsApiClient)
     : IRequestHandler<GetDepartmentsIndexQuery, Department[]>
 {
     public async Task<Department[]> Handle(
@@ -20,6 +19,6 @@ internal class GetDepartmentsIndexQueryHandler(IDepartmentsRoRepository departme
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        return await departmentsRepository.GetAll(cancellationToken);
+        return await departmentsApiClient.GetAll(cancellationToken);
     }
 }

@@ -6,11 +6,6 @@ using ApiClients;
 
 using Application;
 
-using Data;
-
-using Departments.Data.Reads;
-using Departments.Data.Writes;
-
 using FluentValidation;
 using FluentValidation.AspNetCore;
 
@@ -25,9 +20,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Middleware;
-
-using Students.Data.Reads;
-using Students.Data.Writes;
 
 public class Program
 {
@@ -62,12 +54,6 @@ internal class Startup(IWebHostEnvironment env)
 
         services.AddHealthChecks();
 
-        services.AddDataInfrastructure();
-        services.AddStudentsSchemaReads();
-        services.AddStudentsSchemaWrites();
-        services.AddDepartmentsSchemaReads();
-        services.AddDepartmentsSchemaWrites();
-
         services.AddControllersWithViews();
 
         services.AddFluentValidationAutoValidation();
@@ -77,14 +63,10 @@ internal class Startup(IWebHostEnvironment env)
         }
         services.AddValidatorsFromAssemblyContaining<Program>();
         services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
-        services.AddValidatorsFromAssemblyContaining<Departments.Core.IAssemblyMarker>();
-        services.AddValidatorsFromAssemblyContaining<Students.Core.IAssemblyMarker>();
 
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(IAssemblyMarker).Assembly);
-            cfg.RegisterServicesFromAssembly(typeof(Departments.Core.IAssemblyMarker).Assembly);
-            cfg.RegisterServicesFromAssembly(typeof(Students.Core.IAssemblyMarker).Assembly);
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
 
@@ -93,6 +75,8 @@ internal class Startup(IWebHostEnvironment env)
         services.AddProblemDetails();
 
         services.AddCoursesApiClient();
+        services.AddDepartmentsApiClients();
+        services.AddStudentsApiClient();
     }
 
     public void Configure(IApplicationBuilder app)

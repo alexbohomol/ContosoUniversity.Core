@@ -5,8 +5,6 @@ using System.ComponentModel.DataAnnotations;
 
 using Application.ApiClients;
 
-using global::Departments.Core.Projections;
-
 public class CourseDetailsViewModel
 {
     public CourseDetailsViewModel(Course course, Department department)
