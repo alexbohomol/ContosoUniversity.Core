@@ -1,4 +1,4 @@
-name: Pull Request Checks (Monolith)
+name: PR Checks (Monolith)
 
 on:
   push:

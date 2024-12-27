@@ -1,4 +1,4 @@
-name: Pull Request Checks (Microservices)
+name: PR Checks (Microservices)
 
 on:
   push:
