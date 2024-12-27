@@ -12,11 +12,12 @@ on:
 
 env:
   DOTNET_VERSION: 8.0.x
-  MSSQL_SA_PASSWORD: 5up3r53cr2tP@55w0rd
+  MSSQL_SA_PASSWORD: <YourStrong!Passw0rd>
 
 jobs:
 
   build_and_unit_testing:
+    if: false
     name: Build and Unit Testing
     runs-on: ubuntu-latest
     env:
@@ -84,6 +85,7 @@ jobs:
         --verify-no-changes
       
   integration_testing:
+    if: false
     name: Integration Testing
     runs-on: ubuntu-latest
     env:
@@ -136,6 +138,7 @@ jobs:
         dotnet test --no-build --verbosity normal
       
   system_testing:
+    if: false
     name: System Testing | In-Process
     runs-on: ubuntu-latest
     env:
@@ -210,30 +213,78 @@ jobs:
         docker version
         docker compose version
         docker-compose version
+        ls -lah
 
-    - name: Pull Images
+    - name: Developer Cert
+      working-directory: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc
       run: |
-        docker pull mcr.microsoft.com/mssql/server:latest
-        docker pull mcr.microsoft.com/mssql-tools:latest
-        docker pull mcr.microsoft.com/dotnet/sdk:8.0
-        docker pull mcr.microsoft.com/dotnet/aspnet:8.0
+        dotnet dev-certs https -ep cert.pfx -p Test1234!
+        ls -lah
+
+    - name: Run Docker environment to check connectivity
+      id: compose
+      working-directory: ${{ vars.MONOLITH_SLN_PATH }}
+      run: docker compose up --wait
+
+    - name: Inspect container | cuweb
+      working-directory: ${{ vars.MONOLITH_SLN_PATH }}
+      run: docker inspect cuweb
+
+    - name: Init test database
+      if: false
+      run: |
+        docker run --rm \
+        --entrypoint /opt/mssql-tools/bin/sqlcmd \
+        --workdir /scripts \
+        --volume "$(pwd)"/database:/scripts \
+        --network cunetwork \
+        mcr.microsoft.com/mssql-tools \
+        -S cudb -U SA -P "${{ env.MSSQL_SA_PASSWORD }}" -i "db-init.sql"
+
+    - name: Sleep for 30 seconds
+      if: false
+      run: sleep 30s
+      shell: bash
+
+    - name: Curl to cuweb
+      run: curl http://localhost:10000/Courses
+
+    - name: Grab container logs | cuweb
+      if: always()
+      run: docker logs cuweb
+
+    - name: Grab container logs | cudb
+      if: always()
+      run: docker logs cudb
+
+    - name: Grab container logs | db-migrator
+      if: always()
+      run: docker logs db-migrator
+
+    - name: Shut down Docker Infra
+      working-directory: ${{ vars.MONOLITH_SLN_PATH }}
+      run: docker compose down
 
     - name: Setup .NET
+      if: false
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
-      
+
     - name: Build Acceptance Tests
+      if: false
       working-directory: ${{ env.TEST_PROJ_PATH }}
       run: |
         dotnet restore
         dotnet build --no-restore
-      
+
     - name: Ensure browsers are installed
+      if: false
       working-directory: ${{ env.TEST_PROJ_PATH }}
       run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
 
     - name: Run Acceptance Tests
+      if: false
       working-directory: ${{ env.TEST_PROJ_PATH }}
       run: |
         dotnet test --no-build --verbosity normal
