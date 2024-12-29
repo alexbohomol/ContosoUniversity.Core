@@ -13,13 +13,19 @@ using TechTalk.SpecFlow;
 [Binding]
 public class DockerHooks
 {
-    private static readonly string DockerComposePath =
+    private static readonly string[] DockerComposeFiles =
+    [
+        GetFullPath("../../../../../../docker-compose.yml"),
+        GetFullPath("../../../../../../docker-compose.override.yml")
+    ];
+
+    private static ICompositeService _dockerService;
+
+    private static string GetFullPath(string relativePath) =>
         Path.GetFullPath(
             Path.Combine(
                 Directory.GetCurrentDirectory(),
-                (TemplateString)"../../../../../../docker-compose.integration.yml"));
-
-    private static ICompositeService _dockerService;
+                (TemplateString)relativePath));
 
     [BeforeFeature]
     public static void StartDockerInfrastructure(IConfiguration configuration)
@@ -27,9 +33,9 @@ public class DockerHooks
         _dockerService = new Builder()
             .UseContainer()
             .UseCompose()
-            .FromFile(DockerComposePath)
+            .FromFile(DockerComposeFiles)
             .RemoveOrphans()
-            .WaitForHttp("web-int-test", configuration["PageBaseUrl:Http"])
+            .WaitForHttp("web", configuration["PageBaseUrl:Http"])
             .Build();
 
         _dockerService.Start();
