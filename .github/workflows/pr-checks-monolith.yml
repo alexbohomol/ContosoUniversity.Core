@@ -266,25 +266,21 @@ jobs:
       run: docker compose down
 
     - name: Setup .NET
-      if: false
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Build Acceptance Tests
-      if: false
       working-directory: ${{ env.TEST_PROJ_PATH }}
       run: |
         dotnet restore
         dotnet build --no-restore
 
     - name: Ensure browsers are installed
-      if: false
       working-directory: ${{ env.TEST_PROJ_PATH }}
       run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
 
     - name: Run Acceptance Tests
-      if: false
       working-directory: ${{ env.TEST_PROJ_PATH }}
       run: |
         dotnet test --no-build --verbosity normal
