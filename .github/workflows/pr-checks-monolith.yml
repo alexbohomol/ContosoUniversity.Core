@@ -194,8 +194,8 @@ jobs:
       run: |
         dotnet test --no-build --verbosity normal
 
-  e2e_testing_in_process:
-    name: E2E Testing
+  e2e_testing:
+    name: E2E Testing | External-Process
     runs-on: ubuntu-latest
     env:
       TEST_PROJ_PATH: ${{ vars.MONOLITH_SLN_PATH }}/test/e2e/ContosoUniversity.AcceptanceTests
@@ -229,22 +229,6 @@ jobs:
     - name: Inspect container | cuweb
       working-directory: ${{ vars.MONOLITH_SLN_PATH }}
       run: docker inspect cuweb
-
-    - name: Init test database
-      if: false
-      run: |
-        docker run --rm \
-        --entrypoint /opt/mssql-tools/bin/sqlcmd \
-        --workdir /scripts \
-        --volume "$(pwd)"/database:/scripts \
-        --network cunetwork \
-        mcr.microsoft.com/mssql-tools \
-        -S cudb -U SA -P "${{ env.MSSQL_SA_PASSWORD }}" -i "db-init.sql"
-
-    - name: Sleep for 30 seconds
-      if: false
-      run: sleep 30s
-      shell: bash
 
     - name: Curl to cuweb
       run: curl http://localhost:10000/Courses
