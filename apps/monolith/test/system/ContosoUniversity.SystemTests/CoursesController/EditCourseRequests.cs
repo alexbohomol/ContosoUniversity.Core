@@ -3,9 +3,15 @@ namespace ContosoUniversity.SystemTests.CoursesController;
 using System;
 using System.Collections.Generic;
 
-using Mvc.ViewModels.Courses;
-
 using NUnit.Framework;
+
+public record EditCourseRequest
+{
+    public Guid Id { get; set; }
+    public string Title { get; set; }
+    public int Credits { get; set; }
+    public Guid DepartmentId { get; set; }
+}
 
 public static class EditCourseRequests
 {

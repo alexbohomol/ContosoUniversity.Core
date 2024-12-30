@@ -3,9 +3,15 @@ namespace ContosoUniversity.SystemTests.StudentsController;
 using System;
 using System.Collections.Generic;
 
-using Mvc.ViewModels.Students;
-
 using NUnit.Framework;
+
+public record EditStudentRequest
+{
+    public DateTime EnrollmentDate { get; init; }
+    public string LastName { get; init; }
+    public string FirstName { get; init; }
+    public Guid ExternalId { get; init; }
+}
 
 public static class EditStudentRequests
 {

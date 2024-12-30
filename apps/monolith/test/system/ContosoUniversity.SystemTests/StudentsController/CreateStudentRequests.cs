@@ -3,9 +3,14 @@ namespace ContosoUniversity.SystemTests.StudentsController;
 using System;
 using System.Collections.Generic;
 
-using Mvc.ViewModels.Students;
-
 using NUnit.Framework;
+
+public record CreateStudentRequest
+{
+    public DateTime EnrollmentDate { get; init; } = DateTime.Today;
+    public string LastName { get; init; }
+    public string FirstName { get; init; }
+}
 
 public static class CreateStudentRequests
 {

@@ -6,8 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 
-using Mvc.ViewModels.Students;
-
 using NUnit.Framework;
 
 public class CreateEndpointsTests : PageTest

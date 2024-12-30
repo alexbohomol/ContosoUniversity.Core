@@ -8,8 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 
-using Mvc.ViewModels.Courses;
-
 using NUnit.Framework;
 
 public class EditEndpointsTests : PageTest
