@@ -11,10 +11,7 @@ public record EditStudentRequest
     public string LastName { get; init; }
     public string FirstName { get; init; }
     public Guid ExternalId { get; init; }
-}
 
-public static class EditStudentRequests
-{
     public static readonly EditStudentRequest Valid = new()
     {
         FirstName = "Cupertino",

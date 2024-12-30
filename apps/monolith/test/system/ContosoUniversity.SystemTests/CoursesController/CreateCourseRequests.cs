@@ -11,10 +11,7 @@ public record CreateCourseRequest
     public string Title { get; init; }
     public int Credits { get; init; }
     public Guid DepartmentId { get; init; }
-}
 
-public static class CreateCourseRequests
-{
     public static readonly CreateCourseRequest Valid = new()
     {
         CourseCode = 1111,

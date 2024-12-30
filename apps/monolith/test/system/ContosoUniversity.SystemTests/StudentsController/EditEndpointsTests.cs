@@ -15,13 +15,13 @@ public class EditEndpointsTests : PageTest
     private static readonly SutUrls Urls =
         new(ServiceLocator.GetRequiredService<IConfiguration>());
 
-    [TestCaseSource(typeof(EditStudentRequests), nameof(EditStudentRequests.Invalids))]
+    [TestCaseSource(typeof(EditStudentRequest), nameof(EditStudentRequest.Invalids))]
     public async Task PostEdit_WhenInvalidRequest_ReturnsValidationErrorView(
         EditStudentRequest request,
         string errorMessage)
     {
         // Arrange
-        await Page.CreateStudent(CreateStudentRequests.Valid);
+        await Page.CreateStudent(CreateStudentRequest.Valid);
         await Expect(Page).ToHaveURLAsync(Urls.StudentsListPage);
         await Expect(Page.GetByRole(AriaRole.Row, new() { Name = "Alexander Alpert 2022-01-17" })).ToBeVisibleAsync();
         await Page.ClickLinkByRow("Edit", "Alexander Alpert 2022-01-17");
@@ -45,13 +45,13 @@ public class EditEndpointsTests : PageTest
     public async Task PostEdit_WhenValidRequest_UpdatesCourseAndRedirectsToListPage()
     {
         // Arrange
-        await Page.CreateStudent(CreateStudentRequests.Valid);
+        await Page.CreateStudent(CreateStudentRequest.Valid);
         await Expect(Page).ToHaveURLAsync(Urls.StudentsListPage);
         await Expect(Page.GetByRole(AriaRole.Row, new() { Name = "Alexander Alpert 2022-01-17" })).ToBeVisibleAsync();
         await Page.ClickLinkByRow("Edit", "Alexander Alpert 2022-01-17");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         Page.Url.Should().StartWith(Urls.StudentsEditPage);
-        await Page.FillFormWith(EditStudentRequests.Valid);
+        await Page.FillFormWith(EditStudentRequest.Valid);
 
         // Act
         await Page.ClickAsync("input[type=submit]");

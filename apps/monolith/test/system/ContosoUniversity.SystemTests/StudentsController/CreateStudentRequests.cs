@@ -10,10 +10,7 @@ public record CreateStudentRequest
     public DateTime EnrollmentDate { get; init; } = DateTime.Today;
     public string LastName { get; init; }
     public string FirstName { get; init; }
-}
 
-public static class CreateStudentRequests
-{
     public static readonly CreateStudentRequest Valid = new()
     {
         LastName = "Alexander",

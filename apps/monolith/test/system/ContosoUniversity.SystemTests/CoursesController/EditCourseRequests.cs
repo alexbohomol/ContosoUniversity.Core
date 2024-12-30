@@ -11,10 +11,7 @@ public record EditCourseRequest
     public string Title { get; set; }
     public int Credits { get; set; }
     public Guid DepartmentId { get; set; }
-}
 
-public static class EditCourseRequests
-{
     public static EditCourseRequest Valid = new()
     {
         Title = "Computers Algebra",

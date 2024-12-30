@@ -13,7 +13,7 @@ public class CreateEndpointsTests : PageTest
     private static readonly SutUrls Urls =
         new(ServiceLocator.GetRequiredService<IConfiguration>());
 
-    [TestCaseSource(typeof(CreateStudentRequests), nameof(CreateStudentRequests.Invalids))]
+    [TestCaseSource(typeof(CreateStudentRequest), nameof(CreateStudentRequest.Invalids))]
     public async Task PostCreate_WhenInvalidRequest_ReturnsValidationErrorView(
         CreateStudentRequest request,
         string errorMessage)
@@ -38,7 +38,7 @@ public class CreateEndpointsTests : PageTest
     {
         // Arrange
         await Page.GotoAsync(Urls.StudentsCreatePage);
-        await Page.FillFormWith(CreateStudentRequests.Valid);
+        await Page.FillFormWith(CreateStudentRequest.Valid);
 
         // Act
         await Page.ClickAsync("input[type=submit]");
