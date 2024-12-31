@@ -1,41 +1,50 @@
 namespace ContosoUniversity.Mvc.IntegrationTests;
 
-using System;
 using System.IO;
-using System.Net.Http;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Ductus.FluentDocker.Builders;
 using Ductus.FluentDocker.Model.Common;
+using Ductus.FluentDocker.Model.Containers;
 using Ductus.FluentDocker.Services;
 
 using Xunit;
 
 public class SharedTestContext : IAsyncLifetime
 {
-    private const string AppUrl = "http://localhost:10000";
-    private const string DockerComposeRelativePath = "../../../../../../docker-compose.integration.yml";
+    private static readonly string[] DockerComposeFiles =
+    [
+        GetFullPath("../../../../../../docker-compose.yml"),
+        GetFullPath("../../../../../../docker-compose.override.yml")
+    ];
 
-    private static readonly string DockerComposePath =
+    private static string GetFullPath(string relativePath) =>
         Path.GetFullPath(
             Path.Combine(
                 Directory.GetCurrentDirectory(),
-                (TemplateString)DockerComposeRelativePath));
+                (TemplateString)relativePath));
 
     private readonly ICompositeService _dockerService = new Builder()
         .UseContainer()
         .UseCompose()
-        .FromFile(DockerComposePath)
+        .FromFile(DockerComposeFiles)
         .RemoveOrphans()
-        .WaitForHttp("web-int-test", AppUrl)
-        .Build();
+        .Wait("cuweb", (service, _) =>
+        {
+            var cuweb = service.GetConfiguration(true);
+            var healthStatus = cuweb.State.Health.Status;
 
-    public HttpClient Client;
+            return healthStatus == HealthState.Healthy
+                ? -1    // stop awaiting, ready to go
+                : 1000; // wait another 1000ms
+        })
+        .Build();
 
     public Task InitializeAsync()
     {
         _dockerService.Start();
-        Client = new HttpClient { BaseAddress = new Uri(AppUrl) };
+        _dockerService.Containers.FirstOrDefault(x => x.Name == "cuweb")?.Dispose();
 
         return Task.CompletedTask;
     }
@@ -43,7 +52,6 @@ public class SharedTestContext : IAsyncLifetime
     public Task DisposeAsync()
     {
         _dockerService.Dispose();
-        Client.Dispose();
 
         return Task.CompletedTask;
     }
