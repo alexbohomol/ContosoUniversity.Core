@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["Directory.Build.props", "."]
 COPY ["src/Departments.Api/Departments.Api.csproj", "src/Departments.Api/"]
 COPY ["src/Departments.Data.Writes/Departments.Data.Writes.csproj", "src/Departments.Data.Writes/"]
 COPY ["src/ContosoUniversity.Data/ContosoUniversity.Data.csproj", "src/ContosoUniversity.Data/"]
