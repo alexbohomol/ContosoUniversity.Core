@@ -19,7 +19,7 @@ public class DeleteEndpointsTests : PageTest
     public async Task PostDelete_RemovesExistingCourse()
     {
         // Arrange
-        await Page.CreateStudent(CreateStudentRequests.Valid);
+        await Page.CreateStudent(CreateStudentRequest.Valid);
         await Expect(Page).ToHaveURLAsync(Urls.StudentsListPage);
         await Expect(Page.GetByRole(AriaRole.Row, new() { Name = "Alexander Alpert 2022-01-17" })).ToBeVisibleAsync();
         await Page.ClickLinkByRow("Delete", "Alexander Alpert 2022-01-17");

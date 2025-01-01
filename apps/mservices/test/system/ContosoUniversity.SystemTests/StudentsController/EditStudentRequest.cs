@@ -3,17 +3,20 @@ namespace ContosoUniversity.SystemTests.StudentsController;
 using System;
 using System.Collections.Generic;
 
-using Mvc.ViewModels.Students;
-
 using NUnit.Framework;
 
-public static class CreateStudentRequests
+public record EditStudentRequest
 {
-    public static readonly CreateStudentRequest Valid = new()
+    public DateTime EnrollmentDate { get; init; }
+    public string LastName { get; init; }
+    public string FirstName { get; init; }
+    public Guid ExternalId { get; init; }
+
+    public static readonly EditStudentRequest Valid = new()
     {
-        LastName = "Alexander",
-        FirstName = "Alpert",
-        EnrollmentDate = DateTime.Parse("2022-01-17")
+        FirstName = "Cupertino",
+        LastName = "Alex",
+        EnrollmentDate = DateTime.Parse("2022-01-31")
     };
 
     public static IEnumerable<TestCaseData> Invalids =>

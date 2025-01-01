@@ -3,12 +3,15 @@ namespace ContosoUniversity.SystemTests.CoursesController;
 using System;
 using System.Collections.Generic;
 
-using Mvc.ViewModels.Courses;
-
 using NUnit.Framework;
 
-public static class CreateCourseRequests
+public record CreateCourseRequest
 {
+    public int CourseCode { get; init; }
+    public string Title { get; init; }
+    public int Credits { get; init; }
+    public Guid DepartmentId { get; init; }
+
     public static readonly CreateCourseRequest Valid = new()
     {
         CourseCode = 1111,
