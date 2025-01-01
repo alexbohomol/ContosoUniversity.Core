@@ -2,17 +2,23 @@ networks:
   cunetwork:
     name: cunetwork
 
-volumes:
-  sqlvolume:
-    name: sqlvolume
-
 services:
   web:
     image: cuweb
     container_name: cuweb
     hostname: web
     depends_on:
-      - "db"
+      courses-api:
+        condition: service_healthy
+      departments-api:
+        condition: service_healthy
+      students-api:
+        condition: service_healthy
+    healthcheck:
+      test: curl --fail http://localhost:80/health/readiness || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
     build:
       context: .
       dockerfile: src/ContosoUniversity.Mvc/Dockerfile
@@ -24,7 +30,15 @@ services:
     container_name: courses-api
     hostname: courses-api
     depends_on:
-      - "db"
+      db:
+        condition: service_healthy
+      db-migrator:
+        condition: service_completed_successfully
+    healthcheck:
+      test: curl --fail http://localhost:80/health/readiness || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
     build:
       context: .
       dockerfile: src/Courses.Api/Dockerfile
@@ -36,7 +50,15 @@ services:
     container_name: departments-api
     hostname: departments-api
     depends_on:
-      - "db"
+      db:
+        condition: service_healthy
+      db-migrator:
+        condition: service_completed_successfully
+    healthcheck:
+      test: curl --fail http://localhost:80/health/readiness || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
     build:
       context: .
       dockerfile: src/Departments.Api/Dockerfile
@@ -48,7 +70,15 @@ services:
     container_name: students-api
     hostname: students-api
     depends_on:
-      - "db"
+      db:
+        condition: service_healthy
+      db-migrator:
+        condition: service_completed_successfully
+    healthcheck:
+      test: curl --fail http://localhost:80/health/readiness || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
     build:
       context: .
       dockerfile: src/Students.Api/Dockerfile
@@ -64,5 +94,24 @@ services:
       SA_PASSWORD: <YourStrong!Passw0rd>
     ports:
       - "1433:1433"
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '<YourStrong!Passw0rd>' -Q "SELECT 1" -C
+      interval: 2s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
     networks:
       - cunetwork
+
+  db-migrator:
+    image: mcr.microsoft.com/mssql-tools
+    container_name: db-migrator
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - cunetwork
+    volumes:
+      - ../../database:/scripts:ro
+    working_dir: /scripts
+    entrypoint: /opt/mssql-tools/bin/sqlcmd -S db -U sa -P '<YourStrong!Passw0rd>' -i 'db-init.sql'
