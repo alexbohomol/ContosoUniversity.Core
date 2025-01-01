@@ -8,8 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 
-using Mvc.ViewModels.Courses;
-
 using NUnit.Framework;
 
 public class EditEndpointsTests : PageTest
@@ -17,13 +15,13 @@ public class EditEndpointsTests : PageTest
     private static readonly SutUrls Urls =
         new(ServiceLocator.GetRequiredService<IConfiguration>());
 
-    [TestCaseSource(typeof(EditCourseRequests), nameof(EditCourseRequests.Invalids))]
+    [TestCaseSource(typeof(EditCourseRequest), nameof(EditCourseRequest.Invalids))]
     public async Task PostEdit_WhenInvalidRequest_ReturnsValidationErrorView(
         EditCourseRequest request,
         string errorMessage)
     {
         // Arrange
-        await Page.CreateCourse(CreateCourseRequests.Valid);
+        await Page.CreateCourse(CreateCourseRequest.Valid);
         await Expect(Page).ToHaveURLAsync(Urls.CoursesListPage);
         await Expect(Page.GetByRole(AriaRole.Row, new() { Name = "1111 Computers 5" })).ToBeVisibleAsync();
         await Page.ClickLinkByRow("Edit", "1111 Computers 5");
@@ -47,13 +45,13 @@ public class EditEndpointsTests : PageTest
     public async Task PostEdit_WhenValidRequest_UpdatesCourseAndRedirectsToListPage()
     {
         // Arrange
-        await Page.CreateCourse(CreateCourseRequests.Valid);
+        await Page.CreateCourse(CreateCourseRequest.Valid);
         await Expect(Page).ToHaveURLAsync(Urls.CoursesListPage);
         await Expect(Page.GetByRole(AriaRole.Row, new() { Name = "1111 Computers 5" })).ToBeVisibleAsync();
         await Page.ClickLinkByRow("Edit", "1111 Computers 5");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         Page.Url.Should().StartWith(Urls.CoursesEditPage);
-        await Page.FillFormWith(EditCourseRequests.Valid);
+        await Page.FillFormWith(EditCourseRequest.Valid);
 
         // Act
         await Page.ClickAsync("input[type=submit]");

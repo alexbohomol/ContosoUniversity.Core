@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 
-using Mvc.ViewModels.Students;
-
 public static class PageMacrosActions
 {
     private static readonly SutUrls Urls =
