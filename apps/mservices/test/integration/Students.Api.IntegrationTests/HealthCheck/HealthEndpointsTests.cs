@@ -23,6 +23,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Xunit;
 
+[Collection(nameof(SharedTestCollection))]
 public class HealthEndpointsTests(TestsConfiguration config) : IClassFixture<TestsConfiguration>
 {
     [Theory]
