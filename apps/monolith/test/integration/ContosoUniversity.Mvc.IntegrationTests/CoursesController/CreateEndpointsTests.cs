@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Xunit;
 
+[Collection(nameof(SharedTestCollection))]
 public class CreateEndpointsTests :
     IClassFixture<TestsConfiguration>,
     IClassFixture<NoAntiforgeryWebApplicationFactory>

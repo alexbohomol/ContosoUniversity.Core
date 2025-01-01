@@ -3,6 +3,8 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
@@ -28,4 +30,5 @@ RUN dotnet publish "ContosoUniversity.Mvc.csproj" -c $BUILD_CONFIGURATION -o /ap
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY src/ContosoUniversity.Mvc/cert.pfx /https/
 ENTRYPOINT ["dotnet", "ContosoUniversity.Mvc.dll"]
