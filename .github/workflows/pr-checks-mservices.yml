@@ -293,11 +293,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Explore Environment
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+    - name: Install Docker Compose
+      run: sudo curl -L "https://github.com/docker/compose/releases/download/v2.11.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    - name: Set Permissions
+      run: sudo chmod +x /usr/local/bin/docker-compose
+
+    - name: Inspect Docker Environment
       run: |
         docker version
         docker compose version
+        docker-compose version
         ls -lah
 
     - name: Developer Cert
@@ -305,27 +310,25 @@ jobs:
       run: |
         dotnet dev-certs https -ep cert.pfx -p Test1234!
 
-    - name: Start Docker Infrastructure
+    - name: Test run Docker environment
       working-directory: ${{ vars.MSERVICES_SLN_PATH }}
-      run: docker compose up -d
+      run: docker compose up --wait
 
     - name: Inspect container | courses-api
       if: always()
       run: docker inspect courses-api
 
+    - name: Inspect container | departments-api
+      if: always()
+      run: docker inspect departments-api
+
+    - name: Inspect container | students-api
+      if: always()
+      run: docker inspect students-api
+
     - name: Inspect container | cuweb
       if: always()
       run: docker inspect cuweb
-      
-    - name: Init test database
-      run: |
-        docker run --rm \
-        --entrypoint /opt/mssql-tools/bin/sqlcmd \
-        --workdir /scripts \
-        --volume "$(pwd)"/database:/scripts \
-        --network cunetwork \
-        mcr.microsoft.com/mssql-tools \
-        -S cudb -U SA -P "${{ env.MSSQL_SA_PASSWORD }}" -i "db-init.sql"
 
     - name: Curl to cuweb
       if: always()
@@ -334,6 +337,42 @@ jobs:
     - name: Curl to courses-api
       if: always()
       run: curl http://localhost:5006/api/courses | jq .
+
+    - name: Curl to departments-api
+      if: always()
+      run: curl http://localhost:5079/api/departments | jq .
+
+    - name: Curl to students-api
+      if: always()
+      run: curl http://localhost:5110/api/students/enrolled/groups | jq .
+
+    - name: Grab container logs | cuweb
+      if: always()
+      run: docker logs cuweb
+
+    - name: Grab container logs | cudb
+      if: always()
+      run: docker logs cudb
+
+    - name: Grab container logs | db-migrator
+      if: always()
+      run: docker logs db-migrator
+
+    - name: Grab container logs | courses-api
+      if: always()
+      run: docker logs courses-api
+
+    - name: Grab container logs | departments-api
+      if: always()
+      run: docker logs departments-api
+
+    - name: Grab container logs | students-api
+      if: always()
+      run: docker logs students-api
+
+    - name: Shut down Docker Infra
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+      run: docker compose down
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -354,22 +393,6 @@ jobs:
       working-directory: ${{ env.TEST_PROJ_PATH }}
       run: |
         dotnet test --no-build --verbosity normal
-
-    - name: Grab container logs | courses-api
-      if: always()
-      run: docker logs courses-api
-
-    - name: Grab container logs | departments-api
-      if: always()
-      run: docker logs departments-api
-
-    - name: Grab container logs | students-api
-      if: always()
-      run: docker logs students-api
-
-    - name: Grab container logs | cuweb
-      if: always()
-      run: docker logs cuweb
 
   e2e_testing:
     if: true
