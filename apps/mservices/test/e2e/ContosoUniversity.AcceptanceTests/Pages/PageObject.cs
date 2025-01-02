@@ -6,29 +6,21 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 
-public abstract class PageObject
+public abstract class PageObject(IBrowser browser, IConfiguration configuration)
 {
-    protected PageObject(IBrowser browser, IConfiguration configuration)
-    {
-        Browser = browser;
-        Configuration = configuration;
-    }
-
-    protected string PageBaseUrl => Configuration["PageBaseUrl:Http"];
+    protected string PageBaseUrl => configuration["PageBaseUrl:Http"];
     protected abstract string PagePath { get; }
     protected IPage Page { get; set; }
-    private IBrowser Browser { get; }
-    private IConfiguration Configuration { get; }
 
     public async Task NavigateAsync()
     {
-        Page ??= await Browser.NewPageAsync();
+        Page ??= await browser.NewPageAsync();
         await Page.GotoAsync(PagePath);
     }
 
     public async Task NavigateToRouteAsync(string route)
     {
-        Page ??= await Browser.NewPageAsync();
+        Page ??= await browser.NewPageAsync();
         await Page.GotoAsync($"{PagePath}{route}");
     }
 
