@@ -615,7 +615,7 @@ jobs:
 
     - name: Ensure browsers are installed
       working-directory: ${{ env.TEST_PROJ_PATH }}
-      run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
+      run: pwsh bin/Debug/net9.0/playwright.ps1 install --with-deps
 
     - name: Run System Tests
       working-directory: ${{ env.TEST_PROJ_PATH }}
@@ -726,7 +726,7 @@ jobs:
 
     - name: Ensure browsers are installed
       working-directory: ${{ env.TEST_PROJ_PATH }}
-      run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
+      run: pwsh bin/Debug/net9.0/playwright.ps1 install --with-deps
 
     - name: Run Acceptance Tests
       working-directory: ${{ env.TEST_PROJ_PATH }}
