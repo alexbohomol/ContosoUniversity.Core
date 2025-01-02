@@ -9,6 +9,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Directory.Build.props", "."]
+COPY ["Directory.Packages.props", "."]
 COPY ["src/ContosoUniversity.Mvc/ContosoUniversity.Mvc.csproj", "src/ContosoUniversity.Mvc/"]
 COPY ["src/ContosoUniversity.Data.Courses.Reads/ContosoUniversity.Data.Courses.Reads.csproj", "src/ContosoUniversity.Data.Courses.Reads/"]
 COPY ["src/ContosoUniversity.Data/ContosoUniversity.Data.csproj", "src/ContosoUniversity.Data/"]
