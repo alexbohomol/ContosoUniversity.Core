@@ -1,23 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-    </PropertyGroup>
-
     <ItemGroup>
-        <PackageReference Include="Ductus.FluentDocker" Version="2.10.59" />
-        <PackageReference Include="FluentAssertions" Version="6.12.1" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
-        <PackageReference Include="Microsoft.Playwright" Version="1.47.0" />
-        <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.47.0" />
-        <PackageReference Include="NUnit" Version="4.2.2" />
-        <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
-        <PackageReference Include="coverlet.collector" Version="6.0.2">
+        <PackageReference Include="Ductus.FluentDocker" />
+        <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="Microsoft.Playwright" />
+        <PackageReference Include="Microsoft.Playwright.NUnit" />
+        <PackageReference Include="NUnit" />
+        <PackageReference Include="NUnit3TestAdapter" />
+        <PackageReference Include="coverlet.collector">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="SpecFlow" Version="3.9.74"/>
-        <PackageReference Include="SpecFlow.NUnit" Version="3.9.74"/>
+        <PackageReference Include="SpecFlow" />
+        <PackageReference Include="SpecFlow.NUnit" />
     </ItemGroup>
 
 </Project>
