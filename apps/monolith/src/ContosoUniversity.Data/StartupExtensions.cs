@@ -9,5 +9,7 @@ public static class StartupExtensions
     public static void AddDataInfrastructure(this IServiceCollection services)
     {
         services.AddSingleton<IConnectionResolver, DefaultConnectionResolver>();
+
+        services.ConfigureOptions<SqlConnectionStringBuilderSetup>();
     }
 }

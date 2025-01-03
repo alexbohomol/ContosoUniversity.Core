@@ -2,15 +2,16 @@ namespace ContosoUniversity.Data.Connection;
 
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
-internal class DefaultConnectionResolver(IConfiguration configuration)
+internal class DefaultConnectionResolver(
+    IConfiguration configuration,
+    IOptions<SqlConnectionStringBuilder> options)
     : IConnectionResolver
 {
     public SqlConnectionStringBuilder CreateFor(string connectionStringName)
     {
-        var defaults = configuration
-            .GetSection(nameof(SqlConnectionStringBuilder))
-            .Get<SqlConnectionStringBuilder>();
+        SqlConnectionStringBuilder defaults = options.Value;
 
         return new(configuration.GetConnectionString(connectionStringName))
         {
