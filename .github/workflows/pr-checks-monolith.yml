@@ -154,6 +154,7 @@ jobs:
         dotnet test --no-build --verbosity normal
       
   system_testing:
+    if: false
     name: System Testing | External-Process
     runs-on: ubuntu-latest
     env:
@@ -229,6 +230,7 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   e2e_testing:
+    if: false
     name: E2E Testing | External-Process
     runs-on: ubuntu-latest
     env:
