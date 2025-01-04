@@ -77,7 +77,7 @@ public class InfrastructureContext : IAsyncLifetime
     {
         get
         {
-            EnsureInfrastructureState();
+            // EnsureInfrastructureState();
             var connString = _msSqlContainer.GetConnectionString();
             var parsed = new SqlConnectionStringBuilder(connString);
             return parsed.DataSource;
@@ -90,7 +90,9 @@ public class InfrastructureContext : IAsyncLifetime
             _msSqlContainer.Health == TestcontainersHealthStatus.Healthy &&
             _migrator.State == TestcontainersStates.Exited)
         {
-            throw new InvalidOperationException("Infrastructure context is not yet ready.");
+            return;
         }
+
+        throw new InvalidOperationException("Infrastructure context is not yet ready.");
     }
 }
