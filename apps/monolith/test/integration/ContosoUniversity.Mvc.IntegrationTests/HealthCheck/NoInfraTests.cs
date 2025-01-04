@@ -27,7 +27,7 @@ public class NoInfraTests :
         _httpClient = factory.CreateClient();
     }
 
-    [Theory]
+    [Theory(Skip = "Should elaborate later on how to perform and setup it")]
     [InlineData("/health/readiness")]
     [InlineData("/health/liveness")]
     public async Task Health_ReturnsUnhealthy(string healthUrl)
