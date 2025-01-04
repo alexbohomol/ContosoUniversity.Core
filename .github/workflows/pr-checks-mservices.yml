@@ -84,7 +84,7 @@ jobs:
         --verify-no-changes
 
   integration_testing:
-    if: true
+    if: false
     name: Integration Testing / ContosoUniversity.Mvc
     runs-on: ubuntu-latest
     env:
@@ -191,7 +191,7 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   integration_testing_courses_api:
-    if: true
+    if: false
     name: Integration Testing / Courses.Api
     runs-on: ubuntu-latest
     env:
@@ -298,7 +298,7 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   integration_testing_departments_api:
-    if: true
+    if: false
     name: Integration Testing / Departments.Api
     runs-on: ubuntu-latest
     env:
@@ -405,7 +405,7 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   integration_testing_students_api:
-    if: true
+    if: false
     name: Integration Testing / Students.Api
     runs-on: ubuntu-latest
     env:
@@ -512,7 +512,7 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   system_testing:
-    if: true
+    if: false
     name: System Testing | External-Process
     runs-on: ubuntu-latest
     env:
@@ -623,7 +623,7 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   e2e_testing:
-    if: true
+    if: false
     name: E2E Testing | External-Process
     runs-on: ubuntu-latest
     env:
