@@ -8,23 +8,26 @@ using Xunit;
 
 public class CreateEndpointsTests :
     IClassFixture<TestsConfiguration>,
-    IClassFixture<CustomWebApplicationFactory>
+    IClassFixture<DefaultApplicationFactory>,
+    IClassFixture<InfrastructureContext>
 {
-    private readonly HttpClient _client;
+    private readonly HttpClient _httpClient;
 
     public CreateEndpointsTests(
         TestsConfiguration config,
-        CustomWebApplicationFactory factory)
+        DefaultApplicationFactory factory,
+        InfrastructureContext context)
     {
+        factory.DataSourceSetterFunction = () => context.MsSqlDataSource;
         factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         factory.ClientOptions.AllowAutoRedirect = true;
-        _client = factory.CreateClient();
+        _httpClient = factory.CreateClient();
     }
 
     [Fact]
     public async Task PostCreate_WhenInvalidRequest_ReturnsValidationError()
     {
-        var response = await _client.PostAsync(
+        var response = await _httpClient.PostAsync(
             "/Courses/Create",
             new FormUrlEncodedContent(new Dictionary<string, string>
             {

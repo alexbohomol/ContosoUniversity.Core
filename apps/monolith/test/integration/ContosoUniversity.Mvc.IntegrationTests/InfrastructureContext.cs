@@ -9,51 +9,25 @@ using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Networks;
 
-using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Testcontainers.MsSql;
 
 using Xunit;
 
-public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
+public class InfrastructureContext : IAsyncLifetime
 {
+    private const string RelativePath = "../../../../../../../../database";
+
     private MsSqlContainer _msSqlContainer;
     private INetwork _network;
     private IContainer _migrator;
-    private const string RelativePath = "../../../../../../../../database";
-    private string _dataSource;
 
     private static string GetFullPath(string relativePath) =>
         Path.GetFullPath(
             Path.Combine(
                 Directory.GetCurrentDirectory(),
                 relativePath));
-
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
-    {
-        builder.ConfigureTestServices(services =>
-        {
-            if (string.IsNullOrWhiteSpace(_dataSource))
-            {
-                throw new InvalidOperationException("Wrong test life-cycle!");
-            }
-
-            services.Configure<SqlConnectionStringBuilder>(options =>
-            {
-                options.DataSource = _dataSource;
-            });
-
-            services.RemoveAll<IAntiforgery>();
-            services.AddTransient<IAntiforgery, NoOpAntiforgery>();
-        });
-    }
 
     public async Task InitializeAsync()
     {
@@ -90,33 +64,33 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
 
         await _msSqlContainer.StartAsync();
         await _migrator.StartAsync();
-
-        var connectionString = _msSqlContainer.GetConnectionString();
-        var builder = new SqlConnectionStringBuilder(connectionString);
-        _dataSource = builder.DataSource;
     }
 
-    public new async Task DisposeAsync()
+    public async Task DisposeAsync()
     {
         await _msSqlContainer.DisposeAsync();
         await _migrator.DisposeAsync();
         await _network.DisposeAsync();
     }
-}
 
-file class NoOpAntiforgery : IAntiforgery
-{
-    public AntiforgeryTokenSet GetAndStoreTokens(HttpContext httpContext) =>
-        new("test", "test", "test", "test");
+    public string MsSqlDataSource
+    {
+        get
+        {
+            EnsureInfrastructureState();
+            var connString = _msSqlContainer.GetConnectionString();
+            var parsed = new SqlConnectionStringBuilder(connString);
+            return parsed.DataSource;
+        }
+    }
 
-    public AntiforgeryTokenSet GetTokens(HttpContext httpContext) =>
-        new("test", "test", "test", "test");
-
-    public Task<bool> IsRequestValidAsync(HttpContext httpContext) =>
-        Task.FromResult(true);
-
-    public void SetCookieTokenAndHeader(HttpContext httpContext) { }
-
-    public Task ValidateRequestAsync(HttpContext httpContext) =>
-        Task.CompletedTask;
+    private void EnsureInfrastructureState()
+    {
+        if (_msSqlContainer.State == TestcontainersStates.Running &&
+            _msSqlContainer.Health == TestcontainersHealthStatus.Healthy &&
+            _migrator.State == TestcontainersStates.Exited)
+        {
+            throw new InvalidOperationException("Infrastructure context is not yet ready.");
+        }
+    }
 }
