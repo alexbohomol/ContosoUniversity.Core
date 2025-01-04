@@ -13,7 +13,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Xunit;
 
-[Collection(nameof(SharedTestCollection))]
 public class CreateEndpointsTests :
     IClassFixture<TestsConfiguration>,
     IClassFixture<NoAntiforgeryWebApplicationFactory>
@@ -49,10 +48,12 @@ public class CreateEndpointsTests :
     }
 }
 
-public class NoAntiforgeryWebApplicationFactory : WebApplicationFactory<Program>
+public class NoAntiforgeryWebApplicationFactory : CustomWebApplicationFactory
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        base.ConfigureWebHost(builder);
+
         builder.ConfigureServices(services =>
         {
             services.RemoveAll<IAntiforgery>();
