@@ -5,21 +5,21 @@ using System.Threading.Tasks;
 
 using FluentAssertions;
 
-using Microsoft.AspNetCore.Mvc.Testing;
-
 using Xunit;
 
-[Collection(nameof(SharedTestCollection))]
 public class HeaderNavigationTests :
     IClassFixture<TestsConfiguration>,
-    IClassFixture<WebApplicationFactory<Program>>
+    IClassFixture<DefaultApplicationFactory>,
+    IClassFixture<InfrastructureContext>
 {
     private readonly HttpClient _httpClient;
 
     public HeaderNavigationTests(
         TestsConfiguration config,
-        WebApplicationFactory<Program> factory)
+        DefaultApplicationFactory factory,
+        InfrastructureContext context)
     {
+        factory.DataSourceSetterFunction = () => context.MsSqlDataSource;
         factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         _httpClient = factory.CreateClient();
     }
