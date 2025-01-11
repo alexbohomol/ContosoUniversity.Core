@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Data.Connection;
+namespace ContosoUniversity.Data.Options;
 
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;

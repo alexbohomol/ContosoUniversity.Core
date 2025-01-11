@@ -1,6 +1,5 @@
 namespace Students.Api.IntegrationTests.HealthCheck;
 
-using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -10,16 +9,14 @@ using System.Threading.Tasks;
 
 using Api;
 
-using ContosoUniversity.Data;
-
 using FluentAssertions;
 
 using HealthChecks.UI.Core;
 
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Xunit;
 
@@ -51,18 +48,13 @@ public class HealthEndpointsTests(TestsConfiguration config) : IClassFixture<Tes
     {
         var factory = new WebApplicationFactory<IAssemblyMarker>().WithWebHostBuilder(builder =>
         {
-            builder.ConfigureServices(collection =>
+            builder.ConfigureTestServices(services =>
             {
-                var resolver = collection.BuildServiceProvider().GetService<IConnectionResolver>();
-                collection.RemoveAll<IConnectionResolver>();
-                collection.AddSingleton<IConnectionResolver>(
-                    new DecoratingConnectionResolver(
-                        resolver,
-                        sqlBuilder =>
-                        {
-                            sqlBuilder.DataSource = "wrong host,1234";
-                            sqlBuilder.ConnectTimeout = 5;
-                        }));
+                services.Configure<SqlConnectionStringBuilder>(options =>
+                {
+                    options.DataSource = "wrong host,1234";
+                    options.ConnectTimeout = 5;
+                });
             });
         });
         factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
@@ -87,19 +79,6 @@ public class HealthEndpointsTests(TestsConfiguration config) : IClassFixture<Tes
             options.Converters.Add(new JsonStringEnumConverter());
 
             return options;
-        }
-    }
-
-    private class DecoratingConnectionResolver(
-        IConnectionResolver originalResolver,
-        Action<SqlConnectionStringBuilder> decorate)
-        : IConnectionResolver
-    {
-        public SqlConnectionStringBuilder CreateFor(string connectionStringName)
-        {
-            var builder = originalResolver.CreateFor(connectionStringName);
-            decorate(builder);
-            return builder;
         }
     }
 }
