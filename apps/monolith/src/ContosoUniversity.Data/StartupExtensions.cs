@@ -1,19 +1,17 @@
 namespace ContosoUniversity.Data;
 
-using Connection;
-
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
+using Options;
+
 public static class StartupExtensions
 {
     public static void AddDataInfrastructure(this IServiceCollection services)
     {
-        services.AddSingleton<IConnectionResolver, DefaultConnectionResolver>();
-
         services.ConfigureOptions<SqlConnectionStringBuilderSetup>();
     }
 
