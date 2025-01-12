@@ -71,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Students.Api", "src\Student
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Students.Api.IntegrationTests", "test\integration\Students.Api.IntegrationTests\Students.Api.IntegrationTests.csproj", "{089EF37B-1C0B-4AB7-A46A-8602ECCE00FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTesting.SharedKernel", "test\integration\IntegrationTesting.SharedKernel\IntegrationTesting.SharedKernel.csproj", "{CACA60BC-F747-431F-893F-8CA78E00DF31}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -177,6 +179,10 @@ Global
 		{089EF37B-1C0B-4AB7-A46A-8602ECCE00FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{089EF37B-1C0B-4AB7-A46A-8602ECCE00FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{089EF37B-1C0B-4AB7-A46A-8602ECCE00FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CACA60BC-F747-431F-893F-8CA78E00DF31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CACA60BC-F747-431F-893F-8CA78E00DF31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CACA60BC-F747-431F-893F-8CA78E00DF31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CACA60BC-F747-431F-893F-8CA78E00DF31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -217,5 +223,6 @@ Global
 		{E8651996-3CCE-49D0-BA55-9C2B9776E798} = {42293EC1-EA5A-4BDF-A35F-3F74D78940A5}
 		{C4D978AA-6390-4719-9488-D49171AD5BF0} = {6B89851E-4652-42E9-8B59-D6FA3583F6DF}
 		{089EF37B-1C0B-4AB7-A46A-8602ECCE00FC} = {42293EC1-EA5A-4BDF-A35F-3F74D78940A5}
+		{CACA60BC-F747-431F-893F-8CA78E00DF31} = {42293EC1-EA5A-4BDF-A35F-3F74D78940A5}
 	EndGlobalSection
 EndGlobal

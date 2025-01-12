@@ -1,4 +1,4 @@
-namespace Departments.Api.IntegrationTests.HealthCheck;
+namespace IntegrationTesting.SharedKernel;
 
 using FluentAssertions;
 
@@ -6,30 +6,18 @@ using HealthChecks.UI.Core;
 
 public static class HealthReportAssertions
 {
-    private static readonly string[] CheckNames =
-    [
-        "sql-departments-reads",
-        "sql-departments-writes"
-    ];
-
-    private static readonly string[] Tags =
-    [
-        "db",
-        "sql",
-        "departments",
-        "reads",
-        "writes"
-    ];
-
-    public static void ShouldBeHealthy(this UIHealthReport report)
+    public static void ShouldBeHealthy(
+        this UIHealthReport report,
+        string[] expectedCheckNames,
+        string[] expectedTags)
     {
         report.Should().NotBeNull();
         report.Status.Should().Be(UIHealthStatus.Healthy);
         // report.TotalDuration.Should().BeLessThan(TimeSpan.FromSeconds(1));
         report.Entries.Should().NotBeEmpty();
         report.Entries.Count.Should().Be(2);
-        report.Entries.Keys.Should().BeEquivalentTo(CheckNames);
-        report.Entries.Values.SelectMany(x => x.Tags).Distinct().Should().BeEquivalentTo(Tags);
+        report.Entries.Keys.Should().BeEquivalentTo(expectedCheckNames);
+        report.Entries.Values.SelectMany(x => x.Tags).Distinct().Should().BeEquivalentTo(expectedTags);
         report.Entries.Values.Should().AllSatisfy(ShouldBeHealthy);
     }
 
@@ -42,15 +30,18 @@ public static class HealthReportAssertions
         entry.Tags?.Count().Should().Be(4);
     }
 
-    public static void ShouldBeUnhealthy(this UIHealthReport report)
+    public static void ShouldBeUnhealthy(
+        this UIHealthReport report,
+        string[] expectedCheckNames,
+        string[] expectedTags)
     {
         report.Should().NotBeNull();
         report.Status.Should().Be(UIHealthStatus.Unhealthy);
         // report.TotalDuration.Should().BeLessThan(TimeSpan.FromSeconds(1));
         report.Entries.Should().NotBeEmpty();
         report.Entries.Count.Should().Be(2);
-        report.Entries.Keys.Should().BeEquivalentTo(CheckNames);
-        report.Entries.Values.SelectMany(x => x.Tags).Distinct().Should().BeEquivalentTo(Tags);
+        report.Entries.Keys.Should().BeEquivalentTo(expectedCheckNames);
+        report.Entries.Values.SelectMany(x => x.Tags).Distinct().Should().BeEquivalentTo(expectedTags);
         report.Entries.Values.Should().AllSatisfy(ShouldBeUnhealthy);
     }
 
