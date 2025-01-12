@@ -48,7 +48,7 @@ public class InfrastructureContext : IAsyncLifetime
         var execResult = await _msSqlContainer.ExecAsync(
         [
             "/opt/mssql-tools18/bin/sqlcmd",
-            "-i", "db-init.sql",
+            "-i", "db-init-clean.sql",
             "-C"  // Trust the self-signed certificate
         ]);
 
