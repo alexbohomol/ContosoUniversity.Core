@@ -7,6 +7,8 @@ using FluentAssertions;
 
 using HealthChecks.UI.Core;
 
+using IntegrationTesting.SharedKernel;
+
 using Xunit;
 
 public class InfraExistsTests :
@@ -36,8 +38,21 @@ public class InfraExistsTests :
         response.Should().BeSuccessful();
         response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
 
-        var report = await response.Content.ReadFromJsonAsync<UIHealthReport>(JsonSerializerOptions.HealthChecks);
+        var report = await response.Content.ReadFromJsonAsync<UIHealthReport>(JsonSerializerOptionsBuilder.HealthChecks);
 
-        report.ShouldBeHealthy();
+        report.ShouldBeHealthy(
+            expectedCheckNames:
+            [
+                "sql-departments-reads",
+                "sql-departments-writes"
+            ],
+            expectedTags:
+            [
+                "db",
+                "sql",
+                "departments",
+                "reads",
+                "writes"
+            ]);
     }
 }

@@ -1,15 +1,15 @@
-namespace Departments.Api.IntegrationTests.HealthCheck;
+namespace IntegrationTesting.SharedKernel;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-internal static class JsonSerializerOptions
+public static class JsonSerializerOptionsBuilder
 {
-    public static System.Text.Json.JsonSerializerOptions HealthChecks
+    public static JsonSerializerOptions HealthChecks
     {
         get
         {
-            var options = new System.Text.Json.JsonSerializerOptions();
+            var options = new JsonSerializerOptions();
             options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
             options.Converters.Add(new JsonStringEnumConverter());
 

@@ -18,6 +18,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\src\Students.Api\Students.Api.csproj"/>
+        <ProjectReference Include="..\IntegrationTesting.SharedKernel\IntegrationTesting.SharedKernel.csproj" />
     </ItemGroup>
 
     <ItemGroup>

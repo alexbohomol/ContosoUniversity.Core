@@ -1,8 +1,6 @@
 namespace Courses.Api.IntegrationTests.HealthCheck;
 
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 using Api;
@@ -11,7 +9,7 @@ using FluentAssertions;
 
 using HealthChecks.UI.Core;
 
-using IntegrationTests;
+using IntegrationTesting.SharedKernel;
 
 using Microsoft.AspNetCore.Mvc.Testing;
 
@@ -41,8 +39,21 @@ public class NoInfraTests :
         response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
         response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
 
-        var report = await response.Content.ReadFromJsonAsync<UIHealthReport>(JsonSerializerOptions.HealthChecks);
+        var report = await response.Content.ReadFromJsonAsync<UIHealthReport>(JsonSerializerOptionsBuilder.HealthChecks);
 
-        report.ShouldBeUnhealthy();
+        report.ShouldBeUnhealthy(
+            expectedCheckNames:
+            [
+                "sql-courses-reads",
+                "sql-courses-writes"
+            ],
+            expectedTags:
+            [
+                "db",
+                "sql",
+                "courses",
+                "reads",
+                "writes"
+            ]);
     }
 }
