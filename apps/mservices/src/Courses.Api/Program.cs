@@ -83,13 +83,22 @@ app.MapPost("/api/courses", async (
     [FromServices] IMediator mediator,
     CancellationToken cancellationToken) =>
 {
-    await mediator.Send(
+    var course = await mediator.Send(
         new CreateCourseCommand(
             request.CourseCode,
             request.Title,
             request.Credits,
             request.DepartmentId),
         cancellationToken);
+
+    return Results.Created(
+        $"/api/courses/{course.ExternalId}",
+        new CreateCourseResponse(
+            course.ExternalId,
+            course.Code,
+            course.Title,
+            course.Credits,
+            course.DepartmentId));
 });
 
 app.MapPut("/api/courses/{externalId:guid}", async (

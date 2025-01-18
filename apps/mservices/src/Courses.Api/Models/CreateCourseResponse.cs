@@ -1,6 +1,7 @@
 namespace Courses.Api.Models;
 
-public record CreateCourseRequest(
+public record CreateCourseResponse(
+    Guid ExternalId,
     int CourseCode,
     string Title,
     int Credits,
