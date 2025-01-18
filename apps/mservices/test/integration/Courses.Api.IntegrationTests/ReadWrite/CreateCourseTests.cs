@@ -24,7 +24,7 @@ public class CreateCourseTests :
     }
 
     [Fact]
-    public async Task ValidCreateCourseRequest_ReturnsOk()
+    public async Task ValidCreateRequest_ReturnsCreated()
     {
         // Arrange
         var courseRequest = new CreateCourseRequest(1234, "Computers", 5, Guid.NewGuid());

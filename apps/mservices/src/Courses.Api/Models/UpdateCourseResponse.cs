@@ -1,6 +1,8 @@
 namespace Courses.Api.Models;
 
-public record UpdateCourseRequest(
+public record UpdateCourseResponse(
+    Guid ExternalId,
+    int CourseCode,
     string Title,
     int Credits,
     Guid DepartmentId);
