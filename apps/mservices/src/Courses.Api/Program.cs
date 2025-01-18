@@ -107,13 +107,20 @@ app.MapPut("/api/courses/{externalId:guid}", async (
     [FromServices] IMediator mediator,
     CancellationToken cancellationToken) =>
 {
-    await mediator.Send(
+    var course = await mediator.Send(
         new EditCourseCommand(
             externalId,
             request.Title,
             request.Credits,
             request.DepartmentId),
         cancellationToken);
+
+    return Results.Ok(new UpdateCourseResponse(
+        course.ExternalId,
+        course.Code,
+        course.Title,
+        course.Credits,
+        course.DepartmentId));
 });
 
 app.MapDelete("/api/courses/{externalId:guid}", async (
