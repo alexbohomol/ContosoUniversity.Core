@@ -131,6 +131,8 @@ app.MapDelete("/api/courses/{externalId:guid}", async (
     await mediator.Send(
         new DeleteCourseCommand(externalId),
         cancellationToken);
+
+    return Results.NoContent();
 });
 
 app.MapPut("/api/courses/credits/update",
