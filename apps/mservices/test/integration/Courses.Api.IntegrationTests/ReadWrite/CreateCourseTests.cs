@@ -27,10 +27,10 @@ public class CreateCourseTests :
     public async Task ValidCreateRequest_ReturnsCreated()
     {
         // Arrange
-        var courseRequest = new CreateCourseRequest(1234, "Computers", 5, Guid.NewGuid());
+        var courseRequest = Requests.CreateCourse.Valid;
 
         // Act
-        var response = await _httpClient.PostAsJsonAsync("/api/courses", courseRequest, CancellationToken.None);
+        var response = await _httpClient.PostAsJsonAsync("/api/courses", courseRequest, default);
         var createdCourse = await response.Content.ReadFromJsonAsync<CreateCourseResponse>();
 
         // Assert

@@ -27,8 +27,8 @@ public class UpdateCourseTests :
     public async Task ValidUpdateRequest_ReturnsOk()
     {
         // Arrange
-        (_, Uri location) = await CreateCourse();
-        var updateRequest = new UpdateCourseRequest("Quantum Computing", 3, Guid.NewGuid());
+        (_, Uri location) = await _httpClient.CreateCourse(Requests.CreateCourse.Valid);
+        var updateRequest = Requests.UpdateCourse.Valid;
 
         // Act
         var response = await _httpClient.PutAsJsonAsync(location, updateRequest, default);
@@ -38,13 +38,5 @@ public class UpdateCourseTests :
         response.Should().BeSuccessful();
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         updatedCourse.Should().BeEquivalentTo(updateRequest);
-    }
-
-    private async Task<(CreateCourseResponse created, Uri Location)> CreateCourse()
-    {
-        var courseRequest = new CreateCourseRequest(1234, "Computers", 5, Guid.NewGuid());
-        var response = await _httpClient.PostAsJsonAsync("/api/courses", courseRequest, default);
-        var createdCourse = await response.Content.ReadFromJsonAsync<CreateCourseResponse>();
-        return (createdCourse, response.Headers.Location);
     }
 }
