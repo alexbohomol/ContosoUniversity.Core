@@ -83,13 +83,22 @@ app.MapPost("/api/courses", async (
     [FromServices] IMediator mediator,
     CancellationToken cancellationToken) =>
 {
-    await mediator.Send(
+    var course = await mediator.Send(
         new CreateCourseCommand(
             request.CourseCode,
             request.Title,
             request.Credits,
             request.DepartmentId),
         cancellationToken);
+
+    return Results.Created(
+        $"/api/courses/{course.ExternalId}",
+        new CreateCourseResponse(
+            course.ExternalId,
+            course.Code,
+            course.Title,
+            course.Credits,
+            course.DepartmentId));
 });
 
 app.MapPut("/api/courses/{externalId:guid}", async (
@@ -98,13 +107,20 @@ app.MapPut("/api/courses/{externalId:guid}", async (
     [FromServices] IMediator mediator,
     CancellationToken cancellationToken) =>
 {
-    await mediator.Send(
+    var course = await mediator.Send(
         new EditCourseCommand(
             externalId,
             request.Title,
             request.Credits,
             request.DepartmentId),
         cancellationToken);
+
+    return Results.Ok(new UpdateCourseResponse(
+        course.ExternalId,
+        course.Code,
+        course.Title,
+        course.Credits,
+        course.DepartmentId));
 });
 
 app.MapDelete("/api/courses/{externalId:guid}", async (
@@ -115,6 +131,8 @@ app.MapDelete("/api/courses/{externalId:guid}", async (
     await mediator.Send(
         new DeleteCourseCommand(externalId),
         cancellationToken);
+
+    return Results.NoContent();
 });
 
 app.MapPut("/api/courses/credits/update",

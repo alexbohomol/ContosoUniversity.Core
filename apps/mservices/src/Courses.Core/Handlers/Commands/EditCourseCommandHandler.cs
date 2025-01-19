@@ -1,18 +1,18 @@
-using Course = Courses.Core.Domain.Course;
-
 namespace Courses.Core.Handlers.Commands;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Domain;
+
 using MediatR;
 
 internal class EditCourseCommandHandler(
     ICoursesRwRepository coursesRepository)
-    : IRequestHandler<EditCourseCommand>
+    : IRequestHandler<EditCourseCommand, Course>
 {
-    public async Task Handle(EditCourseCommand request, CancellationToken cancellationToken)
+    public async Task<Course> Handle(EditCourseCommand request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -26,5 +26,7 @@ internal class EditCourseCommandHandler(
             request.DepartmentId);
 
         await coursesRepository.Save(course, cancellationToken);
+
+        return course;
     }
 }
