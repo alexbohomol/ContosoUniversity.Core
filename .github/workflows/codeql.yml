@@ -3,10 +3,7 @@ name: "CodeQL"
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-  schedule:
-    - cron: '00 10 * * 5'
+  workflow_dispatch:
 
 env:
   DOTNET_VERSION: 9.0.x
