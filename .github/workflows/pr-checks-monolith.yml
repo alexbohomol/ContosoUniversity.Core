@@ -8,7 +8,9 @@ on:
     paths: 
       - "apps/monolith/**"
       - "database/**"
-      - ".github/**"
+      - ".github/codeql.yml"
+      - ".github/pr-checks-monolith.yml"
+  workflow_dispatch:
 
 env:
   DOTNET_VERSION: 9.0.x
