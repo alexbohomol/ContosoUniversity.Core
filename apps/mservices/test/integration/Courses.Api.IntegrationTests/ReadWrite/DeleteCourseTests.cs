@@ -29,9 +29,11 @@ public class DeleteCourseTests :
 
         // Act
         var response = await _httpClient.DeleteAsync(location, default);
+        var content = await response.Content.ReadAsStringAsync();
 
         // Assert
         response.Should().BeSuccessful();
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        content.Should().BeEmpty();
     }
 }

@@ -27,16 +27,16 @@ public class CreateCourseTests :
     public async Task ValidCreateRequest_ReturnsCreated()
     {
         // Arrange
-        var courseRequest = Requests.CreateCourse.Valid;
+        var request = Requests.CreateCourse.Valid;
 
         // Act
-        var response = await _httpClient.PostAsJsonAsync("/api/courses", courseRequest, default);
+        var response = await _httpClient.PostAsJsonAsync("/api/courses", request, default);
         var createdCourse = await response.Content.ReadFromJsonAsync<CreateCourseResponse>();
 
         // Assert
         response.Should().BeSuccessful();
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         response.Headers.Location.Should().Be($"/api/courses/{createdCourse.ExternalId}");
-        createdCourse.Should().BeEquivalentTo(courseRequest);
+        createdCourse.Should().BeEquivalentTo(request);
     }
 }

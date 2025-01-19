@@ -4,7 +4,7 @@ using Models;
 
 static class MacrosActionsExtensions
 {
-    public static async Task<(CreateCourseResponse created, Uri Location)> CreateCourse(
+    public static async Task<(CreateCourseResponse created, Uri location)> CreateCourse(
         this HttpClient httpClient,
         CreateCourseRequest request)
     {

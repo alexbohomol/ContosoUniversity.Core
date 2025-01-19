@@ -28,15 +28,15 @@ public class UpdateCourseTests :
     {
         // Arrange
         (_, Uri location) = await _httpClient.CreateCourse(Requests.CreateCourse.Valid);
-        var updateRequest = Requests.UpdateCourse.Valid;
+        var request = Requests.UpdateCourse.Valid;
 
         // Act
-        var response = await _httpClient.PutAsJsonAsync(location, updateRequest, default);
+        var response = await _httpClient.PutAsJsonAsync(location, request, default);
         var updatedCourse = await response.Content.ReadFromJsonAsync<UpdateCourseResponse>();
 
         // Assert
         response.Should().BeSuccessful();
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        updatedCourse.Should().BeEquivalentTo(updateRequest);
+        updatedCourse.Should().BeEquivalentTo(request);
     }
 }
