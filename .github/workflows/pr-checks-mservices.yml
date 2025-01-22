@@ -121,11 +121,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Developer Cert
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}/src/ContosoUniversity.Mvc
-      run: |
-        dotnet dev-certs https -ep cert.pfx -p Test1234!
-
     - name: Pull Docker images
       run: |
         docker pull mcr.microsoft.com/mssql/server
@@ -156,11 +151,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Developer Cert
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}/src/ContosoUniversity.Mvc
-      run: |
-        dotnet dev-certs https -ep cert.pfx -p Test1234!
-
     - name: Pull Docker images
       run: |
         docker pull mcr.microsoft.com/mssql/server
@@ -190,11 +180,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
-    - name: Developer Cert
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}/src/ContosoUniversity.Mvc
-      run: |
-        dotnet dev-certs https -ep cert.pfx -p Test1234!
 
     - name: Pull Docker images
       run: |
