@@ -1,6 +1,6 @@
 namespace Students.Api.Models;
 
-internal record CreateStudentRequest(
+public record CreateStudentRequest(
     DateTime EnrollmentDate,
     string LastName,
     string FirstName);

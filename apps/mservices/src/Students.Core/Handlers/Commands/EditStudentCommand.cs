@@ -3,9 +3,11 @@ namespace Students.Core.Handlers.Commands;
 using System;
 using System.ComponentModel.DataAnnotations;
 
+using Domain;
+
 using MediatR;
 
-public record EditStudentCommand : IRequest
+public record EditStudentCommand : IRequest<Student>
 {
     [DataType(DataType.Date)]
     [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]

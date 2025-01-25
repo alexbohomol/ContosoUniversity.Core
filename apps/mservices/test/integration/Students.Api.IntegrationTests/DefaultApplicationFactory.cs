@@ -2,13 +2,13 @@ namespace Students.Api.IntegrationTests;
 
 using System;
 
+using Api;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
-
-using Students.Api;
 
 public class DefaultApplicationFactory : WebApplicationFactory<IAssemblyMarker>
 {

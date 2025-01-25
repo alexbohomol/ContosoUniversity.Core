@@ -1,6 +1,6 @@
 namespace Students.Api.Models;
 
-public record EditStudentRequest(
+public record EditStudentResponse(
     DateTime EnrollmentDate,
     string LastName,
     string FirstName,

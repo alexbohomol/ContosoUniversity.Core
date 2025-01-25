@@ -76,12 +76,20 @@ app.MapPost("/api/students", async (
     [FromServices] IMediator mediator,
     CancellationToken cancellationToken) =>
 {
-    await mediator.Send(
+    var student = await mediator.Send(
         new CreateStudentCommand(
             request.EnrollmentDate,
             request.LastName,
             request.FirstName),
         cancellationToken);
+
+    return Results.Created(
+        $"/api/students/{student.ExternalId}",
+        new CreateStudentResponse(
+            student.ExternalId,
+            student.EnrollmentDate,
+            student.LastName,
+            student.FirstName));
 });
 
 app.MapPut("/api/students/{externalId:guid}", async (
@@ -90,7 +98,7 @@ app.MapPut("/api/students/{externalId:guid}", async (
     [FromServices] IMediator mediator,
     CancellationToken cancellationToken) =>
 {
-    await mediator.Send(
+    var student = await mediator.Send(
         new EditStudentCommand
         {
             EnrollmentDate = request.EnrollmentDate,
@@ -99,6 +107,12 @@ app.MapPut("/api/students/{externalId:guid}", async (
             LastName = request.LastName
         },
         cancellationToken);
+
+    return Results.Ok(new EditStudentResponse(
+        student.EnrollmentDate,
+        student.LastName,
+        student.FirstName,
+        student.ExternalId));
 });
 
 app.MapDelete("/api/students/{externalId:guid}", async (
@@ -109,6 +123,8 @@ app.MapDelete("/api/students/{externalId:guid}", async (
     await mediator.Send(
         new DeleteStudentCommand(externalId),
         cancellationToken);
+
+    return Results.NoContent();
 });
 
 await app.RunAsync();
