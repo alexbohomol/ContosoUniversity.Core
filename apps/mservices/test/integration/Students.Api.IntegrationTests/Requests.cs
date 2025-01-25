@@ -11,6 +11,6 @@ class Requests
 
     public class UpdateStudent
     {
-        public static EditStudentRequest Valid => new(DateTime.Now, "LastName Updated", "FirstName Updated", Guid.Empty);
+        public static UpdateStudentRequest Valid => new(DateTime.Now, "LastName Updated", "FirstName Updated");
     }
 }

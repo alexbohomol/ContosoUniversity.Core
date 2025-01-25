@@ -94,7 +94,7 @@ app.MapPost("/api/students", async (
 
 app.MapPut("/api/students/{externalId:guid}", async (
     Guid externalId,
-    [FromBody] EditStudentRequest request,
+    [FromBody] UpdateStudentRequest request,
     [FromServices] IMediator mediator,
     CancellationToken cancellationToken) =>
 {
@@ -108,7 +108,7 @@ app.MapPut("/api/students/{externalId:guid}", async (
         },
         cancellationToken);
 
-    return Results.Ok(new EditStudentResponse(
+    return Results.Ok(new UpdateStudentResponse(
         student.EnrollmentDate,
         student.LastName,
         student.FirstName,

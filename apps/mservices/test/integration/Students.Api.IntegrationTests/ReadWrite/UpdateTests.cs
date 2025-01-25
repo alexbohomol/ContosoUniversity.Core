@@ -29,15 +29,12 @@ public class UpdateTests :
     public async Task ValidUpdateRequest_ReturnsOk()
     {
         // Arrange
-        (CreateStudentResponse created, Uri location) = await _httpClient.CreateStudent(Requests.CreateStudent.Valid);
-        var request = Requests.UpdateStudent.Valid with
-        {
-            ExternalId = created.ExternalId
-        };
+        (_, Uri location) = await _httpClient.CreateStudent(Requests.CreateStudent.Valid);
+        var request = Requests.UpdateStudent.Valid;
 
         // Act
         var response = await _httpClient.PutAsJsonAsync(location, request, default);
-        var updatedCourse = await response.Content.ReadFromJsonAsync<EditStudentResponse>();
+        var updatedCourse = await response.Content.ReadFromJsonAsync<UpdateStudentResponse>();
 
         // Assert
         response.Should().BeSuccessful();
