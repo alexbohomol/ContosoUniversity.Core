@@ -1,6 +1,6 @@
 namespace Departments.Api.Models;
 
-internal record EditInstructorRequest(
+public record EditInstructorRequest(
     Guid ExternalId,
     string LastName,
     string FirstName,

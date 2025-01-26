@@ -2,6 +2,8 @@ namespace Departments.Core.Handlers.Commands;
 
 using System;
 
+using Domain;
+
 using MediatR;
 
 public record EditInstructorCommand(
@@ -10,7 +12,7 @@ public record EditInstructorCommand(
     string FirstName,
     DateTime HireDate,
     Guid[] SelectedCourses,
-    string Location) : IRequest
+    string Location) : IRequest<Instructor>
 {
     public bool HasAssignedOffice => !string.IsNullOrWhiteSpace(Location);
     public bool HasAssignedCourses =>

@@ -1,6 +1,6 @@
 namespace Departments.Api.Models;
 
-internal record EditDepartmentRequest(
+public record EditDepartmentRequest(
     string Name,
     decimal Budget,
     DateTime StartDate,

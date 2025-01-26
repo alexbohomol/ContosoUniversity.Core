@@ -1,6 +1,7 @@
 namespace Departments.Api.Models;
 
-public record CreateDepartmentRequest(
+public record CreateDepartmentResponse(
+    Guid ExternalId,
     string Name,
     decimal Budget,
     DateTime StartDate,

@@ -1,8 +1,8 @@
 namespace Departments.Api.Models;
 
-public record CreateInstructorRequest(
+public record EditInstructorResponse(
+    Guid ExternalId,
     string LastName,
     string FirstName,
     DateTime HireDate,
-    Guid[] SelectedCourses,
-    string Location);
+    Guid[] SelectedCourses);

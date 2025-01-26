@@ -2,7 +2,7 @@ namespace Departments.Api.IntegrationTests;
 
 using System;
 
-using Departments.Api;
+using Api;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;

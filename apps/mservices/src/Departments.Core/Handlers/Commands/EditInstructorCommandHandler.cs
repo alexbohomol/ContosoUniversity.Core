@@ -1,19 +1,18 @@
-using Instructor = Departments.Core.Domain.Instructor;
-using OfficeAssignment = Departments.Core.Domain.OfficeAssignment;
-
 namespace Departments.Core.Handlers.Commands;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Domain;
+
 using MediatR;
 
 internal class EditInstructorCommandHandler(
     IInstructorsRwRepository instructorsRepository)
-    : IRequestHandler<EditInstructorCommand>
+    : IRequestHandler<EditInstructorCommand, Instructor>
 {
-    public async Task Handle(EditInstructorCommand request, CancellationToken cancellationToken)
+    public async Task<Instructor> Handle(EditInstructorCommand request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -42,5 +41,7 @@ internal class EditInstructorCommandHandler(
         }
 
         await instructorsRepository.Save(instructor, cancellationToken);
+
+        return instructor;
     }
 }

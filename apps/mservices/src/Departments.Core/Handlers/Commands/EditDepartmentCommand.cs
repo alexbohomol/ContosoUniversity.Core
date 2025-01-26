@@ -2,6 +2,8 @@ namespace Departments.Core.Handlers.Commands;
 
 using System;
 
+using Domain;
+
 using MediatR;
 
 public record EditDepartmentCommand(
@@ -10,4 +12,4 @@ public record EditDepartmentCommand(
     DateTime StartDate,
     Guid? AdministratorId,
     Guid ExternalId,
-    byte[] RowVersion) : IRequest;
+    byte[] RowVersion) : IRequest<Department>;
