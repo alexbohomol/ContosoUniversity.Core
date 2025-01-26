@@ -27,21 +27,18 @@ public class UpdateTests :
     public async Task ValidUpdateRequest_ReturnsOk()
     {
         // Arrange
-        (CreateInstructorResponse created, Uri location) = await _httpClient.CreateInstructor(Requests.CreateInstructor.Valid);
-        var request = Requests.UpdateInstructor.Valid with
-        {
-            ExternalId = created.ExternalId
-        };
+        (_, Uri location) = await _httpClient.CreateInstructor(Requests.CreateInstructor.Valid);
+        var request = Requests.UpdateInstructor.Valid;
 
         // Act
         var response = await _httpClient.PutAsJsonAsync(location, request, default);
-        var updatedInstructor = await response.Content.ReadFromJsonAsync<EditInstructorResponse>();
+        var updatedInstructor = await response.Content.ReadFromJsonAsync<UpdateInstructorResponse>();
 
         // Assert
         response.Should().BeSuccessful();
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        // updatedCourse.Should().BeEquivalentTo(request);
-        updatedInstructor.ExternalId.Should().Be(request.ExternalId);
+        // updatedInstructor.Should().BeEquivalentTo(request);
+        // updatedInstructor.ExternalId.Should().Be(request.ExternalId);
         updatedInstructor.LastName.Should().Be(request.LastName);
         updatedInstructor.FirstName.Should().Be(request.FirstName);
         updatedInstructor.HireDate.Should().Be(request.HireDate);

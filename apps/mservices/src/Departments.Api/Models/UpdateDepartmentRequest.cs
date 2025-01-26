@@ -1,8 +1,8 @@
 namespace Departments.Api.Models;
 
-public record EditDepartmentResponse(
-    Guid ExternalId,
+public record UpdateDepartmentRequest(
     string Name,
     decimal Budget,
     DateTime StartDate,
-    Guid? AdministratorId);
+    Guid? AdministratorId,
+    byte[] RowVersion);

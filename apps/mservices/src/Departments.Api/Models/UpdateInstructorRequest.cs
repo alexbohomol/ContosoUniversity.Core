@@ -1,8 +1,8 @@
 namespace Departments.Api.Models;
 
-public record EditInstructorResponse(
-    Guid ExternalId,
+public record UpdateInstructorRequest(
     string LastName,
     string FirstName,
     DateTime HireDate,
-    Guid[] SelectedCourses);
+    Guid[] SelectedCourses,
+    string Location);

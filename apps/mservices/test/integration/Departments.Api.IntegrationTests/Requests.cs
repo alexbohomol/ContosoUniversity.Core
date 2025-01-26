@@ -11,8 +11,7 @@ class Requests
 
     public class UpdateDepartment
     {
-        public static EditDepartmentRequest Valid => new("Quantum Computers", 2000000, DateTime.Now, Guid.NewGuid(),
-            Guid.NewGuid(),
+        public static UpdateDepartmentRequest Valid => new("Quantum Computers", 2000000, DateTime.Now, Guid.NewGuid(),
             Convert.FromBase64String("other version"));
     }
 
@@ -25,7 +24,7 @@ class Requests
 
     public class UpdateInstructor
     {
-        public static EditInstructorRequest Valid => new(Guid.Empty, "Updated LastName", "Updated FirstName", DateTime.Now,
+        public static UpdateInstructorRequest Valid => new("Updated LastName", "Updated FirstName", DateTime.Now,
             [Guid.NewGuid()],
             "Updated Location");
     }

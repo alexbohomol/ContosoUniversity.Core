@@ -85,7 +85,7 @@ app.MapPost("/api/departments", async (
 
 app.MapPut("/api/departments/{externalId:guid}", async (
     Guid externalId,
-    [FromBody] EditDepartmentRequest request,
+    [FromBody] UpdateDepartmentRequest request,
     [FromServices] IMediator mediator,
     CancellationToken cancellationToken) =>
 {
@@ -99,7 +99,7 @@ app.MapPut("/api/departments/{externalId:guid}", async (
             request.RowVersion),
         cancellationToken);
 
-    return Results.Ok(new EditDepartmentResponse(
+    return Results.Ok(new UpdateDepartmentResponse(
         department.ExternalId,
         department.Name,
         department.Budget,
@@ -165,7 +165,7 @@ app.MapPost("/api/instructors", async (
 
 app.MapPut("/api/instructors/{externalId:guid}", async (
     Guid externalId,
-    [FromBody] EditInstructorRequest request,
+    [FromBody] UpdateInstructorRequest request,
     [FromServices] IMediator mediator,
     CancellationToken cancellationToken) =>
 {
@@ -179,7 +179,7 @@ app.MapPut("/api/instructors/{externalId:guid}", async (
             request.Location),
         cancellationToken);
 
-    return Results.Ok(new EditInstructorResponse(
+    return Results.Ok(new UpdateInstructorResponse(
         instructor.ExternalId,
         instructor.LastName,
         instructor.FirstName,

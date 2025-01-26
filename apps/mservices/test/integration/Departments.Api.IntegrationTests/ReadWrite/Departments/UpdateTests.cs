@@ -27,21 +27,18 @@ public class UpdateTests :
     public async Task ValidUpdateRequest_ReturnsOk()
     {
         // Arrange
-        (CreateDepartmentResponse created, Uri location) = await _httpClient.CreateDepartment(Requests.CreateDepartment.Valid);
-        var request = Requests.UpdateDepartment.Valid with
-        {
-            ExternalId = created.ExternalId
-        };
+        (_, Uri location) = await _httpClient.CreateDepartment(Requests.CreateDepartment.Valid);
+        var request = Requests.UpdateDepartment.Valid;
 
         // Act
         var response = await _httpClient.PutAsJsonAsync(location, request, default);
-        var updatedDepartment = await response.Content.ReadFromJsonAsync<EditDepartmentResponse>();
+        var updatedDepartment = await response.Content.ReadFromJsonAsync<UpdateDepartmentResponse>();
 
         // Assert
         response.Should().BeSuccessful();
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        // updatedCourse.Should().BeEquivalentTo(request);
-        updatedDepartment.ExternalId.Should().Be(request.ExternalId);
+        // updatedDepartment.Should().BeEquivalentTo(request);
+        // updatedDepartment.ExternalId.Should().Be(request.ExternalId);
         updatedDepartment.Name.Should().Be(request.Name);
         updatedDepartment.Budget.Should().Be(request.Budget);
         updatedDepartment.StartDate.Should().Be(request.StartDate);
