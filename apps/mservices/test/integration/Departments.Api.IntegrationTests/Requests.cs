@@ -19,14 +19,14 @@ class Requests
     public class CreateInstructor
     {
         public static CreateInstructorRequest Valid => new("LastName", "FirstName", DateTime.Now,
-            [ Guid.NewGuid() ],
+            [Guid.NewGuid()],
             "Location");
     }
 
     public class UpdateInstructor
     {
         public static EditInstructorRequest Valid => new(Guid.Empty, "Updated LastName", "Updated FirstName", DateTime.Now,
-            [ Guid.NewGuid() ],
+            [Guid.NewGuid()],
             "Updated Location");
     }
 }

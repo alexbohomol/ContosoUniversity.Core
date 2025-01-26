@@ -2,7 +2,6 @@ using ContosoUniversity.Data;
 
 using Departments.Api.Models;
 using Departments.Core;
-using Departments.Core.Domain;
 using Departments.Core.Handlers.Commands;
 using Departments.Data.Reads;
 using Departments.Data.Writes;
