@@ -4,14 +4,14 @@ using System.Net;
 
 using FluentAssertions;
 
-public class DeleteCourseTests :
+public class DeleteTests :
     IClassFixture<TestsConfiguration>,
     IClassFixture<DefaultApplicationFactory>,
     IClassFixture<InfrastructureContext>
 {
     private readonly HttpClient _httpClient;
 
-    public DeleteCourseTests(
+    public DeleteTests(
         TestsConfiguration config,
         DefaultApplicationFactory factory,
         InfrastructureContext context)

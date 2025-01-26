@@ -6,14 +6,14 @@ using FluentAssertions;
 
 using Models;
 
-public class UpdateCourseTests :
+public class UpdateTests :
     IClassFixture<TestsConfiguration>,
     IClassFixture<DefaultApplicationFactory>,
     IClassFixture<InfrastructureContext>
 {
     private readonly HttpClient _httpClient;
 
-    public UpdateCourseTests(
+    public UpdateTests(
         TestsConfiguration config,
         DefaultApplicationFactory factory,
         InfrastructureContext context)
