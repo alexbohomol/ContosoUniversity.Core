@@ -85,7 +85,7 @@ jobs:
         --exclude ./src/*/Migrations \
         --verify-no-changes
 
-  integration_testing:
+  integration_testing_mvc_frontend:
     if: true
     name: Integration Testing / ContosoUniversity.Mvc
     runs-on: ubuntu-latest
