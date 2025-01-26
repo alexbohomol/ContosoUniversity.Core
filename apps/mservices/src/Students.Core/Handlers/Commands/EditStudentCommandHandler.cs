@@ -1,18 +1,18 @@
-using Student = Students.Core.Domain.Student;
-
 namespace Students.Core.Handlers.Commands;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Domain;
+
 using MediatR;
 
 internal class EditStudentCommandHandler(
     IStudentsRwRepository studentsRepository)
-    : IRequestHandler<EditStudentCommand>
+    : IRequestHandler<EditStudentCommand, Student>
 {
-    public async Task Handle(
+    public async Task<Student> Handle(
         EditStudentCommand request,
         CancellationToken cancellationToken)
     {
@@ -26,5 +26,7 @@ internal class EditStudentCommandHandler(
         student.Enroll(request.EnrollmentDate);
 
         await studentsRepository.Save(student, cancellationToken);
+
+        return student;
     }
 }

@@ -1,18 +1,18 @@
-using Department = Departments.Core.Domain.Department;
-
 namespace Departments.Core.Handlers.Commands;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Domain;
+
 using MediatR;
 
 internal class EditDepartmentCommandHandler(
     IDepartmentsRwRepository repository)
-    : IRequestHandler<EditDepartmentCommand>
+    : IRequestHandler<EditDepartmentCommand, Department>
 {
-    public async Task Handle(
+    public async Task<Department> Handle(
         EditDepartmentCommand request,
         CancellationToken cancellationToken)
     {
@@ -34,5 +34,7 @@ internal class EditDepartmentCommandHandler(
         }
 
         await repository.Save(department, cancellationToken);
+
+        return department;
     }
 }

@@ -1,6 +1,7 @@
 namespace Students.Api.Models;
 
-public record CreateStudentRequest(
+public record CreateStudentResponse(
+    Guid ExternalId,
     DateTime EnrollmentDate,
     string LastName,
     string FirstName);

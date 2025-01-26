@@ -65,30 +65,45 @@ app.MapPost("/api/departments", async (
     [FromServices] IMediator mediator,
     CancellationToken cancellationToken) =>
 {
-    await mediator.Send(
+    var department = await mediator.Send(
         new CreateDepartmentCommand(
             request.Name,
             request.Budget,
             request.StartDate,
             request.AdministratorId),
         cancellationToken);
+
+    return Results.Created(
+        $"/api/departments/{department.ExternalId}",
+        new CreateDepartmentResponse(
+            department.ExternalId,
+            department.Name,
+            department.Budget,
+            department.StartDate,
+            department.AdministratorId));
 });
 
 app.MapPut("/api/departments/{externalId:guid}", async (
     Guid externalId,
-    [FromBody] EditDepartmentRequest request,
+    [FromBody] UpdateDepartmentRequest request,
     [FromServices] IMediator mediator,
     CancellationToken cancellationToken) =>
 {
-    await mediator.Send(
+    var department = await mediator.Send(
         new EditDepartmentCommand(
             request.Name,
             request.Budget,
             request.StartDate,
             request.AdministratorId,
-            externalId,
-            request.RowVersion),
+            externalId),
         cancellationToken);
+
+    return Results.Ok(new UpdateDepartmentResponse(
+        department.ExternalId,
+        department.Name,
+        department.Budget,
+        department.StartDate,
+        department.AdministratorId));
 });
 
 app.MapDelete("/api/departments/{externalId:guid}", async (
@@ -99,6 +114,8 @@ app.MapDelete("/api/departments/{externalId:guid}", async (
     await mediator.Send(
         new DeleteDepartmentCommand(externalId),
         cancellationToken);
+
+    return Results.NoContent();
 });
 
 // Instructors
@@ -126,7 +143,7 @@ app.MapPost("/api/instructors", async (
     [FromServices] IMediator mediator,
     CancellationToken cancellationToken) =>
 {
-    await mediator.Send(
+    var instructor = await mediator.Send(
         new CreateInstructorCommand(
             request.LastName,
             request.FirstName,
@@ -134,15 +151,25 @@ app.MapPost("/api/instructors", async (
             request.SelectedCourses,
             request.Location),
         cancellationToken);
+
+    return Results.Created(
+        $"/api/instructors/{instructor.ExternalId}",
+        new CreateInstructorResponse(
+            instructor.ExternalId,
+            instructor.LastName,
+            instructor.FirstName,
+            instructor.HireDate,
+            instructor.CourseAssignments.Select(x => x.CourseId).ToArray(),
+            instructor.Office?.Title ?? string.Empty));
 });
 
 app.MapPut("/api/instructors/{externalId:guid}", async (
     Guid externalId,
-    [FromBody] EditInstructorRequest request,
+    [FromBody] UpdateInstructorRequest request,
     [FromServices] IMediator mediator,
     CancellationToken cancellationToken) =>
 {
-    await mediator.Send(
+    var instructor = await mediator.Send(
         new EditInstructorCommand(
             externalId,
             request.LastName,
@@ -151,6 +178,14 @@ app.MapPut("/api/instructors/{externalId:guid}", async (
             request.SelectedCourses,
             request.Location),
         cancellationToken);
+
+    return Results.Ok(new UpdateInstructorResponse(
+        instructor.ExternalId,
+        instructor.LastName,
+        instructor.FirstName,
+        instructor.HireDate,
+        instructor.CourseAssignments.Select(x => x.CourseId).ToArray(),
+        instructor.Office?.Title ?? string.Empty));
 });
 
 app.MapDelete("/api/instructors/{externalId:guid}", async (
@@ -161,6 +196,8 @@ app.MapDelete("/api/instructors/{externalId:guid}", async (
     await mediator.Send(
         new DeleteInstructorCommand(externalId),
         cancellationToken);
+
+    return Results.NoContent();
 });
 
 await app.RunAsync();
