@@ -27,7 +27,7 @@ public class CreateTests :
     public async Task ValidCreateRequest_ReturnsCreated()
     {
         // Arrange
-        var request = Requests.CreateCourse.Valid;
+        var request = Requests.Create.Course.Valid;
 
         // Act
         var response = await _httpClient.PostAsJsonAsync("/api/courses", request, default);

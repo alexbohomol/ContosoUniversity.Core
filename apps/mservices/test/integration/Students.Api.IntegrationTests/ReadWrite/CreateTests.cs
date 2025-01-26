@@ -29,7 +29,7 @@ public class CreateTests :
     public async Task ValidCreateRequest_ReturnsCreated()
     {
         // Arrange
-        var request = Requests.CreateStudent.Valid;
+        var request = Requests.Create.Student.Valid;
 
         // Act
         var response = await _httpClient.PostAsJsonAsync("/api/students", request, default);

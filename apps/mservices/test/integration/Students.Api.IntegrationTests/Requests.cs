@@ -4,13 +4,19 @@ using Models;
 
 class Requests
 {
-    public class CreateStudent
+    public class Create
     {
-        public static CreateStudentRequest Valid => new(DateTime.Now, "LastName", "FirstName");
+        public class Student
+        {
+            public static CreateStudentRequest Valid => new(DateTime.Now, "LastName", "FirstName");
+        }
     }
 
-    public class UpdateStudent
+    public class Update
     {
-        public static UpdateStudentRequest Valid => new(DateTime.Now, "LastName Updated", "FirstName Updated");
+        public class Student
+        {
+            public static UpdateStudentRequest Valid => new(DateTime.Now, "LastName Updated", "FirstName Updated");
+        }
     }
 }

@@ -27,8 +27,8 @@ public class UpdateTests :
     public async Task ValidUpdateRequest_ReturnsOk()
     {
         // Arrange
-        (_, Uri location) = await _httpClient.CreateInstructor(Requests.CreateInstructor.Valid);
-        var request = Requests.UpdateInstructor.Valid;
+        (_, Uri location) = await _httpClient.CreateInstructor(Requests.Create.Instructor.Valid);
+        var request = Requests.Update.Instructor.Valid;
 
         // Act
         var response = await _httpClient.PutAsJsonAsync(location, request, default);

@@ -25,7 +25,7 @@ public class DeleteTests :
     public async Task StudentExists_ReturnsNoContent()
     {
         // Arrange
-        (_, Uri location) = await _httpClient.CreateDepartment(Requests.CreateDepartment.Valid);
+        (_, Uri location) = await _httpClient.CreateDepartment(Requests.Create.Department.Valid);
 
         // Act
         var response = await _httpClient.DeleteAsync(location, default);

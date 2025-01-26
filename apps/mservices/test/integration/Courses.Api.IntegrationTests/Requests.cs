@@ -4,13 +4,19 @@ using Models;
 
 class Requests
 {
-    public class CreateCourse
+    public class Create
     {
-        public static CreateCourseRequest Valid => new(1234, "Computers", 5, Guid.NewGuid());
+        public class Course
+        {
+            public static CreateCourseRequest Valid => new(1234, "Computers", 5, Guid.NewGuid());
+        }
     }
 
-    public class UpdateCourse
+    public class Update
     {
-        public static UpdateCourseRequest Valid => new("Quantum Computing", 3, Guid.NewGuid());
+        public class Course
+        {
+            public static UpdateCourseRequest Valid => new("Quantum Computing", 3, Guid.NewGuid());
+        }
     }
 }
