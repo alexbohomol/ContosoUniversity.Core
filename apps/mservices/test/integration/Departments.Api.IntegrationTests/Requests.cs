@@ -11,8 +11,7 @@ class Requests
 
     public class UpdateDepartment
     {
-        public static UpdateDepartmentRequest Valid => new("Quantum Computers", 2000000, DateTime.Now, Guid.NewGuid(),
-            Convert.FromBase64String("other version"));
+        public static UpdateDepartmentRequest Valid => new("Quantum Computers", 2000000, DateTime.Now, Guid.NewGuid());
     }
 
     public class CreateInstructor

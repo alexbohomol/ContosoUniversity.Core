@@ -37,7 +37,7 @@ internal class EditDepartmentCommandValidator : AbstractValidator<EditDepartment
             .WithMessage("Please select an existing department.")
             .Required();
 
-        RuleFor(x => x.RowVersion).NotEmpty(); // TODO: extend to version check
+        // RuleFor(x => x.RowVersion).NotEmpty(); // TODO: extend to version check
     }
 
     private async Task<bool> BeAnExistingDepartment(Guid externalId, CancellationToken token) =>

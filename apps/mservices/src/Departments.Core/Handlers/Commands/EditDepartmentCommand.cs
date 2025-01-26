@@ -11,5 +11,4 @@ public record EditDepartmentCommand(
     decimal Budget,
     DateTime StartDate,
     Guid? AdministratorId,
-    Guid ExternalId,
-    byte[] RowVersion) : IRequest<Department>;
+    Guid ExternalId) : IRequest<Department>;

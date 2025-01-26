@@ -95,8 +95,7 @@ app.MapPut("/api/departments/{externalId:guid}", async (
             request.Budget,
             request.StartDate,
             request.AdministratorId,
-            externalId,
-            request.RowVersion),
+            externalId),
         cancellationToken);
 
     return Results.Ok(new UpdateDepartmentResponse(
