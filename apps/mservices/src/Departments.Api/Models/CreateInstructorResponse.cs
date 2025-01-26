@@ -5,4 +5,5 @@ public record CreateInstructorResponse(
     string LastName,
     string FirstName,
     DateTime HireDate,
-    Guid[] SelectedCourses);
+    Guid[] SelectedCourses,
+    string Location);

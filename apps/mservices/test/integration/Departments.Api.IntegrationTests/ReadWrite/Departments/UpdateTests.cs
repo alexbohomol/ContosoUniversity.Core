@@ -37,11 +37,7 @@ public class UpdateTests :
         // Assert
         response.Should().BeSuccessful();
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        // updatedDepartment.Should().BeEquivalentTo(request);
-        // updatedDepartment.ExternalId.Should().Be(request.ExternalId);
-        updatedDepartment.Name.Should().Be(request.Name);
-        updatedDepartment.Budget.Should().Be(request.Budget);
-        updatedDepartment.StartDate.Should().Be(request.StartDate);
-        updatedDepartment.AdministratorId.Should().Be(request.AdministratorId);
+        updatedDepartment.Should().BeEquivalentTo(request);
+        location.OriginalString.Should().Contain(updatedDepartment.ExternalId.ToString());
     }
 }

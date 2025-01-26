@@ -39,6 +39,8 @@ public class Instructor : IIdentifiable<Guid>
 
     public Guid ExternalId { get; }
 
+    public OfficeAssignment Office => _officeAssignment;
+
     public void ResetCourseAssignment(Guid courseId)
     {
         CourseAssignment assignment = CourseAssignments.FirstOrDefault(x => x.CourseId == courseId);

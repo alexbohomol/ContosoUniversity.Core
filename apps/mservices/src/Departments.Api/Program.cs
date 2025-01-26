@@ -159,7 +159,8 @@ app.MapPost("/api/instructors", async (
             instructor.LastName,
             instructor.FirstName,
             instructor.HireDate,
-            instructor.CourseAssignments.Select(x => x.CourseId).ToArray()));
+            instructor.CourseAssignments.Select(x => x.CourseId).ToArray(),
+            instructor.Office?.Title ?? string.Empty));
 });
 
 app.MapPut("/api/instructors/{externalId:guid}", async (
@@ -183,7 +184,8 @@ app.MapPut("/api/instructors/{externalId:guid}", async (
         instructor.LastName,
         instructor.FirstName,
         instructor.HireDate,
-        instructor.CourseAssignments.Select(x => x.CourseId).ToArray()));
+        instructor.CourseAssignments.Select(x => x.CourseId).ToArray(),
+        instructor.Office?.Title ?? string.Empty));
 });
 
 app.MapDelete("/api/instructors/{externalId:guid}", async (

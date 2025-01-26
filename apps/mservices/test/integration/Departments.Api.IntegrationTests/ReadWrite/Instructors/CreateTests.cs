@@ -37,10 +37,6 @@ public class CreateTests :
         response.Should().BeSuccessful();
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         response.Headers.Location.Should().Be($"/api/instructors/{createdInstructor.ExternalId}");
-        // createdInstructor.Should().BeEquivalentTo(request);
-        createdInstructor.LastName.Should().Be(request.LastName);
-        createdInstructor.FirstName.Should().Be(request.FirstName);
-        createdInstructor.HireDate.Should().Be(request.HireDate);
-        createdInstructor.SelectedCourses.Should().BeEquivalentTo(request.SelectedCourses);
+        createdInstructor.Should().BeEquivalentTo(request);
     }
 }
