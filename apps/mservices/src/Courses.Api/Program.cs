@@ -8,6 +8,8 @@ using Courses.Data.Writes;
 
 using HealthChecks.UI.Client;
 
+using MassTransit;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -23,6 +25,14 @@ builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(IAssemblyMarker).Assembly);
     // cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+});
+
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((ctx, cfg) =>
+    {
+        cfg.ConfigureEndpoints(ctx);
+    });
 });
 
 var app = builder.Build();

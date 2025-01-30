@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="FluentValidation" Version="11.11.0" />
+    <PackageVersion Include="MassTransit" Version="8.3.5" />
     <PackageVersion Include="MassTransit.RabbitMQ" Version="8.3.5" />
     <PackageVersion Include="MediatR" Version="12.4.1" />
     <PackageVersion Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
