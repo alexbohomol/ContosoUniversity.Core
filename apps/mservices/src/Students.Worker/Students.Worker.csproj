@@ -11,7 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Departments.Data.Writes\Departments.Data.Writes.csproj" />
+      <ProjectReference Include="..\Students.Data.Writes\Students.Data.Writes.csproj" />
     </ItemGroup>
 
 </Project>
