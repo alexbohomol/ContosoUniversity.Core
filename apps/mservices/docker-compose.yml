@@ -14,6 +14,8 @@ services:
         condition: service_healthy
       students-api:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     healthcheck:
       test: curl --fail http://localhost:80/health/readiness || exit 1
       interval: 5s
@@ -34,6 +36,8 @@ services:
         condition: service_healthy
       db-migrator:
         condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
     healthcheck:
       test: curl --fail http://localhost:80/health/readiness || exit 1
       interval: 5s
@@ -54,6 +58,8 @@ services:
         condition: service_healthy
       db-migrator:
         condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
     healthcheck:
       test: curl --fail http://localhost:80/health/readiness || exit 1
       interval: 5s
@@ -74,6 +80,8 @@ services:
         condition: service_healthy
       db-migrator:
         condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
     healthcheck:
       test: curl --fail http://localhost:80/health/readiness || exit 1
       interval: 5s
@@ -115,3 +123,21 @@ services:
       - ../../database:/scripts:ro
     working_dir: /scripts
     entrypoint: /opt/mssql-tools/bin/sqlcmd -S db -U sa -P '<YourStrong!Passw0rd>' -i 'db-init.sql'
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 2s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+#    volumes:
+#      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+#      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - cunetwork
