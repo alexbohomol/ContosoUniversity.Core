@@ -6,4 +6,4 @@ docker run --rm \
     --volume $(pwd)/database:/scripts \
     --network='cunetwork' \
     mcr.microsoft.com/mssql-tools \
-    -S cudb -U SA -P '<YourStrong!Passw0rd>' -i 'db-init.sql'
+    -S mssql -U SA -P '<YourStrong!Passw0rd>' -i 'db-init.sql'
