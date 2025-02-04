@@ -27,7 +27,7 @@ public class InfrastructureContext : IAsyncLifetime
         .WithImage("mcr.microsoft.com/mssql/server")
         .WithBindMount(GetFullPathTo(DatabaseDirectory), "/scripts", AccessMode.ReadOnly)
         .WithWorkingDirectory("/scripts")
-        // .WithPortBinding(1433, 1433)
+        // .WithPortBinding(1477, 1433)
         // .WithPassword("<YourStrong!Passw0rd>")
         .WithWaitStrategy(
             Wait
