@@ -30,9 +30,9 @@ services:
     container_name: courses-api
     hostname: courses-api
     depends_on:
-      db:
+      mssql:
         condition: service_healthy
-      db-migrator:
+      mssql-migrator:
         condition: service_completed_successfully
     healthcheck:
       test: curl --fail http://localhost:80/health/readiness || exit 1
@@ -50,9 +50,9 @@ services:
     container_name: departments-api
     hostname: departments-api
     depends_on:
-      db:
+      mssql:
         condition: service_healthy
-      db-migrator:
+      mssql-migrator:
         condition: service_completed_successfully
     healthcheck:
       test: curl --fail http://localhost:80/health/readiness || exit 1
@@ -70,9 +70,9 @@ services:
     container_name: students-api
     hostname: students-api
     depends_on:
-      db:
+      mssql:
         condition: service_healthy
-      db-migrator:
+      mssql-migrator:
         condition: service_completed_successfully
     healthcheck:
       test: curl --fail http://localhost:80/health/readiness || exit 1
@@ -85,10 +85,10 @@ services:
     networks:
       - cunetwork
 
-  db:
+  mssql:
     image: mcr.microsoft.com/mssql/server
-    container_name: cudb
-    hostname: db
+    container_name: mssql
+    hostname: mssql
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: <YourStrong!Passw0rd>
@@ -103,15 +103,15 @@ services:
     networks:
       - cunetwork
 
-  db-migrator:
+  mssql-migrator:
     image: mcr.microsoft.com/mssql-tools
-    container_name: db-migrator
+    container_name: mssql-migrator
     depends_on:
-      db:
+      mssql:
         condition: service_healthy
     networks:
       - cunetwork
     volumes:
       - ../../database:/scripts:ro
     working_dir: /scripts
-    entrypoint: /opt/mssql-tools/bin/sqlcmd -S db -U sa -P '<YourStrong!Passw0rd>' -i 'db-init.sql'
+    entrypoint: /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P '<YourStrong!Passw0rd>' -i 'db-init.sql'
