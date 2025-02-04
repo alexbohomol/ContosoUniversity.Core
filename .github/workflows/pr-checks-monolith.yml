@@ -85,7 +85,7 @@ jobs:
         --verify-no-changes
       
   integration_testing:
-    name: Integration Testing | In-Process
+    name: Integration Testing / In-Process
     runs-on: ubuntu-latest
     env:
       TEST_PROJ_PATH: ${{ vars.MONOLITH_SLN_PATH }}/test/integration/ContosoUniversity.Mvc.IntegrationTests
@@ -121,7 +121,7 @@ jobs:
         dotnet test --no-build --verbosity normal
       
   system_testing:
-    name: System Testing | External-Process
+    name: System Testing / External-Process
     runs-on: ubuntu-latest
     env:
       TEST_PROJ_PATH: ${{ vars.MONOLITH_SLN_PATH }}/test/system/ContosoUniversity.SystemTests
@@ -196,7 +196,7 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   e2e_testing:
-    name: E2E Testing | External-Process
+    name: E2E Testing / External-Process
     runs-on: ubuntu-latest
     env:
       TEST_PROJ_PATH: ${{ vars.MONOLITH_SLN_PATH }}/test/e2e/ContosoUniversity.AcceptanceTests
