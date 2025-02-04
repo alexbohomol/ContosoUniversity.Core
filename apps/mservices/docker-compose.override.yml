@@ -7,7 +7,7 @@ services:
       - ASPNETCORE_HTTPS_PORT=10001
       - ASPNETCORE_Kestrel__Certificates__Default__Password=Test1234!
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/cert.pfx
-      - SqlConnectionStringBuilder__DataSource=db,1433
+      - SqlConnectionStringBuilder__DataSource=mssql,1477
       - CoursesApiSettings__BaseUrl=http://courses-api
       - DepartmentsApiSettings__BaseUrl=http://departments-api
       - StudentsApiSettings__BaseUrl=http://students-api
@@ -20,7 +20,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_PORT=http://+:80
       - ASPNETCORE_URLS=http://+:80
-      - SqlConnectionStringBuilder__DataSource=db,1433
+      - SqlConnectionStringBuilder__DataSource=mssql,1477
     ports:
       - "5006:80"
     volumes:
@@ -32,7 +32,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_PORT=http://+:80
       - ASPNETCORE_URLS=http://+:80
-      - SqlConnectionStringBuilder__DataSource=db,1433
+      - SqlConnectionStringBuilder__DataSource=mssql,1477
     ports:
       - "5079:80"
     volumes:
@@ -44,7 +44,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_PORT=http://+:80
       - ASPNETCORE_URLS=http://+:80
-      - SqlConnectionStringBuilder__DataSource=db,1433
+      - SqlConnectionStringBuilder__DataSource=mssql,1477
     ports:
       - "5110:80"
     volumes:
