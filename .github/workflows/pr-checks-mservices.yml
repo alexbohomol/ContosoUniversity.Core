@@ -203,7 +203,7 @@ jobs:
 
   system_testing:
     if: true
-    name: System Testing | External-Process
+    name: System Testing / External-Process
     runs-on: ubuntu-latest
     env:
       TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/system/ContosoUniversity.SystemTests
@@ -314,7 +314,7 @@ jobs:
 
   e2e_testing:
     if: true
-    name: E2E Testing | External-Process
+    name: E2E Testing / External-Process
     runs-on: ubuntu-latest
     env:
       TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/e2e/ContosoUniversity.AcceptanceTests
