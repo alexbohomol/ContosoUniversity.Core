@@ -163,13 +163,13 @@ jobs:
       if: always()
       run: docker logs cuweb
 
-    - name: Grab container logs | cudb
+    - name: Grab container logs | mssql
       if: always()
-      run: docker logs cudb
+      run: docker logs mssql
 
-    - name: Grab container logs | db-migrator
+    - name: Grab container logs | mssql-migrator
       if: always()
-      run: docker logs db-migrator
+      run: docker logs mssql-migrator
 
     - name: Shut down Docker Infra
       working-directory: ${{ vars.MONOLITH_SLN_PATH }}
@@ -238,13 +238,13 @@ jobs:
       if: always()
       run: docker logs cuweb
 
-    - name: Grab container logs | cudb
+    - name: Grab container logs | mssql
       if: always()
-      run: docker logs cudb
+      run: docker logs mssql
 
-    - name: Grab container logs | db-migrator
+    - name: Grab container logs | mssql-migrator
       if: always()
-      run: docker logs db-migrator
+      run: docker logs mssql-migrator
 
     - name: Shut down Docker Infra
       working-directory: ${{ vars.MONOLITH_SLN_PATH }}
