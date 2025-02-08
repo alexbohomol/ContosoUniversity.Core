@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using ContosoUniversity.Messaging.Contracts.Notifications;
 
 using MediatR;
-
+/*
 internal class CourseDeletedNotificationHandler(IInstructorsRwRepository instructorsRepository)
     : INotificationHandler<CourseDeletedNotification>
 {
@@ -28,3 +28,4 @@ internal class CourseDeletedNotificationHandler(IInstructorsRwRepository instruc
         }
     }
 }
+*/

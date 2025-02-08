@@ -12,7 +12,7 @@ using MediatR;
 
 internal class DeleteCourseCommandHandler(
     ICoursesRwRepository coursesRwRepository,
-    IBus bus)
+    IPublishEndpoint bus)
     : IRequestHandler<DeleteCourseCommand>
 {
     public async Task Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
@@ -25,7 +25,7 @@ internal class DeleteCourseCommandHandler(
          * remove related assignments and enrollments
          */
         await bus.Publish(
-            new CourseDeletedNotification(request.Id),
+            new CourseDeletedEvent(request.Id),
             cancellationToken);
     }
 }

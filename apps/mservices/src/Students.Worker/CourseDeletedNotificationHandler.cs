@@ -5,9 +5,9 @@ using ContosoUniversity.Messaging.Contracts.Notifications;
 using MassTransit;
 
 public class CourseDeletedNotificationHandler(ILogger<CourseDeletedNotificationHandler> logger)
-    : IConsumer<CourseDeletedNotification>
+    : IConsumer<CourseDeletedEvent>
 {
-    public Task Consume(ConsumeContext<CourseDeletedNotification> context)
+    public Task Consume(ConsumeContext<CourseDeletedEvent> context)
     {
         var notification = context.Message;
 
