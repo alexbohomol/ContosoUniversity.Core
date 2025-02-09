@@ -1,8 +1,13 @@
+using ContosoUniversity.Data;
+
+using Departments.Data.Writes;
 using Departments.Worker;
 
 using MassTransit;
 
 var builder = Host.CreateApplicationBuilder(args);
+builder.Services.AddDataInfrastructure();
+builder.Services.AddDepartmentsSchemaWrites();
 builder.Services.AddHostedService<Worker>();
 builder.Services.AddMassTransit(x =>
 {
