@@ -7,7 +7,7 @@ builder.Services.AddHostedService<Worker>();
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<CourseDeletedNotificationHandler>()
-        .Endpoint(cfg => cfg.Name = "departments-course-deleted");
+        .Endpoint(cfg => cfg.Name = "course-deleted-event-handler-departments");
 
     x.UsingRabbitMq((ctx, cfg) =>
     {
