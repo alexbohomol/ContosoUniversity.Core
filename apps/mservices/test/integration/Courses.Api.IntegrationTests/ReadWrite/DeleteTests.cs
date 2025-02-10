@@ -7,16 +7,20 @@ using FluentAssertions;
 public class DeleteTests :
     IClassFixture<TestsConfiguration>,
     IClassFixture<DefaultApplicationFactory>,
-    IClassFixture<InfrastructureContext>
+    IClassFixture<InfrastructureContext>,
+    IClassFixture<RabbitMqContext>
 {
+    private readonly RabbitMqContext _rabbitMqContext;
     private readonly HttpClient _httpClient;
 
     public DeleteTests(
         TestsConfiguration config,
         DefaultApplicationFactory factory,
-        InfrastructureContext context)
+        InfrastructureContext msSqlContext,
+        RabbitMqContext rabbitMqContext)
     {
-        factory.DataSourceSetterFunction = () => context.MsSqlDataSource;
+        _rabbitMqContext = rabbitMqContext;
+        factory.DataSourceSetterFunction = () => msSqlContext.MsSqlDataSource;
         factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         _httpClient = factory.CreateClient();
     }
