@@ -3,12 +3,16 @@ using ContosoUniversity.Data;
 using Departments.Data.Writes;
 using Departments.Worker;
 
+using HealthChecks.UI.Client;
+
 using MassTransit;
 
-var builder = Host.CreateApplicationBuilder(args);
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHealthChecks();
 builder.Services.AddDataInfrastructure();
 builder.Services.AddDepartmentsSchemaWrites();
-builder.Services.AddHostedService<Worker>();
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<CourseDeletedEventHandler>()
@@ -20,5 +24,13 @@ builder.Services.AddMassTransit(x =>
     });
 });
 
-var host = builder.Build();
-host.Run();
+var app = builder.Build();
+
+HealthCheckOptions checkOptions = new()
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+};
+app.MapHealthChecks("/health/readiness", checkOptions);
+app.MapHealthChecks("/health/liveness", checkOptions);
+
+await app.RunAsync();
