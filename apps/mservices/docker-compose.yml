@@ -71,6 +71,28 @@ services:
     networks:
       - cunetwork
 
+  departments-worker:
+    image: departments-worker
+    container_name: departments-worker
+    hostname: departments-worker
+    depends_on:
+      mssql:
+        condition: service_healthy
+      mssql-migrator:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: curl --fail http://localhost:80/health/readiness || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    build:
+      context: .
+      dockerfile: src/Departments.Worker/Dockerfile
+    networks:
+      - cunetwork
+
   students-api:
     image: students-api
     container_name: students-api
@@ -90,6 +112,28 @@ services:
     build:
       context: .
       dockerfile: src/Students.Api/Dockerfile
+    networks:
+      - cunetwork
+
+  students-worker:
+    image: students-worker
+    container_name: students-worker
+    hostname: students-worker
+    depends_on:
+      mssql:
+        condition: service_healthy
+      mssql-migrator:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: curl --fail http://localhost:80/health/readiness || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    build:
+      context: .
+      dockerfile: src/Students.Worker/Dockerfile
     networks:
       - cunetwork
 
