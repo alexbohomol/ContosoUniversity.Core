@@ -36,6 +36,7 @@ public class InfraExistsTests :
     [InlineData("/health/liveness")]
     public async Task Health_ReturnsHealthy(string healthUrl)
     {
+        await Task.Delay(1000);
         HttpResponseMessage response = await _httpClient.GetAsync(healthUrl);
 
         response.Should().BeSuccessful();
