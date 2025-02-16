@@ -17,7 +17,6 @@ public class InfraExistsTests :
     IClassFixture<InfrastructureContext>,
     IClassFixture<RabbitMqContext>
 {
-    private readonly RabbitMqContext _rabbitMqContext;
     private readonly HttpClient _httpClient;
 
     public InfraExistsTests(
@@ -26,7 +25,7 @@ public class InfraExistsTests :
         InfrastructureContext context,
         RabbitMqContext rabbitMqContext)
     {
-        _rabbitMqContext = rabbitMqContext;
+        factory.RabbitMqConnectionSetterFunction = () => rabbitMqContext.GetConnectionString;
         factory.DataSourceSetterFunction = () => context.MsSqlDataSource;
         factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         _httpClient = factory.CreateClient();

@@ -10,8 +10,8 @@ public class RabbitMqContext : IAsyncLifetime
         .WithImage("rabbitmq:management")
         .WithUsername("guest")
         .WithPassword("guest")
-        .WithPortBinding(5672, 5672)
-        .WithPortBinding(15672, 15672)
+        // .WithPortBinding(5672, 5672)
+        // .WithPortBinding(15672, 15672)
         .WithWaitStrategy(
             Wait
                 .ForUnixContainer()
@@ -28,4 +28,6 @@ public class RabbitMqContext : IAsyncLifetime
     {
         await _rabbitMqContainer.DisposeAsync();
     }
+
+    public string GetConnectionString => _rabbitMqContainer.GetConnectionString();
 }

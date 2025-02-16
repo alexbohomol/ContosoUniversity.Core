@@ -27,6 +27,7 @@ builder.Services.AddMediatR(cfg =>
     // cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
 });
 
+builder.Services.AddOptions<RabbitMqTransportOptions>();
 builder.Services.AddMassTransit(x =>
 {
     x.UsingRabbitMq((ctx, cfg) =>

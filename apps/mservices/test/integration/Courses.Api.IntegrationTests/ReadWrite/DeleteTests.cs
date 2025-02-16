@@ -10,7 +10,6 @@ public class DeleteTests :
     IClassFixture<InfrastructureContext>,
     IClassFixture<RabbitMqContext>
 {
-    private readonly RabbitMqContext _rabbitMqContext;
     private readonly HttpClient _httpClient;
 
     public DeleteTests(
@@ -19,7 +18,7 @@ public class DeleteTests :
         InfrastructureContext msSqlContext,
         RabbitMqContext rabbitMqContext)
     {
-        _rabbitMqContext = rabbitMqContext;
+        factory.RabbitMqConnectionSetterFunction = () => rabbitMqContext.GetConnectionString;
         factory.DataSourceSetterFunction = () => msSqlContext.MsSqlDataSource;
         factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         _httpClient = factory.CreateClient();
