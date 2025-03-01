@@ -87,21 +87,22 @@ jobs:
 
   integration_testing:
     if: true
-    name: Integration Testing / ${{ matrix.test_title }}
+    name: Integration Testing / ${{ matrix.title }}
     runs-on: ubuntu-latest
+    working-directory: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.proj_path }}
 
     strategy:
       fail-fast: false
       matrix:
         include:
-        - test_title: ContosoUniversity.Mvc
-          test_proj_path: test/integration/ContosoUniversity.Mvc.IntegrationTests
-        - test_title: Courses.Api
-          test_proj_path: test/integration/Courses.Api.IntegrationTests
-        - test_title: Departments.Api
-          test_proj_path: test/integration/Departments.Api.IntegrationTests
-        - test_title: Students.Api
-          test_proj_path: test/integration/Students.Api.IntegrationTests
+        - title: ContosoUniversity.Mvc
+          proj_path: test/integration/ContosoUniversity.Mvc.IntegrationTests
+        - title: Courses.Api
+          proj_path: test/integration/Courses.Api.IntegrationTests
+        - title: Departments.Api
+          proj_path: test/integration/Departments.Api.IntegrationTests
+        - title: Students.Api
+          proj_path: test/integration/Students.Api.IntegrationTests
 
     steps:
     - name: Checkout code
@@ -113,13 +114,11 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Build Testing Project
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.test_proj_path }}
       run: |
         dotnet restore
         dotnet build --no-restore
 
     - name: Run Integration Tests
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.test_proj_path }}
       run: |
         dotnet test --no-build --verbosity normal
 
