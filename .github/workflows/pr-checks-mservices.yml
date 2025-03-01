@@ -85,12 +85,24 @@ jobs:
         --exclude ./src/*/Migrations \
         --verify-no-changes
 
-  integration_testing_mvc_frontend:
+  integration_testing:
     if: true
-    name: Integration Testing / ContosoUniversity.Mvc
+    name: Integration Testing / ${{ matrix.test_title }}
     runs-on: ubuntu-latest
-    env:
-      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/integration/ContosoUniversity.Mvc.IntegrationTests
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - test_title: ContosoUniversity.Mvc
+          test_proj_path: test/integration/ContosoUniversity.Mvc.IntegrationTests
+        - test_title: Courses.Api
+          test_proj_path: test/integration/Courses.Api.IntegrationTests
+        - test_title: Departments.Api
+          test_proj_path: test/integration/Departments.Api.IntegrationTests
+        - test_title: Students.Api
+          test_proj_path: test/integration/Students.Api.IntegrationTests
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -100,104 +112,14 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
-    - name: Build Integration Tests
-      working-directory: ${{ env.TEST_PROJ_PATH }}
+    - name: Build Testing Project
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.test_proj_path }}
       run: |
         dotnet restore
         dotnet build --no-restore
 
     - name: Run Integration Tests
-      working-directory: ${{ env.TEST_PROJ_PATH }}
-      run: |
-        dotnet test --no-build --verbosity normal
-
-  integration_testing_courses_api:
-    if: true
-    name: Integration Testing / Courses.Api
-    runs-on: ubuntu-latest
-    env:
-      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/integration/Courses.Api.IntegrationTests
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Pull Docker images
-      run: |
-        docker pull mcr.microsoft.com/mssql/server
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-
-    - name: Build Integration Tests
-      working-directory: ${{ env.TEST_PROJ_PATH }}
-      run: |
-        dotnet restore
-        dotnet build --no-restore
-
-    - name: Run Integration Tests
-      working-directory: ${{ env.TEST_PROJ_PATH }}
-      run: |
-        dotnet test --no-build --verbosity normal
-
-  integration_testing_departments_api:
-    if: true
-    name: Integration Testing / Departments.Api
-    runs-on: ubuntu-latest
-    env:
-      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/integration/Departments.Api.IntegrationTests
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Pull Docker images
-      run: |
-        docker pull mcr.microsoft.com/mssql/server
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-
-    - name: Build Integration Tests
-      working-directory: ${{ env.TEST_PROJ_PATH }}
-      run: |
-        dotnet restore
-        dotnet build --no-restore
-
-    - name: Run Integration Tests
-      working-directory: ${{ env.TEST_PROJ_PATH }}
-      run: |
-        dotnet test --no-build --verbosity normal
-
-  integration_testing_students_api:
-    if: true
-    name: Integration Testing / Students.Api
-    runs-on: ubuntu-latest
-    env:
-      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/integration/Students.Api.IntegrationTests
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Pull Docker images
-      run: |
-        docker pull mcr.microsoft.com/mssql/server
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-
-    - name: Build Integration Tests
-      working-directory: ${{ env.TEST_PROJ_PATH }}
-      run: |
-        dotnet restore
-        dotnet build --no-restore
-
-    - name: Run Integration Tests
-      working-directory: ${{ env.TEST_PROJ_PATH }}
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.test_proj_path }}
       run: |
         dotnet test --no-build --verbosity normal
 
