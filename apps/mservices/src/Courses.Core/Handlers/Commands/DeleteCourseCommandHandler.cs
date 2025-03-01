@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 using ContosoUniversity.Messaging.Contracts.Notifications;
 
+using MassTransit;
+
 using MediatR;
 
 internal class DeleteCourseCommandHandler(
     ICoursesRwRepository coursesRwRepository,
-    IMediator mediator)
+    IPublishEndpoint bus)
     : IRequestHandler<DeleteCourseCommand>
 {
     public async Task Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
@@ -22,8 +24,8 @@ internal class DeleteCourseCommandHandler(
         /*
          * remove related assignments and enrollments
          */
-        await mediator.Publish(
-            new CourseDeletedNotification(request.Id),
+        await bus.Publish(
+            new CourseDeletedEvent(request.Id),
             cancellationToken);
     }
 }

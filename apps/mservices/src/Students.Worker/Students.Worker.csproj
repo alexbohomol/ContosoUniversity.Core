@@ -7,15 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AspNetCore.HealthChecks.UI" />
+        <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" />
         <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
+        <PackageReference Include="MassTransit.AspNetCore" />
         <PackageReference Include="MassTransit.RabbitMQ" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Courses.Core\Courses.Core.csproj" />
-      <ProjectReference Include="..\Courses.Data.Reads\Courses.Data.Reads.csproj" />
-      <ProjectReference Include="..\Courses.Data.Writes\Courses.Data.Writes.csproj" />
+      <ProjectReference Include="..\Students.Data.Writes\Students.Data.Writes.csproj" />
     </ItemGroup>
 
 </Project>
