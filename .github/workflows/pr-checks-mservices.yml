@@ -89,7 +89,9 @@ jobs:
     if: true
     name: Integration Testing / ${{ matrix.title }}
     runs-on: ubuntu-latest
-    working-directory: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.proj_path }}
+    defaults:
+      run:
+        working-directory: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.proj_path }}
 
     strategy:
       fail-fast: false
