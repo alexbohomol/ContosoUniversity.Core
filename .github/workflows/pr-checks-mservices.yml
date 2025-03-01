@@ -85,12 +85,27 @@ jobs:
         --exclude ./src/*/Migrations \
         --verify-no-changes
 
-  integration_testing_mvc_frontend:
+  integration_testing:
     if: true
-    name: Integration Testing / ContosoUniversity.Mvc
+    name: Integration Testing / ${{ matrix.title }}
     runs-on: ubuntu-latest
-    env:
-      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/integration/ContosoUniversity.Mvc.IntegrationTests
+    defaults:
+      run:
+        working-directory: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.proj_path }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - title: ContosoUniversity.Mvc
+          proj_path: test/integration/ContosoUniversity.Mvc.IntegrationTests
+        - title: Courses.Api
+          proj_path: test/integration/Courses.Api.IntegrationTests
+        - title: Departments.Api
+          proj_path: test/integration/Departments.Api.IntegrationTests
+        - title: Students.Api
+          proj_path: test/integration/Students.Api.IntegrationTests
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -100,104 +115,12 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
-    - name: Build Integration Tests
-      working-directory: ${{ env.TEST_PROJ_PATH }}
+    - name: Build Testing Project
       run: |
         dotnet restore
         dotnet build --no-restore
 
     - name: Run Integration Tests
-      working-directory: ${{ env.TEST_PROJ_PATH }}
-      run: |
-        dotnet test --no-build --verbosity normal
-
-  integration_testing_courses_api:
-    if: true
-    name: Integration Testing / Courses.Api
-    runs-on: ubuntu-latest
-    env:
-      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/integration/Courses.Api.IntegrationTests
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Pull Docker images
-      run: |
-        docker pull mcr.microsoft.com/mssql/server
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-
-    - name: Build Integration Tests
-      working-directory: ${{ env.TEST_PROJ_PATH }}
-      run: |
-        dotnet restore
-        dotnet build --no-restore
-
-    - name: Run Integration Tests
-      working-directory: ${{ env.TEST_PROJ_PATH }}
-      run: |
-        dotnet test --no-build --verbosity normal
-
-  integration_testing_departments_api:
-    if: true
-    name: Integration Testing / Departments.Api
-    runs-on: ubuntu-latest
-    env:
-      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/integration/Departments.Api.IntegrationTests
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Pull Docker images
-      run: |
-        docker pull mcr.microsoft.com/mssql/server
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-
-    - name: Build Integration Tests
-      working-directory: ${{ env.TEST_PROJ_PATH }}
-      run: |
-        dotnet restore
-        dotnet build --no-restore
-
-    - name: Run Integration Tests
-      working-directory: ${{ env.TEST_PROJ_PATH }}
-      run: |
-        dotnet test --no-build --verbosity normal
-
-  integration_testing_students_api:
-    if: true
-    name: Integration Testing / Students.Api
-    runs-on: ubuntu-latest
-    env:
-      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/integration/Students.Api.IntegrationTests
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Pull Docker images
-      run: |
-        docker pull mcr.microsoft.com/mssql/server
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-
-    - name: Build Integration Tests
-      working-directory: ${{ env.TEST_PROJ_PATH }}
-      run: |
-        dotnet restore
-        dotnet build --no-restore
-
-    - name: Run Integration Tests
-      working-directory: ${{ env.TEST_PROJ_PATH }}
       run: |
         dotnet test --no-build --verbosity normal
 
