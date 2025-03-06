@@ -157,6 +157,7 @@ jobs:
     - name: Tag images with GHCR path
       working-directory: ${{ vars.MSERVICES_SLN_PATH }}
       run: |
+        REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
         docker tag courses-api ghcr.io/${{ github.repository }}/courses-api:$IMAGE_TAG
         docker tag departments-api ghcr.io/${{ github.repository }}/departments-api:$IMAGE_TAG
         docker tag students-api ghcr.io/${{ github.repository }}/students-api:$IMAGE_TAG
