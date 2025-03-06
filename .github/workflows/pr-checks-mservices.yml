@@ -145,6 +145,11 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Generate Developer Certificate
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}/src/ContosoUniversity.Mvc
+      run: |
+        dotnet dev-certs https -ep cert.pfx -p Test1234!
+
     - name: Build images using Docker Compose
       working-directory: ${{ vars.MSERVICES_SLN_PATH }}
       run: |
