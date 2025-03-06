@@ -15,7 +15,7 @@ on:
 env:
   DOTNET_VERSION: 9.0.x
   MSSQL_SA_PASSWORD: <YourStrong!Passw0rd>
-  IMAGE_TAG: ${{ github.sha::7 }}
+  IMAGE_TAG: ${{ github.sha }}
 
 jobs:
 
