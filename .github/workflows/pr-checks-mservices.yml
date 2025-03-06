@@ -136,6 +136,7 @@ jobs:
     name: Build & Push Images
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       packages: write  # ✅ Grants permission to push images to GHCR
     steps:
     - name: Checkout code
