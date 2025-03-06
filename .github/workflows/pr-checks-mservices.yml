@@ -139,13 +139,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
     - name: Generate Developer Certificate
       working-directory: ${{ vars.MSERVICES_SLN_PATH }}/src/ContosoUniversity.Mvc
       run: |
@@ -155,6 +148,13 @@ jobs:
       working-directory: ${{ vars.MSERVICES_SLN_PATH }}
       run: |
         docker compose build --build-arg IMAGE_TAG=$IMAGE_TAG
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
   system_testing:
     if: false
