@@ -149,6 +149,23 @@ jobs:
       run: |
         docker compose build --build-arg IMAGE_TAG=$IMAGE_TAG
 
+    - name: List Docker Images
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+      run: |
+        docker image ls --all
+
+    - name: Tag images with GHCR path
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+      run: |
+        docker tag courses-api ghcr.io/${{ github.repository }}/courses-api:$IMAGE_TAG
+        docker tag departments-api ghcr.io/${{ github.repository }}/departments-api:$IMAGE_TAG
+        docker tag students-api ghcr.io/${{ github.repository }}/students-api:$IMAGE_TAG
+
+    - name: List Docker Images
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+      run: |
+        docker image ls --all
+
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
       with:
