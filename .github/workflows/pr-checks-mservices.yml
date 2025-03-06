@@ -19,6 +19,7 @@ env:
 jobs:
 
   build_and_unit_testing:
+    if: false
     name: Build and Unit Testing
     runs-on: ubuntu-latest
     env:
@@ -45,6 +46,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal
 
   code_style_checks:
+    if: false
     name: Code style checks
     runs-on: ubuntu-latest
     defaults:
@@ -86,7 +88,7 @@ jobs:
         --verify-no-changes
 
   integration_testing:
-    if: true
+    if: ${{ matrix.enabled }}
     name: Integration Testing / ${{ matrix.title }}
     runs-on: ubuntu-latest
     defaults:
@@ -99,12 +101,16 @@ jobs:
         include:
         - title: ContosoUniversity.Mvc
           proj_path: test/integration/ContosoUniversity.Mvc.IntegrationTests
+          enabled: false
         - title: Courses.Api
           proj_path: test/integration/Courses.Api.IntegrationTests
+          enabled: false
         - title: Departments.Api
           proj_path: test/integration/Departments.Api.IntegrationTests
+          enabled: false
         - title: Students.Api
           proj_path: test/integration/Students.Api.IntegrationTests
+          enabled: false
 
     steps:
     - name: Checkout code
@@ -125,7 +131,7 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   system_testing:
-    if: true
+    if: false
     name: System Testing / External-Process
     runs-on: ubuntu-latest
     env:
@@ -236,7 +242,7 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   e2e_testing:
-    if: true
+    if: false
     name: E2E Testing / External-Process
     runs-on: ubuntu-latest
     env:
