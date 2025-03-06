@@ -135,6 +135,8 @@ jobs:
     if: true
     name: Build & Push Images
     runs-on: ubuntu-latest
+    permissions:
+      packages: write  # ✅ Grants permission to push images to GHCR
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
