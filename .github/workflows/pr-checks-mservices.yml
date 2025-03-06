@@ -158,9 +158,9 @@ jobs:
       working-directory: ${{ vars.MSERVICES_SLN_PATH }}
       run: |
         REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-        docker tag courses-api ghcr.io/${{ github.repository }}/courses-api:$IMAGE_TAG
-        docker tag departments-api ghcr.io/${{ github.repository }}/departments-api:$IMAGE_TAG
-        docker tag students-api ghcr.io/${{ github.repository }}/students-api:$IMAGE_TAG
+        docker tag courses-api ghcr.io/$REPO_LOWER/courses-api:$IMAGE_TAG
+        docker tag departments-api ghcr.io/$REPO_LOWER/departments-api:$IMAGE_TAG
+        docker tag students-api ghcr.io/$REPO_LOWER/students-api:$IMAGE_TAG
 
     - name: List Docker Images
       working-directory: ${{ vars.MSERVICES_SLN_PATH }}
