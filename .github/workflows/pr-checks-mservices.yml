@@ -145,6 +145,11 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Build images using Docker Compose
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+      run: |
+        docker compose build --build-arg IMAGE_TAG=$IMAGE_TAG
+
   system_testing:
     if: false
     name: System Testing / External-Process
