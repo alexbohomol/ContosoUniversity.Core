@@ -128,8 +128,10 @@ jobs:
     name: Build & Push Image
     runs-on: ubuntu-latest
     permissions:
-      contents: read
       packages: write
+      contents: read
+      attestations: write
+      id-token: write
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: cuweb
