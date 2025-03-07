@@ -9,7 +9,7 @@ on:
       - "apps/mservices/**"
       - "database/**"
       - ".github/codeql.yml"
-      - ".github/**"
+      - ".github/pr-checks-mservices.yml"
   workflow_dispatch:
 
 env:
@@ -89,7 +89,7 @@ jobs:
         --verify-no-changes
 
   integration_testing:
-    if: false # ${{ matrix.enabled }}
+    if: false
     name: Integration Testing / ${{ matrix.title }}
     runs-on: ubuntu-latest
     defaults:
@@ -102,16 +102,12 @@ jobs:
         include:
         - title: ContosoUniversity.Mvc
           proj_path: test/integration/ContosoUniversity.Mvc.IntegrationTests
-          enabled: false
         - title: Courses.Api
           proj_path: test/integration/Courses.Api.IntegrationTests
-          enabled: false
         - title: Departments.Api
           proj_path: test/integration/Departments.Api.IntegrationTests
-          enabled: false
         - title: Students.Api
           proj_path: test/integration/Students.Api.IntegrationTests
-          enabled: false
 
     steps:
     - name: Checkout code
