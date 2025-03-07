@@ -160,6 +160,9 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/contoso/mnlth/${{ env.IMAGE_NAME }}
 
+      - name: "Debug: check location"
+        run: ls -lah
+      
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v6.15.0
