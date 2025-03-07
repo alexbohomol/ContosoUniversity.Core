@@ -135,18 +135,17 @@ jobs:
       IMAGE_NAME: cuweb
     defaults:
       run:
-        working-directory: ${{ vars.MONOLITH_SLN_PATH }}
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Developer Cert
-        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc
         run: |
           dotnet dev-certs https -ep cert.pfx -p Test1234!
           ls -lah
-  
+
       - name: Log in to the Container registry
         uses: docker/login-action@v3.3.0
         with:
@@ -160,15 +159,11 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/contoso/mnlth/${{ env.IMAGE_NAME }}
 
-      - name: "Debug: check location"
-        run: ls -lah
-      
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v6.15.0
         with:
           context: .
-          file: src/ContosoUniversity.Mvc/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
