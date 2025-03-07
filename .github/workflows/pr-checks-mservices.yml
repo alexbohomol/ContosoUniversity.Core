@@ -128,7 +128,7 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   build_push_images:
-    if: true
+    if: false
     name: Build & Push Images
     runs-on: ubuntu-latest
     permissions:
