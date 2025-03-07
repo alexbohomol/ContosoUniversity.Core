@@ -167,7 +167,7 @@ jobs:
         uses: docker/build-push-action@v6.15.0
         with:
           context: ${{ vars.MONOLITH_SLN_PATH }}
-          file: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc
+          file: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
