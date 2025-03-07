@@ -122,7 +122,25 @@ jobs:
       working-directory: ${{ env.TEST_PROJ_PATH }}
       run: |
         dotnet test --no-build --verbosity normal
-      
+
+  build-and-push-image:
+    if: true
+    name: Build & Push Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
   system_testing:
     if: false
     name: System Testing / External-Process
