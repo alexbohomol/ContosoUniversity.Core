@@ -159,20 +159,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5.7.0
         with:
-          images: ${{ env.REGISTRY }}/contoso/mnlth/${{ env.IMAGE_NAME }}
-
-      - name: "Debug: check location"
-        run: ls -lah
-
-      - name: Debug GITHUB_TOKEN
-        run: echo ${{ secrets.GITHUB_TOKEN }} | base64
-
-      - name: Test GitHub Token Permissions
-        run: |
-          curl -L -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/user/packages?package_type=container"
+          images: ${{ env.REGISTRY }}/alexbohomol/contosouniversity.core/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
         id: push
