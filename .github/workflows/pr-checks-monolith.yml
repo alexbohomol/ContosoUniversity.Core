@@ -150,7 +150,7 @@ jobs:
           ls -lah
 
       - name: Log in to the Container registry
-        uses: docker/login-action@v3.3.0
+        uses: docker/login-action@main
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -158,13 +158,13 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v5.7.0
+        uses: docker/metadata-action@main
         with:
           images: ${{ env.REGISTRY }}/${{ env.PCKG_REPO_PATH }}/mnlth/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
         id: push
-        uses: docker/build-push-action@v6.15.0
+        uses: docker/build-push-action@main
         with:
           context: ${{ vars.MONOLITH_SLN_PATH }}
           file: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc/Dockerfile
