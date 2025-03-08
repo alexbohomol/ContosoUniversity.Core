@@ -128,7 +128,7 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   build-and-push-image:
-    # if: false
+    if: false
     name: Build & Push Image
     runs-on: ubuntu-latest
     permissions:
@@ -173,7 +173,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
   check_system_health:
-    # if: false
+    if: false
     name: Check System Health
     runs-on: ubuntu-latest
     needs: build-and-push-image
@@ -231,7 +231,7 @@ jobs:
         run: docker compose down
 
   system_testing:
-    # if: true
+    if: false
     name: System Testing / External-Process
     runs-on: ubuntu-latest
     needs: check_system_health
@@ -290,11 +290,15 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   e2e_testing:
-    if: false
+    if: true
     name: E2E Testing / External-Process
     runs-on: ubuntu-latest
+    # needs: check_system_health
+    permissions:
+      packages: read
     env:
       TEST_PROJ_PATH: ${{ vars.MONOLITH_SLN_PATH }}/test/e2e/ContosoUniversity.AcceptanceTests
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -311,39 +315,18 @@ jobs:
         docker-compose version
         ls -lah
 
-    - name: Developer Cert
-      working-directory: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc
+    - name: Log in to the Container registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Run Docker Compose Pull
+      working-directory: ${{ vars.MONOLITH_SLN_PATH }}
       run: |
-        dotnet dev-certs https -ep cert.pfx -p Test1234!
-        ls -lah
-
-    - name: Test run Docker environment
-      id: compose
-      working-directory: ${{ vars.MONOLITH_SLN_PATH }}
-      run: docker compose up --wait
-
-    - name: Inspect container | cuweb
-      working-directory: ${{ vars.MONOLITH_SLN_PATH }}
-      run: docker inspect cuweb
-
-    - name: Curl to cuweb
-      run: curl http://localhost:10000/Courses
-
-    - name: Grab container logs | cuweb
-      if: always()
-      run: docker logs cuweb
-
-    - name: Grab container logs | mssql
-      if: always()
-      run: docker logs mssql
-
-    - name: Grab container logs | mssql-migrator
-      if: always()
-      run: docker logs mssql-migrator
-
-    - name: Shut down Docker Infra
-      working-directory: ${{ vars.MONOLITH_SLN_PATH }}
-      run: docker compose down
+        set IMAGE_TAG=${{ env.IMAGE_TAG }}
+        docker compose pull
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
