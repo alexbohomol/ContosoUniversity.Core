@@ -176,18 +176,38 @@ jobs:
     if: true
     name: Check System Health
     runs-on: ubuntu-latest
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: cuweb
+      IMAGE_PATH: alexbohomol/contoso
+    defaults:
+      run:
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Test run Docker environment
-        id: compose
-        working-directory: ${{ vars.MONOLITH_SLN_PATH }}
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check Docker images (before compose up)
+        run: docker image ls --all
+
+      - name: Up Docker environment
         run: docker compose up --wait
 
+      - name: Check Docker images
+        run: docker image ls --all
+
+      - name: Check Docker containers
+        run: docker container ls --all
+
       - name: Inspect container | cuweb
-        working-directory: ${{ vars.MONOLITH_SLN_PATH }}
         run: docker inspect cuweb
 
       - name: Curl to cuweb
@@ -206,7 +226,6 @@ jobs:
         run: docker logs mssql-migrator
 
       - name: Shut down Docker Infra
-        working-directory: ${{ vars.MONOLITH_SLN_PATH }}
         run: docker compose down
 
   system_testing:
