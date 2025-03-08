@@ -135,6 +135,7 @@ jobs:
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: cuweb
+      PCKG_REPO_PATH: alexbohomol/contoso
     defaults:
       run:
         working-directory: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc
@@ -159,7 +160,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5.7.0
         with:
-          images: ${{ env.REGISTRY }}/alexbohomol/contosouniversity.core/mnlth/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.PCKG_REPO_PATH }}/mnlth/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
         id: push
