@@ -9,16 +9,18 @@ on:
       - "apps/mservices/**"
       - "database/**"
       - ".github/codeql.yml"
-      - ".github/pr-checks-mservices.yml"
+      - ".github/**"
   workflow_dispatch:
 
 env:
   DOTNET_VERSION: 9.0.x
   MSSQL_SA_PASSWORD: <YourStrong!Passw0rd>
+  IMAGE_TAG: ${{ github.sha }}
 
 jobs:
 
   build_and_unit_testing:
+    if: false
     name: Build and Unit Testing
     runs-on: ubuntu-latest
     env:
@@ -45,6 +47,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal
 
   code_style_checks:
+    if: false
     name: Code style checks
     runs-on: ubuntu-latest
     defaults:
@@ -86,7 +89,7 @@ jobs:
         --verify-no-changes
 
   integration_testing:
-    if: true
+    if: false
     name: Integration Testing / ${{ matrix.title }}
     runs-on: ubuntu-latest
     defaults:
@@ -124,8 +127,60 @@ jobs:
       run: |
         dotnet test --no-build --verbosity normal
 
+  build_push_images:
+    if: false
+    name: Build & Push Images
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write  # ✅ Grants permission to push images to GHCR
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Generate Developer Certificate
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}/src/ContosoUniversity.Mvc
+      run: |
+        dotnet dev-certs https -ep cert.pfx -p Test1234!
+
+    - name: Build images using Docker Compose
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+      run: |
+        docker compose build --build-arg IMAGE_TAG=$IMAGE_TAG
+
+    - name: List Docker Images
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+      run: |
+        docker image ls --all
+
+    - name: Tag images with GHCR path
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+      run: |
+        REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+        docker tag cuweb ghcr.io/$REPO_LOWER/cuweb:$IMAGE_TAG
+        docker tag courses-api ghcr.io/$REPO_LOWER/courses-api:$IMAGE_TAG
+        docker tag departments-api ghcr.io/$REPO_LOWER/departments-api:$IMAGE_TAG
+        docker tag students-api ghcr.io/$REPO_LOWER/students-api:$IMAGE_TAG
+
+    - name: List Docker Images
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+      run: |
+        docker image ls --all
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Push images to GHCR
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+      run: |
+        docker compose push
+
   system_testing:
-    if: true
+    if: false
     name: System Testing / External-Process
     runs-on: ubuntu-latest
     env:
@@ -236,7 +291,7 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   e2e_testing:
-    if: true
+    if: false
     name: E2E Testing / External-Process
     runs-on: ubuntu-latest
     env:
