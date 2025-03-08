@@ -164,6 +164,12 @@ jobs:
       - name: "Debug: check location"
         run: ls -lah
 
+      - name: Test GitHub Token Permissions
+        run: |
+          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               https://api.github.com/user/packages
+
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v6.15.0
