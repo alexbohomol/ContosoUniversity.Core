@@ -230,39 +230,6 @@ jobs:
       - name: Shut down Docker Infra
         run: docker compose down
 
-  check_system_health:
-    if: false
-    name: Check System Health
-    runs-on: ubuntu-latest
-    permissions:
-      packages: read
-    env:
-      REGISTRY: ghcr.io
-      IMAGE_NAME: cuweb
-      IMAGE_PATH: alexbohomol/contoso
-    defaults:
-      run:
-        working-directory: ${{ vars.MONOLITH_SLN_PATH }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Pull latest image
-        run: |
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_PATH }}/mnlth/${{ env.IMAGE_NAME }}:pr-149
-
-      - name: Up Docker environment
-        run: docker compose up --wait
-
-
   system_testing:
     if: false
     name: System Testing / External-Process
