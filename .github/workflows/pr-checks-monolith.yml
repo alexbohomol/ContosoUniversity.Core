@@ -247,6 +247,7 @@ jobs:
       IMAGE_PATH: alexbohomol/contoso
       IMAGE_TAG: pr-149
       TEST_PROJ_PATH: ${{ vars.MONOLITH_SLN_PATH }}/test/system/ContosoUniversity.SystemTests
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -270,10 +271,11 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Run Docker Compose Up
+    - name: Run Docker Compose Pull
+      working-directory: ${{ vars.MONOLITH_SLN_PATH }}
       run: |
         set IMAGE_TAG=${{ env.IMAGE_TAG }}
-        docker compose up --wait
+        docker compose pull
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
