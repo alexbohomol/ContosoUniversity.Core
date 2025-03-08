@@ -124,7 +124,7 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   build-and-push-image:
-    if: true
+    if: false
     name: Build & Push Image
     runs-on: ubuntu-latest
     permissions:
@@ -171,6 +171,43 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  check_system_health:
+    if: true
+    name: Check System Health
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test run Docker environment
+        id: compose
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}
+        run: docker compose up --wait
+
+      - name: Inspect container | cuweb
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}
+        run: docker inspect cuweb
+
+      - name: Curl to cuweb
+        run: curl http://localhost:10000/Courses
+
+      - name: Grab container logs | cuweb
+        if: always()
+        run: docker logs cuweb
+
+      - name: Grab container logs | mssql
+        if: always()
+        run: docker logs mssql
+
+      - name: Grab container logs | mssql-migrator
+        if: always()
+        run: docker logs mssql-migrator
+
+      - name: Shut down Docker Infra
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}
+        run: docker compose down
 
   system_testing:
     if: false
