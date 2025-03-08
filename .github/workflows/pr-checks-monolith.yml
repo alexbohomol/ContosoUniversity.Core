@@ -176,6 +176,8 @@ jobs:
     if: true
     name: Check System Health
     runs-on: ubuntu-latest
+    permissions:
+      packages: read
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: cuweb
@@ -194,6 +196,10 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull latest image
+        run: |
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_PATH }}/mnlth/${{ env.IMAGE_NAME }}:pr-149
 
       - name: Check Docker images (before compose up)
         run: docker image ls --all
