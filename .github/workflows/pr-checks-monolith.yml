@@ -168,7 +168,7 @@ jobs:
         run: |
           curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
                -H "Accept: application/vnd.github.v3+json" \
-               https://api.github.com/user/packages
+               "https://api.github.com/user/packages?package_type=container"
 
       - name: Build and push Docker image
         id: push
