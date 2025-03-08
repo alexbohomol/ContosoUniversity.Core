@@ -203,6 +203,33 @@ jobs:
           set IMAGE_TAG=${{ env.IMAGE_TAG }}
           docker compose up --wait
 
+      - name: Check Docker images
+        run: docker image ls --all
+
+      - name: Check Docker containers
+        run: docker container ls --all
+
+      - name: Inspect container | cuweb
+        run: docker inspect cuweb
+
+      - name: Curl to cuweb
+        run: curl http://localhost:10000/Courses
+
+      - name: Grab container logs | cuweb
+        if: always()
+        run: docker logs cuweb
+
+      - name: Grab container logs | mssql
+        if: always()
+        run: docker logs mssql
+
+      - name: Grab container logs | mssql-migrator
+        if: always()
+        run: docker logs mssql-migrator
+
+      - name: Shut down Docker Infra
+        run: docker compose down
+
   check_system_health:
     if: false
     name: Check System Health
@@ -232,38 +259,9 @@ jobs:
         run: |
           docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_PATH }}/mnlth/${{ env.IMAGE_NAME }}:pr-149
 
-      - name: Check Docker images (before compose up)
-        run: docker image ls --all
-
       - name: Up Docker environment
         run: docker compose up --wait
 
-      - name: Check Docker images
-        run: docker image ls --all
-
-      - name: Check Docker containers
-        run: docker container ls --all
-
-      - name: Inspect container | cuweb
-        run: docker inspect cuweb
-
-      - name: Curl to cuweb
-        run: curl http://localhost:10000/Courses
-
-      - name: Grab container logs | cuweb
-        if: always()
-        run: docker logs cuweb
-
-      - name: Grab container logs | mssql
-        if: always()
-        run: docker logs mssql
-
-      - name: Grab container logs | mssql-migrator
-        if: always()
-        run: docker logs mssql-migrator
-
-      - name: Shut down Docker Infra
-        run: docker compose down
 
   system_testing:
     if: false
