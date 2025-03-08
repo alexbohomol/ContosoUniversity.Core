@@ -172,8 +172,41 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+  deploy-and-run:
+    name: Deploy & Run Image
+    runs-on: ubuntu-latest
+    needs: build-and-push-image
+    permissions:
+      packages: read
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: cuweb
+      IMAGE_PATH: alexbohomol/contoso
+    defaults:
+      run:
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull latest image
+        run: |
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_PATH }}/mnlth/${{ env.IMAGE_NAME }}:pr-149
+
+      - name: Run Docker Compose
+        run: |
+          docker compose up --wait
+
   check_system_health:
-    if: true
+    if: false
     name: Check System Health
     runs-on: ubuntu-latest
     permissions:
