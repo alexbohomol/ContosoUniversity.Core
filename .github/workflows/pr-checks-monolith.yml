@@ -17,7 +17,6 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: cuweb
   IMAGE_PATH: alexbohomol/contoso
-  IMAGE_TAG: ${{ github.ref_name }}
 
 jobs:
 
@@ -178,6 +177,12 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Save SHA Tag
+        run: echo "IMAGE_TAG=${{ steps.meta.outputs.sha }}" >> $GITHUB_ENV
+      
+      - name: Print image tag
+        run: echo ${{ env.IMAGE_TAG }}
 
   check_system_health:
     if: false
