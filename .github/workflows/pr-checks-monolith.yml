@@ -165,6 +165,8 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_PATH }}/mnlth/${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=branch
+            type=ref,event=tag
+            type=ref,event=pr
             type=sha
 
       - name: Build and push Docker image
