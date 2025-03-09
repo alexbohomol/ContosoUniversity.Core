@@ -181,8 +181,26 @@ jobs:
       - name: Save SHA Tag
         run: echo "IMAGE_TAG=${{ steps.meta.outputs.sha }}" >> $GITHUB_ENV
       
-      - name: Print image tag
-        run: echo ${{ steps.meta.outputs.sha }}
+      # Output the sha image tag that was pushed to the registry.
+      # The script uses ./jq to parse the JSON output from the docker/metadata-action@v4 action.
+      # See https://jqlang.github.io/jq/ for more information.
+      - name: Output SHA image tag
+        id: output_sha_image_tag
+        env:
+          DOCKER_METADATA: ${{ steps.meta.outputs.json}}
+        run: |
+          # pretty print the metadata
+          echo $DOCKER_METADATA | jq '.'
+
+          # get the image tag that contains 'sha-'
+          image_tag=$(echo "$DOCKER_METADATA" | jq -r '.tags[] | select(. | test("sha-"))')
+          echo $image_tag
+
+          # get the sha from the image tag, for example: sha-1234567890abcdef1234567890abcdef12345678
+          image_tag_sha=$(echo "$image_tag" | grep -o 'sha-[a-f0-9]\+')
+          echo $image_tag_sha
+
+          echo "image_tag_sha=$image_tag_sha" >> $GITHUB_OUTPUT
 
   check_system_health:
     if: false
