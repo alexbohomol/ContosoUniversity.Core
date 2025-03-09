@@ -137,8 +137,6 @@ jobs:
       contents: read
       attestations: write
       id-token: write
-    outputs:
-      image_tag: ${{ steps.extract_image_tag.outputs.IMAGE_TAG }}
     defaults:
       run:
         working-directory: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc
@@ -181,6 +179,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      # - name: Extract SHA Tag
+      #   run: echo "IMAGE_SHA_TAG=sha-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
       # https://github.com/docker/metadata-action/issues/164#issuecomment-1853484347
       - name: Extract SHA image tag
         id: extract_image_tag
@@ -190,7 +191,7 @@ jobs:
           IMAGE_TAG=$(echo "$DOCKER_METADATA" | jq -r '.tags[] | select(. | test("temp-ci-"))')
           IMAGE_TAG=$(echo "$IMAGE_TAG" | grep -o 'temp-ci-[a-f0-9]\+')
           echo $IMAGE_TAG
-          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_OUTPUT
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
   check_system_health:
     # if: false
@@ -199,8 +200,6 @@ jobs:
     needs: build_and_push_image
     permissions:
       packages: read
-    env:
-      IMAGE_TAG: ${{ needs.build_and_push_image.outputs.image_tag }}
     defaults:
       run:
         working-directory: ${{ vars.MONOLITH_SLN_PATH }}
@@ -261,7 +260,6 @@ jobs:
       packages: read
     env:
       TEST_PROJ_PATH: ${{ vars.MONOLITH_SLN_PATH }}/test/system/ContosoUniversity.SystemTests
-      IMAGE_TAG: ${{ needs.build_and_push_image.outputs.image_tag }}
 
     steps:
     - name: Checkout code
@@ -321,7 +319,6 @@ jobs:
       packages: read
     env:
       TEST_PROJ_PATH: ${{ vars.MONOLITH_SLN_PATH }}/test/e2e/ContosoUniversity.AcceptanceTests
-      IMAGE_TAG: ${{ needs.build_and_push_image.outputs.image_tag }}
 
     steps:
     - name: Checkout code
