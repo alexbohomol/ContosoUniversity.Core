@@ -182,7 +182,7 @@ jobs:
         run: echo "IMAGE_TAG=${{ steps.meta.outputs.sha }}" >> $GITHUB_ENV
       
       - name: Print image tag
-        run: echo ${{ env.IMAGE_TAG }}
+        run: echo ${{ steps.meta.outputs.sha }}
 
   check_system_health:
     if: false
