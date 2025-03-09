@@ -167,7 +167,7 @@ jobs:
             type=ref,event=tag
             type=ref,event=pr
             type=sha
-            type=raw,value=test-{{sha}}
+            type=raw,value=temp-ci-{{sha}}
 
       - name: Build and push Docker image
         id: push
@@ -182,13 +182,11 @@ jobs:
       # https://github.com/docker/metadata-action/issues/164#issuecomment-1853484347
       - name: Extract SHA image tag
         env:
-          DOCKER_METADATA: ${{ steps.meta.outputs.json}}
+          DOCKER_METADATA: ${{ steps.meta.outputs.json }}
         run: |
-          # get the image tag that contains 'test-'
-          IMAGE_TAG=$(echo "$DOCKER_METADATA" | jq -r '.tags[] | select(. | test("test-"))')
+          IMAGE_TAG=$(echo "$DOCKER_METADATA" | jq -r '.tags[] | select(. | test("temp-ci-"))')
           echo $IMAGE_TAG
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_OUTPUT
-          echo ${{ env.IMAGE_TAG }}
 
   check_system_health:
     if: false
