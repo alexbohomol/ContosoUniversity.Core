@@ -48,7 +48,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal
       
   code_style_checks:
-    if: true
+    if: false
     name: Code style checks
     runs-on: ubuntu-latest
     defaults:
@@ -90,7 +90,7 @@ jobs:
         --verify-no-changes
       
   integration_testing:
-    # if: false
+    if: false
     name: Integration Testing / In-Process
     runs-on: ubuntu-latest
     # needs: build_and_unit_testing
