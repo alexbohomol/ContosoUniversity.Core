@@ -138,7 +138,7 @@ jobs:
       attestations: write
       id-token: write
     outputs:
-      image_sha_tag: ${{ steps.extract_sha_tag.outputs.image_sha_tag }}  # Передаємо SHA-тег у outputs
+      image_tag: ${{ steps.extract_image_tag.outputs.IMAGE_TAG }}
     defaults:
       run:
         working-directory: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc
@@ -183,6 +183,7 @@ jobs:
 
       # https://github.com/docker/metadata-action/issues/164#issuecomment-1853484347
       - name: Extract SHA image tag
+        id: extract_image_tag
         env:
           DOCKER_METADATA: ${{ steps.meta.outputs.json }}
         run: |
@@ -197,6 +198,8 @@ jobs:
     needs: build_and_push_image
     permissions:
       packages: read
+    env:
+      IMAGE_TAG: ${{ needs.build_and_push_image.outputs.image_tag }}
     defaults:
       run:
         working-directory: ${{ vars.MONOLITH_SLN_PATH }}
