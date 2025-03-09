@@ -167,7 +167,7 @@ jobs:
             type=ref,event=tag
             type=ref,event=pr
             type=sha
-            type=raw,value={{sha}}
+            type=raw,value=test-{{sha}}
 
       - name: Build and push Docker image
         id: push
