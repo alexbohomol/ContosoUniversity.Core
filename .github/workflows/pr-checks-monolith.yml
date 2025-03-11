@@ -15,8 +15,7 @@ on:
 env:
   DOTNET_VERSION: 9.0.x
   REGISTRY: ghcr.io
-  IMAGE_NAME: cuweb
-  IMAGE_PATH: alexbohomol/contoso
+  IMAGE_PATH: ${{ github.actor }}/contoso/mnlth
 
 jobs:
 
@@ -150,24 +149,24 @@ jobs:
           dotnet dev-certs https -ep cert.pfx -p Test1234!
           ls -lah
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Log in to the Container registry
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: ${{ env.REGISTRY }}
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_PATH }}/mnlth/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=tag
-            type=ref,event=pr
-            type=sha
-            type=raw,value=temp-ci-{{sha}}
+      # - name: Extract metadata (tags, labels) for Docker
+      #   id: meta
+      #   uses: docker/metadata-action@v5
+      #   with:
+      #     images: ${{ env.REGISTRY }}/${{ env.IMAGE_PATH }}/cuweb
+      #     tags: |
+      #       type=ref,event=branch
+      #       type=ref,event=tag
+      #       type=ref,event=pr
+      #       type=sha
+      #       type=raw,value=temp-ci-{{sha}}
 
       - name: Build and push Docker image
         id: push
@@ -175,23 +174,31 @@ jobs:
         with:
           context: ${{ vars.MONOLITH_SLN_PATH }}
           file: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc/Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          # push: true
+          # tags: ${{ steps.meta.outputs.tags }}
+          # labels: ${{ steps.meta.outputs.labels }}
+          tags: cuweb:latest
+          outputs: type=docker,dest=${{ runner.temp }}/cuweb.tar
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cuweb
+          path: ${{ runner.temp }}/cuweb.tar
 
       # - name: Extract SHA Tag
       #   run: echo "IMAGE_SHA_TAG=sha-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       # https://github.com/docker/metadata-action/issues/164#issuecomment-1853484347
-      - name: Extract SHA image tag
-        id: extract_image_tag
-        env:
-          DOCKER_METADATA: ${{ steps.meta.outputs.json }}
-        run: |
-          IMAGE_TAG=$(echo "$DOCKER_METADATA" | jq -r '.tags[] | select(. | test("temp-ci-"))')
-          IMAGE_TAG=$(echo "$IMAGE_TAG" | grep -o 'temp-ci-[a-f0-9]\+')
-          echo $IMAGE_TAG
-          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+      # - name: Extract SHA image tag
+      #   id: extract_image_tag
+      #   env:
+      #     DOCKER_METADATA: ${{ steps.meta.outputs.json }}
+      #   run: |
+      #     IMAGE_TAG=$(echo "$DOCKER_METADATA" | jq -r '.tags[] | select(. | test("temp-ci-"))')
+      #     IMAGE_TAG=$(echo "$IMAGE_TAG" | grep -o 'temp-ci-[a-f0-9]\+')
+      #     echo $IMAGE_TAG
+      #     echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
   check_system_health:
     # if: false
@@ -208,16 +215,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@v3
+      - name: Download artifact
+        uses: actions/download-artifact@v4
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          name: cuweb
+          path: ${{ runner.temp }}
+
+      - name: Load image
+        run: |
+          docker load --input ${{ runner.temp }}/cuweb.tar
+          docker image ls -a
+
+      # - name: Log in to the Container registry
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: ${{ env.REGISTRY }}
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run Docker Compose Pull
         run: |
-          set IMAGE_TAG=$IMAGE_TAG
+          set IMAGE_TAG=latest
           docker compose pull
 
       - name: Run Docker Compose Up
@@ -277,17 +295,28 @@ jobs:
         docker-compose version
         ls -lah
 
-    - name: Log in to the Container registry
-      uses: docker/login-action@v3
+    # - name: Log in to the Container registry
+    #   uses: docker/login-action@v3
+    #   with:
+    #     registry: ${{ env.REGISTRY }}
+    #     username: ${{ github.actor }}
+    #     password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Download artifact
+      uses: actions/download-artifact@v4
       with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        name: cuweb
+        path: ${{ runner.temp }}
+
+    - name: Load image
+      run: |
+        docker load --input ${{ runner.temp }}/cuweb.tar
+        docker image ls -a
 
     - name: Run Docker Compose Pull
       working-directory: ${{ vars.MONOLITH_SLN_PATH }}
       run: |
-        set IMAGE_TAG=$IMAGE_TAG
+        set IMAGE_TAG=latest
         docker compose pull
 
     - name: Setup .NET
@@ -336,17 +365,28 @@ jobs:
         docker-compose version
         ls -lah
 
-    - name: Log in to the Container registry
-      uses: docker/login-action@v3
+    # - name: Log in to the Container registry
+    #   uses: docker/login-action@v3
+    #   with:
+    #     registry: ${{ env.REGISTRY }}
+    #     username: ${{ github.actor }}
+    #     password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Download artifact
+      uses: actions/download-artifact@v4
       with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        name: cuweb
+        path: ${{ runner.temp }}
+
+    - name: Load image
+      run: |
+        docker load --input ${{ runner.temp }}/cuweb.tar
+        docker image ls -a
 
     - name: Run Docker Compose Pull
       working-directory: ${{ vars.MONOLITH_SLN_PATH }}
       run: |
-        set IMAGE_TAG=$IMAGE_TAG
+        set IMAGE_TAG=latest
         docker compose pull
 
     - name: Setup .NET
