@@ -168,6 +168,9 @@ jobs:
       #       type=sha
       #       type=raw,value=temp-ci-{{sha}}
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v6
