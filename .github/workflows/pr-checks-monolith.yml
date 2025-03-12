@@ -316,11 +316,11 @@ jobs:
         docker load --input ${{ runner.temp }}/cuweb.tar
         docker image ls -a
 
-    - name: Run Docker Compose Pull
-      working-directory: ${{ vars.MONOLITH_SLN_PATH }}
-      run: |
-        export IMAGE_TAG=latest
-        docker compose pull
+    # - name: Run Docker Compose Pull
+    #   working-directory: ${{ vars.MONOLITH_SLN_PATH }}
+    #   run: |
+    #     export IMAGE_TAG=latest
+    #     docker compose pull
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -386,11 +386,11 @@ jobs:
         docker load --input ${{ runner.temp }}/cuweb.tar
         docker image ls -a
 
-    - name: Run Docker Compose Pull
-      working-directory: ${{ vars.MONOLITH_SLN_PATH }}
-      run: |
-        export IMAGE_TAG=latest
-        docker compose pull
+    # - name: Run Docker Compose Pull
+    #   working-directory: ${{ vars.MONOLITH_SLN_PATH }}
+    #   run: |
+    #     export IMAGE_TAG=latest
+    #     docker compose pull
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
