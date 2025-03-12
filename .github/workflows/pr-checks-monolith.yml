@@ -236,10 +236,10 @@ jobs:
       #     username: ${{ github.actor }}
       #     password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run Docker Compose Pull
-        run: |
-          export IMAGE_TAG=latest
-          docker compose pull
+      # - name: Run Docker Compose Pull
+      #   run: |
+      #     export IMAGE_TAG=latest
+      #     docker compose pull
 
       - name: Run Docker Compose Up
         run: |
