@@ -14,8 +14,6 @@ on:
 
 env:
   DOTNET_VERSION: 9.0.x
-  REGISTRY: ghcr.io
-  IMAGE_PATH: ${{ github.actor }}/contoso/mnlth
 
 jobs:
 
@@ -126,16 +124,11 @@ jobs:
       run: |
         dotnet test --no-build --verbosity normal
 
-  build_and_push_image:
+  build_and_save_image:
     # if: false
-    name: Build & Push Image
+    name: Build & Save Image
     runs-on: ubuntu-latest
     needs: build_and_unit_testing
-    permissions:
-      packages: write
-      contents: read
-      attestations: write
-      id-token: write
     defaults:
       run:
         working-directory: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc
@@ -171,7 +164,7 @@ jobs:
     # if: false
     name: Check System Health
     runs-on: ubuntu-latest
-    needs: build_and_push_image
+    needs: build_and_save_image
     permissions:
       packages: read
     defaults:
@@ -229,8 +222,6 @@ jobs:
     name: System Testing / External-Process
     runs-on: ubuntu-latest
     needs: check_system_health
-    permissions:
-      packages: read
     env:
       TEST_PROJ_PATH: ${{ vars.MONOLITH_SLN_PATH }}/test/system/ContosoUniversity.SystemTests
 
@@ -286,8 +277,6 @@ jobs:
     name: E2E Testing / External-Process
     runs-on: ubuntu-latest
     needs: check_system_health
-    permissions:
-      packages: read
     env:
       TEST_PROJ_PATH: ${{ vars.MONOLITH_SLN_PATH }}/test/e2e/ContosoUniversity.AcceptanceTests
 
