@@ -238,7 +238,7 @@ jobs:
 
       - name: Run Docker Compose Pull
         run: |
-          set IMAGE_TAG=latest
+          export IMAGE_TAG=latest
           docker compose pull
 
       - name: Run Docker Compose Up
@@ -319,7 +319,7 @@ jobs:
     - name: Run Docker Compose Pull
       working-directory: ${{ vars.MONOLITH_SLN_PATH }}
       run: |
-        set IMAGE_TAG=latest
+        export IMAGE_TAG=latest
         docker compose pull
 
     - name: Setup .NET
@@ -389,7 +389,7 @@ jobs:
     - name: Run Docker Compose Pull
       working-directory: ${{ vars.MONOLITH_SLN_PATH }}
       run: |
-        set IMAGE_TAG=latest
+        export IMAGE_TAG=latest
         docker compose pull
 
     - name: Setup .NET
