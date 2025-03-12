@@ -4,7 +4,7 @@ networks:
 
 services:
   web:
-    image: cuweb:latest
+    image: cuweb
     # image: ghcr.io/alexbohomol/contoso/mnlth/cuweb:${IMAGE_TAG}
     container_name: cuweb
     hostname: web
