@@ -15,7 +15,6 @@ on:
 env:
   DOTNET_VERSION: 9.0.x
   MSSQL_SA_PASSWORD: <YourStrong!Passw0rd>
-  IMAGE_TAG: ${{ github.sha }}
 
 jobs:
 
@@ -127,57 +126,41 @@ jobs:
       run: |
         dotnet test --no-build --verbosity normal
 
-  build_push_images:
-    if: false
-    name: Build & Push Images
+  build_and_save_images:
+    # if: false
+    name: Build & Save Image
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write  # ✅ Grants permission to push images to GHCR
+    needs: build_and_unit_testing
+    defaults:
+      run:
+        working-directory: ${{ vars.MSERVICES_SLN_PATH }}/src/ContosoUniversity.Mvc
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Generate Developer Certificate
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}/src/ContosoUniversity.Mvc
-      run: |
-        dotnet dev-certs https -ep cert.pfx -p Test1234!
+      - name: Developer Cert
+        run: |
+          dotnet dev-certs https -ep cert.pfx -p Test1234!
+          ls -lah
 
-    - name: Build images using Docker Compose
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
-      run: |
-        docker compose build --build-arg IMAGE_TAG=$IMAGE_TAG
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    - name: List Docker Images
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
-      run: |
-        docker image ls --all
+      - name: Build Docker image locally
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ vars.MSERVICES_SLN_PATH }}
+          file: ${{ vars.MSERVICES_SLN_PATH }}/src/ContosoUniversity.Mvc/Dockerfile
+          tags: cuweb:latest
+          outputs: type=docker,dest=${{ runner.temp }}/cuweb.tar
 
-    - name: Tag images with GHCR path
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
-      run: |
-        REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-        docker tag cuweb ghcr.io/$REPO_LOWER/cuweb:$IMAGE_TAG
-        docker tag courses-api ghcr.io/$REPO_LOWER/courses-api:$IMAGE_TAG
-        docker tag departments-api ghcr.io/$REPO_LOWER/departments-api:$IMAGE_TAG
-        docker tag students-api ghcr.io/$REPO_LOWER/students-api:$IMAGE_TAG
-
-    - name: List Docker Images
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
-      run: |
-        docker image ls --all
-
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Push images to GHCR
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
-      run: |
-        docker compose push
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cuweb
+          path: ${{ runner.temp }}/cuweb.tar
 
   system_testing:
     if: false
