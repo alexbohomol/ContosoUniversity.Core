@@ -194,6 +194,7 @@ jobs:
 
       - name: Developer Cert
         if: ${{ matrix.image_name == 'cuweb' }}
+        working-directory: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.proj_path }}
         run: |
           dotnet dev-certs https -ep cert.pfx -p Test1234!
           ls -lah
