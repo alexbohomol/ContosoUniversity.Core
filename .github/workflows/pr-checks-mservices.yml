@@ -126,42 +126,6 @@ jobs:
       run: |
         dotnet test --no-build --verbosity normal
 
-  build_and_save_mvc:
-    if: false
-    name: Build & Save Mvc Image
-    runs-on: ubuntu-latest
-    # needs: build_and_unit_testing
-    defaults:
-      run:
-        working-directory: ${{ vars.MSERVICES_SLN_PATH }}/src/ContosoUniversity.Mvc
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Developer Cert
-        run: |
-          dotnet dev-certs https -ep cert.pfx -p Test1234!
-          ls -lah
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker image locally
-        id: push
-        uses: docker/build-push-action@v6
-        with:
-          context: ${{ vars.MSERVICES_SLN_PATH }}
-          file: ${{ vars.MSERVICES_SLN_PATH }}/src/ContosoUniversity.Mvc/Dockerfile
-          tags: cuweb:latest
-          outputs: type=docker,dest=${{ runner.temp }}/cuweb.tar
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: cuweb
-          path: ${{ runner.temp }}/cuweb.tar
-
   build_and_save_images:
     # if: false
     name: Build & Save ${{ matrix.title }}
