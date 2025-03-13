@@ -5,7 +5,6 @@ networks:
 services:
   web:
     image: cuweb
-    # image: ghcr.io/alexbohomol/contoso/mnlth/cuweb:${IMAGE_TAG}
     container_name: cuweb
     hostname: web
     depends_on:
@@ -18,9 +17,9 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    # build:
-    #   context: .
-    #   dockerfile: src/ContosoUniversity.Mvc/Dockerfile
+    build:
+      context: .
+      dockerfile: src/ContosoUniversity.Mvc/Dockerfile
     networks:
       - cunetwork
 

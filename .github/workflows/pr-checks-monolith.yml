@@ -18,7 +18,7 @@ env:
 jobs:
 
   build_and_unit_testing:
-    if: false
+    # if: false
     name: Build and Unit Testing
     runs-on: ubuntu-latest
     env:
@@ -45,7 +45,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal
       
   code_style_checks:
-    if: false
+    # if: false
     name: Code style checks
     runs-on: ubuntu-latest
     defaults:
