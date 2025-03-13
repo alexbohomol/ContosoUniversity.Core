@@ -8,8 +8,9 @@ on:
     paths: 
       - "apps/mservices/**"
       - "database/**"
-      - ".github/codeql.yml"
-      - ".github/pr-checks-mservices.yml"
+      # - ".github/codeql.yml"
+      # - ".github/pr-checks-mservices.yml"
+      - ".github/**"
   workflow_dispatch:
 
 env:

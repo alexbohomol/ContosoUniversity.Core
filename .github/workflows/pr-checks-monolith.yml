@@ -8,8 +8,9 @@ on:
     paths: 
       - "apps/monolith/**"
       - "database/**"
-      - ".github/codeql.yml"
-      - ".github/pr-checks-monolith.yml"
+      # - ".github/codeql.yml"
+      # - ".github/pr-checks-monolith.yml"
+      - ".github/**"
   workflow_dispatch:
 
 env:
