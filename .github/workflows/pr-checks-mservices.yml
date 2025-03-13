@@ -130,7 +130,7 @@ jobs:
     # if: false
     name: Build & Save Image
     runs-on: ubuntu-latest
-    needs: build_and_unit_testing
+    # needs: build_and_unit_testing
     defaults:
       run:
         working-directory: ${{ vars.MSERVICES_SLN_PATH }}/src/ContosoUniversity.Mvc
