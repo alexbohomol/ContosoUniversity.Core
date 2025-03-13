@@ -8,8 +8,9 @@ on:
     paths: 
       - "apps/mservices/**"
       - "database/**"
-      - ".github/codeql.yml"
-      - ".github/pr-checks-mservices.yml"
+      # - ".github/codeql.yml"
+      # - ".github/pr-checks-mservices.yml"
+      - ".github/**"
   workflow_dispatch:
 
 env:
@@ -19,6 +20,7 @@ env:
 jobs:
 
   build_and_unit_testing:
+    # if: false
     name: Build and Unit Testing
     runs-on: ubuntu-latest
     env:
@@ -45,6 +47,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal
 
   code_style_checks:
+    # if: false
     name: Code style checks
     runs-on: ubuntu-latest
     defaults:
@@ -86,9 +89,10 @@ jobs:
         --verify-no-changes
 
   integration_testing:
-    if: true
+    # if: false
     name: Integration Testing / ${{ matrix.title }}
     runs-on: ubuntu-latest
+    needs: build_and_unit_testing
     defaults:
       run:
         working-directory: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.proj_path }}
@@ -124,35 +128,104 @@ jobs:
       run: |
         dotnet test --no-build --verbosity normal
 
-  system_testing:
-    if: true
-    name: System Testing / External-Process
+  build_and_save_images:
+    # if: false
+    name: Build & Save ${{ matrix.title }}
     runs-on: ubuntu-latest
-    env:
-      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/system/ContosoUniversity.SystemTests
+    needs: build_and_unit_testing
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - title: ContosoUniversity.Mvc
+          image_name: cuweb
+          proj_path: src/ContosoUniversity.Mvc
+        - title: Courses.Api
+          image_name: courses-api
+          proj_path: src/Courses.Api
+        - title: Departments.Api
+          image_name: departments-api
+          proj_path: src/Departments.Api
+        - title: Students.Api
+          image_name: students-api
+          proj_path: src/Students.Api
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Developer Cert
+        if: ${{ matrix.image_name == 'cuweb' }}
+        working-directory: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.proj_path }}
+        run: |
+          dotnet dev-certs https -ep cert.pfx -p Test1234!
+          ls -lah
+
+      - name: Build Docker image locally
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ vars.MSERVICES_SLN_PATH }}
+          file: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.proj_path }}/Dockerfile
+          tags: ${{ matrix.image_name }}:latest
+          outputs: type=docker,dest=${{ runner.temp }}/${{ matrix.image_name }}.tar
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.image_name }}
+          path: ${{ runner.temp }}/${{ matrix.image_name }}.tar
+
+  check_system_health:
+    # if: false
+    name: Check System Health
+    runs-on: ubuntu-latest
+    needs: build_and_save_images
+    defaults:
+      run:
+        working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Install Docker Compose
-      run: sudo curl -L "https://github.com/docker/compose/releases/download/v2.11.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    - name: Set Permissions
-      run: sudo chmod +x /usr/local/bin/docker-compose
+    - name: Download artifact | cuweb
+      uses: actions/download-artifact@v4
+      with:
+          name: cuweb
+          path: ${{ runner.temp }}
 
-    - name: Inspect Docker Environment
+    - name: Download artifact | courses-api
+      uses: actions/download-artifact@v4
+      with:
+          name: courses-api
+          path: ${{ runner.temp }}
+
+    - name: Download artifact | departments-api
+      uses: actions/download-artifact@v4
+      with:
+          name: departments-api
+          path: ${{ runner.temp }}
+
+    - name: Download artifact | students-api
+      uses: actions/download-artifact@v4
+      with:
+          name: students-api
+          path: ${{ runner.temp }}
+
+    - name: Load images
       run: |
-        docker version
-        docker compose version
-        docker-compose version
-        ls -lah
+        docker load --input ${{ runner.temp }}/cuweb.tar
+        docker load --input ${{ runner.temp }}/courses-api.tar
+        docker load --input ${{ runner.temp }}/departments-api.tar
+        docker load --input ${{ runner.temp }}/students-api.tar
+        docker image ls -a
 
-    - name: Developer Cert
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}/src/ContosoUniversity.Mvc
-      run: |
-        dotnet dev-certs https -ep cert.pfx -p Test1234!
-
-    - name: Test run Docker environment
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+    - name: Run Docker Compose Up
       run: docker compose up --wait
 
     - name: Inspect container | courses-api
@@ -212,8 +285,62 @@ jobs:
       run: docker logs students-api
 
     - name: Shut down Docker Infra
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
       run: docker compose down
+
+  system_testing:
+    # if: false
+    name: System Testing / External-Process
+    runs-on: ubuntu-latest
+    needs: check_system_health
+    env:
+      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/system/ContosoUniversity.SystemTests
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Docker Compose
+      run: sudo curl -L "https://github.com/docker/compose/releases/download/v2.11.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    - name: Set Permissions
+      run: sudo chmod +x /usr/local/bin/docker-compose
+
+    - name: Inspect Docker Environment
+      run: |
+        docker version
+        docker compose version
+        docker-compose version
+        ls -lah
+
+    - name: Download artifact | cuweb
+      uses: actions/download-artifact@v4
+      with:
+        name: cuweb
+        path: ${{ runner.temp }}
+
+    - name: Download artifact | courses-api
+      uses: actions/download-artifact@v4
+      with:
+        name: courses-api
+        path: ${{ runner.temp }}
+
+    - name: Download artifact | departments-api
+      uses: actions/download-artifact@v4
+      with:
+        name: departments-api
+        path: ${{ runner.temp }}
+
+    - name: Download artifact | students-api
+      uses: actions/download-artifact@v4
+      with:
+        name: students-api
+        path: ${{ runner.temp }}
+
+    - name: Load images
+      run: |
+        docker load --input ${{ runner.temp }}/cuweb.tar
+        docker load --input ${{ runner.temp }}/courses-api.tar
+        docker load --input ${{ runner.temp }}/departments-api.tar
+        docker load --input ${{ runner.temp }}/students-api.tar
+        docker image ls -a
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -236,9 +363,10 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   e2e_testing:
-    if: true
+    # if: false
     name: E2E Testing / External-Process
     runs-on: ubuntu-latest
+    needs: check_system_health
     env:
       TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/e2e/ContosoUniversity.AcceptanceTests
     steps:
@@ -257,74 +385,37 @@ jobs:
         docker-compose version
         ls -lah
 
-    - name: Developer Cert
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}/src/ContosoUniversity.Mvc
+    - name: Download artifact | cuweb
+      uses: actions/download-artifact@v4
+      with:
+        name: cuweb
+        path: ${{ runner.temp }}
+
+    - name: Download artifact | courses-api
+      uses: actions/download-artifact@v4
+      with:
+        name: courses-api
+        path: ${{ runner.temp }}
+
+    - name: Download artifact | departments-api
+      uses: actions/download-artifact@v4
+      with:
+        name: departments-api
+        path: ${{ runner.temp }}
+
+    - name: Download artifact | students-api
+      uses: actions/download-artifact@v4
+      with:
+        name: students-api
+        path: ${{ runner.temp }}
+
+    - name: Load images
       run: |
-        dotnet dev-certs https -ep cert.pfx -p Test1234!
-
-    - name: Test run Docker environment
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
-      run: docker compose up --wait
-
-    - name: Inspect container | courses-api
-      if: always()
-      run: docker inspect courses-api
-
-    - name: Inspect container | departments-api
-      if: always()
-      run: docker inspect departments-api
-
-    - name: Inspect container | students-api
-      if: always()
-      run: docker inspect students-api
-
-    - name: Inspect container | cuweb
-      if: always()
-      run: docker inspect cuweb
-
-    - name: Curl to cuweb
-      if: always()
-      run: curl http://localhost:10000/Courses
-
-    - name: Curl to courses-api
-      if: always()
-      run: curl http://localhost:5006/api/courses | jq .
-
-    - name: Curl to departments-api
-      if: always()
-      run: curl http://localhost:5079/api/departments | jq .
-
-    - name: Curl to students-api
-      if: always()
-      run: curl http://localhost:5110/api/students/enrolled/groups | jq .
-
-    - name: Grab container logs | cuweb
-      if: always()
-      run: docker logs cuweb
-
-    - name: Grab container logs | mssql
-      if: always()
-      run: docker logs mssql
-
-    - name: Grab container logs | mssql-migrator
-      if: always()
-      run: docker logs mssql-migrator
-
-    - name: Grab container logs | courses-api
-      if: always()
-      run: docker logs courses-api
-
-    - name: Grab container logs | departments-api
-      if: always()
-      run: docker logs departments-api
-
-    - name: Grab container logs | students-api
-      if: always()
-      run: docker logs students-api
-
-    - name: Shut down Docker Infra
-      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
-      run: docker compose down
+        docker load --input ${{ runner.temp }}/cuweb.tar
+        docker load --input ${{ runner.temp }}/courses-api.tar
+        docker load --input ${{ runner.temp }}/departments-api.tar
+        docker load --input ${{ runner.temp }}/students-api.tar
+        docker image ls -a
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
