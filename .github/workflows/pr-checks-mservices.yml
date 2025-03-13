@@ -162,7 +162,7 @@ jobs:
           name: cuweb
           path: ${{ runner.temp }}/cuweb.tar
 
-  build_and_save_apis:
+  build_and_save_images:
     # if: false
     name: Build & Save ${{ matrix.title }}
     runs-on: ubuntu-latest
@@ -172,6 +172,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
+        - title: ContosoUniversity.Mvc
+          image_name: cuweb
+          proj_path: src/ContosoUniversity.Mvc
         - title: Courses.Api
           image_name: courses-api
           proj_path: src/Courses.Api
@@ -188,6 +191,12 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Developer Cert
+        if: ${{ matrix.image_name == 'cuweb' }}
+        run: |
+          dotnet dev-certs https -ep cert.pfx -p Test1234!
+          ls -lah
 
       - name: Build Docker image locally
         id: push
