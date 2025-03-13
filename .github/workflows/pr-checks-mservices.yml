@@ -188,25 +188,25 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Download artifact: cuweb
+    - name: Download artifact | cuweb
       uses: actions/download-artifact@v4
       with:
           name: cuweb
           path: ${{ runner.temp }}
 
-    - name: Download artifact: courses-api
+    - name: Download artifact | courses-api
       uses: actions/download-artifact@v4
       with:
           name: courses-api
           path: ${{ runner.temp }}
 
-    - name: Download artifact: departments-api
+    - name: Download artifact | departments-api
       uses: actions/download-artifact@v4
       with:
           name: departments-api
           path: ${{ runner.temp }}
 
-    - name: Download artifact: students-api
+    - name: Download artifact | students-api
       uses: actions/download-artifact@v4
       with:
           name: students-api
