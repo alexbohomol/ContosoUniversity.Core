@@ -19,7 +19,7 @@ env:
 jobs:
 
   build_and_unit_testing:
-    if: false
+    # if: false
     name: Build and Unit Testing
     runs-on: ubuntu-latest
     env:
@@ -46,7 +46,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal
 
   code_style_checks:
-    if: false
+    # if: false
     name: Code style checks
     runs-on: ubuntu-latest
     defaults:
@@ -88,9 +88,10 @@ jobs:
         --verify-no-changes
 
   integration_testing:
-    if: false
+    # if: false
     name: Integration Testing / ${{ matrix.title }}
     runs-on: ubuntu-latest
+    needs: build_and_unit_testing
     defaults:
       run:
         working-directory: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.proj_path }}
@@ -130,7 +131,7 @@ jobs:
     # if: false
     name: Build & Save ${{ matrix.title }}
     runs-on: ubuntu-latest
-    # needs: build_and_unit_testing
+    needs: build_and_unit_testing
 
     strategy:
       fail-fast: false
