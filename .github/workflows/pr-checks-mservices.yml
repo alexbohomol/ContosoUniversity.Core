@@ -178,6 +178,93 @@ jobs:
           name: ${{ matrix.image_name }}
           path: ${{ runner.temp }}/${{ matrix.image_name }}.tar
 
+  check_system_health:
+    # if: false
+    name: Check System Health
+    runs-on: ubuntu-latest
+    needs: build_and_save_images
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        path: ${{ runner.temp }}
+
+    - name: Load images
+      run: |
+        docker load --input ${{ runner.temp }}/cuweb.tar
+        docker load --input ${{ runner.temp }}/courses-api.tar
+        docker load --input ${{ runner.temp }}/departments-api.tar
+        docker load --input ${{ runner.temp }}/students-api.tar
+        docker image ls -a
+
+    - name: Test run Docker environment
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+      run: docker compose up --wait
+
+    - name: Inspect container | courses-api
+      if: always()
+      run: docker inspect courses-api
+
+    - name: Inspect container | departments-api
+      if: always()
+      run: docker inspect departments-api
+
+    - name: Inspect container | students-api
+      if: always()
+      run: docker inspect students-api
+
+    - name: Inspect container | cuweb
+      if: always()
+      run: docker inspect cuweb
+
+    - name: Curl to cuweb
+      if: always()
+      run: curl http://localhost:10000/Courses
+
+    - name: Curl to courses-api
+      if: always()
+      run: curl http://localhost:5006/api/courses | jq .
+
+    - name: Curl to departments-api
+      if: always()
+      run: curl http://localhost:5079/api/departments | jq .
+
+    - name: Curl to students-api
+      if: always()
+      run: curl http://localhost:5110/api/students/enrolled/groups | jq .
+
+    - name: Grab container logs | cuweb
+      if: always()
+      run: docker logs cuweb
+
+    - name: Grab container logs | mssql
+      if: always()
+      run: docker logs mssql
+
+    - name: Grab container logs | mssql-migrator
+      if: always()
+      run: docker logs mssql-migrator
+
+    - name: Grab container logs | courses-api
+      if: always()
+      run: docker logs courses-api
+
+    - name: Grab container logs | departments-api
+      if: always()
+      run: docker logs departments-api
+
+    - name: Grab container logs | students-api
+      if: always()
+      run: docker logs students-api
+
+    - name: Shut down Docker Infra
+      working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+      run: docker compose down
+
   system_testing:
     if: false
     name: System Testing / External-Process
