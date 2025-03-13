@@ -188,6 +188,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: List available images
+      run: |
+        docker image ls -a
+
     - name: Download artifact | cuweb
       uses: actions/download-artifact@v4
       with:
