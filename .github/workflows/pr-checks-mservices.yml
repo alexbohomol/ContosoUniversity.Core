@@ -201,7 +201,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ${{ vars.MSERVICES_SLN_PATH }}
-          file: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.proj_path }}/Dockerfile
+          file: /Dockerfile
           tags: ${{ matrix.image_name }}:latest
           outputs: type=docker,dest=${{ runner.temp }}/${{ matrix.image_name }}.tar
 
