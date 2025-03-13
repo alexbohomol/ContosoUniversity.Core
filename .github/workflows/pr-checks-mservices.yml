@@ -9,7 +9,7 @@ on:
       - "apps/mservices/**"
       - "database/**"
       - ".github/codeql.yml"
-      - ".github/**"
+      - ".github/pr-checks-mservices.yml"
   workflow_dispatch:
 
 env:

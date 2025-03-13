@@ -9,7 +9,7 @@ on:
       - "apps/monolith/**"
       - "database/**"
       - ".github/codeql.yml"
-      - ".github/**"
+      - ".github/pr-checks-monolith.yml"
   workflow_dispatch:
 
 env:
