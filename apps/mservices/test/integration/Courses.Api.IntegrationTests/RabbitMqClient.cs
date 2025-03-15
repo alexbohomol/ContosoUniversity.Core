@@ -1,4 +1,4 @@
-namespace Courses.Api.IntegrationTests.ReadWrite;
+namespace Courses.Api.IntegrationTests;
 
 using System.Text;
 using System.Text.Json;
