@@ -1,6 +1,6 @@
 namespace Students.Worker;
 
-using ContosoUniversity.Messaging.Contracts.Notifications;
+using ContosoUniversity.Messaging.Contracts;
 
 using Core;
 using Core.Domain;

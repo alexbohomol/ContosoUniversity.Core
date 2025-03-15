@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ContosoUniversity.Messaging.Contracts.Notifications;
+using ContosoUniversity.Messaging.Contracts;
 
 using MassTransit;
 

@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Messaging.Contracts.Notifications;
+namespace ContosoUniversity.Messaging.Contracts;
 
 using System;
 

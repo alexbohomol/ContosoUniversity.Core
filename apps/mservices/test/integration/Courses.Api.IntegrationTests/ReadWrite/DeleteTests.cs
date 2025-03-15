@@ -2,7 +2,7 @@ namespace Courses.Api.IntegrationTests.ReadWrite;
 
 using System.Net;
 
-using ContosoUniversity.Messaging.Contracts.Notifications;
+using ContosoUniversity.Messaging.Contracts;
 
 using FluentAssertions;
 
