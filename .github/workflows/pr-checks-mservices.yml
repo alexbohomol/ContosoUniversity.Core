@@ -107,8 +107,12 @@ jobs:
           proj_path: test/integration/Courses.Api.IntegrationTests
         - title: Departments.Api
           proj_path: test/integration/Departments.Api.IntegrationTests
+        - title: Departments.Worker
+          proj_path: test/integration/Departments.Worker.IntegrationTests
         - title: Students.Api
           proj_path: test/integration/Students.Api.IntegrationTests
+        - title: Students.Worker
+          proj_path: test/integration/Students.Worker.IntegrationTests
 
     steps:
     - name: Checkout code
