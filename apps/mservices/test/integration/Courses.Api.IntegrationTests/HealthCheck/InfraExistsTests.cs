@@ -25,7 +25,7 @@ public class InfraExistsTests :
         InfrastructureContext context,
         RabbitMqContext rabbitMqContext)
     {
-        factory.RabbitMqConnectionSetterFunction = () => rabbitMqContext.GetConnectionString;
+        factory.RabbitMqConnectionSetterFunction = () => rabbitMqContext.ConnectionString;
         factory.DataSourceSetterFunction = () => context.MsSqlDataSource;
         factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         _httpClient = factory.CreateClient();

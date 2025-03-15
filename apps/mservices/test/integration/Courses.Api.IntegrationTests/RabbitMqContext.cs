@@ -37,5 +37,5 @@ public class RabbitMqContext : IAsyncLifetime
         await _rabbitMqContainer.DisposeAsync();
     }
 
-    public string GetConnectionString => _rabbitMqContainer.GetConnectionString();
+    public string ConnectionString => _rabbitMqContainer.GetConnectionString();
 }
