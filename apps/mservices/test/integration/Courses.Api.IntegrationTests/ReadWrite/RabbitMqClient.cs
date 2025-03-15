@@ -9,7 +9,7 @@ using RabbitMQ.Client.Events;
 
 internal class RabbitMqClient(string connectionString)
 {
-    private readonly ConnectionFactory _factory = new() { Uri = new  Uri(connectionString) };
+    private readonly ConnectionFactory _factory = new() { Uri = new Uri(connectionString) };
 
     public async Task<TMessage> TryConsumeAsync<TMessage>(string queueName) where TMessage : class
     {
