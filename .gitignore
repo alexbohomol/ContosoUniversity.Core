@@ -197,3 +197,22 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Terraform state
+*.tfstate
+*.tfstate.backup
+
+# Local values
+terraform.tfvars
+
+# Provider cache & build dirs
+.terraform/
+crash.log
+
+# Ignore app artifacts
+artifacts/
+app.zip
