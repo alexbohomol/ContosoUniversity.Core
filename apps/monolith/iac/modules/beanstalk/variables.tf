@@ -4,11 +4,6 @@ variable "app_name" {
   default = "contoso-monolith"
 }
 
-variable "iam_instance_profile" {
-  type = string
-  description = "IAM instance profile"
-}
-
 variable "vpc_id" {
   type        = string
   description = "VPC for Beanstalk environment"

@@ -7,7 +7,7 @@ resource "aws_elastic_beanstalk_environment" "app_env" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-    value     = var.iam_instance_profile
+    value     = aws_iam_instance_profile.eb_instance_profile.name
   }
 
   setting {
