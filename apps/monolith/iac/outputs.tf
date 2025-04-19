@@ -8,10 +8,6 @@ output "subnets" {
 
 output "beanstalk_env_url" {
     value = aws_elastic_beanstalk_environment.app_env.endpoint_url
-}
-
-output "beanstalk_env_url" {
-    value = aws_elastic_beanstalk_environment.app_env.endpoint_url
     description = "Beanstalk environment URL"
 }
 
