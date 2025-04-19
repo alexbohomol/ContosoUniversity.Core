@@ -1,10 +1,4 @@
 
-# define S3
-
-resource "aws_s3_bucket" "deploy_artifacts" {
-    bucket = "${var.app_name}-eb-artifacts"
-}
-
 # define IAM
 
 resource "aws_iam_role" "eb_instance_role" {
@@ -85,67 +79,12 @@ resource "aws_db_instance" "contoso_db" {
   }
 }
 
-# define application instance
-
-resource "aws_elastic_beanstalk_application" "app" {
-    name        = var.app_name
-    description = "Elastic Beanstalk app for monolith project"
-}
-
-resource "aws_elastic_beanstalk_environment" "app_env" {
-    name                = "${var.app_name}-env"
-    application         = aws_elastic_beanstalk_application.app.name
-    solution_stack_name = "64bit Amazon Linux 2023 v3.4.0 running .NET 9"
-
-    setting {
-        namespace = "aws:autoscaling:launchconfiguration"
-        name      = "IamInstanceProfile"
-        value     = aws_iam_instance_profile.eb_instance_profile.name
-    }
-
-    setting {
-        namespace = "aws:elasticbeanstalk:application:environment"
-        name      = "ASPNETCORE_ENVIRONMENT"
-        value     = "Development"
-    }
-
-    setting {
-        namespace = "aws:ec2:vpc"
-        name      = "VPCId"
-        value     = aws_vpc.main.id
-    }
-
-    setting {
-        namespace = "aws:ec2:vpc"
-        name      = "Subnets"
-        value     = join(",", [aws_subnet.public_a.id, aws_subnet.public_b.id])
-    }
-
-    setting {
-        namespace = "aws:autoscaling:launchconfiguration"
-        name      = "SecurityGroups"
-        value     = aws_security_group.eb_sg.id
-    }
-
-    setting {
-        name      = "SqlConnectionStringBuilder__DataSource"
-        namespace = "aws:elasticbeanstalk:application:environment"
-        value     = "${aws_db_instance.contoso_db.address},1433"
-    }
-
-    version_label = aws_elastic_beanstalk_application_version.app_version.name
-}
-
-resource "aws_elastic_beanstalk_application_version" "app_version" {
-    name        = "v1"
-    application = aws_elastic_beanstalk_application.app.name
-    bucket      = aws_s3_bucket.deploy_artifacts.id
-    key         = aws_s3_object.app_zip.key
-}
-
-resource "aws_s3_object" "app_zip" {
-    bucket = aws_s3_bucket.deploy_artifacts.id
-    key    = "app.zip"
-    source = "../../../app.zip"
-    etag   = filemd5("../../../app.zip")
+module "beanstalk" {
+    source = "../../modules/beanstalk"
+    app_name = var.app_name
+    vpc_id = aws_vpc.main.id
+    iam_instance_profile = aws_iam_instance_profile.eb_instance_profile.name
+    subnet_ids = [aws_subnet.public_a.id, aws_subnet.public_b.id]
+    eb_security_group_id = aws_security_group.eb_sg.id
+    contoso_db_data_source = aws_db_instance.contoso_db.address
 }
