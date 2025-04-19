@@ -7,12 +7,12 @@ variable "app_name" {
 }
 
 variable "db_username" {
-  description = "Master username for RDS"
-  type        = string
+    description = "Master username for RDS"
+    type        = string
 }
 
 variable "db_password" {
-  description = "Master password for RDS"
-  type        = string
-  sensitive   = true
+    description = "Master password for RDS"
+    type        = string
+    sensitive   = true
 }
