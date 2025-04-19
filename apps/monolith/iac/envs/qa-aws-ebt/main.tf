@@ -146,6 +146,6 @@ resource "aws_elastic_beanstalk_application_version" "app_version" {
 resource "aws_s3_object" "app_zip" {
     bucket = aws_s3_bucket.deploy_artifacts.id
     key    = "app.zip"
-    source = "../app.zip"
-    etag   = filemd5("../app.zip")
+    source = "../../../app.zip"
+    etag   = filemd5("../../../app.zip")
 }
