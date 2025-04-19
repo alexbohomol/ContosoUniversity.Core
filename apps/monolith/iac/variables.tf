@@ -7,10 +7,12 @@ variable "app_name" {
 }
 
 variable "db_username" {
-    default = "admin"
+  description = "Master username for RDS"
+  type        = string
 }
 
-# variable "db_password" {
-#     description = "DB master password"
-#     sensitive   = true
-# }
+variable "db_password" {
+  description = "Master password for RDS"
+  type        = string
+  sensitive   = true
+}
