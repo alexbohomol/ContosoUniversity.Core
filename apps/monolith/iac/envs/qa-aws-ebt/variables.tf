@@ -1,14 +1,25 @@
 variable "aws_region" {
-  default = "eu-central-1"
+  type        = string
+  description = "AWS region for deployment"
+  default     = "eu-central-1"
 }
 
 variable "app_name" {
-  default = "contoso-monolith"
+  type        = string
+  description = "Application name"
+  default     = "contoso-monolith"
+}
+
+variable "environment" {
+  type        = string
+  description = "Specify ASPNETCORE_ENVIRONMENT"
+  default     = "Development"
 }
 
 variable "db_username" {
   description = "Master username for RDS"
   type        = string
+  default     = "admin"
 }
 
 variable "db_password" {

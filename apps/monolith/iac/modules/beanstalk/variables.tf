@@ -4,6 +4,12 @@ variable "app_name" {
   default     = "contoso-monolith"
 }
 
+variable "environment" {
+  type        = string
+  description = "Specify ASPNETCORE_ENVIRONMENT"
+  default     = "Development"
+}
+
 variable "vpc_id" {
   type        = string
   description = "VPC for Beanstalk environment"
