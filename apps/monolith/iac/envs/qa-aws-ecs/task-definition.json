@@ -1,0 +1,36 @@
+[
+  {
+    "name": "web",
+    "image": "${web_image}",
+    "portMappings": [
+      {
+        "containerPort": 80,
+        "hostPort": 80,
+        "protocol": "tcp"
+      }
+    ],
+    "environment": [
+      {
+        "name": "ASPNETCORE_ENVIRONMENT",
+        "value": "Development"
+      },
+      {
+        "name": "ASPNETCORE_URLS",
+        "value": "http://+:80"
+      },
+      {
+        "name": "SqlConnectionStringBuilder__DataSource",
+        "value": "mssql"
+      }
+    ],
+    "essential": true,
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${awslogs-group}",
+        "awslogs-region": "${awslogs-region}",
+        "awslogs-stream-prefix": "ecs"
+      }
+    }
+  }
+]
