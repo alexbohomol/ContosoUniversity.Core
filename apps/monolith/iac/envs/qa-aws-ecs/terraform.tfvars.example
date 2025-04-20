@@ -1,0 +1,7 @@
+# 🌍 general params
+app_name    = "contoso-monolith"
+environment = "Development"
+
+# 🔐 RDS credentials
+db_username = "admin"
+db_password = "REPLACE_ME"
