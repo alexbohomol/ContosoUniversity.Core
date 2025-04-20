@@ -14,9 +14,9 @@ resource "aws_security_group" "db_sg" {
   vpc_id      = var.vpc_id
 
   ingress {
-    from_port   = 1433
-    to_port     = 1433
-    protocol    = "tcp"
+    from_port       = 1433
+    to_port         = 1433
+    protocol        = "tcp"
     security_groups = [var.eb_security_group_id]
   }
 

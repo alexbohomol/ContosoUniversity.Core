@@ -1,7 +1,7 @@
 variable "app_name" {
-  type = string
+  type        = string
   description = "Application Name"
-  default = "contoso-monolith"
+  default     = "contoso-monolith"
 }
 
 variable "vpc_id" {
