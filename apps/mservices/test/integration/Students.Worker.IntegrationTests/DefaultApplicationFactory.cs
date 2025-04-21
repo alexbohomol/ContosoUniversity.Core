@@ -1,4 +1,4 @@
-namespace Courses.Api.IntegrationTests;
+namespace Students.Worker.IntegrationTests;
 
 using System;
 
@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
+
+using Students.Worker;
 
 public class DefaultApplicationFactory : WebApplicationFactory<IAssemblyMarker>
 {
