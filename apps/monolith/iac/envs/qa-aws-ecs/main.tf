@@ -1,3 +1,8 @@
+module "networking" {
+  source   = "../../modules/networking"
+  app_name = var.app_name
+}
+
 resource "aws_ecs_cluster" "this" {
   name = "${var.app_name}-cluster"
 }
@@ -49,11 +54,11 @@ resource "aws_ecs_service" "web" {
   desired_count   = 1
   launch_type     = "FARGATE"
 
-  # network_configuration {
-  #     subnets          = var.subnet_ids
-  #     assign_public_ip = true
-  #     security_groups  = [var.security_group_id]
-  # }
+  network_configuration {
+    subnets          = module.networking.subnet_ids
+    assign_public_ip = true
+    security_groups  = [aws_security_group.containers_sg.id]
+  }
 
   lifecycle {
     ignore_changes = [task_definition]
