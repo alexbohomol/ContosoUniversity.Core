@@ -16,6 +16,12 @@ variable "environment" {
   default     = "Development"
 }
 
+variable "db_instance_class" {
+  description = "RDS instance size"
+  type        = string
+  default     = "db.t3.micro"
+}
+
 variable "db_username" {
   description = "Master username for RDS"
   type        = string

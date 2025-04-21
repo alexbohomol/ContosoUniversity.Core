@@ -31,6 +31,7 @@ module "rds" {
   vpc_id               = module.networking.vpc_id
   subnet_ids           = module.networking.subnet_ids
   eb_security_group_id = aws_security_group.eb_sg.id
+  db_instance_class    = var.db_instance_class
   db_password          = var.db_password
   db_username          = var.db_username
 }
