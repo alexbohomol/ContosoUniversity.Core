@@ -56,6 +56,12 @@ resource "aws_ecs_service" "web" {
   desired_count   = 1
   launch_type     = "FARGATE"
 
+  load_balancer {
+    target_group_arn = aws_lb_target_group.web.arn
+    container_name   = "web"
+    container_port   = 80
+  }
+
   network_configuration {
     subnets          = module.networking.subnet_ids
     assign_public_ip = true
