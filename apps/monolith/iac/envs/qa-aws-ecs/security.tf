@@ -27,6 +27,14 @@ resource "aws_security_group" "containers_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 1433
+    to_port     = 1433
+    protocol    = "tcp"
+    cidr_blocks = ["${var.local_ip}/32"]
+    description = "Allow MSSQL from local IP"
+  }
+
   egress {
     from_port   = 0
     to_port     = 0

@@ -27,3 +27,9 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+variable "local_ip" {
+  description = "Your public IP address for MSSQL access"
+  type        = string
+  default     = "1.2.3.4"
+}

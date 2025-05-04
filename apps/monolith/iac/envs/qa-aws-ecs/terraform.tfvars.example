@@ -5,3 +5,6 @@ environment = "Development"
 # 🔐 RDS credentials
 db_username = "admin"
 db_password = "REPLACE_ME"
+
+# local IP
+local_ip = "REPLACE_ME"
