@@ -36,12 +36,14 @@ resource "aws_iam_role_policy_attachment" "task_exec_policy" {
 resource "aws_ecs_task_definition" "this" {
   family                   = "${var.app_name}-task-definition"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = "512"
-  memory                   = "1024"
+  cpu                      = "1024"
+  memory                   = "3072"
   network_mode             = "awsvpc"
   execution_role_arn       = aws_iam_role.task_execution.arn
+  task_role_arn            = aws_iam_role.task_execution.arn
   container_definitions = templatefile("${path.module}/task-definition.json", {
     web_image : "ghcr.io/alexbohomol/cuweb:latest"
+    db_password : var.db_password
     awslogs-group : aws_cloudwatch_log_group.this.name
     awslogs-region : var.aws_region
   })

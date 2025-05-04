@@ -29,7 +29,46 @@
       "options": {
         "awslogs-group": "${awslogs-group}",
         "awslogs-region": "${awslogs-region}",
-        "awslogs-stream-prefix": "ecs"
+        "awslogs-stream-prefix": "web"
+      }
+    }
+  },
+  {
+    "name": "mssql",
+    "image": "mcr.microsoft.com/mssql/server",
+    "essential": false,
+    "portMappings": [
+      {
+        "containerPort": 1433,
+        "hostPort": 1433
+      }
+    ],
+    "environment": [
+      {
+        "name": "ACCEPT_EULA",
+        "value": "Y"
+      },
+      {
+        "name": "SA_PASSWORD",
+        "value": "<YourStrong!Passw0rd>"
+      }
+    ],
+    "healthCheck": {
+      "command": [
+        "CMD-SHELL",
+        "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '<YourStrong!Passw0rd>' -Q \"SELECT 1\" -C"
+      ],
+      "interval": 5,
+      "timeout": 5,
+      "retries": 10,
+      "startPeriod": 5
+    },
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${awslogs-group}",
+        "awslogs-region": "${awslogs-region}",
+        "awslogs-stream-prefix": "mssql"
       }
     }
   }
