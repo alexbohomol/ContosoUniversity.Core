@@ -20,7 +20,7 @@
       },
       {
         "name": "SqlConnectionStringBuilder__DataSource",
-        "value": "mssql"
+        "value": "localhost"
       }
     ],
     "essential": true,
