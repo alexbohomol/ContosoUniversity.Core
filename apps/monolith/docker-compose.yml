@@ -42,14 +42,16 @@ services:
       - cunetwork
 
   mssql-migrator:
-    image: mcr.microsoft.com/mssql-tools
+    image: mssql-migrator
     container_name: mssql-migrator
+    build:
+      context: ../../database
+      args:
+        DB_USER: sa
+        DB_PASSWORD: <YourStrong!Passw0rd>
+        INIT_SCRIPT: db-init.sql
     depends_on:
       mssql:
         condition: service_healthy
     networks:
       - cunetwork
-    volumes:
-      - ../../database:/scripts:ro
-    working_dir: /scripts
-    entrypoint: /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P '<YourStrong!Passw0rd>' -i 'db-init.sql'
