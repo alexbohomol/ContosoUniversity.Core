@@ -72,3 +72,34 @@ resource "aws_ecs_service" "web" {
     ignore_changes = [task_definition]
   }
 }
+
+resource "aws_ecs_task_definition" "mssql_migrator" {
+  family                   = "${var.app_name}-mssql-migrator"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = "256"
+  memory                   = "512"
+  network_mode             = "awsvpc"
+  execution_role_arn       = aws_iam_role.task_execution.arn
+  task_role_arn            = aws_iam_role.task_execution.arn
+
+  container_definitions = jsonencode([
+    {
+      name      = "mssql-migrator"
+      image     = "ghcr.io/alexbohomol/mssql-migrator:latest"
+      essential = true
+      environment = [
+        { name = "DB_USER", value = "sa" },
+        { name = "DB_PASSWORD", value = var.db_password },
+        { name = "INIT_SCRIPT", value = "db-init.sql" }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.this.name
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = "mssql-migrator"
+        }
+      }
+    }
+  ])
+}
