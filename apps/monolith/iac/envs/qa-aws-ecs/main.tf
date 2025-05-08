@@ -88,6 +88,7 @@ resource "aws_ecs_task_definition" "mssql_migrator" {
       image     = "ghcr.io/alexbohomol/mssql-migrator:latest"
       essential = true
       environment = [
+        { name = "DB_HOST", value = "localhost" },
         { name = "DB_USER", value = "sa" },
         { name = "DB_PASSWORD", value = var.db_password },
         { name = "INIT_SCRIPT", value = "db-init.sql" }
