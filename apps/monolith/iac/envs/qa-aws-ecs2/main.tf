@@ -134,3 +134,24 @@ resource "aws_ecs_task_definition" "mssql_task" {
     }
   ])
 }
+
+resource "aws_ecs_task_definition" "mssql_migrator_task" {
+  family                   = "${var.app_name}-mssql-migrator-tasks"
+  cpu                      = "256"
+  memory                   = "512"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  container_definitions = jsonencode([
+    {
+      essential = true
+      name      = "mssql-migrator"
+      image     = "ghcr.io/alexbohomol/mssql-migrator:latest"
+      environment = [
+        { name = "DB_HOST", value = "mssql" },
+        { name = "DB_USER", value = "sa" },
+        { name = "DB_PASSWORD", value = "<YourStrong!Passw0rd>" },
+        { name = "INIT_SCRIPT", value = "db-init.sql" }
+      ]
+    }
+  ])
+}
