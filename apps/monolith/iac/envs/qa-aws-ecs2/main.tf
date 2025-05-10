@@ -86,6 +86,16 @@ resource "aws_ecs_task_definition" "web_task" {
         { name = "ASPNETCORE_URLS", value = "http://+:80" },
         { name = "SqlConnectionStringBuilder__DataSource", value = "localhost" }
       ]
+      healthCheck = {
+        command = [
+          "CMD-SHELL",
+          "curl --fail http://localhost:80/health/readiness || exit 1"
+        ]
+        interval    = 5
+        timeout     = 5
+        retries     = 10
+        startPeriod = 5
+      }
     }
   ])
 }
