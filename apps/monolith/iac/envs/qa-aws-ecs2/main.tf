@@ -7,61 +7,44 @@ resource "aws_ecs_cluster" "cluster" {
   name = "${var.app_name}-cluster"
 }
 
-resource "aws_security_group" "ecs_sec_grp" {
-  name        = "${var.app_name}-sec-grp"
-  vpc_id      = module.networking.vpc_id
-  description = "Allow ECS containers to talk internally"
+resource "aws_security_group_rule" "mssql_internal" {
+  description       = "Allow MSSQL traffic within the same SG"
+  type              = "ingress"
+  from_port         = 1433
+  to_port           = 1433
+  protocol          = "tcp"
+  self              = true
+  security_group_id = module.networking.sg_id
+}
 
-  ingress {
-    description = "Allow MSSQL traffic within the same SG"
-    from_port   = 1433
-    to_port     = 1433
-    protocol    = "tcp"
-    self        = true
-  }
+resource "aws_security_group_rule" "web_internal" {
+  description       = "Allow web traffic within ECS task"
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  self              = true
+  security_group_id = module.networking.sg_id
+}
 
-  ingress {
-    description = "Allow web traffic within ECS task"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    self        = true
-  }
+resource "aws_security_group_rule" "web_public" {
+  description       = "Allow incoming HTTP from the internet"
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.networking.sg_id
+}
 
-  ingress {
-    description = "Allow incoming HTTP from the internet"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description = "Allow incoming MSSQL from the internet"
-    from_port   = 1433
-    to_port     = 1433
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # ingress {
-  #   from_port   = 1433
-  #   to_port     = 1433
-  #   protocol    = "tcp"
-  #   cidr_blocks = ["${var.local_ip}/32"]
-  #   description = "Allow MSSQL from local IP"
-  # }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "${var.app_name}-sg"
-  }
+resource "aws_security_group_rule" "mssql_public" {
+  description       = "Allow incoming MSSQL from the internet"
+  type              = "ingress"
+  from_port         = 1433
+  to_port           = 1433
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.networking.sg_id
 }
 
 resource "aws_ecs_task_definition" "web_task" {
