@@ -14,6 +14,12 @@ variable "eb_security_group_id" {
   description = "Security group to attach to Beanstalk instances"
 }
 
+variable "db_instance_class" {
+  description = "RDS instance size"
+  type        = string
+  default     = "db.t3.micro"
+}
+
 variable "db_username" {
   description = "Master username for RDS"
   type        = string

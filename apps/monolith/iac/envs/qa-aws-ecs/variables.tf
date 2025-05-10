@@ -16,12 +16,6 @@ variable "environment" {
   default     = "Development"
 }
 
-variable "db_instance_class" {
-  description = "RDS instance size"
-  type        = string
-  default     = "db.t3.micro"
-}
-
 variable "db_username" {
   description = "Master username for RDS"
   type        = string
@@ -32,4 +26,10 @@ variable "db_password" {
   description = "Master password for RDS"
   type        = string
   sensitive   = true
+}
+
+variable "local_ip" {
+  description = "Your public IP address for MSSQL access"
+  type        = string
+  default     = "1.2.3.4"
 }
