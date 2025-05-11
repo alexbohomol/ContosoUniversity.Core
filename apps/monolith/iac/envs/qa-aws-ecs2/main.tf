@@ -12,6 +12,31 @@ resource "aws_cloudwatch_log_group" "cw_lg" {
   retention_in_days = 7
 }
 
+# IAM Role/Policy for CloudWatch logging
+
+resource "aws_iam_role" "task_execution" {
+  name = "${var.app_name}-exec-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Principal = {
+        Service = "ecs-tasks.amazonaws.com"
+      }
+      Effect = "Allow"
+      Sid    = ""
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "task_execution_policy" {
+  role       = aws_iam_role.task_execution.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+# Rules to attach to default VPC SG
+
 resource "aws_security_group_rule" "mssql_internal" {
   description       = "Allow MSSQL traffic within the same SG"
   type              = "ingress"
@@ -52,12 +77,17 @@ resource "aws_security_group_rule" "mssql_public" {
   security_group_id = module.networking.sg_id
 }
 
+# ECS tasks definitions
+
 resource "aws_ecs_task_definition" "web_task" {
   family                   = "${var.app_name}-web-tasks"
   cpu                      = "256"
   memory                   = "1024"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
+  execution_role_arn       = aws_iam_role.task_execution.arn
+  # task_role_arn            = aws_iam_role.task_execution.arn
+
   container_definitions = jsonencode([
     {
       essential = true
@@ -102,6 +132,9 @@ resource "aws_ecs_task_definition" "mssql_task" {
   memory                   = "3072"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
+  execution_role_arn       = aws_iam_role.task_execution.arn
+  # task_role_arn            = aws_iam_role.task_execution.arn
+
   container_definitions = jsonencode([
     {
       essential = true
@@ -145,6 +178,9 @@ resource "aws_ecs_task_definition" "mssql_migrator_task" {
   memory                   = "512"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
+  execution_role_arn       = aws_iam_role.task_execution.arn
+  # task_role_arn            = aws_iam_role.task_execution.arn
+
   container_definitions = jsonencode([
     {
       essential = true
