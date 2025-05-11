@@ -7,6 +7,11 @@ resource "aws_ecs_cluster" "cluster" {
   name = "${var.app_name}-cluster"
 }
 
+resource "aws_cloudwatch_log_group" "cw_lg" {
+  name              = "/ecs/${var.app_name}-cw-lg"
+  retention_in_days = 7
+}
+
 resource "aws_security_group_rule" "mssql_internal" {
   description       = "Allow MSSQL traffic within the same SG"
   type              = "ingress"
@@ -79,6 +84,14 @@ resource "aws_ecs_task_definition" "web_task" {
         retries     = 10
         startPeriod = 5
       }
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.cw_lg.name
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = "web"
+        }
+      }
     }
   ])
 }
@@ -114,6 +127,14 @@ resource "aws_ecs_task_definition" "mssql_task" {
         retries     = 10
         startPeriod = 5
       }
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.cw_lg.name
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = "mssql"
+        }
+      }
     }
   ])
 }
@@ -135,6 +156,14 @@ resource "aws_ecs_task_definition" "mssql_migrator_task" {
         { name = "DB_PASSWORD", value = "<YourStrong!Passw0rd>" },
         { name = "INIT_SCRIPT", value = "db-init.sql" }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.cw_lg.name
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = "mssql-migrator"
+        }
+      }
     }
   ])
 }
