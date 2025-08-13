@@ -1,10 +1,13 @@
 # 🌍 general params
-app_name    = "contoso-monolith"
+app_name    = "contoso-mnlth"
 environment = "Development"
 
 # 🔐 RDS credentials
-db_username = "admin"
+db_username = "REPLACE_ME"
 db_password = "REPLACE_ME"
+
+# Migrator
+db_init_script = "db-init.sql"
 
 # local IP
 local_ip = "REPLACE_ME"
