@@ -152,8 +152,13 @@ resource "aws_ecs_task_definition" "mssql_task" {
       ]
       healthCheck = {
         command = [
-          "CMD-SHELL",
-          "/opt/mssql-tools18/bin/sqlcmd -S localhost -U ${var.db_username} -P '${var.db_password}' -Q \"SELECT 1\" -C"
+          "CMD",
+          "/opt/mssql-tools18/bin/sqlcmd",
+          "-S", "localhost",
+          "-U", var.db_username,
+          "-P", var.db_password,
+          "-Q", "SELECT 1",
+          "-C"
         ]
         interval    = 5
         timeout     = 5
