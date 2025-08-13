@@ -100,7 +100,7 @@ resource "aws_ecs_task_definition" "web_task" {
         }
       ]
       environment = [
-        { name = "ASPNETCORE_ENVIRONMENT", value = "Development" },
+        { name = "ASPNETCORE_ENVIRONMENT", value = var.environment },
         { name = "ASPNETCORE_URLS", value = "http://+:80" },
         { name = "SqlConnectionStringBuilder__DataSource", value = "localhost" }
       ]
@@ -148,12 +148,12 @@ resource "aws_ecs_task_definition" "mssql_task" {
       ]
       environment = [
         { name = "ACCEPT_EULA", value = "Y" },
-        { name = "SA_PASSWORD", value = "<YourStrong!Passw0rd>" }
+        { name = "SA_PASSWORD", value = var.db_password }
       ]
       healthCheck = {
         command = [
           "CMD-SHELL",
-          "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '<YourStrong!Passw0rd>' -Q \"SELECT 1\" -C"
+          "/opt/mssql-tools18/bin/sqlcmd -S localhost -U ${var.db_username} -P '${var.db_password}' -Q \"SELECT 1\" -C"
         ]
         interval    = 5
         timeout     = 5
@@ -188,9 +188,9 @@ resource "aws_ecs_task_definition" "mssql_migrator_task" {
       image     = "ghcr.io/alexbohomol/mssql-migrator:latest"
       environment = [
         { name = "DB_HOST", value = "mssql" },
-        { name = "DB_USER", value = "sa" },
-        { name = "DB_PASSWORD", value = "<YourStrong!Passw0rd>" },
-        { name = "INIT_SCRIPT", value = "db-init.sql" }
+        { name = "DB_USER", value = var.db_username },
+        { name = "DB_PASSWORD", value = var.db_password },
+        { name = "INIT_SCRIPT", value = var.db_init_script }
       ]
       logConfiguration = {
         logDriver = "awslogs"
