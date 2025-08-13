@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "app_name" {
   type        = string
   description = "Application name"
-  default     = "contoso-monolith"
+  default     = "contoso-mnlth"
 }
 
 variable "environment" {
@@ -16,20 +16,25 @@ variable "environment" {
   default     = "Development"
 }
 
-variable "db_instance_class" {
-  description = "RDS instance size"
-  type        = string
-  default     = "db.t3.micro"
-}
-
 variable "db_username" {
   description = "Master username for RDS"
   type        = string
-  default     = "admin"
+  sensitive   = true
 }
 
 variable "db_password" {
   description = "Master password for RDS"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_init_script" {
+  description = "Script to run by migrator"
+  type        = string
+}
+
+variable "local_ip" {
+  description = "Your public IP address for MSSQL access"
   type        = string
   sensitive   = true
 }
