@@ -1,0 +1,120 @@
+name: MSVC / PR Checks / Fast
+
+on:
+  push:
+    paths:
+      - "apps/mservices/**"
+      - "database/**"
+      - ".github/**"
+
+env:
+  DOTNET_VERSION: 9.0.x
+  MSSQL_SA_PASSWORD: <YourStrong!Passw0rd>
+
+jobs:
+
+  build_and_unit_testing:
+    name: Build and Unit Testing
+    runs-on: ubuntu-latest
+    env:
+      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/unit/Departments.Core.Tests
+    defaults:
+      run:
+        working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Build Solution
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+
+    - name: Run Unit Tests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: dotnet test --no-build --verbosity normal
+
+  code_style_checks:
+    name: Code style checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ vars.MSERVICES_SLN_PATH }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Build Solution
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+
+    - name: Dotnet Format Checks (Whitespaces)
+      run: |
+        dotnet format whitespace \
+        --no-restore \
+        --exclude ./src/*/Migrations \
+        --verify-no-changes
+
+    - name: Dotnet Format Checks (Style)
+      run: |
+        dotnet format style \
+        --no-restore \
+        --exclude ./src/*/Migrations \
+        --verify-no-changes
+
+    - name: Dotnet Format Checks (Analizers)
+      run: |
+        dotnet format analyzers \
+        --no-restore \
+        --exclude ./src/*/Migrations \
+        --verify-no-changes
+
+  integration_testing:
+    name: Integration Testing / ${{ matrix.title }}
+    runs-on: ubuntu-latest
+    needs: build_and_unit_testing
+    defaults:
+      run:
+        working-directory: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.proj_path }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - title: ContosoUniversity.Mvc
+          proj_path: test/integration/ContosoUniversity.Mvc.IntegrationTests
+        - title: Courses.Api
+          proj_path: test/integration/Courses.Api.IntegrationTests
+        - title: Departments.Api
+          proj_path: test/integration/Departments.Api.IntegrationTests
+        - title: Students.Api
+          proj_path: test/integration/Students.Api.IntegrationTests
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Build Testing Project
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+
+    - name: Run Integration Tests
+      run: |
+        dotnet test --no-build --verbosity normal
