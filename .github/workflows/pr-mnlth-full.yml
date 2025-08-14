@@ -99,7 +99,7 @@ jobs:
         run: docker compose down
 
   system_testing:
-    name: System Testing / External-Process
+    name: System Testing
     runs-on: ubuntu-latest
     needs: check_system_health
     env:
@@ -153,7 +153,7 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   e2e_testing:
-    name: E2E Testing / External-Process
+    name: E2E Testing
     runs-on: ubuntu-latest
     needs: check_system_health
     env:
