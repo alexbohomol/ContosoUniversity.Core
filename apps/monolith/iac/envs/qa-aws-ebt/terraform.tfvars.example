@@ -1,0 +1,8 @@
+# 🌍 general params
+app_name    = "contoso-monolith"
+environment = "Development"
+
+# 🔐 RDS credentials
+db_instance_class = "db.t3.micro"
+db_username = "admin"
+db_password = "REPLACE_ME"
