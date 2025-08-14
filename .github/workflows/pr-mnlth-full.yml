@@ -1,4 +1,4 @@
-name: MNLTH / PR Full Checks
+name: MNLTH / PR Checks / Full
 
 on:
   push:

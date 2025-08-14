@@ -1,4 +1,4 @@
-name: MNLTH / PR Fast Checks
+name: MNLTH / PR Checks / Fast
 
 on:
   push:
