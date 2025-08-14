@@ -1,0 +1,117 @@
+name: MNLTH / PR Fast Checks
+
+on:
+  push:
+    paths:
+      - "apps/monolith/**"
+      - "database/**"
+      - ".github/**"
+
+env:
+  DOTNET_VERSION: 9.0.x
+
+jobs:
+
+  build_and_unit_testing:
+    name: Build and Unit Testing
+    runs-on: ubuntu-latest
+    env:
+      TEST_PROJ_PATH: ${{ vars.MONOLITH_SLN_PATH }}/test/unit/ContosoUniversity.Domain.Tests
+    defaults:
+      run:
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Build Solution
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+      
+    - name: Run Unit Tests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: dotnet test --no-build --verbosity normal
+
+  code_style_checks:
+    name: Code style checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Build Solution
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+      
+    - name: Dotnet Format Checks (Whitespaces)
+      run: |
+        dotnet format whitespace \
+        --no-restore \
+        --exclude ./src/*/Migrations \
+        --verify-no-changes
+      
+    - name: Dotnet Format Checks (Style)
+      run: |
+        dotnet format style \
+        --no-restore \
+        --exclude ./src/*/Migrations \
+        --verify-no-changes
+      
+    - name: Dotnet Format Checks (Analizers)
+      run: |
+        dotnet format analyzers \
+        --no-restore \
+        --exclude ./src/*/Migrations \
+        --verify-no-changes
+
+  integration_testing:
+    name: Integration Testing / In-Process
+    runs-on: ubuntu-latest
+    needs: build_and_unit_testing
+    env:
+      TEST_PROJ_PATH: ${{ vars.MONOLITH_SLN_PATH }}/test/integration/ContosoUniversity.Mvc.IntegrationTests
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Developer Cert
+      working-directory: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc
+      run: |
+        dotnet dev-certs https -ep cert.pfx -p Test1234!
+        ls -lah
+
+    - name: Pull Docker images
+      run: |
+        docker pull mcr.microsoft.com/mssql/server
+        docker pull mcr.microsoft.com/mssql-tools
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+      
+    - name: Build Integration Tests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+      
+    - name: Run Integration Tests
+      working-directory: ${{ env.TEST_PROJ_PATH }}
+      run: |
+        dotnet test --no-build --verbosity normal
