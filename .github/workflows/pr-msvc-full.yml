@@ -1,16 +1,8 @@
-name: PR Checks (Microservices)
+name: MSVC / PR Checks / Full
 
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-    paths: 
-      - "apps/mservices/**"
-      - "database/**"
-      # - ".github/codeql.yml"
-      # - ".github/pr-checks-mservices.yml"
-      - ".github/**"
   workflow_dispatch:
 
 env:
@@ -19,124 +11,9 @@ env:
 
 jobs:
 
-  build_and_unit_testing:
-    # if: false
-    name: Build and Unit Testing
-    runs-on: ubuntu-latest
-    env:
-      TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/unit/Departments.Core.Tests
-    defaults:
-      run:
-        working-directory: ${{ vars.MSERVICES_SLN_PATH }}
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-
-    - name: Build Solution
-      run: |
-        dotnet restore
-        dotnet build --no-restore
-
-    - name: Run Unit Tests
-      working-directory: ${{ env.TEST_PROJ_PATH }}
-      run: dotnet test --no-build --verbosity normal
-
-  code_style_checks:
-    # if: false
-    name: Code style checks
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ vars.MSERVICES_SLN_PATH }}
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-
-    - name: Build Solution
-      run: |
-        dotnet restore
-        dotnet build --no-restore
-
-    - name: Dotnet Format Checks (Whitespaces)
-      run: |
-        dotnet format whitespace \
-        --no-restore \
-        --exclude ./src/*/Migrations \
-        --verify-no-changes
-
-    - name: Dotnet Format Checks (Style)
-      run: |
-        dotnet format style \
-        --no-restore \
-        --exclude ./src/*/Migrations \
-        --verify-no-changes
-
-    - name: Dotnet Format Checks (Analizers)
-      run: |
-        dotnet format analyzers \
-        --no-restore \
-        --exclude ./src/*/Migrations \
-        --verify-no-changes
-
-  integration_testing:
-    # if: false
-    name: Integration Testing / ${{ matrix.title }}
-    runs-on: ubuntu-latest
-    needs: build_and_unit_testing
-    defaults:
-      run:
-        working-directory: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.proj_path }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-        - title: ContosoUniversity.Mvc
-          proj_path: test/integration/ContosoUniversity.Mvc.IntegrationTests
-        - title: Courses.Api
-          proj_path: test/integration/Courses.Api.IntegrationTests
-        - title: Departments.Api
-          proj_path: test/integration/Departments.Api.IntegrationTests
-        - title: Departments.Worker
-          proj_path: test/integration/Departments.Worker.IntegrationTests
-        - title: Students.Api
-          proj_path: test/integration/Students.Api.IntegrationTests
-        - title: Students.Worker
-          proj_path: test/integration/Students.Worker.IntegrationTests
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-
-    - name: Build Testing Project
-      run: |
-        dotnet restore
-        dotnet build --no-restore
-
-    - name: Run Integration Tests
-      run: |
-        dotnet test --no-build --verbosity normal
-
   build_and_save_images:
-    # if: false
     name: Build & Save ${{ matrix.title }}
     runs-on: ubuntu-latest
-    needs: build_and_unit_testing
 
     strategy:
       fail-fast: false
@@ -185,7 +62,6 @@ jobs:
           path: ${{ runner.temp }}/${{ matrix.image_name }}.tar
 
   check_system_health:
-    # if: false
     name: Check System Health
     runs-on: ubuntu-latest
     needs: build_and_save_images
@@ -292,8 +168,7 @@ jobs:
       run: docker compose down
 
   system_testing:
-    # if: false
-    name: System Testing / External-Process
+    name: System Testing
     runs-on: ubuntu-latest
     needs: check_system_health
     env:
@@ -367,8 +242,7 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   e2e_testing:
-    # if: false
-    name: E2E Testing / External-Process
+    name: E2E Testing
     runs-on: ubuntu-latest
     needs: check_system_health
     env:
