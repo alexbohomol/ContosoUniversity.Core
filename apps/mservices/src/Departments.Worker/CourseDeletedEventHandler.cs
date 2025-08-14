@@ -23,7 +23,7 @@ internal class CourseDeletedEventHandler(
             context.CancellationToken);
 
         logger.LogInformation(
-            "Instructors to be reset assignment: {InstructorIds}.",
+            "Instructors to have assignment reset: {InstructorIds}.",
             string.Join(", ", instructors.Select(x => x.ExternalId)));
 
         foreach (Instructor instructor in instructors)
