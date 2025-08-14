@@ -23,7 +23,7 @@ internal class CourseDeletedEventHandler(
             context.CancellationToken);
 
         logger.LogInformation(
-            "Students to be withdraw from course: {StudentIds}.",
+            "Students to be withdrawn from course: {StudentIds}.",
             string.Join(", ", students.Select(x => x.ExternalId)));
 
         foreach (Student student in students)
