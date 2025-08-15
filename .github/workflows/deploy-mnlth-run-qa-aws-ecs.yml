@@ -11,6 +11,9 @@ jobs:
   provision_and_run:
     name: Provision infra and run apps
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
 
     steps:
       - name: Checkout code
@@ -29,23 +32,24 @@ jobs:
           terraform_version: ${{ env.TF_VERSION }}
 
       - name: Terraform init
-        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
         run: terraform init
 
-      - name: Terraform validate
-        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
-        run: terraform validate
+      - name: Terraform format and validate
+        run: terraform fmt -check && terraform validate
 
       - name: Terraform plan
-        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
-        run: terraform plan -out=tfplan
+        run: |
+          terraform plan \
+            -var="db_username=sa" \
+            -var="db_password=${{ secrets.DB_PASSWORD }}" \
+            -var="db_init_script=db-init.sql" \
+            -var="local_ip=NOT_USED" \
+            -out=tfplan
 
       - name: Terraform apply
-        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
         run: terraform apply -auto-approve tfplan
 
       - name: Terraform output
-        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
         run: terraform output -json #> outputs.json
 
       - name: Notify failure
