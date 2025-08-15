@@ -23,7 +23,7 @@ jobs:
         run: echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u alexbohomol --password-stdin
 
       - name: Extract short SHA
-        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+        run: echo "sha=$(git rev-parse --short ${{ github.event.pull_request.head.sha }})" >> $GITHUB_ENV
 
       - name: Developer Cert
         working-directory: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc
