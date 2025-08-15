@@ -1,0 +1,17 @@
+name: "MNLTH / Deploy / Stop qa-aws-ecs"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  stop:
+    name: Stop
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Stop the env
+        run: |
+          echo "Stop the env"

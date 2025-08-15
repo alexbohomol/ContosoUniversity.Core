@@ -1,0 +1,44 @@
+name: "MNLTH / Deploy / Artifacts"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    name: Build and Push Artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u alexbohomol --password-stdin
+
+      - name: Extract short SHA
+        run: echo "sha=$(git rev-parse --short ${{ github.event.pull_request.head.sha }})" >> $GITHUB_ENV
+
+      - name: Developer Cert
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc
+        run: |
+          dotnet dev-certs https -ep cert.pfx -p Test1234!
+          ls -lah
+
+      - name: Build and push cuweb image
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}
+        run: |
+          docker build -t ghcr.io/alexbohomol/cuweb:${{ env.sha }} -f src/ContosoUniversity.Mvc/Dockerfile .
+          docker push ghcr.io/alexbohomol/cuweb:${{ env.sha }}
+
+      - name: Build and push mssql-migrator image
+        working-directory: database
+        run: |
+          docker build -t ghcr.io/alexbohomol/mssql-migrator:${{ env.sha }} .
+          docker push ghcr.io/alexbohomol/mssql-migrator:${{ env.sha }}
