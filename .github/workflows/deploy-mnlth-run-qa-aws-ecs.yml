@@ -32,3 +32,22 @@ jobs:
         working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
         run: terraform init
 
+      - name: Terraform validate
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
+        run: terraform validate
+
+      - name: Terraform plan
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
+        run: terraform plan -out=tfplan
+
+      - name: Terraform apply
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
+        run: terraform apply -auto-approve tfplan
+
+      - name: Terraform output
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
+        run: terraform output -json #> outputs.json
+
+      - name: Notify failure
+        if: failure()
+        run: echo "Terraform apply failed for ${{ github.ref_name }}"
