@@ -1,6 +1,8 @@
-namespace Courses.Api.IntegrationTests;
+namespace Departments.Worker.IntegrationTests;
 
 using System;
+
+using Departments.Worker;
 
 using MassTransit;
 
