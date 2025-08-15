@@ -1,6 +1,7 @@
 name: "MNLTH / Deploy / Run qa-aws-ecs"
 
 on:
+  push: #debug
   workflow_dispatch:
 
 jobs:
@@ -12,6 +13,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Run the deploy
-        run: |
-          echo "Run the deploy"
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
