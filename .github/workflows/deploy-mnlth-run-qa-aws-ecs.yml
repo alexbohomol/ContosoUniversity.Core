@@ -4,9 +4,12 @@ on:
   push: #debug
   workflow_dispatch:
 
+env:
+  TF_VERSION: 1.12.2
+
 jobs:
-  run:
-    name: Run
+  provision_and_run:
+    name: Provision infra and run apps
     runs-on: ubuntu-latest
 
     steps:
@@ -19,3 +22,13 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
+
+      - name: Terraform install
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform init
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
+        run: terraform init
+

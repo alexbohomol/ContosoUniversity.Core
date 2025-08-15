@@ -1,7 +1,7 @@
 name: "MNLTH / Deploy / Stop qa-aws-ecs"
 
 on:
-  push: #debug
+  # push: #debug
   workflow_dispatch:
 
 jobs:
