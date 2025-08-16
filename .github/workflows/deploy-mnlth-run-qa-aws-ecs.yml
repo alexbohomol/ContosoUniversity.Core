@@ -3,15 +3,54 @@ name: "MNLTH / Deploy / Run qa-aws-ecs"
 on:
   workflow_dispatch:
 
+env:
+  TF_VERSION: 1.12.2
+
 jobs:
-  run:
-    name: Run
+  provision_and_run:
+    name: Provision infra and run apps
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Run the deploy
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Terraform install
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform init
+        run: terraform init
+
+      - name: Terraform format and validate
+        run: terraform fmt -check && terraform validate
+
+      - name: Terraform plan
         run: |
-          echo "Run the deploy"
+          terraform plan \
+            -var="db_username=sa" \
+            -var="db_password=${{ secrets.DB_PASSWORD }}" \
+            -var="db_init_script=db-init.sql" \
+            -var="local_ip=NOT_USED" \
+            -out=tfplan
+
+      - name: Terraform apply
+        run: terraform apply -auto-approve tfplan
+
+      - name: Terraform output
+        run: terraform output -json
+
+      - name: Notify failure
+        if: failure()
+        run: echo "Terraform apply failed for ${{ github.ref_name }}"
