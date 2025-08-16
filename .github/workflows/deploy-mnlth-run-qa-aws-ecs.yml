@@ -1,7 +1,6 @@
 name: "MNLTH / Deploy / Run qa-aws-ecs"
 
 on:
-  push: #debug
   workflow_dispatch:
 
 env:
@@ -50,7 +49,7 @@ jobs:
         run: terraform apply -auto-approve tfplan
 
       - name: Terraform output
-        run: terraform output -json #> outputs.json
+        run: terraform output -json
 
       - name: Notify failure
         if: failure()
