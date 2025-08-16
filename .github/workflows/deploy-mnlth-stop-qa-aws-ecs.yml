@@ -34,7 +34,13 @@ jobs:
         run: terraform fmt -check && terraform validate
 
       - name: Terraform plan destroy
-        run: terraform plan -destroy -out=tfplan
+        run: |
+          terraform plan -destroy \
+            -var="db_username=sa" \
+            -var="db_password=${{ secrets.DB_PASSWORD }}" \
+            -var="db_init_script=db-init.sql" \
+            -var="local_ip=NOT_USED" \
+            -out=tfplan
 
       - name: Terraform apply destroy
         run: terraform apply -auto-approve tfplan
