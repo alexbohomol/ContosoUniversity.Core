@@ -65,7 +65,7 @@ jobs:
         run: echo "Terraform apply failed for ${{ github.ref_name }}"
 
   run_mssql:
-    name: Run MsSql Server
+    name: Run mssql Task
     needs: provision_infra
     runs-on: ubuntu-latest
     defaults:
@@ -111,9 +111,9 @@ jobs:
             --query 'tasks[0].attachments[0].details[?name==`privateIPv4Address`].value' \
             --output text)
           echo "MSSQL_HOST_IP=$MSSQL_HOST_IP" >> $GITHUB_OUTPUT
-  
+
   run_mssql_migrator:
-    name: Run Database Migrator
+    name: Run mssql-migrator Task
     needs: [provision_infra, run_mssql]
     runs-on: ubuntu-latest
     defaults:
@@ -161,3 +161,79 @@ jobs:
             --cluster contoso-mnlth-cluster \
             --tasks $MIGRATOR_TASK_ARN
 
+  run_web:
+    name: Run web Task
+    needs: [provision_infra, run_mssql, run_mssql_migrator]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
+    outputs:
+      WEB_HOST_IP: ${{ steps.get_web_ip.outputs.WEB_HOST_IP }}
+
+    steps:
+      - name: 🛠️ Checkout code
+        uses: actions/checkout@v5
+
+      - name: 🔐 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: 🚀 Kick off application
+        run: |
+          WEB_TASK_ARN=$(aws ecs run-task \
+            --cluster contoso-mnlth-cluster \
+            --launch-type FARGATE \
+            --network-configuration "awsvpcConfiguration={subnets=[${{ needs.provision_infra.outputs.subnet_ids }}],securityGroups=[${{ needs.provision_infra.outputs.sg_id }}],assignPublicIp=ENABLED}" \
+            --task-definition contoso-mnlth-web-tasks \
+            --overrides '{
+              "containerOverrides": [
+                {
+                  "name": "web",
+                  "environment": [
+                    {
+                      "name": "SqlConnectionStringBuilder__DataSource",
+                      "value": "${{ needs.run_mssql.outputs.MSSQL_HOST_IP }}"
+                    }
+                  ]
+                }
+              ]
+            }' \
+            --query 'tasks[0].taskArn' \
+            --output text)
+          echo "WEB_TASK_ARN=$WEB_TASK_ARN" >> $GITHUB_ENV
+
+      - name: 🧑‍💻 Wait for application started
+        run: |
+          aws ecs wait tasks-running \
+            --cluster contoso-mnlth-cluster \
+            --tasks $WEB_TASK_ARN
+
+      - name: Get Public IP of web Task
+        id: get_web_ip
+        run: |
+          ENI_ID=$(aws ecs describe-tasks \
+            --cluster contoso-mnlth-cluster \
+            --tasks $WEB_TASK_ARN \
+            --query 'tasks[0].attachments[0].details[?name==`networkInterfaceId`].value' \
+            --output text)
+          WEB_HOST_IP=$(aws ec2 describe-network-interfaces \
+            --network-interface-ids $ENI_ID \
+            --query 'NetworkInterfaces[0].Association.PublicIp' \
+            --output text)
+          echo "WEB_HOST_IP=$WEB_HOST_IP" >> $GITHUB_OUTPUT
+
+  report_results:
+    name: Report deploy results
+    needs: [run_mssql, run_web]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print mssql and web IPs
+        run: |
+          echo "MSSQL IP: ${{ needs.run_mssql.outputs.MSSQL_HOST_IP }}"
+          echo "Web IP: ${{ needs.run_web.outputs.WEB_HOST_IP }}"
+          echo "Web URL: http://${{ needs.run_web.outputs.WEB_HOST_IP }}"
