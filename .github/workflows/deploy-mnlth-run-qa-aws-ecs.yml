@@ -7,8 +7,8 @@ env:
   TF_VERSION: 1.12.2
 
 jobs:
-  provision_and_run:
-    name: Provision infra and run apps
+  provision_infra:
+    name: Provision infrastructure
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -54,3 +54,41 @@ jobs:
       - name: Notify failure
         if: failure()
         run: echo "Terraform apply failed for ${{ github.ref_name }}"
+
+  run_mssql:
+    name: Run MsSql Server
+    needs: provision_infra
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
+
+    steps:
+      - name: 🛠️ Checkout code
+        uses: actions/checkout@v5
+
+      - name: 🔐 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: 🚀 Kick off MsSql Server
+        run: |
+          TASK_ARN=$(aws ecs run-task \
+            --cluster contoso-mnlth-cluster \
+            --launch-type FARGATE \
+            --network-configuration "awsvpcConfiguration={subnets=[subnet-0d3b3077493805117,subnet-0d76ac26c9e0eeb91],securityGroups=[sg-0909787189343e330],assignPublicIp=ENABLED}" \
+            --task-definition contoso-mnlth-mssql-tasks \
+            --query 'tasks[0].taskArn' \
+            --output text)
+          echo "TASK_ARN=$TASK_ARN" >> $GITHUB_ENV
+
+# https://docs.aws.amazon.com/cli/latest/reference/ecs/wait/services-stable.html
+      - name: 🧑‍💻 Wait for MsSql Server started
+        run: |
+          aws ecs wait tasks-running \
+            --cluster contoso-mnlth-cluster \
+            --tasks $TASK_ARN
+
