@@ -8,11 +8,14 @@ env:
 
 jobs:
   provision_infra:
-    name: Provision infrastructure
+    name: Provision AWS infra
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
+    outputs:
+      subnet_ids: ${{ steps.tf_outputs.outputs.subnet_ids }}
+      sg_id: ${{ steps.tf_outputs.outputs.sg_id }}
 
     steps:
       - name: Checkout code
@@ -51,6 +54,12 @@ jobs:
       - name: Terraform output
         run: terraform output -json
 
+      - name: Export Terraform outputs
+        id: tf_outputs
+        run: |
+          echo "subnet_ids=$(terraform output -json subnet_ids | jq -r '.[]' | xargs | tr ' ' ',')" >> $GITHUB_OUTPUT
+          echo "sg_id=$(terraform output -json sg_id | jq -r '.')" >> $GITHUB_OUTPUT
+
       - name: Notify failure
         if: failure()
         run: echo "Terraform apply failed for ${{ github.ref_name }}"
@@ -79,7 +88,7 @@ jobs:
           TASK_ARN=$(aws ecs run-task \
             --cluster contoso-mnlth-cluster \
             --launch-type FARGATE \
-            --network-configuration "awsvpcConfiguration={subnets=[subnet-0d3b3077493805117,subnet-0d76ac26c9e0eeb91],securityGroups=[sg-0909787189343e330],assignPublicIp=ENABLED}" \
+            --network-configuration "awsvpcConfiguration={subnets=[${{ needs.provision_infra.outputs.subnet_ids }}],securityGroups=[${{ needs.provision_infra.outputs.sg_id }}],assignPublicIp=ENABLED}" \
             --task-definition contoso-mnlth-mssql-tasks \
             --query 'tasks[0].taskArn' \
             --output text)
