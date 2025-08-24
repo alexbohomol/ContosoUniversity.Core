@@ -71,6 +71,8 @@ jobs:
     defaults:
       run:
         working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
+    outputs:
+      MSSQL_HOST_IP: ${{ steps.get_mssql_ip.outputs.MSSQL_HOST_IP }}
 
     steps:
       - name: 🛠️ Checkout code
@@ -85,21 +87,31 @@ jobs:
 
       - name: 🚀 Kick off MsSql Server
         run: |
-          TASK_ARN=$(aws ecs run-task \
+          MSSQL_TASK_ARN=$(aws ecs run-task \
             --cluster contoso-mnlth-cluster \
             --launch-type FARGATE \
             --network-configuration "awsvpcConfiguration={subnets=[${{ needs.provision_infra.outputs.subnet_ids }}],securityGroups=[${{ needs.provision_infra.outputs.sg_id }}],assignPublicIp=ENABLED}" \
             --task-definition contoso-mnlth-mssql-tasks \
             --query 'tasks[0].taskArn' \
             --output text)
-          echo "TASK_ARN=$TASK_ARN" >> $GITHUB_ENV
+          echo "MSSQL_TASK_ARN=$MSSQL_TASK_ARN" >> $GITHUB_ENV
 
       - name: 🧑‍💻 Wait for MsSql Server started
         run: |
           aws ecs wait tasks-running \
             --cluster contoso-mnlth-cluster \
-            --tasks $TASK_ARN
+            --tasks $MSSQL_TASK_ARN
 
+      - name: Get Private IP of MSSQL Task
+        id: get_mssql_ip
+        run: |
+          MSSQL_HOST_IP=$(aws ecs describe-tasks \
+            --cluster contoso-mnlth-cluster \
+            --tasks $MSSQL_TASK_ARN \
+            --query 'tasks[0].attachments[0].details[?name==`privateIPv4Address`].value' \
+            --output text)
+          echo "MSSQL_HOST_IP=$MSSQL_HOST_IP" >> $GITHUB_OUTPUT
+  
   run_mssql_migrator:
     name: Run Database Migrator
     needs: [provision_infra, run_mssql]
@@ -133,7 +145,7 @@ jobs:
                   "environment": [
                     {
                       "name": "DB_HOST",
-                      "value": "10.0.1.108"
+                      "value": "${{ needs.run_mssql.outputs.MSSQL_HOST_IP }}"
                     }
                   ]
                 }
