@@ -94,10 +94,58 @@ jobs:
             --output text)
           echo "TASK_ARN=$TASK_ARN" >> $GITHUB_ENV
 
-# https://docs.aws.amazon.com/cli/latest/reference/ecs/wait/services-stable.html
       - name: 🧑‍💻 Wait for MsSql Server started
         run: |
           aws ecs wait tasks-running \
             --cluster contoso-mnlth-cluster \
             --tasks $TASK_ARN
+
+  run_mssql_migrator:
+    name: Run Database Migrator
+    needs: [provision_infra, run_mssql]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
+
+    steps:
+      - name: 🛠️ Checkout code
+        uses: actions/checkout@v5
+
+      - name: 🔐 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: 🚀 Kick off database migration
+        run: |
+          MIGRATOR_TASK_ARN=$(aws ecs run-task \
+            --cluster contoso-mnlth-cluster \
+            --launch-type FARGATE \
+            --network-configuration "awsvpcConfiguration={subnets=[${{ needs.provision_infra.outputs.subnet_ids }}],securityGroups=[${{ needs.provision_infra.outputs.sg_id }}],assignPublicIp=ENABLED}" \
+            --task-definition contoso-mnlth-mssql-migrator-tasks \
+            --overrides '{
+              "containerOverrides": [
+                {
+                  "name": "mssql-migrator",
+                  "environment": [
+                    {
+                      "name": "DB_HOST",
+                      "value": "10.0.1.108"
+                    }
+                  ]
+                }
+              ]
+            }' \
+            --query 'tasks[0].taskArn' \
+            --output text)
+          echo "MIGRATOR_TASK_ARN=$MIGRATOR_TASK_ARN" >> $GITHUB_ENV
+
+      - name: 🧑‍💻 Wait for migration finished
+        run: |
+          aws ecs wait tasks-stopped \
+            --cluster contoso-mnlth-cluster \
+            --tasks $MIGRATOR_TASK_ARN
 
