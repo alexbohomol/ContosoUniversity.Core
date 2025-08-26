@@ -28,7 +28,7 @@ jobs:
           WEB_TASK_ARN=$(aws ecs list-tasks \
             --cluster contoso-mnlth-cluster \
             --family contoso-mnlth-web-tasks \
-            --query 'tasks[0].taskArn' \
+            --query 'taskArns' \
             --output text)
           if [ -z "$WEB_TASK_ARN" ]; then
             echo "No running web task found."
