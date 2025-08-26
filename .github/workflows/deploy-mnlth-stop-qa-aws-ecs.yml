@@ -24,7 +24,6 @@ jobs:
           aws-region: eu-central-1
 
       - name: Get web Task ARN
-        id: get_web_task_arn
         run: |
           WEB_TASK_ARN=$(aws ecs list-tasks \
             --cluster contoso-mnlth-cluster \
@@ -35,21 +34,21 @@ jobs:
             echo "No running web task found."
             exit 0
           fi
-          echo "WEB_TASK_ARN=$WEB_TASK_ARN" >> $GITHUB_OUTPUT
+          echo "WEB_TASK_ARN=$WEB_TASK_ARN" >> $GITHUB_ENV
 
       - name: Stop web Task
-        if: ${{ steps.get_web_task_arn.outputs.WEB_TASK_ARN }} != ''
+        if: env.WEB_TASK_ARN != ''
         run: |
           aws ecs stop-task \
             --cluster contoso-mnlth-cluster \
-            --task ${{ steps.get_web_task_arn.outputs.WEB_TASK_ARN }}
+            --task ${{ env.WEB_TASK_ARN }}
 
       - name: 🧑‍💻 Wait for migration finished
-        if: ${{ steps.get_web_task_arn.outputs.WEB_TASK_ARN }} != ''
+        if: env.WEB_TASK_ARN != ''
         run: |
           aws ecs wait tasks-stopped \
             --cluster contoso-mnlth-cluster \
-            --tasks ${{ steps.get_web_task_arn.outputs.WEB_TASK_ARN }}
+            --tasks ${{ env.WEB_TASK_ARN }}
 
   dispose_infra:
     name: Dispose AWS infra
