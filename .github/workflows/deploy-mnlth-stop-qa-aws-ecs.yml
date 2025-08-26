@@ -3,9 +3,56 @@ name: "MNLTH / Deploy / Stop qa-aws-ecs"
 on:
   workflow_dispatch:
 
+env:
+  TF_VERSION: 1.12.2
+
 jobs:
-  stop_and_dispose:
-    name: Stop apps and dipose infra
+
+  stop_app:
+    name: Stop web Task
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Get web Task ARN
+        run: |
+          WEB_TASK_ARN=$(aws ecs list-tasks \
+            --cluster contoso-mnlth-cluster \
+            --family contoso-mnlth-web-tasks \
+            --query 'taskArns' \
+            --output text)
+          if [ -z "$WEB_TASK_ARN" ]; then
+            echo "No running web task found."
+            exit 0
+          fi
+          echo "WEB_TASK_ARN=$WEB_TASK_ARN" >> $GITHUB_ENV
+
+      - name: Stop web Task
+        if: env.WEB_TASK_ARN != ''
+        run: |
+          aws ecs stop-task \
+            --cluster contoso-mnlth-cluster \
+            --task ${{ env.WEB_TASK_ARN }}
+
+      - name: 🧑‍💻 Wait for web Task to stop
+        if: env.WEB_TASK_ARN != ''
+        run: |
+          aws ecs wait tasks-stopped \
+            --cluster contoso-mnlth-cluster \
+            --tasks ${{ env.WEB_TASK_ARN }}
+
+  dispose_infra:
+    name: Dispose AWS infra
+    needs: stop_app
     runs-on: ubuntu-latest
     defaults:
       run:
