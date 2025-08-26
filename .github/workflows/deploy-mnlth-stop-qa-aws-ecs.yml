@@ -43,7 +43,7 @@ jobs:
             --cluster contoso-mnlth-cluster \
             --task ${{ env.WEB_TASK_ARN }}
 
-      - name: 🧑‍💻 Wait for migration finished
+      - name: 🧑‍💻 Wait for web Task to stop
         if: env.WEB_TASK_ARN != ''
         run: |
           aws ecs wait tasks-stopped \
