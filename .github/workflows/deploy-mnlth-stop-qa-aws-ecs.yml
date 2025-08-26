@@ -8,7 +8,7 @@ env:
 
 jobs:
 
-  stop_app:
+  stop_web:
     name: Stop web Task
     runs-on: ubuntu-latest
 
@@ -50,9 +50,51 @@ jobs:
             --cluster contoso-mnlth-cluster \
             --tasks ${{ env.WEB_TASK_ARN }}
 
+  stop_mssql:
+    name: Stop mssql Task
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Get mssql Task ARN
+        run: |
+          MSSQL_TASK_ARN=$(aws ecs list-tasks \
+            --cluster contoso-mnlth-cluster \
+            --family contoso-mnlth-mssql-tasks \
+            --query 'taskArns' \
+            --output text)
+          if [ -z "$MSSQL_TASK_ARN" ]; then
+            echo "No running mssql task found."
+            exit 0
+          fi
+          echo "MSSQL_TASK_ARN=$MSSQL_TASK_ARN" >> $GITHUB_ENV
+
+      - name: Stop mssql Task
+        if: env.MSSQL_TASK_ARN != ''
+        run: |
+          aws ecs stop-task \
+            --cluster contoso-mnlth-cluster \
+            --task ${{ env.MSSQL_TASK_ARN }}
+
+      - name: 🧑‍💻 Wait for mssql Task to stop
+        if: env.MSSQL_TASK_ARN != ''
+        run: |
+          aws ecs wait tasks-stopped \
+            --cluster contoso-mnlth-cluster \
+            --tasks ${{ env.MSSQL_TASK_ARN }}
+
   dispose_infra:
     name: Dispose AWS infra
-    needs: stop_app
+    needs: [stop_web, stop_mssql]
     runs-on: ubuntu-latest
     defaults:
       run:
