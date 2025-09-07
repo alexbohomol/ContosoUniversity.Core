@@ -81,8 +81,8 @@ resource "aws_security_group_rule" "mssql_public" {
 
 resource "aws_ecs_task_definition" "web_task" {
   family                   = "${var.app_name}-web-tasks"
-  cpu                      = "512"
-  memory                   = "1024"
+  cpu                      = "1024"
+  memory                   = "2048"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   execution_role_arn       = aws_iam_role.task_execution.arn
