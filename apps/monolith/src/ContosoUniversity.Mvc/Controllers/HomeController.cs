@@ -12,10 +12,11 @@ using Microsoft.AspNetCore.Mvc;
 
 using ViewModels;
 
-public class HomeController(IStudentsRoRepository repository) : Controller
+public class HomeController(IStudentsRoRepository repository, Serilog.ILogger logger) : Controller
 {
     public IActionResult Index()
     {
+        logger.Information("Hello from HomeController.Index");
         return View();
     }
 
