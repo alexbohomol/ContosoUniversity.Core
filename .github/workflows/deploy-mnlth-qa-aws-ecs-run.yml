@@ -1,72 +1,12 @@
-name: "MNLTH / Deploy / Run qa-aws-ecs"
+name: "MNLTH / qa-aws-ecs / Run"
 
 on:
   workflow_dispatch:
 
-env:
-  TF_VERSION: 1.12.2
-
 jobs:
-  provision_infra:
-    name: Provision AWS infra
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
-    outputs:
-      subnet_ids: ${{ steps.tf_outputs.outputs.subnet_ids }}
-      sg_id: ${{ steps.tf_outputs.outputs.sg_id }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-central-1
-
-      - name: Terraform install
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
-
-      - name: Terraform init
-        run: terraform init
-
-      - name: Terraform format and validate
-        run: terraform fmt -check && terraform validate
-
-      - name: Terraform plan
-        run: |
-          terraform plan \
-            -var="db_username=sa" \
-            -var="db_password=${{ secrets.DB_PASSWORD }}" \
-            -var="db_init_script=db-init.sql" \
-            -var="local_ip=NOT_USED" \
-            -out=tfplan
-
-      - name: Terraform apply
-        run: terraform apply -auto-approve tfplan
-
-      - name: Terraform output
-        run: terraform output -json
-
-      - name: Export Terraform outputs
-        id: tf_outputs
-        run: |
-          echo "subnet_ids=$(terraform output -json subnet_ids | jq -r '.[]' | xargs | tr ' ' ',')" >> $GITHUB_OUTPUT
-          echo "sg_id=$(terraform output -json sg_id | jq -r '.')" >> $GITHUB_OUTPUT
-
-      - name: Notify failure
-        if: failure()
-        run: echo "Terraform apply failed for ${{ github.ref_name }}"
 
   run_mssql:
     name: Run mssql Task
-    needs: provision_infra
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -90,7 +30,7 @@ jobs:
           MSSQL_TASK_ARN=$(aws ecs run-task \
             --cluster contoso-mnlth-cluster \
             --launch-type FARGATE \
-            --network-configuration "awsvpcConfiguration={subnets=[${{ needs.provision_infra.outputs.subnet_ids }}],securityGroups=[${{ needs.provision_infra.outputs.sg_id }}],assignPublicIp=ENABLED}" \
+            --network-configuration "awsvpcConfiguration={subnets=[${{ vars.AWS_SUBNET_IDS }}],securityGroups=[${{ vars.AWS_SG_ID }}],assignPublicIp=ENABLED}" \
             --task-definition contoso-mnlth-mssql-tasks \
             --query 'tasks[0].taskArn' \
             --output text)
@@ -114,7 +54,7 @@ jobs:
 
   run_mssql_migrator:
     name: Run mssql-migrator Task
-    needs: [provision_infra, run_mssql]
+    needs: [run_mssql]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -136,7 +76,7 @@ jobs:
           MIGRATOR_TASK_ARN=$(aws ecs run-task \
             --cluster contoso-mnlth-cluster \
             --launch-type FARGATE \
-            --network-configuration "awsvpcConfiguration={subnets=[${{ needs.provision_infra.outputs.subnet_ids }}],securityGroups=[${{ needs.provision_infra.outputs.sg_id }}],assignPublicIp=ENABLED}" \
+            --network-configuration "awsvpcConfiguration={subnets=[${{ vars.AWS_SUBNET_IDS }}],securityGroups=[${{ vars.AWS_SG_ID }}],assignPublicIp=ENABLED}" \
             --task-definition contoso-mnlth-mssql-migrator-tasks \
             --overrides '{
               "containerOverrides": [
@@ -163,7 +103,7 @@ jobs:
 
   run_web:
     name: Run web Task
-    needs: [provision_infra, run_mssql, run_mssql_migrator]
+    needs: [run_mssql, run_mssql_migrator]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -187,7 +127,7 @@ jobs:
           WEB_TASK_ARN=$(aws ecs run-task \
             --cluster contoso-mnlth-cluster \
             --launch-type FARGATE \
-            --network-configuration "awsvpcConfiguration={subnets=[${{ needs.provision_infra.outputs.subnet_ids }}],securityGroups=[${{ needs.provision_infra.outputs.sg_id }}],assignPublicIp=ENABLED}" \
+            --network-configuration "awsvpcConfiguration={subnets=[${{ vars.AWS_SUBNET_IDS }}],securityGroups=[${{ vars.AWS_SG_ID }}],assignPublicIp=ENABLED}" \
             --task-definition contoso-mnlth-web-tasks \
             --overrides '{
               "containerOverrides": [

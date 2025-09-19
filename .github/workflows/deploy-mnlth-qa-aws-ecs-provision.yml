@@ -1,0 +1,72 @@
+name: "MNLTH / qa-aws-ecs / Provision"
+
+on:
+  workflow_dispatch:
+
+env:
+  TF_VERSION: 1.12.2
+
+jobs:
+  provision_infra:
+    name: Provision AWS infra
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
+    outputs:
+      subnet_ids: ${{ steps.tf_outputs.outputs.subnet_ids }}
+      sg_id: ${{ steps.tf_outputs.outputs.sg_id }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Terraform install
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform init
+        run: terraform init
+
+      - name: Terraform format and validate
+        run: terraform fmt -check && terraform validate
+
+      - name: Terraform plan
+        run: |
+          terraform plan \
+            -var="db_username=sa" \
+            -var="db_password=${{ secrets.DB_PASSWORD }}" \
+            -var="db_init_script=db-init.sql" \
+            -var="local_ip=NOT_USED" \
+            -out=tfplan
+
+      - name: Terraform apply
+        run: terraform apply -auto-approve tfplan
+
+      - name: Terraform output
+        run: terraform output -json
+
+      - name: Export Terraform outputs
+        id: tf_outputs
+        run: |
+          echo "subnet_ids=$(terraform output -json subnet_ids | jq -r '.[]' | xargs | tr ' ' ',')" >> $GITHUB_OUTPUT
+          echo "sg_id=$(terraform output -json sg_id | jq -r '.')" >> $GITHUB_OUTPUT
+
+      - name: Save subnet_ids and sg_id to GitHub Variables
+        run: |
+          gh variable set AWS_SUBNET_IDS --body "${{ steps.tf_outputs.outputs.subnet_ids }}"
+          gh variable set AWS_SG_ID --body "${{ steps.tf_outputs.outputs.sg_id }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify failure
+        if: failure()
+        run: echo "Terraform apply failed for ${{ github.ref_name }}"

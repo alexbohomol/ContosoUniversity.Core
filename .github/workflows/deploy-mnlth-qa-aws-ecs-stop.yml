@@ -1,10 +1,7 @@
-name: "MNLTH / Deploy / Stop qa-aws-ecs"
+name: "MNLTH / qa-aws-ecs / Stop"
 
 on:
   workflow_dispatch:
-
-env:
-  TF_VERSION: 1.12.2
 
 jobs:
 
@@ -91,49 +88,3 @@ jobs:
           aws ecs wait tasks-stopped \
             --cluster contoso-mnlth-cluster \
             --tasks ${{ env.MSSQL_TASK_ARN }}
-
-  dispose_infra:
-    name: Dispose AWS infra
-    needs: [stop_web, stop_mssql]
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-central-1
-
-      - name: Terraform install
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
-
-      - name: Terraform init
-        run: terraform init
-
-      - name: Terraform format and validate
-        run: terraform fmt -check && terraform validate
-
-      - name: Terraform plan destroy
-        run: |
-          terraform plan -destroy \
-            -var="db_username=sa" \
-            -var="db_password=${{ secrets.DB_PASSWORD }}" \
-            -var="db_init_script=db-init.sql" \
-            -var="local_ip=NOT_USED" \
-            -out=tfplan
-
-      - name: Terraform apply destroy
-        run: terraform apply -auto-approve tfplan
-
-      - name: Notify failure
-        if: failure()
-        run: echo "Terraform apply failed for ${{ github.ref_name }}"
