@@ -27,6 +27,9 @@ using Microsoft.Extensions.Hosting;
 
 using Middleware;
 
+using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
+
 public class Program
 {
     public static void Main(string[] args)
@@ -87,6 +90,14 @@ internal class Startup(IWebHostEnvironment env)
         services.AddExceptionHandler<EntityNotFoundExceptionHandler>();
         services.AddExceptionHandler<BadRequestExceptionHandler>();
         services.AddProblemDetails();
+
+        ILogger logger = new LoggerConfiguration()
+            .WriteTo.Console(theme:AnsiConsoleTheme.Code)
+            .CreateLogger();
+
+        Log.Logger = logger;
+
+        services.AddSingleton(logger);
     }
 
     public void Configure(IApplicationBuilder app)
