@@ -92,7 +92,7 @@ resource "aws_ecs_task_definition" "web_task" {
     {
       essential = true
       name      = "web"
-      image     = "ghcr.io/alexbohomol/cuweb:latest"
+      image     = "ghcr.io/alexbohomol/cuweb"
       portMappings = [
         {
           containerPort = 80,
@@ -190,7 +190,7 @@ resource "aws_ecs_task_definition" "mssql_migrator_task" {
     {
       essential = true
       name      = "mssql-migrator"
-      image     = "ghcr.io/alexbohomol/mssql-migrator:latest"
+      image     = "ghcr.io/alexbohomol/mssql-migrator"
       environment = [
         { name = "DB_HOST", value = "mssql" },
         { name = "DB_USER", value = var.db_username },
