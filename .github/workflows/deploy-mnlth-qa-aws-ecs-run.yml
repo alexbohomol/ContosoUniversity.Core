@@ -104,6 +104,9 @@ jobs:
   run_web:
     name: Run web Task
     needs: [run_mssql, run_mssql_migrator]
+    environment:
+      name: qa-aws-ecs
+      url: http://${{ steps.get_web_ip.outputs.WEB_HOST_IP }}
     runs-on: ubuntu-latest
     defaults:
       run:
