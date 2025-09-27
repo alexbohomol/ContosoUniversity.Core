@@ -1,4 +1,4 @@
-namespace Courses.Api.IntegrationTests.HealthCheck;
+namespace Students.Worker.IntegrationTests.HealthCheck;
 
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -48,22 +48,14 @@ public class InfraExistsTests :
         report.Status.Should().Be(UIHealthStatus.Healthy);
         report.Entries.Should().NotBeEmpty();
         report.Entries.Keys.Should().BeEquivalentTo([
-            "sql-courses-reads",
-            "sql-courses-writes",
+            "sql-students-writes",
             "masstransit-bus"
         ]);
-        report.Entries["sql-courses-reads"].Status.Should().Be(UIHealthStatus.Healthy);
-        report.Entries["sql-courses-reads"].Tags.Should().BeEquivalentTo([
+        report.Entries["sql-students-writes"].Status.Should().Be(UIHealthStatus.Healthy);
+        report.Entries["sql-students-writes"].Tags.Should().BeEquivalentTo([
             "db",
             "sql",
-            "courses",
-            "reads"
-        ]);
-        report.Entries["sql-courses-writes"].Status.Should().Be(UIHealthStatus.Healthy);
-        report.Entries["sql-courses-writes"].Tags.Should().BeEquivalentTo([
-            "db",
-            "sql",
-            "courses",
+            "students",
             "writes"
         ]);
         report.Entries["masstransit-bus"].Status.Should().Be(UIHealthStatus.Healthy);

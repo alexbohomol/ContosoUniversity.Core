@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\Courses.Api\Courses.Api.csproj"/>
+        <ProjectReference Include="..\..\..\src\Departments.Worker\Departments.Worker.csproj"/>
         <ProjectReference Include="..\IntegrationTesting.SharedKernel\IntegrationTesting.SharedKernel.csproj" />
     </ItemGroup>
 
