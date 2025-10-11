@@ -11,8 +11,6 @@ using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Services.Departments.Commands;
 using Application.Services.Departments.Queries;
 
-using FluentValidation.AspNetCore;
-
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;

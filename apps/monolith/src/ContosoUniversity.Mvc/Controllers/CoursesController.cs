@@ -12,8 +12,6 @@ using Application.Contracts.Repositories.ReadWrite;
 using Application.Services.Courses.Commands;
 using Application.Services.Courses.Queries;
 
-using FluentValidation.AspNetCore;
-
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;

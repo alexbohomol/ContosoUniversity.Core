@@ -12,8 +12,6 @@ using Application.Services;
 using Application.Services.Instructors.Commands;
 using Application.Services.Instructors.Queries;
 
-using FluentValidation.AspNetCore;
-
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;

@@ -10,8 +10,6 @@ using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Services.Students.Commands;
 using Application.Services.Students.Queries;
 
-using FluentValidation.AspNetCore;
-
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
