@@ -12,6 +12,8 @@ using Application.Services;
 using Application.Services.Instructors.Commands;
 using Application.Services.Instructors.Queries;
 
+using Filters;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
@@ -136,6 +138,7 @@ public class InstructorsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<CreateInstructorRequest>>]
     public async Task<IActionResult> Create(
         CreateInstructorRequest request,
         [FromServices] ICoursesRoRepository repository,
@@ -184,6 +187,7 @@ public class InstructorsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<EditInstructorRequest>>]
     public async Task<IActionResult> Edit(
         EditInstructorRequest request,
         CancellationToken cancellationToken)

@@ -10,6 +10,8 @@ using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Services.Students.Commands;
 using Application.Services.Students.Queries;
 
+using Filters;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
@@ -57,6 +59,7 @@ public class StudentsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<CreateStudentRequest>>]
     public async Task<IActionResult> Create(
         CreateStudentRequest request,
         CancellationToken cancellationToken)
@@ -100,6 +103,7 @@ public class StudentsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<EditStudentRequest>>]
     public async Task<IActionResult> Edit(
         EditStudentRequest request,
         CancellationToken cancellationToken)
