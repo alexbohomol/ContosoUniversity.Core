@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Application.ApiClients;
 using Application.Departments.Queries;
 
+using Filters;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
@@ -53,6 +55,7 @@ public class DepartmentsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<CreateDepartmentRequest>>]
     public async Task<IActionResult> Create(
         CreateDepartmentRequest request,
         [FromServices] IDepartmentsApiClient departmentsApiClient,
@@ -98,6 +101,7 @@ public class DepartmentsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<EditDepartmentRequest>>]
     public async Task<IActionResult> Edit(
         EditDepartmentRequest request,
         [FromServices] IDepartmentsApiClient departmentsApiClient,
