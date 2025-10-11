@@ -10,11 +10,11 @@ using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Services.Students.Commands;
 using Application.Services.Students.Queries;
 
+using Filters;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
-
-using Validators;
 
 using ViewModels.Students;
 
@@ -59,13 +59,11 @@ public class StudentsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<CreateStudentRequest>>]
     public async Task<IActionResult> Create(
         CreateStudentRequest request,
-        CreateStudentRequestValidator validator,
         CancellationToken cancellationToken)
     {
-        var validationResult = validator.Validate(request);
-        validationResult.AddToModelState(ModelState, nameof(request));
         if (!ModelState.IsValid)
         {
             return View(new CreateStudentForm
@@ -105,13 +103,11 @@ public class StudentsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<EditStudentRequest>>]
     public async Task<IActionResult> Edit(
         EditStudentRequest request,
-        EditStudentRequestValidator validator,
         CancellationToken cancellationToken)
     {
-        var validationResult = validator.Validate(request);
-        validationResult.AddToModelState(ModelState, nameof(request));
         if (!ModelState.IsValid)
         {
             return View(new EditStudentForm

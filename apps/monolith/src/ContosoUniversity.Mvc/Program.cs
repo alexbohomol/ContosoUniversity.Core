@@ -12,6 +12,8 @@ using Data.Departments.Writes;
 using Data.Students.Reads;
 using Data.Students.Writes;
 
+using Filters;
+
 using FluentValidation;
 
 using HealthChecks.UI.Client;
@@ -71,6 +73,7 @@ internal class Startup(IWebHostEnvironment env)
 
         services.AddValidatorsFromAssemblyContaining<Program>();
         services.AddValidatorsFromAssemblyContaining<IApplicationLayerMarker>();
+        services.AddScoped(typeof(FillModelState<>));
 
         services.AddMediatR(cfg =>
         {

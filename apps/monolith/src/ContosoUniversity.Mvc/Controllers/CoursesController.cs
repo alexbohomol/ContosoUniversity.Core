@@ -12,11 +12,11 @@ using Application.Contracts.Repositories.ReadWrite;
 using Application.Services.Courses.Commands;
 using Application.Services.Courses.Queries;
 
+using Filters;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
-
-using Validators;
 
 using ViewModels.Courses;
 
@@ -64,14 +64,12 @@ public class CoursesController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<CreateCourseRequest>>]
     public async Task<IActionResult> Create(
         CreateCourseRequest request,
-        [FromServices] CreateCourseRequestValidator validator,
         [FromServices] IDepartmentsRoRepository repository,
         CancellationToken cancellationToken)
     {
-        var validationResult = validator.Validate(request);
-        validationResult.AddToModelState(ModelState, nameof(request));
         if (!ModelState.IsValid)
         {
             var departmentNames = await repository.GetDepartmentNamesReference(cancellationToken);
@@ -113,13 +111,11 @@ public class CoursesController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<EditCourseRequest>>]
     public async Task<IActionResult> Edit(
         EditCourseRequest request,
-        [FromServices] EditCourseRequestValidator validator,
         CancellationToken cancellationToken)
     {
-        var validationResult = validator.Validate(request);
-        validationResult.AddToModelState(ModelState, nameof(request));
         if (!ModelState.IsValid)
         {
             (Course course, Dictionary<Guid, string> departmentsReference) = await mediator.Send(

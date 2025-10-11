@@ -12,11 +12,11 @@ using Application.Services;
 using Application.Services.Instructors.Commands;
 using Application.Services.Instructors.Queries;
 
+using Filters;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
-
-using Validators;
 
 using ViewModels;
 using ViewModels.Instructors;
@@ -138,14 +138,12 @@ public class InstructorsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<CreateInstructorRequest>>]
     public async Task<IActionResult> Create(
         CreateInstructorRequest request,
-        [FromServices] CreateInstructorRequestValidator validator,
         [FromServices] ICoursesRoRepository repository,
         CancellationToken cancellationToken)
     {
-        var validationResult = validator.Validate(request);
-        validationResult.AddToModelState(ModelState, nameof(request));
         if (!ModelState.IsValid)
         {
             Course[] courses = await repository.GetAll(cancellationToken);
@@ -189,13 +187,11 @@ public class InstructorsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<EditInstructorRequest>>]
     public async Task<IActionResult> Edit(
         EditInstructorRequest request,
-        [FromServices] EditInstructorRequestValidator validator,
         CancellationToken cancellationToken)
     {
-        var validationResult = validator.Validate(request);
-        validationResult.AddToModelState(ModelState, nameof(request));
         if (!ModelState.IsValid)
         {
             (Instructor instructor, Course[] courses) = await mediator.Send(
