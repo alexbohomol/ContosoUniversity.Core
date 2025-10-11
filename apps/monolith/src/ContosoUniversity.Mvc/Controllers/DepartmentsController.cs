@@ -11,9 +11,13 @@ using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Services.Departments.Commands;
 using Application.Services.Departments.Queries;
 
+using FluentValidation.AspNetCore;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
+
+using Validators;
 
 using ViewModels.Departments;
 
@@ -58,9 +62,12 @@ public class DepartmentsController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
         CreateDepartmentRequest request,
+        [FromServices] CreateDepartmentRequestValidator validator,
         [FromServices] IInstructorsRoRepository repository,
         CancellationToken cancellationToken)
     {
+        var validationResult = validator.Validate(request);
+        validationResult.AddToModelState(ModelState, nameof(request));
         if (!ModelState.IsValid)
         {
             Dictionary<Guid, string> instructorNames = await repository
@@ -103,9 +110,12 @@ public class DepartmentsController(IMediator mediator) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(
         EditDepartmentRequest request,
+        [FromServices] EditDepartmentRequestValidator validator,
         [FromServices] IInstructorsRoRepository repository,
         CancellationToken cancellationToken)
     {
+        var validationResult = validator.Validate(request);
+        validationResult.AddToModelState(ModelState, nameof(request));
         if (!ModelState.IsValid)
         {
             Dictionary<Guid, string> instructorNames = await repository
