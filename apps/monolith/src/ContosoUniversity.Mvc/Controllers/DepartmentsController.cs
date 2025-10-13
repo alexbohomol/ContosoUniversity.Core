@@ -11,6 +11,8 @@ using Application.Contracts.Repositories.ReadOnly.Projections;
 using Application.Services.Departments.Commands;
 using Application.Services.Departments.Queries;
 
+using Filters;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
@@ -56,6 +58,7 @@ public class DepartmentsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<CreateDepartmentRequest>>]
     public async Task<IActionResult> Create(
         CreateDepartmentRequest request,
         [FromServices] IInstructorsRoRepository repository,
@@ -101,6 +104,7 @@ public class DepartmentsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<EditDepartmentRequest>>]
     public async Task<IActionResult> Edit(
         EditDepartmentRequest request,
         [FromServices] IInstructorsRoRepository repository,

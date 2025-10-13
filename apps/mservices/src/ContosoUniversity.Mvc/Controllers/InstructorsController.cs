@@ -10,6 +10,8 @@ using Application;
 using Application.ApiClients;
 using Application.Instructors.Queries;
 
+using Filters;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
@@ -134,6 +136,7 @@ public class InstructorsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<CreateInstructorRequest>>]
     public async Task<IActionResult> Create(
         CreateInstructorRequest request,
         [FromServices] IInstructorsApiClient instructorsApiClient,
@@ -183,6 +186,7 @@ public class InstructorsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<EditInstructorRequest>>]
     public async Task<IActionResult> Edit(
         EditInstructorRequest request,
         [FromServices] IInstructorsApiClient instructorsApiClient,
