@@ -10,7 +10,6 @@ jobs:
   provision_infra:
     name: Provision AWS infra
     runs-on: ubuntu-latest
-    environment: qa-aws-ecs
     defaults:
       run:
         working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
