@@ -209,6 +209,28 @@ resource "aws_ecs_task_definition" "mssql_migrator_task" {
   ])
 }
 
+# Cloud Map Service Discovery
+
+resource "aws_service_discovery_private_dns_namespace" "main" {
+  name        = "contoso.local"
+  description = "Private namespace for ECS services"
+  vpc         = module.networking.vpc_id
+}
+
+resource "aws_service_discovery_service" "mssql" {
+  name = "mssql"
+
+  dns_config {
+    namespace_id   = aws_service_discovery_private_dns_namespace.main.id
+    routing_policy = "MULTIVALUE"
+
+    dns_records {
+      ttl  = 10
+      type = "A"
+    }
+  }
+}
+
 # ECS Services
 
 resource "aws_ecs_service" "mssql_service" {
@@ -222,6 +244,10 @@ resource "aws_ecs_service" "mssql_service" {
     subnets          = module.networking.subnet_ids
     security_groups  = [module.networking.sg_id]
     assign_public_ip = true
+  }
+
+  service_registries {
+    registry_arn = aws_service_discovery_service.mssql.arn
   }
 
   depends_on = [aws_iam_role_policy_attachment.task_execution_policy]
