@@ -102,7 +102,7 @@ resource "aws_ecs_task_definition" "web_task" {
       environment = [
         { name = "ASPNETCORE_ENVIRONMENT", value = var.environment },
         { name = "ASPNETCORE_URLS", value = "http://+:80" },
-        { name = "SqlConnectionStringBuilder__DataSource", value = "localhost" }
+        { name = "SqlConnectionStringBuilder__DataSource", value = local.mssql_dns_name }
       ]
       healthCheck = {
         command = [
@@ -192,7 +192,7 @@ resource "aws_ecs_task_definition" "mssql_migrator_task" {
       name      = "mssql-migrator"
       image     = "ghcr.io/alexbohomol/mssql-migrator"
       environment = [
-        { name = "DB_HOST", value = "mssql" },
+        { name = "DB_HOST", value = local.mssql_dns_name },
         { name = "DB_USER", value = var.db_username },
         { name = "DB_PASSWORD", value = var.db_password },
         { name = "INIT_SCRIPT", value = var.db_init_script }
@@ -229,6 +229,10 @@ resource "aws_service_discovery_service" "mssql" {
       type = "A"
     }
   }
+}
+
+locals {
+  mssql_dns_name = "${aws_service_discovery_service.mssql.name}.${aws_service_discovery_private_dns_namespace.main.name}"
 }
 
 # ECS Services
