@@ -256,3 +256,19 @@ resource "aws_ecs_service" "mssql_service" {
 
   depends_on = [aws_iam_role_policy_attachment.task_execution_policy]
 }
+
+resource "aws_ecs_service" "web_service" {
+  name            = "${var.app_name}-web-service"
+  cluster         = aws_ecs_cluster.cluster.id
+  task_definition = aws_ecs_task_definition.web_task.arn
+  desired_count   = 2
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    subnets          = module.networking.subnet_ids
+    security_groups  = [module.networking.sg_id]
+    assign_public_ip = true
+  }
+
+  depends_on = [aws_iam_role_policy_attachment.task_execution_policy]
+}
