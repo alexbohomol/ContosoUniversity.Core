@@ -6,7 +6,6 @@ on:
 jobs:
 
   stop_web:
-    if: false
     name: Stop web Task
     runs-on: ubuntu-latest
 
@@ -21,32 +20,22 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
-      - name: Get web Task ARN
-        run: |
-          WEB_TASK_ARN=$(aws ecs list-tasks \
-            --cluster contoso-mnlth-cluster \
-            --family contoso-mnlth-web-tasks \
-            --query 'taskArns' \
-            --output text)
-          if [ -z "$WEB_TASK_ARN" ]; then
-            echo "No running web task found."
-            exit 0
-          fi
-          echo "WEB_TASK_ARN=$WEB_TASK_ARN" >> $GITHUB_ENV
+      - name: 📝 Render task definition
+        id: render-web
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition-family: contoso-mnlth-web-tasks
+          container-name: web
+          image: ghcr.io/alexbohomol/cuweb:latest
 
-      - name: Stop web Task
-        if: env.WEB_TASK_ARN != ''
-        run: |
-          aws ecs stop-task \
-            --cluster contoso-mnlth-cluster \
-            --task ${{ env.WEB_TASK_ARN }}
-
-      - name: 🧑‍💻 Wait for web Task to stop
-        if: env.WEB_TASK_ARN != ''
-        run: |
-          aws ecs wait tasks-stopped \
-            --cluster contoso-mnlth-cluster \
-            --tasks ${{ env.WEB_TASK_ARN }}
+      - name: 🛑 Stop application
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-web.outputs.task-definition }}
+          service: contoso-mnlth-web-service
+          cluster: contoso-mnlth-cluster
+          desired-count: 0
+          wait-for-service-stability: true
 
   stop_mssql:
     if: false
