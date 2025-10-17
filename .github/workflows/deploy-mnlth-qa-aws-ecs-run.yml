@@ -6,6 +6,7 @@ on:
 jobs:
 
   run_mssql:
+    if: false
     name: Run mssql Task
     runs-on: ubuntu-latest
     defaults:
@@ -53,6 +54,7 @@ jobs:
           echo "MSSQL_HOST_IP=$MSSQL_HOST_IP" >> $GITHUB_OUTPUT
 
   run_mssql_migrator:
+    if: false
     name: Run mssql-migrator Task
     needs: [run_mssql]
     runs-on: ubuntu-latest
@@ -102,6 +104,7 @@ jobs:
             --tasks $MIGRATOR_TASK_ARN
 
   run_web:
+    if: false
     name: Run web Task
     needs: [run_mssql, run_mssql_migrator]
     environment:
@@ -170,6 +173,7 @@ jobs:
           echo "WEB_HOST_IP=$WEB_HOST_IP" >> $GITHUB_OUTPUT
 
   report_results:
+    if: false
     name: Report deploy results
     needs: [run_mssql, run_web]
     runs-on: ubuntu-latest
