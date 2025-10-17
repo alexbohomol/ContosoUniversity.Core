@@ -127,9 +127,8 @@ jobs:
           done
 
   run_mssql_migrator:
-    if: false
     name: Run mssql-migrator Task
-    needs: [run_mssql]
+    needs: [run_mssql_2]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -146,35 +145,24 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
-      - name: 🚀 Kick off database migration
-        run: |
-          MIGRATOR_TASK_ARN=$(aws ecs run-task \
-            --cluster contoso-mnlth-cluster \
-            --launch-type FARGATE \
-            --network-configuration "awsvpcConfiguration={subnets=[${{ vars.AWS_SUBNET_IDS }}],securityGroups=[${{ vars.AWS_SG_ID }}],assignPublicIp=ENABLED}" \
-            --task-definition contoso-mnlth-mssql-migrator-tasks \
-            --overrides '{
-              "containerOverrides": [
-                {
-                  "name": "mssql-migrator",
-                  "environment": [
-                    {
-                      "name": "DB_HOST",
-                      "value": "${{ needs.run_mssql.outputs.MSSQL_HOST_IP }}"
-                    }
-                  ]
-                }
-              ]
-            }' \
-            --query 'tasks[0].taskArn' \
-            --output text)
-          echo "MIGRATOR_TASK_ARN=$MIGRATOR_TASK_ARN" >> $GITHUB_ENV
+      - name: 📝 Render task definition
+        id: render-mssql-migrator
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition-family: contoso-mnlth-mssql-migrator-tasks
+          container-name: mssql-migrator
+          image: ghcr.io/alexbohomol/mssql-migrator:latest
 
-      - name: 🧑‍💻 Wait for migration finished
-        run: |
-          aws ecs wait tasks-stopped \
-            --cluster contoso-mnlth-cluster \
-            --tasks $MIGRATOR_TASK_ARN
+      - name: 🚀 Kick off database migration
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-mssql-migrator.outputs.task-definition }}
+          cluster: contoso-mnlth-cluster
+          run-task: true
+          run-task-subnets: ${{ vars.AWS_SUBNET_IDS }}
+          run-task-security-groups: ${{ vars.AWS_SG_ID }}
+          run-task-assign-public-IP: ENABLED
+          wait-for-task-stopped: true
 
   run_web:
     if: false
