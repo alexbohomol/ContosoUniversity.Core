@@ -28,30 +28,103 @@ jobs:
 
       - name: 🚀 Kick off MsSql Server
         run: |
-          MSSQL_TASK_ARN=$(aws ecs run-task \
+          aws ecs update-service \
             --cluster contoso-mnlth-cluster \
-            --launch-type FARGATE \
-            --network-configuration "awsvpcConfiguration={subnets=[${{ vars.AWS_SUBNET_IDS }}],securityGroups=[${{ vars.AWS_SG_ID }}],assignPublicIp=ENABLED}" \
-            --task-definition contoso-mnlth-mssql-tasks \
-            --query 'tasks[0].taskArn' \
-            --output text)
-          echo "MSSQL_TASK_ARN=$MSSQL_TASK_ARN" >> $GITHUB_ENV
+            --service contoso-mnlth-mssql-service \
+            --region eu-central-1 \
+            --desired-count 1
 
       - name: 🧑‍💻 Wait for MsSql Server started
         run: |
-          aws ecs wait tasks-running \
+          aws ecs wait services-stable \
             --cluster contoso-mnlth-cluster \
-            --tasks $MSSQL_TASK_ARN
+            --services contoso-mnlth-mssql-service \
+            --region eu-central-1
 
-      - name: Get Private IP of MSSQL Task
-        id: get_mssql_ip
+      - name: Wait for Healthy status
         run: |
-          MSSQL_HOST_IP=$(aws ecs describe-tasks \
+          MSSQL_TASK_ARN=$(aws ecs list-tasks \
             --cluster contoso-mnlth-cluster \
-            --tasks $MSSQL_TASK_ARN \
-            --query 'tasks[0].attachments[0].details[?name==`privateIPv4Address`].value' \
+            --service-name contoso-mnlth-mssql-service \
+            --region eu-central-1 \
+            --query 'taskArns[0]' \
             --output text)
-          echo "MSSQL_HOST_IP=$MSSQL_HOST_IP" >> $GITHUB_OUTPUT
+
+          echo "MsSql Server task ARN: $MSSQL_TASK_ARN"
+
+          while true; do
+            HEALTH_STATUS=$(aws ecs describe-tasks \
+              --cluster contoso-mnlth-cluster \
+              --tasks $MSSQL_TASK_ARN \
+              --query 'tasks[0].healthStatus' \
+              --output text)
+            echo "Current health status: $HEALTH_STATUS"
+            if [ "$HEALTH_STATUS" == "HEALTHY" ]; then
+              break
+            fi
+            echo "Waiting for MsSql Server to become HEALTHY..."
+            sleep 10
+          done
+
+  run_mssql_2:
+    name: Run mssql Task V2
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
+
+    steps:
+      - name: 🛠️ Checkout code
+        uses: actions/checkout@v5
+
+      - name: 🔐 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: 📝 Render task definition
+        id: render-mssql
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition-family: contoso-mnlth-mssql-tasks
+          container-name: mssql
+          image: mcr.microsoft.com/mssql/server
+
+      - name: 🚀 Kick off MsSql Server
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-mssql.outputs.task-definition }}
+          service: contoso-mnlth-mssql-service
+          cluster: contoso-mnlth-cluster
+          desired-count: 1
+          wait-for-service-stability: true
+
+      - name: 👀 Wait for Healthy status
+        run: |
+          MSSQL_TASK_ARN=$(aws ecs list-tasks \
+            --cluster contoso-mnlth-cluster \
+            --service-name contoso-mnlth-mssql-service \
+            --region eu-central-1 \
+            --query 'taskArns[0]' \
+            --output text)
+
+          echo "MsSql Server task ARN: $MSSQL_TASK_ARN"
+
+          while true; do
+            HEALTH_STATUS=$(aws ecs describe-tasks \
+              --cluster contoso-mnlth-cluster \
+              --tasks $MSSQL_TASK_ARN \
+              --query 'tasks[0].healthStatus' \
+              --output text)
+            echo "Current health status: $HEALTH_STATUS"
+            if [ "$HEALTH_STATUS" == "HEALTHY" ]; then
+              break
+            fi
+            echo "Waiting for MsSql Server to become HEALTHY..."
+            sleep 10
+          done
 
   run_mssql_migrator:
     if: false
