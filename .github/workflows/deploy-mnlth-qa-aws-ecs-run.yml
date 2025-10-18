@@ -2,19 +2,22 @@ name: "MNLTH / qa-aws-ecs / Run"
 
 on:
   workflow_dispatch:
-    inputs: 
+    inputs:
       use_latest:
         type: boolean
         default: true
-        description: "Use `latest` version"
-        required: false
+        description: "Use :latest version, last main"
+      update_web_only:
+        type: boolean
+        default: false
+        description: "Update 'web-service' only"
 
 jobs:
 
   get_image_tag:
     name: Resolve image tag
     runs-on: ubuntu-latest
-    outputs: 
+    outputs:
       IMAGE_TAG: ${{ steps.resolve-image-tag.outputs.IMAGE_TAG }}
 
     steps:
@@ -32,6 +35,7 @@ jobs:
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_OUTPUT
 
   run_mssql:
+    if: ${{ github.event.inputs.update_web_only == 'false' }}
     name: Run mssql-service
     runs-on: ubuntu-latest
     defaults:
@@ -67,6 +71,7 @@ jobs:
           wait-for-service-stability: true
 
   run_mssql_migrator:
+    if: ${{ github.event.inputs.update_web_only == 'false' }}
     name: Run mssql-migrator task
     needs: [run_mssql, get_image_tag]
     runs-on: ubuntu-latest
@@ -105,6 +110,7 @@ jobs:
           wait-for-task-stopped: true
 
   run_web:
+    if: ${{ github.event.inputs.update_web_only == 'false' && success() || always() }}
     name: Run web-service
     needs: [run_mssql_migrator, get_image_tag]
     environment:
