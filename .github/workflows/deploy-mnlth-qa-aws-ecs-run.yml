@@ -6,68 +6,7 @@ on:
 jobs:
 
   run_mssql:
-    if: false
-    name: Run mssql Task
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
-    outputs:
-      MSSQL_HOST_IP: ${{ steps.get_mssql_ip.outputs.MSSQL_HOST_IP }}
-
-    steps:
-      - name: 🛠️ Checkout code
-        uses: actions/checkout@v5
-
-      - name: 🔐 Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-central-1
-
-      - name: 🚀 Kick off MsSql Server
-        run: |
-          aws ecs update-service \
-            --cluster contoso-mnlth-cluster \
-            --service contoso-mnlth-mssql-service \
-            --region eu-central-1 \
-            --desired-count 1
-
-      - name: 🧑‍💻 Wait for MsSql Server started
-        run: |
-          aws ecs wait services-stable \
-            --cluster contoso-mnlth-cluster \
-            --services contoso-mnlth-mssql-service \
-            --region eu-central-1
-
-      - name: Wait for Healthy status
-        run: |
-          MSSQL_TASK_ARN=$(aws ecs list-tasks \
-            --cluster contoso-mnlth-cluster \
-            --service-name contoso-mnlth-mssql-service \
-            --region eu-central-1 \
-            --query 'taskArns[0]' \
-            --output text)
-
-          echo "MsSql Server task ARN: $MSSQL_TASK_ARN"
-
-          while true; do
-            HEALTH_STATUS=$(aws ecs describe-tasks \
-              --cluster contoso-mnlth-cluster \
-              --tasks $MSSQL_TASK_ARN \
-              --query 'tasks[0].healthStatus' \
-              --output text)
-            echo "Current health status: $HEALTH_STATUS"
-            if [ "$HEALTH_STATUS" == "HEALTHY" ]; then
-              break
-            fi
-            echo "Waiting for MsSql Server to become HEALTHY..."
-            sleep 10
-          done
-
-  run_mssql_2:
-    name: Run mssql Task V2
+    name: Run mssql-service
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -101,34 +40,9 @@ jobs:
           desired-count: 1
           wait-for-service-stability: true
 
-      - name: 👀 Wait for Healthy status
-        run: |
-          MSSQL_TASK_ARN=$(aws ecs list-tasks \
-            --cluster contoso-mnlth-cluster \
-            --service-name contoso-mnlth-mssql-service \
-            --region eu-central-1 \
-            --query 'taskArns[0]' \
-            --output text)
-
-          echo "MsSql Server task ARN: $MSSQL_TASK_ARN"
-
-          while true; do
-            HEALTH_STATUS=$(aws ecs describe-tasks \
-              --cluster contoso-mnlth-cluster \
-              --tasks $MSSQL_TASK_ARN \
-              --query 'tasks[0].healthStatus' \
-              --output text)
-            echo "Current health status: $HEALTH_STATUS"
-            if [ "$HEALTH_STATUS" == "HEALTHY" ]; then
-              break
-            fi
-            echo "Waiting for MsSql Server to become HEALTHY..."
-            sleep 10
-          done
-
   run_mssql_migrator:
-    name: Run mssql-migrator Task
-    needs: [run_mssql_2]
+    name: Run mssql-migrator task
+    needs: [run_mssql]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -165,8 +79,8 @@ jobs:
           wait-for-task-stopped: true
 
   run_web:
-    name: Run web Task
-    needs: [run_mssql_2, run_mssql_migrator]
+    name: Run web-service
+    needs: [run_mssql_migrator]
     environment:
       name: qa-aws-ecs
       url: http://${{ steps.get_dns_name.outputs.WEB_DNS_NAME }}
@@ -203,7 +117,7 @@ jobs:
           desired-count: 3
           wait-for-service-stability: true
 
-      - name: Get DNS name of the ALB
+      - name: ⚓️ Get DNS name of the ALB
         id: get_dns_name
         run: |
           WEB_DNS_NAME=$(aws elbv2 describe-load-balancers \
@@ -213,6 +127,6 @@ jobs:
             --output text)
           echo "WEB_DNS_NAME=$WEB_DNS_NAME" >> $GITHUB_OUTPUT
 
-      - name: Print deployed app DNS name
+      - name: 🧁 Print deployed app DNS name
         run: |
           echo "Web URL: http://${{ steps.get_dns_name.outputs.WEB_DNS_NAME }}"

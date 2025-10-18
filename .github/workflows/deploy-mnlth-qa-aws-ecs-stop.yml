@@ -6,14 +6,14 @@ on:
 jobs:
 
   stop_web:
-    name: Stop web Task
+    name: Stop web-service
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 🛠️ Checkout code
         uses: actions/checkout@v5
 
-      - name: Configure AWS credentials
+      - name: 🔐 Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
@@ -26,7 +26,7 @@ jobs:
         with:
           task-definition-family: contoso-mnlth-web-tasks
           container-name: web
-          image: ghcr.io/alexbohomol/cuweb:latest
+          image: ghcr.io/alexbohomol/cuweb
 
       - name: 🛑 Stop application
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
@@ -38,59 +38,14 @@ jobs:
           wait-for-service-stability: true
 
   stop_mssql:
-    if: false
-    name: Stop mssql Task
+    name: Stop mssql-service
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 🛠️ Checkout code
         uses: actions/checkout@v5
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-central-1
-
-      - name: Get mssql Task ARN
-        run: |
-          MSSQL_TASK_ARN=$(aws ecs list-tasks \
-            --cluster contoso-mnlth-cluster \
-            --family contoso-mnlth-mssql-tasks \
-            --query 'taskArns' \
-            --output text)
-          if [ -z "$MSSQL_TASK_ARN" ]; then
-            echo "No running mssql task found."
-            exit 0
-          fi
-          echo "MSSQL_TASK_ARN=$MSSQL_TASK_ARN" >> $GITHUB_ENV
-
-      - name: Stop mssql Task
-        if: env.MSSQL_TASK_ARN != ''
-        run: |
-          aws ecs update-service \
-            --cluster contoso-mnlth-cluster \
-            --service contoso-mnlth-mssql-service \
-            --region eu-central-1 \
-            --desired-count 0
-
-      - name: 🧑‍💻 Wait for mssql Task to stop
-        if: env.MSSQL_TASK_ARN != ''
-        run: |
-          aws ecs wait tasks-stopped \
-            --cluster contoso-mnlth-cluster \
-            --tasks ${{ env.MSSQL_TASK_ARN }}
-
-  stop_mssql_2:
-    name: Stop mssql Task V2
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-
-      - name: Configure AWS credentials
+      - name: 🔐 Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
