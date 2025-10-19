@@ -6,85 +6,65 @@ on:
 jobs:
 
   stop_web:
-    name: Stop web Task
+    name: Stop web-service
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 🛠️ Checkout code
         uses: actions/checkout@v5
 
-      - name: Configure AWS credentials
+      - name: 🔐 Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
-      - name: Get web Task ARN
-        run: |
-          WEB_TASK_ARN=$(aws ecs list-tasks \
-            --cluster contoso-mnlth-cluster \
-            --family contoso-mnlth-web-tasks \
-            --query 'taskArns' \
-            --output text)
-          if [ -z "$WEB_TASK_ARN" ]; then
-            echo "No running web task found."
-            exit 0
-          fi
-          echo "WEB_TASK_ARN=$WEB_TASK_ARN" >> $GITHUB_ENV
+      - name: 📝 Render task definition
+        id: render-web
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition-family: contoso-mnlth-web-tasks
+          container-name: web
+          image: ghcr.io/alexbohomol/cuweb
 
-      - name: Stop web Task
-        if: env.WEB_TASK_ARN != ''
-        run: |
-          aws ecs stop-task \
-            --cluster contoso-mnlth-cluster \
-            --task ${{ env.WEB_TASK_ARN }}
-
-      - name: 🧑‍💻 Wait for web Task to stop
-        if: env.WEB_TASK_ARN != ''
-        run: |
-          aws ecs wait tasks-stopped \
-            --cluster contoso-mnlth-cluster \
-            --tasks ${{ env.WEB_TASK_ARN }}
+      - name: 🛑 Stop application
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-web.outputs.task-definition }}
+          service: contoso-mnlth-web-service
+          cluster: contoso-mnlth-cluster
+          desired-count: 0
+          wait-for-service-stability: true
 
   stop_mssql:
-    name: Stop mssql Task
+    name: Stop mssql-service
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 🛠️ Checkout code
         uses: actions/checkout@v5
 
-      - name: Configure AWS credentials
+      - name: 🔐 Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
-      - name: Get mssql Task ARN
-        run: |
-          MSSQL_TASK_ARN=$(aws ecs list-tasks \
-            --cluster contoso-mnlth-cluster \
-            --family contoso-mnlth-mssql-tasks \
-            --query 'taskArns' \
-            --output text)
-          if [ -z "$MSSQL_TASK_ARN" ]; then
-            echo "No running mssql task found."
-            exit 0
-          fi
-          echo "MSSQL_TASK_ARN=$MSSQL_TASK_ARN" >> $GITHUB_ENV
+      - name: 📝 Render task definition
+        id: render-mssql
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition-family: contoso-mnlth-mssql-tasks
+          container-name: mssql
+          image: mcr.microsoft.com/mssql/server
 
-      - name: Stop mssql Task
-        if: env.MSSQL_TASK_ARN != ''
-        run: |
-          aws ecs stop-task \
-            --cluster contoso-mnlth-cluster \
-            --task ${{ env.MSSQL_TASK_ARN }}
-
-      - name: 🧑‍💻 Wait for mssql Task to stop
-        if: env.MSSQL_TASK_ARN != ''
-        run: |
-          aws ecs wait tasks-stopped \
-            --cluster contoso-mnlth-cluster \
-            --tasks ${{ env.MSSQL_TASK_ARN }}
+      - name: 🛑 Stop MsSql Server
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-mssql.outputs.task-definition }}
+          service: contoso-mnlth-mssql-service
+          cluster: contoso-mnlth-cluster
+          desired-count: 0
+          wait-for-service-stability: true

@@ -102,7 +102,7 @@ resource "aws_ecs_task_definition" "web_task" {
       environment = [
         { name = "ASPNETCORE_ENVIRONMENT", value = var.environment },
         { name = "ASPNETCORE_URLS", value = "http://+:80" },
-        { name = "SqlConnectionStringBuilder__DataSource", value = "localhost" }
+        { name = "SqlConnectionStringBuilder__DataSource", value = local.mssql_dns_name }
       ]
       healthCheck = {
         command = [
@@ -192,7 +192,7 @@ resource "aws_ecs_task_definition" "mssql_migrator_task" {
       name      = "mssql-migrator"
       image     = "ghcr.io/alexbohomol/mssql-migrator"
       environment = [
-        { name = "DB_HOST", value = "mssql" },
+        { name = "DB_HOST", value = local.mssql_dns_name },
         { name = "DB_USER", value = var.db_username },
         { name = "DB_PASSWORD", value = var.db_password },
         { name = "INIT_SCRIPT", value = var.db_init_script }
@@ -207,4 +207,109 @@ resource "aws_ecs_task_definition" "mssql_migrator_task" {
       }
     }
   ])
+}
+
+# Cloud Map Service Discovery
+
+resource "aws_service_discovery_private_dns_namespace" "main" {
+  name        = "contoso.local"
+  description = "Private namespace for ECS services"
+  vpc         = module.networking.vpc_id
+}
+
+resource "aws_service_discovery_service" "mssql" {
+  name = "mssql"
+
+  dns_config {
+    namespace_id   = aws_service_discovery_private_dns_namespace.main.id
+    routing_policy = "MULTIVALUE"
+
+    dns_records {
+      ttl  = 10
+      type = "A"
+    }
+  }
+}
+
+locals {
+  mssql_dns_name = "${aws_service_discovery_service.mssql.name}.${aws_service_discovery_private_dns_namespace.main.name}"
+}
+
+# ECS Services
+
+resource "aws_ecs_service" "mssql_service" {
+  name            = "${var.app_name}-mssql-service"
+  cluster         = aws_ecs_cluster.cluster.id
+  task_definition = aws_ecs_task_definition.mssql_task.arn
+  # desired_count defaults to 0 to prevent service from starting
+  launch_type = "FARGATE"
+
+  network_configuration {
+    subnets          = module.networking.subnet_ids
+    security_groups  = [module.networking.sg_id]
+    assign_public_ip = true
+  }
+
+  service_registries {
+    registry_arn = aws_service_discovery_service.mssql.arn
+  }
+
+  depends_on = [aws_iam_role_policy_attachment.task_execution_policy]
+}
+
+resource "aws_ecs_service" "web_service" {
+  name            = "${var.app_name}-web-service"
+  cluster         = aws_ecs_cluster.cluster.id
+  task_definition = aws_ecs_task_definition.web_task.arn
+  # desired_count defaults to 0 to prevent service from starting
+  launch_type = "FARGATE"
+
+  network_configuration {
+    subnets          = module.networking.subnet_ids
+    security_groups  = [module.networking.sg_id]
+    assign_public_ip = true
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.web_tg.arn
+    container_name   = "web"
+    container_port   = 80
+  }
+
+  depends_on = [aws_iam_role_policy_attachment.task_execution_policy]
+}
+
+# ALB and Target Group for web-service
+
+resource "aws_lb" "web_alb" {
+  name               = "${var.app_name}-alb"
+  load_balancer_type = "application"
+  security_groups    = [module.networking.sg_id]
+  subnets            = module.networking.subnet_ids
+}
+
+resource "aws_lb_target_group" "web_tg" {
+  name        = "${var.app_name}-tg"
+  port        = 80
+  protocol    = "HTTP"
+  vpc_id      = module.networking.vpc_id
+  target_type = "ip"
+  health_check {
+    path                = "/health/readiness"
+    interval            = 15
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
+}
+
+resource "aws_lb_listener" "web_listener" {
+  load_balancer_arn = aws_lb.web_alb.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.web_tg.arn
+  }
 }

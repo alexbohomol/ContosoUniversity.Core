@@ -2,17 +2,50 @@ name: "MNLTH / qa-aws-ecs / Run"
 
 on:
   workflow_dispatch:
+    inputs:
+      use_latest:
+        type: boolean
+        default: true
+        description: "Use :latest version, last main"
+      update_web_only:
+        type: boolean
+        default: false
+        description: "Update 'web-service' only"
+      web_desired_count:
+        type: number
+        default: 2
+        description: "Scale 'web-service' instances"
+        required: true
 
 jobs:
 
+  get_image_tag:
+    name: Resolve image tag
+    runs-on: ubuntu-latest
+    outputs:
+      IMAGE_TAG: ${{ steps.resolve-image-tag.outputs.IMAGE_TAG }}
+
+    steps:
+      - name: 🛠️ Checkout code
+        uses: actions/checkout@v5
+
+      - name: 🎖️ Resolve image tag
+        id: resolve-image-tag
+        run: |
+          if [ "${{ github.event.inputs.use_latest }}" = "true" ]; then
+            IMAGE_TAG="latest"
+          else
+            IMAGE_TAG=$(git rev-parse --short ${{ github.event.pull_request.head.sha || github.sha }})
+          fi
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_OUTPUT
+
   run_mssql:
-    name: Run mssql Task
+    if: ${{ github.event.inputs.update_web_only == 'false' }}
+    name: Run mssql-service
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
-    outputs:
-      MSSQL_HOST_IP: ${{ steps.get_mssql_ip.outputs.MSSQL_HOST_IP }}
 
     steps:
       - name: 🛠️ Checkout code
@@ -24,37 +57,28 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
+
+      - name: 📝 Render task definition
+        id: render-mssql
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition-family: contoso-mnlth-mssql-tasks
+          container-name: mssql
+          image: mcr.microsoft.com/mssql/server
 
       - name: 🚀 Kick off MsSql Server
-        run: |
-          MSSQL_TASK_ARN=$(aws ecs run-task \
-            --cluster contoso-mnlth-cluster \
-            --launch-type FARGATE \
-            --network-configuration "awsvpcConfiguration={subnets=[${{ vars.AWS_SUBNET_IDS }}],securityGroups=[${{ vars.AWS_SG_ID }}],assignPublicIp=ENABLED}" \
-            --task-definition contoso-mnlth-mssql-tasks \
-            --query 'tasks[0].taskArn' \
-            --output text)
-          echo "MSSQL_TASK_ARN=$MSSQL_TASK_ARN" >> $GITHUB_ENV
-
-      - name: 🧑‍💻 Wait for MsSql Server started
-        run: |
-          aws ecs wait tasks-running \
-            --cluster contoso-mnlth-cluster \
-            --tasks $MSSQL_TASK_ARN
-
-      - name: Get Private IP of MSSQL Task
-        id: get_mssql_ip
-        run: |
-          MSSQL_HOST_IP=$(aws ecs describe-tasks \
-            --cluster contoso-mnlth-cluster \
-            --tasks $MSSQL_TASK_ARN \
-            --query 'tasks[0].attachments[0].details[?name==`privateIPv4Address`].value' \
-            --output text)
-          echo "MSSQL_HOST_IP=$MSSQL_HOST_IP" >> $GITHUB_OUTPUT
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-mssql.outputs.task-definition }}
+          service: contoso-mnlth-mssql-service
+          cluster: contoso-mnlth-cluster
+          desired-count: 1
+          wait-for-service-stability: true
 
   run_mssql_migrator:
-    name: Run mssql-migrator Task
-    needs: [run_mssql]
+    if: ${{ github.event.inputs.update_web_only == 'false' }}
+    name: Run mssql-migrator task
+    needs: [run_mssql, get_image_tag]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -70,49 +94,37 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
+
+      - name: 📝 Render task definition
+        id: render-mssql-migrator
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition-family: contoso-mnlth-mssql-migrator-tasks
+          container-name: mssql-migrator
+          image: ghcr.io/alexbohomol/mssql-migrator:${{ needs.get_image_tag.outputs.IMAGE_TAG }}
 
       - name: 🚀 Kick off database migration
-        run: |
-          MIGRATOR_TASK_ARN=$(aws ecs run-task \
-            --cluster contoso-mnlth-cluster \
-            --launch-type FARGATE \
-            --network-configuration "awsvpcConfiguration={subnets=[${{ vars.AWS_SUBNET_IDS }}],securityGroups=[${{ vars.AWS_SG_ID }}],assignPublicIp=ENABLED}" \
-            --task-definition contoso-mnlth-mssql-migrator-tasks \
-            --overrides '{
-              "containerOverrides": [
-                {
-                  "name": "mssql-migrator",
-                  "environment": [
-                    {
-                      "name": "DB_HOST",
-                      "value": "${{ needs.run_mssql.outputs.MSSQL_HOST_IP }}"
-                    }
-                  ]
-                }
-              ]
-            }' \
-            --query 'tasks[0].taskArn' \
-            --output text)
-          echo "MIGRATOR_TASK_ARN=$MIGRATOR_TASK_ARN" >> $GITHUB_ENV
-
-      - name: 🧑‍💻 Wait for migration finished
-        run: |
-          aws ecs wait tasks-stopped \
-            --cluster contoso-mnlth-cluster \
-            --tasks $MIGRATOR_TASK_ARN
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-mssql-migrator.outputs.task-definition }}
+          cluster: contoso-mnlth-cluster
+          run-task: true
+          run-task-subnets: ${{ vars.AWS_SUBNET_IDS }}
+          run-task-security-groups: ${{ vars.AWS_SG_ID }}
+          run-task-assign-public-IP: ENABLED
+          wait-for-task-stopped: true
 
   run_web:
-    name: Run web Task
-    needs: [run_mssql, run_mssql_migrator]
+    if: ${{ github.event.inputs.update_web_only == 'false' && success() || always() }}
+    name: Run web-service
+    needs: [run_mssql_migrator, get_image_tag]
     environment:
       name: qa-aws-ecs
-      url: http://${{ steps.get_web_ip.outputs.WEB_HOST_IP }}
+      url: http://${{ steps.get_dns_name.outputs.WEB_DNS_NAME }}
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
-    outputs:
-      WEB_HOST_IP: ${{ steps.get_web_ip.outputs.WEB_HOST_IP }}
 
     steps:
       - name: 🛠️ Checkout code
@@ -125,58 +137,33 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
-      - name: 🚀 Kick off application
+      - name: 📝 Render task definition
+        id: render-web
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition-family: contoso-mnlth-web-tasks
+          container-name: web
+          image: ghcr.io/alexbohomol/cuweb:${{ needs.get_image_tag.outputs.IMAGE_TAG }}
+
+      - name: 🚀 Kick off application instances
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-web.outputs.task-definition }}
+          service: contoso-mnlth-web-service
+          cluster: contoso-mnlth-cluster
+          desired-count: ${{ github.event.inputs.web_desired_count }}
+          wait-for-service-stability: true
+
+      - name: ⚓️ Get DNS name of the ALB
+        id: get_dns_name
         run: |
-          WEB_TASK_ARN=$(aws ecs run-task \
-            --cluster contoso-mnlth-cluster \
-            --launch-type FARGATE \
-            --network-configuration "awsvpcConfiguration={subnets=[${{ vars.AWS_SUBNET_IDS }}],securityGroups=[${{ vars.AWS_SG_ID }}],assignPublicIp=ENABLED}" \
-            --task-definition contoso-mnlth-web-tasks \
-            --overrides '{
-              "containerOverrides": [
-                {
-                  "name": "web",
-                  "environment": [
-                    {
-                      "name": "SqlConnectionStringBuilder__DataSource",
-                      "value": "${{ needs.run_mssql.outputs.MSSQL_HOST_IP }}"
-                    }
-                  ]
-                }
-              ]
-            }' \
-            --query 'tasks[0].taskArn' \
+          WEB_DNS_NAME=$(aws elbv2 describe-load-balancers \
+            --names contoso-mnlth-alb \
+            --region eu-central-1 \
+            --query 'LoadBalancers[0].DNSName' \
             --output text)
-          echo "WEB_TASK_ARN=$WEB_TASK_ARN" >> $GITHUB_ENV
+          echo "WEB_DNS_NAME=$WEB_DNS_NAME" >> $GITHUB_OUTPUT
 
-      - name: 🧑‍💻 Wait for application started
+      - name: 🧁 Print deployed app DNS name
         run: |
-          aws ecs wait tasks-running \
-            --cluster contoso-mnlth-cluster \
-            --tasks $WEB_TASK_ARN
-
-      - name: Get Public IP of web Task
-        id: get_web_ip
-        run: |
-          ENI_ID=$(aws ecs describe-tasks \
-            --cluster contoso-mnlth-cluster \
-            --tasks $WEB_TASK_ARN \
-            --query 'tasks[0].attachments[0].details[?name==`networkInterfaceId`].value' \
-            --output text)
-          WEB_HOST_IP=$(aws ec2 describe-network-interfaces \
-            --network-interface-ids $ENI_ID \
-            --query 'NetworkInterfaces[0].Association.PublicIp' \
-            --output text)
-          echo "WEB_HOST_IP=$WEB_HOST_IP" >> $GITHUB_OUTPUT
-
-  report_results:
-    name: Report deploy results
-    needs: [run_mssql, run_web]
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Print mssql and web IPs
-        run: |
-          echo "MSSQL IP: ${{ needs.run_mssql.outputs.MSSQL_HOST_IP }}"
-          echo "Web IP: ${{ needs.run_web.outputs.WEB_HOST_IP }}"
-          echo "Web URL: http://${{ needs.run_web.outputs.WEB_HOST_IP }}"
+          echo "Web URL: http://${{ steps.get_dns_name.outputs.WEB_DNS_NAME }}"
