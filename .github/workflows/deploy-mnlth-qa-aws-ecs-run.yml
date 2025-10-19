@@ -146,7 +146,7 @@ jobs:
           task-definition: ${{ steps.render-web.outputs.task-definition }}
           service: contoso-mnlth-web-service
           cluster: contoso-mnlth-cluster
-          desired-count: 3
+          desired-count: 2
           wait-for-service-stability: true
 
       - name: ⚓️ Get DNS name of the ALB
