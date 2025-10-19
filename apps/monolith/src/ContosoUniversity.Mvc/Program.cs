@@ -12,8 +12,9 @@ using Data.Departments.Writes;
 using Data.Students.Reads;
 using Data.Students.Writes;
 
+using Filters;
+
 using FluentValidation;
-using FluentValidation.AspNetCore;
 
 using HealthChecks.UI.Client;
 
@@ -70,13 +71,9 @@ internal class Startup(IWebHostEnvironment env)
 
         services.AddControllersWithViews();
 
-        services.AddFluentValidationAutoValidation();
-        if (!env.IsDevelopment())
-        {
-            services.AddFluentValidationClientsideAdapters();
-        }
         services.AddValidatorsFromAssemblyContaining<Program>();
         services.AddValidatorsFromAssemblyContaining<IApplicationLayerMarker>();
+        services.AddScoped(typeof(FillModelState<>));
 
         services.AddMediatR(cfg =>
         {

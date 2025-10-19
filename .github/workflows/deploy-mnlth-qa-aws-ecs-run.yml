@@ -1,0 +1,169 @@
+name: "MNLTH / qa-aws-ecs / Run"
+
+on:
+  workflow_dispatch:
+    inputs:
+      use_latest:
+        type: boolean
+        default: true
+        description: "Use :latest version, last main"
+      update_web_only:
+        type: boolean
+        default: false
+        description: "Update 'web-service' only"
+      web_desired_count:
+        type: number
+        default: 2
+        description: "Scale 'web-service' instances"
+        required: true
+
+jobs:
+
+  get_image_tag:
+    name: Resolve image tag
+    runs-on: ubuntu-latest
+    outputs:
+      IMAGE_TAG: ${{ steps.resolve-image-tag.outputs.IMAGE_TAG }}
+
+    steps:
+      - name: 🛠️ Checkout code
+        uses: actions/checkout@v5
+
+      - name: 🎖️ Resolve image tag
+        id: resolve-image-tag
+        run: |
+          if [ "${{ github.event.inputs.use_latest }}" = "true" ]; then
+            IMAGE_TAG="latest"
+          else
+            IMAGE_TAG=$(git rev-parse --short ${{ github.event.pull_request.head.sha || github.sha }})
+          fi
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+  run_mssql:
+    if: ${{ github.event.inputs.update_web_only == 'false' }}
+    name: Run mssql-service
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
+
+    steps:
+      - name: 🛠️ Checkout code
+        uses: actions/checkout@v5
+
+      - name: 🔐 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: 📝 Render task definition
+        id: render-mssql
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition-family: contoso-mnlth-mssql-tasks
+          container-name: mssql
+          image: mcr.microsoft.com/mssql/server
+
+      - name: 🚀 Kick off MsSql Server
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-mssql.outputs.task-definition }}
+          service: contoso-mnlth-mssql-service
+          cluster: contoso-mnlth-cluster
+          desired-count: 1
+          wait-for-service-stability: true
+
+  run_mssql_migrator:
+    if: ${{ github.event.inputs.update_web_only == 'false' }}
+    name: Run mssql-migrator task
+    needs: [run_mssql, get_image_tag]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
+
+    steps:
+      - name: 🛠️ Checkout code
+        uses: actions/checkout@v5
+
+      - name: 🔐 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: 📝 Render task definition
+        id: render-mssql-migrator
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition-family: contoso-mnlth-mssql-migrator-tasks
+          container-name: mssql-migrator
+          image: ghcr.io/alexbohomol/mssql-migrator:${{ needs.get_image_tag.outputs.IMAGE_TAG }}
+
+      - name: 🚀 Kick off database migration
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-mssql-migrator.outputs.task-definition }}
+          cluster: contoso-mnlth-cluster
+          run-task: true
+          run-task-subnets: ${{ vars.AWS_SUBNET_IDS }}
+          run-task-security-groups: ${{ vars.AWS_SG_ID }}
+          run-task-assign-public-IP: ENABLED
+          wait-for-task-stopped: true
+
+  run_web:
+    if: ${{ github.event.inputs.update_web_only == 'false' && success() || always() }}
+    name: Run web-service
+    needs: [run_mssql_migrator, get_image_tag]
+    environment:
+      name: qa-aws-ecs
+      url: http://${{ steps.get_dns_name.outputs.WEB_DNS_NAME }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ vars.MONOLITH_SLN_PATH }}/iac/envs/qa-aws-ecs
+
+    steps:
+      - name: 🛠️ Checkout code
+        uses: actions/checkout@v5
+
+      - name: 🔐 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: 📝 Render task definition
+        id: render-web
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition-family: contoso-mnlth-web-tasks
+          container-name: web
+          image: ghcr.io/alexbohomol/cuweb:${{ needs.get_image_tag.outputs.IMAGE_TAG }}
+
+      - name: 🚀 Kick off application instances
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-web.outputs.task-definition }}
+          service: contoso-mnlth-web-service
+          cluster: contoso-mnlth-cluster
+          desired-count: ${{ github.event.inputs.web_desired_count }}
+          wait-for-service-stability: true
+
+      - name: ⚓️ Get DNS name of the ALB
+        id: get_dns_name
+        run: |
+          WEB_DNS_NAME=$(aws elbv2 describe-load-balancers \
+            --names contoso-mnlth-alb \
+            --region eu-central-1 \
+            --query 'LoadBalancers[0].DNSName' \
+            --output text)
+          echo "WEB_DNS_NAME=$WEB_DNS_NAME" >> $GITHUB_OUTPUT
+
+      - name: 🧁 Print deployed app DNS name
+        run: |
+          echo "Web URL: http://${{ steps.get_dns_name.outputs.WEB_DNS_NAME }}"

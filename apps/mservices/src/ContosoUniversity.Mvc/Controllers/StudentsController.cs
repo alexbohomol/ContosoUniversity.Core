@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Application.ApiClients;
 using Application.Students.Queries;
 
+using Filters;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
@@ -57,6 +59,7 @@ public class StudentsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<CreateStudentRequest>>]
     public async Task<IActionResult> Create(
         CreateStudentRequest request,
         [FromServices] IStudentsApiClient studentsApiClient,
@@ -101,6 +104,7 @@ public class StudentsController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<EditStudentRequest>>]
     public async Task<IActionResult> Edit(
         EditStudentRequest request,
         [FromServices] IStudentsApiClient studentsApiClient,

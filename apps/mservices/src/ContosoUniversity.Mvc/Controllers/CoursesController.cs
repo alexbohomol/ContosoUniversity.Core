@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Application.ApiClients;
 using Application.Courses.Queries;
 
+using Filters;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
@@ -61,6 +63,7 @@ public class CoursesController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<CreateCourseRequest>>]
     public async Task<IActionResult> Create(
         CreateCourseRequest request,
         [FromServices] ICoursesApiClient coursesApiClient,
@@ -108,6 +111,7 @@ public class CoursesController(IMediator mediator) : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ServiceFilter<FillModelState<EditCourseRequest>>]
     public async Task<IActionResult> Edit(
         EditCourseRequest request,
         [FromServices] ICoursesApiClient coursesApiClient,

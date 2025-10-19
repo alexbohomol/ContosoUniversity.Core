@@ -7,7 +7,8 @@
     <ItemGroup>
         <PackageReference Include="AspNetCore.HealthChecks.UI" />
         <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
-        <PackageReference Include="FluentValidation.AspNetCore" />
+        <PackageReference Include="FluentValidation" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     </ItemGroup>
 
     <ItemGroup>
