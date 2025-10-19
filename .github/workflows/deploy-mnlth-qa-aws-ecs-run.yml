@@ -11,6 +11,11 @@ on:
         type: boolean
         default: false
         description: "Update 'web-service' only"
+      web_desired_count:
+        type: number
+        default: 2
+        description: "Scale 'web-service' instances"
+        required: true
 
 jobs:
 
@@ -146,7 +151,7 @@ jobs:
           task-definition: ${{ steps.render-web.outputs.task-definition }}
           service: contoso-mnlth-web-service
           cluster: contoso-mnlth-cluster
-          desired-count: 2
+          desired-count: ${{ github.event.inputs.web_desired_count }}
           wait-for-service-stability: true
 
       - name: ⚓️ Get DNS name of the ALB
