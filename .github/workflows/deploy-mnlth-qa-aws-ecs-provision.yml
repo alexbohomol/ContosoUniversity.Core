@@ -42,6 +42,7 @@ jobs:
       - name: Terraform plan
         run: |
           terraform plan \
+            -var="environment=qa-aws-ecs" \
             -var="db_username=sa" \
             -var="db_password=${{ secrets.DB_PASSWORD }}" \
             -var="db_init_script=db-init.sql" \
