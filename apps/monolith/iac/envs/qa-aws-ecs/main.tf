@@ -100,9 +100,9 @@ resource "aws_ecs_task_definition" "web_task" {
         }
       ]
       environment = [
-        { name = "ASPNETCORE_ENVIRONMENT", value = var.environment },
-        { name = "ASPNETCORE_URLS", value = "http://+:80" },
-        { name = "SqlConnectionStringBuilder__DataSource", value = local.mssql_dns_name }
+        { name = "ENVIRONMENT", value = var.environment },
+        { name = "DOTNET_ENVIRONMENT", value = var.environment },
+        { name = "ASPNETCORE_ENVIRONMENT", value = var.environment }
       ]
       healthCheck = {
         command = [
