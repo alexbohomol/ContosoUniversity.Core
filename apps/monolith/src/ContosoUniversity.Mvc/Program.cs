@@ -25,11 +25,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 using Middleware;
 
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
+
+using ILogger = Serilog.ILogger;
 
 public class Program
 {
@@ -38,8 +41,13 @@ public class Program
         CreateHostBuilder(args).Build().Run();
     }
 
-    public static IHostBuilder CreateHostBuilder(string[] args, string[] hostUrls = null) =>
+    private static IHostBuilder CreateHostBuilder(string[] args, string[] hostUrls = null) =>
         Host.CreateDefaultBuilder(args)
+            .ConfigureLogging(logging =>
+            {
+                logging.ClearProviders();
+                logging.AddJsonConsole();
+            })
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseStartup<Startup>();
