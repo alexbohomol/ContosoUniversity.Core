@@ -15,13 +15,13 @@ using Xunit;
 
 public class NoInfraTests :
     IClassFixture<TestsConfiguration>,
-    IClassFixture<WebApplicationFactory<Program>>
+    IClassFixture<WebApplicationFactory<IAssemblyMarker>>
 {
     private readonly HttpClient _httpClient;
 
     public NoInfraTests(
         TestsConfiguration config,
-        WebApplicationFactory<Program> factory)
+        WebApplicationFactory<IAssemblyMarker> factory)
     {
         factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         _httpClient = factory.CreateClient();

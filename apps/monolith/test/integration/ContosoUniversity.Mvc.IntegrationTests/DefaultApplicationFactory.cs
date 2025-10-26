@@ -12,7 +12,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-public class DefaultApplicationFactory : WebApplicationFactory<Program>
+public class DefaultApplicationFactory : WebApplicationFactory<IAssemblyMarker>
 {
     public Func<string> DataSourceSetterFunction = () => string.Empty;
 
