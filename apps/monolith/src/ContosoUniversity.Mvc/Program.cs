@@ -104,7 +104,7 @@ HealthCheckOptions checkOptions = new()
 };
 app.UseHealthChecks("/health/readiness", checkOptions);
 app.UseHealthChecks("/health/liveness", checkOptions);
-
+app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
 
 app.MapControllerRoute(
