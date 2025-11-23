@@ -7,8 +7,13 @@ resource "aws_ecs_cluster" "cluster" {
   name = "${var.app_name}-cluster"
 }
 
-resource "aws_cloudwatch_log_group" "cw_lg" {
-  name              = "/ecs/${var.app_name}-cw-lg"
+resource "aws_cloudwatch_log_group" "cw_web_lg" {
+  name              = "/ecs/${var.app_name}-cw-web-lg"
+  retention_in_days = 7
+}
+
+resource "aws_cloudwatch_log_group" "cw_mssql_lg" {
+  name              = "/ecs/${var.app_name}-cw-mssql-lg"
   retention_in_days = 7
 }
 
@@ -117,7 +122,7 @@ resource "aws_ecs_task_definition" "web_task" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = aws_cloudwatch_log_group.cw_lg.name
+          awslogs-group         = aws_cloudwatch_log_group.cw_web_lg.name
           awslogs-region        = var.aws_region
           awslogs-stream-prefix = "web"
         }
@@ -168,7 +173,7 @@ resource "aws_ecs_task_definition" "mssql_task" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = aws_cloudwatch_log_group.cw_lg.name
+          awslogs-group         = aws_cloudwatch_log_group.cw_mssql_lg.name
           awslogs-region        = var.aws_region
           awslogs-stream-prefix = "mssql"
         }
@@ -200,7 +205,7 @@ resource "aws_ecs_task_definition" "mssql_migrator_task" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = aws_cloudwatch_log_group.cw_lg.name
+          awslogs-group         = aws_cloudwatch_log_group.cw_mssql_lg.name
           awslogs-region        = var.aws_region
           awslogs-stream-prefix = "mssql-migrator"
         }
