@@ -16,13 +16,16 @@ using Filters;
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 using ViewModels.Departments;
 
-public class DepartmentsController(IMediator mediator) : Controller
+public class DepartmentsController(IMediator mediator, ILogger<DepartmentsController> logger) : Controller
 {
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
+        logger.LogInformation("User visited page {Action} at {Controller}", nameof(Index), nameof(DepartmentsController));
+
         Department[] departments = await mediator.Send(
             new GetDepartmentsIndexQuery(),
             cancellationToken);

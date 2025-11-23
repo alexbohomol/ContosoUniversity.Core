@@ -15,13 +15,16 @@ using Filters;
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 using ViewModels.Students;
 
-public class StudentsController(IMediator mediator) : Controller
+public class StudentsController(IMediator mediator, ILogger<StudentsController> logger) : Controller
 {
     public async Task<IActionResult> Index(GetStudentsIndexQuery request, CancellationToken cancellationToken)
     {
+        logger.LogInformation("User visited page {Action} at {Controller}", nameof(Index), nameof(StudentsController));
+
         if (request.SearchString is not null)
         {
             request.PageNumber = 1;

@@ -22,7 +22,14 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, loggerConfiguration) =>
+{
+    loggerConfiguration.ReadFrom.Configuration(context.Configuration);
+});
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
@@ -97,7 +104,7 @@ HealthCheckOptions checkOptions = new()
 };
 app.UseHealthChecks("/health/readiness", checkOptions);
 app.UseHealthChecks("/health/liveness", checkOptions);
-
+app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
 
 app.MapControllerRoute(
