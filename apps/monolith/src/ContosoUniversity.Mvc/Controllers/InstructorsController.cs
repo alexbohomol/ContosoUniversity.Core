@@ -17,11 +17,12 @@ using Filters;
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 using ViewModels;
 using ViewModels.Instructors;
 
-public class InstructorsController(IMediator mediator) : Controller
+public class InstructorsController(IMediator mediator, ILogger<InstructorsController> logger) : Controller
 {
     public async Task<IActionResult> Index(
         Guid? id,
@@ -32,6 +33,8 @@ public class InstructorsController(IMediator mediator) : Controller
         [FromServices] IStudentsRoRepository studentsRepository,
         CancellationToken cancellationToken)
     {
+        logger.LogInformation("User visited page {Action} at {Controller}", nameof(Index), nameof(InstructorsController));
+
         Instructor[] instructors = (await instructorsRepository.GetAll(cancellationToken))
             .OrderBy(x => x.LastName)
             .ToArray();

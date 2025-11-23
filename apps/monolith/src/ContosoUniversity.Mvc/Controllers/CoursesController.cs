@@ -17,13 +17,16 @@ using Filters;
 using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 using ViewModels.Courses;
 
-public class CoursesController(IMediator mediator) : Controller
+public class CoursesController(IMediator mediator, ILogger<CoursesController> logger) : Controller
 {
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
+        logger.LogInformation("User visited page {Action} at {Controller}", nameof(Index), nameof(CoursesController));
+
         (Course[] courses, Dictionary<Guid, string> departmentsReference) = await mediator.Send(
             new GetCoursesIndexQuery(),
             cancellationToken);
