@@ -28,17 +28,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, loggerConfiguration) =>
 {
-    loggerConfiguration.ReadFrom.Configuration(context.Configuration)
-        .Enrich.FromLogContext()
-        .Enrich.WithClientIp()
-        .Enrich.WithCorrelationId()
-        .Enrich.WithEnvironmentName()
-        .Enrich.WithEnvironmentUserName()
-        .Enrich.WithMachineName()
-        .Enrich.WithProcessId()
-        .Enrich.WithProcessName()
-        .Enrich.WithThreadId()
-        .Enrich.WithThreadName();
+    loggerConfiguration.ReadFrom.Configuration(context.Configuration);
 });
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
