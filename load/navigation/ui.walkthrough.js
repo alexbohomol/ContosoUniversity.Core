@@ -1,8 +1,7 @@
 import { browser } from "k6/browser";
 import { fail } from 'k6';
-import { expect } from "https://jslib.k6.io/k6-testing/0.5.0/index.js";
-
-const BASE_URL = __ENV.BASE_URL || "http://contoso-mnlth-alb-963508264.eu-central-1.elb.amazonaws.com";
+import { expect } from "https://jslib.k6.io/k6-testing/0.6.1/index.js";
+import configs from './configs.js';
 
 export const options = {
   scenarios: {
@@ -24,22 +23,22 @@ export default async function() {
 
   try {
 
-    await page.goto(BASE_URL);
+    await page.goto(configs.rootUrl);
     await expect.soft(page.locator("main > div.jumbotron > h1")).toHaveText("Contoso University");
 
-    await page.goto(`${BASE_URL}/Home/About`);
+    await page.goto(`${configs.rootUrl}/Home/About`);
     await expect.soft(page.locator("main > h2")).toHaveText("Student Body Statistics");
 
-    await page.goto(`${BASE_URL}/Students`);
+    await page.goto(`${configs.rootUrl}/Students`);
     await expect.soft(page.locator("main > h2")).toHaveText("Students");
 
-    await page.goto(`${BASE_URL}/Courses`);
+    await page.goto(`${configs.rootUrl}/Courses`);
     await expect.soft(page.locator("main > h2")).toHaveText("Courses");
 
-    await page.goto(`${BASE_URL}/Instructors`);
+    await page.goto(`${configs.rootUrl}/Instructors`);
     await expect.soft(page.locator("main > h2")).toHaveText("Instructors");
 
-    await page.goto(`${BASE_URL}/Departments`);
+    await page.goto(`${configs.rootUrl}/Departments`);
     await expect.soft(page.locator("main > h1")).toHaveText("Departments");
 
   } catch (error) {

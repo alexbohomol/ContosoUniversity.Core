@@ -1,8 +1,7 @@
 import http from 'k6/http';
 import { check } from 'k6';
 import { parseHTML } from 'k6/html';
-
-const BASE_URL = __ENV.BASE_URL || 'http://contoso-mnlth-alb-963508264.eu-central-1.elb.amazonaws.com';
+import configs from './configs.js';
 
 export const options = {
   scenarios: {
@@ -29,7 +28,7 @@ export function hitPages() {
 }
 
 function hitHome() {
-  const res = http.get(`${BASE_URL}`);
+  const res = http.get(`${configs.rootUrl}`);
   const doc = parseHTML(res.body);
   const h1 = doc.find('main > div.jumbotron > h1');
 
@@ -40,7 +39,7 @@ function hitHome() {
 }
 
 function hitAbout() {
-  const res = http.get(`${BASE_URL}/Home/About`);
+  const res = http.get(`${configs.rootUrl}/Home/About`);
   const doc = parseHTML(res.body);
   const h2 = doc.find('main > h2');
 
@@ -51,7 +50,7 @@ function hitAbout() {
 }
 
 function hitStudents() {
-  const res = http.get(`${BASE_URL}/Students`);
+  const res = http.get(`${configs.rootUrl}/Students`);
   const doc = parseHTML(res.body);
   const title = doc.find('main > h2');
 
@@ -62,7 +61,7 @@ function hitStudents() {
 }
 
 function hitCourses() {
-  const res = http.get(`${BASE_URL}/Courses`);
+  const res = http.get(`${configs.rootUrl}/Courses`);
   const doc = parseHTML(res.body);
   const title = doc.find('main > h2');
 
@@ -73,7 +72,7 @@ function hitCourses() {
 }
 
 function hitInstructors() {
-  const res = http.get(`${BASE_URL}/Instructors`);
+  const res = http.get(`${configs.rootUrl}/Instructors`);
   const doc = parseHTML(res.body);
   const title = doc.find('main > h2');
 
@@ -84,7 +83,7 @@ function hitInstructors() {
 }
 
 function hitDepartments() {
-  const res = http.get(`${BASE_URL}/Departments`);
+  const res = http.get(`${configs.rootUrl}/Departments`);
   const doc = parseHTML(res.body);
   const title = doc.find('main > h1');
 
