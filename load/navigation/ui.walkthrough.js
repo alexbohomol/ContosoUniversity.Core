@@ -13,12 +13,13 @@ export const options = {
         browser: {
           type: "chromium",
         }
-      }
+      },
+      exec: "uiWalkthrough"
     }
   }
 };
 
-export default async function() {
+export async function uiWalkthrough() {
   const page = await browser.newPage();
 
   try {
