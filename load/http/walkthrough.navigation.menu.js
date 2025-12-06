@@ -1,7 +1,7 @@
 import http from 'k6/http';
 import { check } from 'k6';
 import { parseHTML } from 'k6/html';
-import configs from './configs.js';
+import configs from '../configs.js';
 
 export const options = {
   scenarios: {

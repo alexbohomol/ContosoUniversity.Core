@@ -1,5 +1,5 @@
-import { hitPages } from './http.pressure.js';
-import { uiWalkthrough } from './ui.walkthrough.js';
+import { hitPages } from './http/walkthrough.navigation.menu.js';
+import { uiWalkthrough } from './browser/walkthrough.navigation.menu.js';
 
 export const options = {
   scenarios: {

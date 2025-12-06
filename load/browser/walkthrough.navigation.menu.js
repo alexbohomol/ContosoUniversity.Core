@@ -1,7 +1,7 @@
 import { browser } from "k6/browser";
 import { fail } from 'k6';
 import { expect } from "https://jslib.k6.io/k6-testing/0.6.1/index.js";
-import configs from './configs.js';
+import configs from '../configs.js';
 
 export const options = {
   scenarios: {
