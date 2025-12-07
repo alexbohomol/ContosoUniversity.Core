@@ -13,13 +13,12 @@ export const options = {
         browser: {
           type: "chromium",
         }
-      },
-      exec: "uiWalkthrough"
+      }
     }
   }
 };
 
-export async function uiWalkthrough() {
+async function uiWalkthrough() {
   const page = await browser.newPage();
 
   try {
@@ -48,3 +47,6 @@ export async function uiWalkthrough() {
     await page.close();
   }
 }
+
+export { uiWalkthrough };
+export default uiWalkthrough;

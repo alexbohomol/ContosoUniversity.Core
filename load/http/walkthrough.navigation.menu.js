@@ -4,21 +4,15 @@ import { parseHTML } from 'k6/html';
 import configs from '../configs.js';
 
 export const options = {
-  scenarios: {
-    api_load: {
-      executor: 'constant-vus',
-      vus: 100,
-      duration: '10m',
-      exec: 'hitPages',
-    },
-  },
+  vus: 100,
+  duration: '10m',
   thresholds: {
     http_req_failed: ['rate == 0'],
     checks: ['rate == 1'],
   },
 };
 
-export function hitPages() {
+function hitPages() {
   hitHome();
   hitAbout();
   hitStudents();
@@ -92,3 +86,6 @@ function hitDepartments() {
     'departments has main heading': r => title.text().trim() === 'Departments',
   });
 }
+
+export { hitPages };
+export default hitPages;
