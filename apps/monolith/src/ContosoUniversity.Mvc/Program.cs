@@ -33,7 +33,7 @@ builder.Services
     .AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo("/var/dpkeys/"))
     .SetApplicationName("ContosoUniversity")
-    .SetDefaultKeyLifetime(TimeSpan.FromMinutes(30));
+    .SetDefaultKeyLifetime(TimeSpan.FromDays(14));
 
 builder.Host.UseSerilog((context, loggerConfiguration) =>
 {
