@@ -1,4 +1,6 @@
+using System;
 using System.Globalization;
+using System.IO;
 
 using ContosoUniversity.Application;
 using ContosoUniversity.Data;
@@ -16,6 +18,7 @@ using FluentValidation;
 using HealthChecks.UI.Client;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
@@ -25,6 +28,15 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services
+        .AddDataProtection()
+        .PersistKeysToFileSystem(new DirectoryInfo("/var/dpkeys/"))
+        .SetApplicationName("ContosoUniversity")
+        .SetDefaultKeyLifetime(TimeSpan.FromDays(14));
+}
 
 builder.Host.UseSerilog((context, loggerConfiguration) =>
 {
