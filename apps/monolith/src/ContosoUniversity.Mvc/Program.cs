@@ -29,11 +29,14 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-    .AddDataProtection()
-    .PersistKeysToFileSystem(new DirectoryInfo("/var/dpkeys/"))
-    .SetApplicationName("ContosoUniversity")
-    .SetDefaultKeyLifetime(TimeSpan.FromDays(14));
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services
+        .AddDataProtection()
+        .PersistKeysToFileSystem(new DirectoryInfo("/var/dpkeys/"))
+        .SetApplicationName("ContosoUniversity")
+        .SetDefaultKeyLifetime(TimeSpan.FromDays(14));
+}
 
 builder.Host.UseSerilog((context, loggerConfiguration) =>
 {

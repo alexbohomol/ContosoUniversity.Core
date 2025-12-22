@@ -102,15 +102,6 @@ resource "aws_security_group_rule" "sg_efs_ingress" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
-# resource "aws_security_group_rule" "sg_efs_egress" {
-#   from_port         = 0
-#   protocol          = "-1"
-#   security_group_id = module.networking.sg_id
-#   to_port           = 0
-#   type              = "egress"
-#   cidr_blocks       = ["0.0.0.0/0"]
-# }
-
 resource "aws_efs_mount_target" "efs_mt" {
   for_each        = { for idx, subnet_id in module.networking.subnet_ids : idx => subnet_id }
   file_system_id  = aws_efs_file_system.efs.id
@@ -171,8 +162,7 @@ resource "aws_ecs_task_definition" "web_task" {
       ]
       mountPoints = [
         {
-          sourceVolume = "dpkeys"
-          # containerPath = "/app/DataProtectionKeys"
+          sourceVolume  = "dpkeys"
           containerPath = "/var/dpkeys"
           readOnly      = false
         }
