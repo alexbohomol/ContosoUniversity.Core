@@ -99,7 +99,7 @@ resource "aws_security_group_rule" "sg_efs_ingress" {
   security_group_id = module.networking.sg_id
   to_port           = 2049
   type              = "ingress"
-  cidr_blocks       = ["0.0.0.0/0"]
+  self              = true
 }
 
 resource "aws_efs_mount_target" "efs_mt" {
