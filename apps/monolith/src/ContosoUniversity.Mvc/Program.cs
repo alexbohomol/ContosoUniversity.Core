@@ -1,139 +1,126 @@
-namespace ContosoUniversity.Mvc;
-
+using System;
 using System.Globalization;
+using System.IO;
 
-using Application;
-
-using Data;
-using Data.Courses.Reads;
-using Data.Courses.Writes;
-using Data.Departments.Reads;
-using Data.Departments.Writes;
-using Data.Students.Reads;
-using Data.Students.Writes;
-
-using Filters;
+using ContosoUniversity.Application;
+using ContosoUniversity.Data;
+using ContosoUniversity.Data.Courses.Reads;
+using ContosoUniversity.Data.Courses.Writes;
+using ContosoUniversity.Data.Departments.Reads;
+using ContosoUniversity.Data.Departments.Writes;
+using ContosoUniversity.Data.Students.Reads;
+using ContosoUniversity.Data.Students.Writes;
+using ContosoUniversity.Mvc.Filters;
+using ContosoUniversity.Mvc.Middleware;
 
 using FluentValidation;
 
 using HealthChecks.UI.Client;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using Middleware;
+using Serilog;
 
-public class Program
+var builder = WebApplication.CreateBuilder(args);
+
+if (!builder.Environment.IsDevelopment())
 {
-    public static void Main(string[] args)
-    {
-        CreateHostBuilder(args).Build().Run();
-    }
-
-    public static IHostBuilder CreateHostBuilder(string[] args, string[] hostUrls = null) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-
-                if (hostUrls is not null)
-                {
-                    webBuilder.UseUrls(hostUrls);
-                }
-            });
+    builder.Services
+        .AddDataProtection()
+        .PersistKeysToFileSystem(new DirectoryInfo("/var/dpkeys/"))
+        .SetApplicationName("ContosoUniversity")
+        .SetDefaultKeyLifetime(TimeSpan.FromDays(14));
 }
 
-internal class Startup(IWebHostEnvironment env)
+builder.Host.UseSerilog((context, loggerConfiguration) =>
 {
-    public void ConfigureServices(IServiceCollection services)
-    {
-        services.Configure<CookiePolicyOptions>(options =>
-        {
-            // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-            options.CheckConsentNeeded = _ => true;
-            options.MinimumSameSitePolicy = SameSiteMode.None;
-        });
+    loggerConfiguration.ReadFrom.Configuration(context.Configuration);
+});
 
-        services.AddHealthChecks();
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+    options.CheckConsentNeeded = _ => true;
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+});
 
-        services.AddDataInfrastructure();
-        services.AddCoursesSchemaReads();
-        services.AddCoursesSchemaWrites();
-        services.AddStudentsSchemaReads();
-        services.AddStudentsSchemaWrites();
-        services.AddDepartmentsSchemaReads();
-        services.AddDepartmentsSchemaWrites();
+builder.Services.AddHealthChecks();
 
-        services.AddControllersWithViews();
+builder.Services.AddDataInfrastructure();
+builder.Services.AddCoursesSchemaReads();
+builder.Services.AddCoursesSchemaWrites();
+builder.Services.AddStudentsSchemaReads();
+builder.Services.AddStudentsSchemaWrites();
+builder.Services.AddDepartmentsSchemaReads();
+builder.Services.AddDepartmentsSchemaWrites();
 
-        services.AddValidatorsFromAssemblyContaining<Program>();
-        services.AddValidatorsFromAssemblyContaining<IApplicationLayerMarker>();
-        services.AddScoped(typeof(FillModelState<>));
+builder.Services.AddControllersWithViews();
 
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(typeof(IApplicationLayerMarker).Assembly);
-            cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
-        });
+builder.Services.AddValidatorsFromAssemblyContaining<ContosoUniversity.Mvc.IAssemblyMarker>();
+builder.Services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
+builder.Services.AddScoped(typeof(FillModelState<>));
 
-        services.AddExceptionHandler<EntityNotFoundExceptionHandler>();
-        services.AddExceptionHandler<BadRequestExceptionHandler>();
-        services.AddProblemDetails();
-    }
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(IAssemblyMarker).Assembly);
+    cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+});
 
-    public void Configure(IApplicationBuilder app)
-    {
-        if (env.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-        }
-        else
-        {
-            app.UseExceptionHandler("/Home/Error");
-            /*
-             * The default HSTS value is 30 days. You may want to change this
-             * for production scenarios, see https://aka.ms/aspnetcore-hsts.
-             */
-            app.UseHsts();
-        }
+builder.Services.AddExceptionHandler<EntityNotFoundExceptionHandler>();
+builder.Services.AddExceptionHandler<BadRequestExceptionHandler>();
+builder.Services.AddProblemDetails();
 
-        // app.UseHttpsRedirection();
-        app.UseStaticFiles();
-        app.UseCookiePolicy();
+var app = builder.Build();
 
-        // https://stackoverflow.com/a/60245525/19518138
-        // https://itecnote.com/tecnote/c-force-locale-with-asp-net-core/
-        // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization/select-language-culture
-        app.UseRequestLocalization(new RequestLocalizationOptions
-        {
-            DefaultRequestCulture = new RequestCulture("en-US"),
-            SupportedCultures = new[] { new CultureInfo("en-US") },
-            FallBackToParentCultures = false
-        });
-
-        app.UseRouting();
-
-        app.UseAuthorization();
-
-        HealthCheckOptions checkOptions = new()
-        {
-            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-        };
-        app.UseHealthChecks("/health/readiness", checkOptions);
-        app.UseHealthChecks("/health/liveness", checkOptions);
-
-        app.UseExceptionHandler();
-
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllerRoute(
-                "default",
-                "{controller=Home}/{action=Index}/{id?}");
-        });
-    }
+if (builder.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
 }
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    /*
+     * The default HSTS value is 30 days. You may want to change this
+     * for production scenarios, see https://aka.ms/aspnetcore-hsts.
+     */
+    app.UseHsts();
+}
+
+// app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseCookiePolicy();
+
+// https://stackoverflow.com/a/60245525/19518138
+// https://itecnote.com/tecnote/c-force-locale-with-asp-net-core/
+// https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization/select-language-culture
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("en-US"),
+    SupportedCultures = new[] { new CultureInfo("en-US") },
+    FallBackToParentCultures = false
+});
+
+app.UseRouting();
+
+app.UseAuthorization();
+
+HealthCheckOptions checkOptions = new()
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+};
+app.UseHealthChecks("/health/readiness", checkOptions);
+app.UseHealthChecks("/health/liveness", checkOptions);
+app.UseSerilogRequestLogging();
+app.UseExceptionHandler();
+
+app.MapControllerRoute(
+    "default",
+    "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();

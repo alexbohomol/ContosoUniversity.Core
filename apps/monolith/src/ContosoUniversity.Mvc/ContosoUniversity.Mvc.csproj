@@ -9,6 +9,11 @@
         <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
         <PackageReference Include="FluentValidation" />
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+        <PackageReference Include="Serilog.AspNetCore" />
+        <PackageReference Include="Serilog.Enrichers.ClientInfo" />
+        <PackageReference Include="Serilog.Enrichers.Environment" />
+        <PackageReference Include="Serilog.Enrichers.Process" />
+        <PackageReference Include="Serilog.Enrichers.Thread" />
     </ItemGroup>
 
     <ItemGroup>
@@ -27,5 +32,8 @@
     <PropertyGroup>
         <GenerateRuntimeConfigurationFiles>True</GenerateRuntimeConfigurationFiles>
     </PropertyGroup>
+    <ItemGroup>
+        <InternalsVisibleTo Include="$(AssemblyName).IntegrationTests" />
+    </ItemGroup>
 
 </Project>

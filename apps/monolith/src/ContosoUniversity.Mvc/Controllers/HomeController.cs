@@ -9,18 +9,23 @@ using Application.Contracts.Repositories.ReadOnly;
 using Application.Contracts.Repositories.ReadOnly.Projections;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 using ViewModels;
 
-public class HomeController(IStudentsRoRepository repository) : Controller
+public class HomeController(IStudentsRoRepository repository, ILogger<HomeController> logger) : Controller
 {
     public IActionResult Index()
     {
+        logger.LogInformation("User visited page {Action} at {Controller}", nameof(Index), nameof(HomeController));
+
         return View();
     }
 
     public async Task<ActionResult> About(CancellationToken cancellationToken)
     {
+        logger.LogInformation("User visited page {Action} at {Controller}", nameof(About), nameof(HomeController));
+
         EnrollmentDateGroup[] groups = await repository.GetEnrollmentDateGroups(cancellationToken);
 
         ViewModels.Home.EnrollmentDateGroup[] viewModels = groups.Select(x => new ViewModels.Home.EnrollmentDateGroup

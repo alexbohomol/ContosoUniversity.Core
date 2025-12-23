@@ -12,13 +12,13 @@ using Xunit;
 [Collection(nameof(SharedTestCollection))]
 public class HeaderNavigationTests :
     IClassFixture<TestsConfiguration>,
-    IClassFixture<WebApplicationFactory<Program>>
+    IClassFixture<WebApplicationFactory<IAssemblyMarker>>
 {
     private readonly HttpClient _httpClient;
 
     public HeaderNavigationTests(
         TestsConfiguration config,
-        WebApplicationFactory<Program> factory)
+        WebApplicationFactory<IAssemblyMarker> factory)
     {
         factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         _httpClient = factory.CreateClient();

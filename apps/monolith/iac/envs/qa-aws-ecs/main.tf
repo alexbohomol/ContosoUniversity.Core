@@ -7,8 +7,13 @@ resource "aws_ecs_cluster" "cluster" {
   name = "${var.app_name}-cluster"
 }
 
-resource "aws_cloudwatch_log_group" "cw_lg" {
-  name              = "/ecs/${var.app_name}-cw-lg"
+resource "aws_cloudwatch_log_group" "cw_web_lg" {
+  name              = "/ecs/${var.app_name}-cw-web-lg"
+  retention_in_days = 7
+}
+
+resource "aws_cloudwatch_log_group" "cw_mssql_lg" {
+  name              = "/ecs/${var.app_name}-cw-mssql-lg"
   retention_in_days = 7
 }
 
@@ -77,6 +82,49 @@ resource "aws_security_group_rule" "mssql_public" {
   security_group_id = module.networking.sg_id
 }
 
+# EFS for persistent storage
+
+resource "aws_efs_file_system" "efs" {
+  encrypted        = true
+  performance_mode = "generalPurpose"
+  creation_token   = "${var.app_name}-efs"
+  tags = {
+    Name = "${var.app_name}-efs"
+  }
+}
+
+resource "aws_security_group_rule" "sg_efs_ingress" {
+  from_port         = 2049
+  protocol          = "tcp"
+  security_group_id = module.networking.sg_id
+  to_port           = 2049
+  type              = "ingress"
+  self              = true
+}
+
+resource "aws_efs_mount_target" "efs_mt" {
+  for_each        = { for idx, subnet_id in module.networking.subnet_ids : idx => subnet_id }
+  file_system_id  = aws_efs_file_system.efs.id
+  subnet_id       = each.value
+  security_groups = [module.networking.sg_id]
+}
+
+resource "aws_efs_access_point" "efs_ap" {
+  file_system_id = aws_efs_file_system.efs.id
+  posix_user {
+    uid = 0
+    gid = 0
+  }
+  root_directory {
+    path = "/dpkeys"
+    creation_info {
+      owner_gid   = 0
+      owner_uid   = 0
+      permissions = "0770"
+    }
+  }
+}
+
 # ECS tasks definitions
 
 resource "aws_ecs_task_definition" "web_task" {
@@ -86,7 +134,20 @@ resource "aws_ecs_task_definition" "web_task" {
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   execution_role_arn       = aws_iam_role.task_execution.arn
-  # task_role_arn            = aws_iam_role.task_execution.arn
+  task_role_arn            = aws_iam_role.task_execution.arn
+
+  volume {
+    name = "dpkeys"
+    efs_volume_configuration {
+      file_system_id     = aws_efs_file_system.efs.id
+      transit_encryption = "ENABLED"
+      authorization_config {
+        access_point_id = aws_efs_access_point.efs_ap.id
+        iam             = "ENABLED"
+      }
+      root_directory = "/"
+    }
+  }
 
   container_definitions = jsonencode([
     {
@@ -99,10 +160,17 @@ resource "aws_ecs_task_definition" "web_task" {
           hostPort      = 80
         }
       ]
+      mountPoints = [
+        {
+          sourceVolume  = "dpkeys"
+          containerPath = "/var/dpkeys"
+          readOnly      = false
+        }
+      ]
       environment = [
-        { name = "ASPNETCORE_ENVIRONMENT", value = var.environment },
-        { name = "ASPNETCORE_URLS", value = "http://+:80" },
-        { name = "SqlConnectionStringBuilder__DataSource", value = local.mssql_dns_name }
+        { name = "ENVIRONMENT", value = var.environment },
+        { name = "DOTNET_ENVIRONMENT", value = var.environment },
+        { name = "ASPNETCORE_ENVIRONMENT", value = var.environment }
       ]
       healthCheck = {
         command = [
@@ -117,7 +185,7 @@ resource "aws_ecs_task_definition" "web_task" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = aws_cloudwatch_log_group.cw_lg.name
+          awslogs-group         = aws_cloudwatch_log_group.cw_web_lg.name
           awslogs-region        = var.aws_region
           awslogs-stream-prefix = "web"
         }
@@ -168,7 +236,7 @@ resource "aws_ecs_task_definition" "mssql_task" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = aws_cloudwatch_log_group.cw_lg.name
+          awslogs-group         = aws_cloudwatch_log_group.cw_mssql_lg.name
           awslogs-region        = var.aws_region
           awslogs-stream-prefix = "mssql"
         }
@@ -200,7 +268,7 @@ resource "aws_ecs_task_definition" "mssql_migrator_task" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = aws_cloudwatch_log_group.cw_lg.name
+          awslogs-group         = aws_cloudwatch_log_group.cw_mssql_lg.name
           awslogs-region        = var.aws_region
           awslogs-stream-prefix = "mssql-migrator"
         }
