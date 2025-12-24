@@ -49,6 +49,28 @@ services:
     networks:
       - cunetwork
 
+  courses-worker:
+    image: courses-worker
+    container_name: courses-worker
+    hostname: courses-worker
+    depends_on:
+      mssql:
+        condition: service_healthy
+      mssql-migrator:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: curl --fail http://localhost:80/health/readiness || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    build:
+      context: .
+      dockerfile: src/Courses.Worker/Dockerfile
+    networks:
+      - cunetwork
+
   departments-api:
     image: departments-api
     container_name: departments-api
