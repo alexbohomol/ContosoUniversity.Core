@@ -6,6 +6,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\ContosoUniversity.ApiClients\ContosoUniversity.ApiClients.csproj" />
+        <ProjectReference Include="..\ContosoUniversity.Application\ContosoUniversity.Application.csproj" />
         <ProjectReference Include="..\ContosoUniversity.Messaging.Contracts\ContosoUniversity.Messaging.Contracts.csproj" />
         <ProjectReference Include="..\ContosoUniversity.SharedKernel\ContosoUniversity.SharedKernel.csproj" />
     </ItemGroup>
