@@ -95,6 +95,8 @@ jobs:
             proj_path: test/integration/ContosoUniversity.Mvc.IntegrationTests
           - title: Courses.Api
             proj_path: test/integration/Courses.Api.IntegrationTests
+          - title: Courses.Worker
+            proj_path: test/integration/Courses.Worker.IntegrationTests
           - title: Departments.Api
             proj_path: test/integration/Departments.Api.IntegrationTests
           - title: Departments.Worker
