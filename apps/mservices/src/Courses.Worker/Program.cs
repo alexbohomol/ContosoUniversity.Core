@@ -1,5 +1,6 @@
 using ContosoUniversity.Data;
 
+using Courses.Core;
 using Courses.Data.Writes;
 
 using HealthChecks.UI.Client;
@@ -12,10 +13,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHealthChecks();
 builder.Services.AddDataInfrastructure();
 builder.Services.AddCoursesSchemaWrites();
+
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(IAssemblyMarker).Assembly);
+});
+
+builder.Services.AddOptions<RabbitMqTransportOptions>();
 builder.Services.AddMassTransit(x =>
 {
-    // x.AddConsumer<DepartmentDeletedEventHandler>()
-    //     .Endpoint(cfg => cfg.Name = "department-deleted-event-handler-courses");
+    x.AddConsumer<DepartmentDeletedEventHandler>()
+        .Endpoint(cfg => cfg.Name = "department-deleted-event-handler-courses");
 
     x.UsingRabbitMq((ctx, cfg) =>
     {

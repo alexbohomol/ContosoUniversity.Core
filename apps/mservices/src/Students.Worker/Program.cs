@@ -7,12 +7,13 @@ using MassTransit;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 using Students.Data.Writes;
-using Students.Worker;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHealthChecks();
 builder.Services.AddDataInfrastructure();
 builder.Services.AddStudentsSchemaWrites();
+
+builder.Services.AddOptions<RabbitMqTransportOptions>();
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<CourseDeletedEventHandler>()

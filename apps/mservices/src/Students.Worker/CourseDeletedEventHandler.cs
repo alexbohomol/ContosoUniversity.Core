@@ -1,11 +1,9 @@
-namespace Students.Worker;
-
 using ContosoUniversity.Messaging.Contracts;
 
-using Core;
-using Core.Domain;
-
 using MassTransit;
+
+using Students.Core;
+using Students.Core.Domain;
 
 internal class CourseDeletedEventHandler(
     IStudentsRwRepository repository,

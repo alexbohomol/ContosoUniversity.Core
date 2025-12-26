@@ -1,9 +1,7 @@
-namespace Departments.Worker;
-
 using ContosoUniversity.Messaging.Contracts;
 
-using Core;
-using Core.Domain;
+using Departments.Core;
+using Departments.Core.Domain;
 
 using MassTransit;
 

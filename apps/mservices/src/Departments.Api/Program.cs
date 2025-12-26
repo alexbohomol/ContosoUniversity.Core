@@ -1,4 +1,3 @@
-using ContosoUniversity.ApiClients;
 using ContosoUniversity.Data;
 
 using Departments.Api.Models;
@@ -25,10 +24,7 @@ builder.Services.AddDepartmentsSchemaWrites();
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(IAssemblyMarker).Assembly);
-    // cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
 });
-
-builder.Services.AddCoursesApiClient();
 
 builder.Services.AddOptions<RabbitMqTransportOptions>();
 builder.Services.AddMassTransit(x =>

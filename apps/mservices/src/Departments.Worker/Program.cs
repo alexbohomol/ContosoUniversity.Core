@@ -1,7 +1,6 @@
 using ContosoUniversity.Data;
 
 using Departments.Data.Writes;
-using Departments.Worker;
 
 using HealthChecks.UI.Client;
 
@@ -13,6 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHealthChecks();
 builder.Services.AddDataInfrastructure();
 builder.Services.AddDepartmentsSchemaWrites();
+
+builder.Services.AddOptions<RabbitMqTransportOptions>();
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<CourseDeletedEventHandler>()

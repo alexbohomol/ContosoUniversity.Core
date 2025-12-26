@@ -10,6 +10,7 @@ using Domain;
 
 public interface ICoursesRwRepository : IRwRepository<Course>
 {
+    Task<Course[]> GetByDepartmentId(Guid departmentId, CancellationToken cancellationToken = default);
     Task<int> UpdateCourseCredits(int multiplier, CancellationToken cancellationToken = default);
     Task Remove(Guid[] entityIds, CancellationToken cancellationToken = default);
 }

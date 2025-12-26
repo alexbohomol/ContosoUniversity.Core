@@ -45,7 +45,6 @@ services:
       - ASPNETCORE_PORT=http://+:80
       - ASPNETCORE_URLS=http://+:80
       - SqlConnectionStringBuilder__DataSource=mssql
-      - CoursesApiSettings__BaseUrl=http://courses-api
     ports:
       - "5079:80"
     volumes:
