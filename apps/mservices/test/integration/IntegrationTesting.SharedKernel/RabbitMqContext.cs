@@ -1,11 +1,11 @@
-namespace Courses.Api.IntegrationTests;
+namespace IntegrationTesting.SharedKernel;
 
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 
-using IntegrationTesting.SharedKernel;
-
 using Testcontainers.RabbitMq;
+
+using Xunit;
 
 public class RabbitMqContext : IAsyncLifetime
 {

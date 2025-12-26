@@ -1,8 +1,4 @@
-namespace Courses.Api.IntegrationTests;
-
-using System;
-using System.IO;
-using System.Threading.Tasks;
+namespace IntegrationTesting.SharedKernel;
 
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
@@ -13,7 +9,7 @@ using Testcontainers.MsSql;
 
 using Xunit;
 
-public class InfrastructureContext : IAsyncLifetime
+public class MsSqlContext : IAsyncLifetime
 {
     private const string DatabaseDirectory = "../../../../../../../../database";
 

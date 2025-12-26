@@ -6,12 +6,14 @@ using ContosoUniversity.Messaging.Contracts;
 
 using FluentAssertions;
 
+using IntegrationTesting.SharedKernel;
+
 using Models;
 
 public class DeleteTests :
     IClassFixture<TestsConfiguration>,
-    IClassFixture<DefaultApplicationFactory>,
-    IClassFixture<InfrastructureContext>,
+    IClassFixture<DefaultApplicationFactory<IAssemblyMarker>>,
+    IClassFixture<MsSqlContext>,
     IClassFixture<RabbitMqContext>
 {
     private readonly HttpClient _httpClient;
@@ -19,8 +21,8 @@ public class DeleteTests :
 
     public DeleteTests(
         TestsConfiguration config,
-        DefaultApplicationFactory factory,
-        InfrastructureContext msSqlContext,
+        DefaultApplicationFactory<IAssemblyMarker> factory,
+        MsSqlContext msSqlContext,
         RabbitMqContext rabbitMqContext)
     {
         factory.RabbitMqConnectionSetterFunction = () => rabbitMqContext.ConnectionString;

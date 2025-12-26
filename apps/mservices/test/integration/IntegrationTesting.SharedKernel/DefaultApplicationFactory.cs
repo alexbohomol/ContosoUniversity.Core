@@ -1,6 +1,4 @@
-namespace Students.Worker.IntegrationTests;
-
-using System;
+namespace IntegrationTesting.SharedKernel;
 
 using MassTransit;
 
@@ -10,9 +8,8 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 
-using Students.Worker;
-
-public class DefaultApplicationFactory : WebApplicationFactory<IAssemblyMarker>
+public class DefaultApplicationFactory<TAssemblyMarker>
+    : WebApplicationFactory<TAssemblyMarker> where TAssemblyMarker : class
 {
     public Func<string> DataSourceSetterFunction = () => string.Empty;
     public Func<string> RabbitMqConnectionSetterFunction;

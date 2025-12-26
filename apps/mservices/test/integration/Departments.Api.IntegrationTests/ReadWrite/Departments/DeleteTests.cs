@@ -4,19 +4,21 @@ using System.Net;
 
 using FluentAssertions;
 
+using IntegrationTesting.SharedKernel;
+
 public class DeleteTests :
     IClassFixture<TestsConfiguration>,
-    IClassFixture<DefaultApplicationFactory>,
-    IClassFixture<InfrastructureContext>
+    IClassFixture<DefaultApplicationFactory<IAssemblyMarker>>,
+    IClassFixture<MsSqlContext>
 {
     private readonly HttpClient _httpClient;
 
     public DeleteTests(
         TestsConfiguration config,
-        DefaultApplicationFactory factory,
-        InfrastructureContext context)
+        DefaultApplicationFactory<IAssemblyMarker> factory,
+        MsSqlContext msSqlContext)
     {
-        factory.DataSourceSetterFunction = () => context.MsSqlDataSource;
+        factory.DataSourceSetterFunction = () => msSqlContext.MsSqlDataSource;
         factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         _httpClient = factory.CreateClient();
     }

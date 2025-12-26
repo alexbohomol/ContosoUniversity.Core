@@ -1,4 +1,4 @@
-namespace Courses.Api.IntegrationTests;
+namespace IntegrationTesting.SharedKernel;
 
 using System.Text;
 using System.Text.Json;
@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-internal class RabbitMqClient(string connectionString)
+public class RabbitMqClient(string connectionString)
 {
     private readonly ConnectionFactory _factory = new() { Uri = new Uri(connectionString) };
 
