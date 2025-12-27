@@ -11,6 +11,24 @@ public class RabbitMqClient(string connectionString)
 {
     private readonly ConnectionFactory _factory = new() { Uri = new Uri(connectionString) };
 
+    public async Task PublishAsync<TMessage>(string queueName, TMessage message) where TMessage : class
+    {
+        await using var connection = await _factory.CreateConnectionAsync();
+        await using var channel = await connection.CreateChannelAsync();
+
+        var envelope = new MessageEnvelope<TMessage> { Message = message };
+        var bodyJson = JsonSerializer.Serialize(envelope, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
+        var body = Encoding.UTF8.GetBytes(bodyJson);
+
+        await channel.BasicPublishAsync(
+            exchange: string.Empty,
+            routingKey: queueName,
+            body: body);
+    }
+
     public async Task<TMessage> TryConsumeAsync<TMessage>(string queueName) where TMessage : class
     {
         await using var connection = await _factory.CreateConnectionAsync();

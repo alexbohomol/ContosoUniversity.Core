@@ -1,6 +1,7 @@
 namespace IntegrationTesting.SharedKernel;
 
 using MassTransit;
+using MassTransit.Testing;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -30,7 +31,18 @@ public class DefaultApplicationFactory<TAssemblyMarker>
                     var rabbitUri = new Uri(RabbitMqConnectionSetterFunction());
                     options.Port = (ushort)rabbitUri.Port;
                 });
+
+                services.AddMassTransitTestHarness(x =>
+                {
+                    x.UsingRabbitMq((context, cfg) =>
+                    {
+                        cfg.Host(new Uri(RabbitMqConnectionSetterFunction()), _ => { });
+                        cfg.ConfigureEndpoints(context);
+                    });
+                });
             }
         });
     }
+
+    public ITestHarness TestHarness => Services.GetTestHarness();
 }
