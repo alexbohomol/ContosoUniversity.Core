@@ -1,6 +1,4 @@
-namespace Departments.Api.IntegrationTests;
-
-using System;
+namespace IntegrationTesting.SharedKernel;
 
 using Microsoft.Extensions.Configuration;
 
@@ -11,4 +9,6 @@ public class TestsConfiguration
         .Build();
 
     public Uri BaseAddressHttpsUrl => new(_configuration["PageBaseUrl:Https"]!);
+
+    public string ConnectionString(string name) => _configuration.GetConnectionString(name)!;
 }

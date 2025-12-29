@@ -11,7 +11,7 @@ internal class DbContextFactory(MsSqlContext msSqlContext, TestsConfiguration co
 {
     public ReadWriteContext CreateDbContext()
     {
-        var builder = new SqlConnectionStringBuilder(config.ConnectionString)
+        var builder = new SqlConnectionStringBuilder(config.ConnectionString("Courses-RW"))
         {
             DataSource = msSqlContext.MsSqlDataSource
         };
