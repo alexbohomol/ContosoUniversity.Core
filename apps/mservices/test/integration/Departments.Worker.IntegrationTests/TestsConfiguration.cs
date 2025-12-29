@@ -11,4 +11,6 @@ public class TestsConfiguration
         .Build();
 
     public Uri BaseAddressHttpsUrl => new(_configuration["PageBaseUrl:Https"]!);
+
+    public string ConnectionString(string name) => _configuration.GetConnectionString(name)!;
 }
