@@ -206,7 +206,5 @@ services:
     volumes:
       - ../../rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
       - ../../definitions.json:/etc/rabbitmq/definitions.json
-#      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-#      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
       - cunetwork
