@@ -24,12 +24,21 @@ jobs:
         - title: Courses.Api
           image_name: courses-api
           proj_path: src/Courses.Api
+        - title: Courses.Worker
+          image_name: courses-worker
+          proj_path: src/Courses.Worker
         - title: Departments.Api
           image_name: departments-api
           proj_path: src/Departments.Api
+        - title: Departments.Worker
+          image_name: departments-worker
+          proj_path: src/Departments.Worker
         - title: Students.Api
           image_name: students-api
           proj_path: src/Students.Api
+        - title: Students.Worker
+          image_name: students-worker
+          proj_path: src/Students.Worker
 
     steps:
       - name: Checkout repository
@@ -84,10 +93,22 @@ jobs:
           name: courses-api
           path: ${{ runner.temp }}
 
+    - name: Download artifact | courses-worker
+      uses: actions/download-artifact@v4
+      with:
+          name: courses-worker
+          path: ${{ runner.temp }}
+
     - name: Download artifact | departments-api
       uses: actions/download-artifact@v4
       with:
           name: departments-api
+          path: ${{ runner.temp }}
+
+    - name: Download artifact | departments-worker
+      uses: actions/download-artifact@v4
+      with:
+          name: departments-worker
           path: ${{ runner.temp }}
 
     - name: Download artifact | students-api
@@ -96,12 +117,21 @@ jobs:
           name: students-api
           path: ${{ runner.temp }}
 
+    - name: Download artifact | students-worker
+      uses: actions/download-artifact@v4
+      with:
+          name: students-worker
+          path: ${{ runner.temp }}
+
     - name: Load images
       run: |
         docker load --input ${{ runner.temp }}/cuweb.tar
         docker load --input ${{ runner.temp }}/courses-api.tar
+        docker load --input ${{ runner.temp }}/courses-worker.tar
         docker load --input ${{ runner.temp }}/departments-api.tar
+        docker load --input ${{ runner.temp }}/departments-worker.tar
         docker load --input ${{ runner.temp }}/students-api.tar
+        docker load --input ${{ runner.temp }}/students-worker.tar
         docker image ls -a
 
     - name: Run Docker Compose Up
@@ -131,13 +161,25 @@ jobs:
       if: always()
       run: curl http://localhost:5006/api/courses | jq .
 
+    - name: Curl to courses-worker
+      if: always()
+      run: curl http://localhost:5025/health/readiness | jq .
+
     - name: Curl to departments-api
       if: always()
       run: curl http://localhost:5079/api/departments | jq .
 
+    - name: Curl to departments-worker
+      if: always()
+      run: curl http://localhost:5036/health/readiness | jq .
+
     - name: Curl to students-api
       if: always()
       run: curl http://localhost:5110/api/students/enrolled/groups | jq .
+
+    - name: Curl to students-worker
+      if: always()
+      run: curl http://localhost:5037/health/readiness | jq .
 
     - name: Grab container logs | cuweb
       if: always()
@@ -155,13 +197,25 @@ jobs:
       if: always()
       run: docker logs courses-api
 
+    - name: Grab container logs | courses-worker
+      if: always()
+      run: docker logs courses-worker
+
     - name: Grab container logs | departments-api
       if: always()
       run: docker logs departments-api
 
+    - name: Grab container logs | departments-worker
+      if: always()
+      run: docker logs departments-worker
+
     - name: Grab container logs | students-api
       if: always()
       run: docker logs students-api
+
+    - name: Grab container logs | students-worker
+      if: always()
+      run: docker logs students-worker
 
     - name: Shut down Docker Infra
       run: docker compose down
@@ -200,10 +254,22 @@ jobs:
         name: courses-api
         path: ${{ runner.temp }}
 
+    - name: Download artifact | courses-worker
+      uses: actions/download-artifact@v4
+      with:
+        name: courses-worker
+        path: ${{ runner.temp }}
+
     - name: Download artifact | departments-api
       uses: actions/download-artifact@v4
       with:
         name: departments-api
+        path: ${{ runner.temp }}
+
+    - name: Download artifact | departments-worker
+      uses: actions/download-artifact@v4
+      with:
+        name: departments-worker
         path: ${{ runner.temp }}
 
     - name: Download artifact | students-api
@@ -212,12 +278,21 @@ jobs:
         name: students-api
         path: ${{ runner.temp }}
 
+    - name: Download artifact | students-worker
+      uses: actions/download-artifact@v4
+      with:
+        name: students-worker
+        path: ${{ runner.temp }}
+
     - name: Load images
       run: |
         docker load --input ${{ runner.temp }}/cuweb.tar
         docker load --input ${{ runner.temp }}/courses-api.tar
+        docker load --input ${{ runner.temp }}/courses-worker.tar
         docker load --input ${{ runner.temp }}/departments-api.tar
+        docker load --input ${{ runner.temp }}/departments-worker.tar
         docker load --input ${{ runner.temp }}/students-api.tar
+        docker load --input ${{ runner.temp }}/students-worker.tar
         docker image ls -a
 
     - name: Setup .NET
@@ -274,10 +349,22 @@ jobs:
         name: courses-api
         path: ${{ runner.temp }}
 
+    - name: Download artifact | courses-worker
+      uses: actions/download-artifact@v4
+      with:
+        name: courses-worker
+        path: ${{ runner.temp }}
+
     - name: Download artifact | departments-api
       uses: actions/download-artifact@v4
       with:
         name: departments-api
+        path: ${{ runner.temp }}
+
+    - name: Download artifact | departments-worker
+      uses: actions/download-artifact@v4
+      with:
+        name: departments-worker
         path: ${{ runner.temp }}
 
     - name: Download artifact | students-api
@@ -286,12 +373,21 @@ jobs:
         name: students-api
         path: ${{ runner.temp }}
 
+    - name: Download artifact | students-worker
+      uses: actions/download-artifact@v4
+      with:
+        name: students-worker
+        path: ${{ runner.temp }}
+
     - name: Load images
       run: |
         docker load --input ${{ runner.temp }}/cuweb.tar
         docker load --input ${{ runner.temp }}/courses-api.tar
+        docker load --input ${{ runner.temp }}/courses-worker.tar
         docker load --input ${{ runner.temp }}/departments-api.tar
+        docker load --input ${{ runner.temp }}/departments-worker.tar
         docker load --input ${{ runner.temp }}/students-api.tar
+        docker load --input ${{ runner.temp }}/students-worker.tar
         docker image ls -a
 
     - name: Setup .NET
