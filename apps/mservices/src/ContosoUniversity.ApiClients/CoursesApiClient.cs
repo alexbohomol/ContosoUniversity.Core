@@ -15,13 +15,6 @@ internal class CoursesApiClient(HttpClient client) : ICoursesApiClient
         return dto.ToDomain();
     }
 
-    public async Task<Course[]> GetByDepartmentId(Guid departmentExternalId, CancellationToken cancellationToken)
-    {
-        var dtos = await client.GetFromJsonAsync<CourseDto[]>($"api/courses/department/{departmentExternalId}", cancellationToken);
-
-        return dtos.Select(x => x.ToDomain()).ToArray();
-    }
-
     public async Task<Course[]> GetAll(CancellationToken cancellationToken)
     {
         var dtos = await client.GetFromJsonAsync<CourseDto[]>("api/courses", cancellationToken);

@@ -64,13 +64,6 @@ app.MapGet("/api/courses/{externalId:guid}",
         CancellationToken cancellationToken)
     => await repository.GetById(externalId, cancellationToken));
 
-app.MapGet("/api/courses/department/{departmentExternalId:guid}",
-    async (
-        Guid departmentExternalId,
-        [FromServices] ICoursesRoRepository repository,
-        CancellationToken cancellationToken)
-    => await repository.GetByDepartmentId(departmentExternalId, cancellationToken));
-
 app.MapGet("/api/courses/existsByCourseCode/{courseCode:int}",
     async (
         int courseCode,
