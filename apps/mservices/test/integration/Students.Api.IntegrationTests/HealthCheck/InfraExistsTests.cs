@@ -13,17 +13,17 @@ using Xunit;
 
 public class InfraExistsTests :
     IClassFixture<TestsConfiguration>,
-    IClassFixture<DefaultApplicationFactory>,
-    IClassFixture<InfrastructureContext>
+    IClassFixture<DefaultApplicationFactory<IAssemblyMarker>>,
+    IClassFixture<MsSqlContext>
 {
     private readonly HttpClient _httpClient;
 
     public InfraExistsTests(
         TestsConfiguration config,
-        DefaultApplicationFactory factory,
-        InfrastructureContext context)
+        DefaultApplicationFactory<IAssemblyMarker> factory,
+        MsSqlContext msSqlContext)
     {
-        factory.DataSourceSetterFunction = () => context.MsSqlDataSource;
+        factory.DataSourceSetterFunction = () => msSqlContext.MsSqlDataSource;
         factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         _httpClient = factory.CreateClient();
     }

@@ -10,7 +10,6 @@ public interface ICoursesApiClient
     //Read-Only
 
     Task<Course> GetById(Guid externalId, CancellationToken cancellationToken);
-    Task<Course[]> GetByDepartmentId(Guid departmentExternalId, CancellationToken cancellationToken);
     Task<Course[]> GetAll(CancellationToken cancellationToken);
     Task<bool> Exists(Guid externalId, CancellationToken cancellationToken);
     Task<bool> ExistsCourseCode(int courseCode, CancellationToken cancellationToken);

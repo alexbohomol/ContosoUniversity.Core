@@ -13,17 +13,20 @@ using Xunit;
 
 public class InfraExistsTests :
     IClassFixture<TestsConfiguration>,
-    IClassFixture<DefaultApplicationFactory>,
-    IClassFixture<InfrastructureContext>
+    IClassFixture<DefaultApplicationFactory<IAssemblyMarker>>,
+    IClassFixture<MsSqlContext>,
+    IClassFixture<RabbitMqContext>
 {
     private readonly HttpClient _httpClient;
 
     public InfraExistsTests(
         TestsConfiguration config,
-        DefaultApplicationFactory factory,
-        InfrastructureContext context)
+        DefaultApplicationFactory<IAssemblyMarker> factory,
+        MsSqlContext msSqlContext,
+        RabbitMqContext rabbitMqContext)
     {
-        factory.DataSourceSetterFunction = () => context.MsSqlDataSource;
+        factory.RabbitMqConnectionSetterFunction = () => rabbitMqContext.ConnectionString;
+        factory.DataSourceSetterFunction = () => msSqlContext.MsSqlDataSource;
         factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         _httpClient = factory.CreateClient();
     }
@@ -33,6 +36,7 @@ public class InfraExistsTests :
     [InlineData("/health/liveness")]
     public async Task Health_ReturnsHealthy(string healthUrl)
     {
+        await Task.Delay(1000);
         HttpResponseMessage response = await _httpClient.GetAsync(healthUrl);
 
         response.Should().BeSuccessful();
@@ -40,19 +44,32 @@ public class InfraExistsTests :
 
         var report = await response.Content.ReadFromJsonAsync<UIHealthReport>(JsonSerializerOptionsBuilder.HealthChecks);
 
-        report.ShouldBeHealthy(
-            expectedCheckNames:
-            [
-                "sql-courses-reads",
-                "sql-courses-writes"
-            ],
-            expectedTags:
-            [
-                "db",
-                "sql",
-                "courses",
-                "reads",
-                "writes"
-            ]);
+        report.Should().NotBeNull();
+        report.Status.Should().Be(UIHealthStatus.Healthy);
+        report.Entries.Should().NotBeEmpty();
+        report.Entries.Keys.Should().BeEquivalentTo([
+            "sql-courses-reads",
+            "sql-courses-writes",
+            "masstransit-bus"
+        ]);
+        report.Entries["sql-courses-reads"].Status.Should().Be(UIHealthStatus.Healthy);
+        report.Entries["sql-courses-reads"].Tags.Should().BeEquivalentTo([
+            "db",
+            "sql",
+            "courses",
+            "reads"
+        ]);
+        report.Entries["sql-courses-writes"].Status.Should().Be(UIHealthStatus.Healthy);
+        report.Entries["sql-courses-writes"].Tags.Should().BeEquivalentTo([
+            "db",
+            "sql",
+            "courses",
+            "writes"
+        ]);
+        report.Entries["masstransit-bus"].Status.Should().Be(UIHealthStatus.Healthy);
+        report.Entries["masstransit-bus"].Tags.Should().BeEquivalentTo([
+            "ready",
+            "masstransit"
+        ]);
     }
 }

@@ -1,0 +1,48 @@
+namespace IntegrationTesting.SharedKernel;
+
+using MassTransit;
+using MassTransit.Testing;
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.DependencyInjection;
+
+public class DefaultApplicationFactory<TAssemblyMarker>
+    : WebApplicationFactory<TAssemblyMarker> where TAssemblyMarker : class
+{
+    public Func<string> DataSourceSetterFunction = () => string.Empty;
+    public Func<string> RabbitMqConnectionSetterFunction;
+
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.ConfigureTestServices(services =>
+        {
+            services.Configure<SqlConnectionStringBuilder>(options =>
+            {
+                options.DataSource = DataSourceSetterFunction();
+            });
+
+            if (RabbitMqConnectionSetterFunction is not null)
+            {
+                services.Configure<RabbitMqTransportOptions>(options =>
+                {
+                    var rabbitUri = new Uri(RabbitMqConnectionSetterFunction());
+                    options.Port = (ushort)rabbitUri.Port;
+                });
+
+                services.AddMassTransitTestHarness(x =>
+                {
+                    x.UsingRabbitMq((context, cfg) =>
+                    {
+                        cfg.Host(new Uri(RabbitMqConnectionSetterFunction()), _ => { });
+                        cfg.ConfigureEndpoints(context);
+                    });
+                });
+            }
+        });
+    }
+
+    public ITestHarness TestHarness => Services.GetTestHarness();
+}

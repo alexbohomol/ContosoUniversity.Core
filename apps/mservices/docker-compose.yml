@@ -14,6 +14,8 @@ services:
         condition: service_healthy
       students-api:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     healthcheck:
       test: curl --fail http://localhost:80/health/readiness || exit 1
       interval: 5s
@@ -34,6 +36,8 @@ services:
         condition: service_healthy
       mssql-migrator:
         condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
     healthcheck:
       test: curl --fail http://localhost:80/health/readiness || exit 1
       interval: 5s
@@ -42,6 +46,28 @@ services:
     build:
       context: .
       dockerfile: src/Courses.Api/Dockerfile
+    networks:
+      - cunetwork
+
+  courses-worker:
+    image: courses-worker
+    container_name: courses-worker
+    hostname: courses-worker
+    depends_on:
+      mssql:
+        condition: service_healthy
+      mssql-migrator:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: curl --fail http://localhost:80/health/readiness || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    build:
+      context: .
+      dockerfile: src/Courses.Worker/Dockerfile
     networks:
       - cunetwork
 
@@ -54,6 +80,8 @@ services:
         condition: service_healthy
       mssql-migrator:
         condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
     healthcheck:
       test: curl --fail http://localhost:80/health/readiness || exit 1
       interval: 5s
@@ -62,6 +90,28 @@ services:
     build:
       context: .
       dockerfile: src/Departments.Api/Dockerfile
+    networks:
+      - cunetwork
+
+  departments-worker:
+    image: departments-worker
+    container_name: departments-worker
+    hostname: departments-worker
+    depends_on:
+      mssql:
+        condition: service_healthy
+      mssql-migrator:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: curl --fail http://localhost:80/health/readiness || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    build:
+      context: .
+      dockerfile: src/Departments.Worker/Dockerfile
     networks:
       - cunetwork
 
@@ -74,6 +124,8 @@ services:
         condition: service_healthy
       mssql-migrator:
         condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
     healthcheck:
       test: curl --fail http://localhost:80/health/readiness || exit 1
       interval: 5s
@@ -82,6 +134,28 @@ services:
     build:
       context: .
       dockerfile: src/Students.Api/Dockerfile
+    networks:
+      - cunetwork
+
+  students-worker:
+    image: students-worker
+    container_name: students-worker
+    hostname: students-worker
+    depends_on:
+      mssql:
+        condition: service_healthy
+      mssql-migrator:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: curl --fail http://localhost:80/health/readiness || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    build:
+      context: .
+      dockerfile: src/Students.Worker/Dockerfile
     networks:
       - cunetwork
 
@@ -115,3 +189,22 @@ services:
       - ../../database:/scripts:ro
     working_dir: /scripts
     entrypoint: /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P '<YourStrong!Passw0rd>' -i 'db-init.sql'
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 2s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    volumes:
+      - ../../rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ../../definitions.json:/etc/rabbitmq/definitions.json
+    networks:
+      - cunetwork

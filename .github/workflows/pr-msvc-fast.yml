@@ -91,14 +91,20 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - title: ContosoUniversity.Mvc
-          proj_path: test/integration/ContosoUniversity.Mvc.IntegrationTests
-        - title: Courses.Api
-          proj_path: test/integration/Courses.Api.IntegrationTests
-        - title: Departments.Api
-          proj_path: test/integration/Departments.Api.IntegrationTests
-        - title: Students.Api
-          proj_path: test/integration/Students.Api.IntegrationTests
+          - title: ContosoUniversity.Mvc
+            proj_path: test/integration/ContosoUniversity.Mvc.IntegrationTests
+          - title: Courses.Api
+            proj_path: test/integration/Courses.Api.IntegrationTests
+          - title: Courses.Worker
+            proj_path: test/integration/Courses.Worker.IntegrationTests
+          - title: Departments.Api
+            proj_path: test/integration/Departments.Api.IntegrationTests
+          - title: Departments.Worker
+            proj_path: test/integration/Departments.Worker.IntegrationTests
+          - title: Students.Api
+            proj_path: test/integration/Students.Api.IntegrationTests
+          - title: Students.Worker
+            proj_path: test/integration/Students.Worker.IntegrationTests
 
     steps:
     - name: Checkout code

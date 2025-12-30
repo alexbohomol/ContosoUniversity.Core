@@ -16,6 +16,13 @@ using Microsoft.EntityFrameworkCore;
 
 internal class ReadWriteRepository(ReadWriteContext dbContext) : EfRwRepository<Course>(dbContext), ICoursesRwRepository
 {
+    public async Task<Course[]> GetByDepartmentId(Guid departmentId, CancellationToken cancellationToken = default)
+    {
+        return await DbSet
+            .Where(x => x.DepartmentId == departmentId)
+            .ToArrayAsync(cancellationToken);
+    }
+
     public Task<int> UpdateCourseCredits(int multiplier, CancellationToken cancellationToken = default)
     {
         return DbContext.Database

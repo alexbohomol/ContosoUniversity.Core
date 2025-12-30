@@ -1,0 +1,180 @@
+{
+    "rabbit_version": "4.2.2",
+    "rabbitmq_version": "4.2.2",
+    "product_name": "RabbitMQ",
+    "product_version": "4.2.2",
+    "rabbitmq_definition_format": "cluster",
+    "original_cluster_name": "rabbit@rabbitmq",
+    "explanation": "Definitions of cluster 'rabbit@rabbitmq'",
+    "users": [
+        {
+            "name": "guest",
+            "password_hash": "2qwBL3WlLOZHS9FpLmSxacIRR+ZDYWwvglNPHBROAdLXSuyp",
+            "hashing_algorithm": "rabbit_password_hashing_sha256",
+            "tags": [
+                "administrator"
+            ],
+            "limits": {}
+        }
+    ],
+    "vhosts": [
+        {
+            "name": "/",
+            "description": "Default virtual host",
+            "metadata": {
+                "description": "Default virtual host",
+                "tags": [],
+                "default_queue_type": "classic"
+            },
+            "tags": []
+        }
+    ],
+    "permissions": [
+        {
+            "user": "guest",
+            "vhost": "/",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+        }
+    ],
+    "topic_permissions": [],
+    "parameters": [],
+    "global_parameters": [
+        {
+            "name": "cluster_tags",
+            "value": []
+        },
+        {
+            "name": "internal_cluster_id",
+            "value": "rabbitmq-cluster-id-3Q8oRZVncYM8v7DIoiWgQg"
+        }
+    ],
+    "policies": [],
+    "queues": [
+        {
+            "name": "course-deleted-event-handler-students",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {
+                "x-queue-type": "classic"
+            }
+        },
+        {
+            "name": "course-deleted-event-handler-departments",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {
+                "x-queue-type": "classic"
+            }
+        },
+        {
+            "name": "department-deleted-event-handler-courses",
+            "vhost": "/",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {
+                "x-queue-type": "classic"
+            }
+        }
+    ],
+    "exchanges": [
+        {
+            "name": "course-deleted-event",
+            "vhost": "/",
+            "type": "fanout",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        },
+        {
+            "name": "course-deleted-event-handler-departments",
+            "vhost": "/",
+            "type": "fanout",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        },
+        {
+            "name": "course-deleted-event-handler-students",
+            "vhost": "/",
+            "type": "fanout",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        },
+        {
+            "name": "department-deleted-event",
+            "vhost": "/",
+            "type": "fanout",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        },
+        {
+            "name": "department-deleted-event-handler-courses",
+            "vhost": "/",
+            "type": "fanout",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        }
+    ],
+    "bindings": [
+        {
+            "source": "course-deleted-event",
+            "vhost": "/",
+            "destination": "course-deleted-event-handler-students",
+            "destination_type": "exchange",
+            "routing_key": "",
+            "arguments": {}
+        },
+        {
+            "source": "course-deleted-event-handler-departments",
+            "vhost": "/",
+            "destination": "course-deleted-event-handler-departments",
+            "destination_type": "queue",
+            "routing_key": "",
+            "arguments": {}
+        },
+        {
+            "source": "department-deleted-event-handler-courses",
+            "vhost": "/",
+            "destination": "department-deleted-event-handler-courses",
+            "destination_type": "queue",
+            "routing_key": "",
+            "arguments": {}
+        },
+        {
+            "source": "course-deleted-event-handler-students",
+            "vhost": "/",
+            "destination": "course-deleted-event-handler-students",
+            "destination_type": "queue",
+            "routing_key": "",
+            "arguments": {}
+        },
+        {
+            "source": "department-deleted-event",
+            "vhost": "/",
+            "destination": "department-deleted-event-handler-courses",
+            "destination_type": "exchange",
+            "routing_key": "",
+            "arguments": {}
+        },
+        {
+            "source": "course-deleted-event",
+            "vhost": "/",
+            "destination": "course-deleted-event-handler-departments",
+            "destination_type": "exchange",
+            "routing_key": "",
+            "arguments": {}
+        }
+    ]
+}

@@ -1,0 +1,9 @@
+{
+  "ConnectionStrings": {
+    "Departments-RW": "Data Source=localhost,1477;Initial Catalog=ContosoUniversity;User ID=departments_rw;Password=departmentsRW-P@$$w0rd;Multiple Active Result Sets=True;Trust Server Certificate=True"
+  },
+  "PageBaseUrl": {
+    "Http": "http://localhost:1234",
+    "Https": "https://localhost:12345"
+  }
+}

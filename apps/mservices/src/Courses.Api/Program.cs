@@ -8,6 +8,8 @@ using Courses.Data.Writes;
 
 using HealthChecks.UI.Client;
 
+using MassTransit;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -22,7 +24,15 @@ builder.Services.AddCoursesSchemaWrites();
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(IAssemblyMarker).Assembly);
-    // cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+});
+
+builder.Services.AddOptions<RabbitMqTransportOptions>();
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((ctx, cfg) =>
+    {
+        cfg.ConfigureEndpoints(ctx);
+    });
 });
 
 var app = builder.Build();
@@ -53,13 +63,6 @@ app.MapGet("/api/courses/{externalId:guid}",
         [FromServices] ICoursesRoRepository repository,
         CancellationToken cancellationToken)
     => await repository.GetById(externalId, cancellationToken));
-
-app.MapGet("/api/courses/department/{departmentExternalId:guid}",
-    async (
-        Guid departmentExternalId,
-        [FromServices] ICoursesRoRepository repository,
-        CancellationToken cancellationToken)
-    => await repository.GetByDepartmentId(departmentExternalId, cancellationToken));
 
 app.MapGet("/api/courses/existsByCourseCode/{courseCode:int}",
     async (

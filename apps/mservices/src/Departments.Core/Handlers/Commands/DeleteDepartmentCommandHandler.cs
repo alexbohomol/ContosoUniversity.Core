@@ -4,9 +4,15 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ContosoUniversity.Messaging.Contracts;
+
+using MassTransit;
+
 using MediatR;
 
-internal class DeleteDepartmentCommandHandler(IDepartmentsRwRepository departmentsRepository)
+internal class DeleteDepartmentCommandHandler(
+    IDepartmentsRwRepository departmentsRepository,
+    IPublishEndpoint bus)
     : IRequestHandler<DeleteDepartmentCommand>
 {
     public async Task Handle(
@@ -17,26 +23,11 @@ internal class DeleteDepartmentCommandHandler(IDepartmentsRwRepository departmen
 
         await departmentsRepository.Remove(request.Id, cancellationToken);
 
-        // /*
-        //  * TODO: should be re-designed:
-        //  * - we make dependent call after saving domain entity (domain transaction completes)
-        //  * - this will cause inconsistency over boundaries when this call will fail
-        //  * - notice 'courses/departments/:id' url here - indicator of wrong established boundaries
-        //  */
-        // Guid[] relatedCoursesIds = Enumerable
-        //     .ToArray<Guid>((await coursesApiClient.GetByDepartmentId(request.Id, cancellationToken))
-        //         .Select(x => x.ExternalId));
-        //
-        // /*
-        //  * - remove related courses
-        //  * - withdraw enrolled students
-        //  * - remove related assignments (restrain assigned instructors)
-        //  */
-        // if (relatedCoursesIds.Any())
-        // {
-        //     await mediator.Publish(
-        //         new DepartmentDeletedNotification(relatedCoursesIds),
-        //         cancellationToken);
-        // }
+        /*
+         * remove courses and their related assignments and enrollments
+         */
+        await bus.Publish(
+            new DepartmentDeletedEvent(request.Id),
+            cancellationToken);
     }
 }

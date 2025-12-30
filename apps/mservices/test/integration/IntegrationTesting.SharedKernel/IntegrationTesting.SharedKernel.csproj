@@ -8,6 +8,13 @@
         <PackageReference Include="AspNetCore.HealthChecks.UI" />
         <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
         <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="MassTransit.RabbitMQ" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+        <PackageReference Include="Microsoft.Data.SqlClient" />
+        <PackageReference Include="RabbitMQ.Client" />
+        <PackageReference Include="Testcontainers.MsSql" />
+        <PackageReference Include="Testcontainers.RabbitMq" />
+        <PackageReference Include="xunit" />
     </ItemGroup>
 
 </Project>

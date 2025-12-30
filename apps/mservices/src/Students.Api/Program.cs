@@ -22,7 +22,6 @@ builder.Services.AddStudentsSchemaWrites();
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(IAssemblyMarker).Assembly);
-    // cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
 });
 
 var app = builder.Build();

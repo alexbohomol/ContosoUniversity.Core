@@ -27,6 +27,18 @@ services:
       - ~/.aspnet/https:/root/.aspnet/https:ro
       - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
 
+  courses-worker:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_PORT=http://+:80
+      - ASPNETCORE_URLS=http://+:80
+      - SqlConnectionStringBuilder__DataSource=mssql
+    ports:
+      - "5025:80"
+    volumes:
+      - ~/.aspnet/https:/root/.aspnet/https:ro
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+
   departments-api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -39,6 +51,18 @@ services:
       - ~/.aspnet/https:/root/.aspnet/https:ro
       - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
 
+  departments-worker:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_PORT=http://+:80
+      - ASPNETCORE_URLS=http://+:80
+      - SqlConnectionStringBuilder__DataSource=mssql
+    ports:
+      - "5036:80"
+    volumes:
+      - ~/.aspnet/https:/root/.aspnet/https:ro
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+
   students-api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -47,6 +71,18 @@ services:
       - SqlConnectionStringBuilder__DataSource=mssql
     ports:
       - "5110:80"
+    volumes:
+      - ~/.aspnet/https:/root/.aspnet/https:ro
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+
+  students-worker:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_PORT=http://+:80
+      - ASPNETCORE_URLS=http://+:80
+      - SqlConnectionStringBuilder__DataSource=mssql
+    ports:
+      - "5037:80"
     volumes:
       - ~/.aspnet/https:/root/.aspnet/https:ro
       - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
