@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 internal class DbContextFactory(MsSqlContext msSqlContext, TestsConfiguration config)
 {
-    public ReadWriteContext CreateDbContext()
+    public ReadWriteContext CreateDbContext(string name)
     {
-        var builder = new SqlConnectionStringBuilder(config.ConnectionString("Courses-RW"))
+        var builder = new SqlConnectionStringBuilder(config.ConnectionString(name))
         {
             DataSource = msSqlContext.MsSqlDataSource
         };

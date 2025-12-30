@@ -4,8 +4,6 @@ using ContosoUniversity.Messaging.Contracts;
 
 using Core.Domain;
 
-using Data.Writes;
-
 using FluentAssertions;
 
 using IntegrationTesting.SharedKernel;
@@ -22,8 +20,8 @@ public class DepartmentDeletedEventHandlerTests :
 {
     private const int ProcessingTimeSlot = 500;
 
-    private readonly ReadWriteContext _context;
     private readonly ITestHarness _testHarness;
+    private readonly DbContextFactory _dbContextFactory;
 
     public DepartmentDeletedEventHandlerTests(
         DefaultApplicationFactory<IAssemblyMarker> factory,
@@ -35,8 +33,7 @@ public class DepartmentDeletedEventHandlerTests :
         factory.DataSourceSetterFunction = () => msSqlContext.MsSqlDataSource;
         factory.ClientOptions.BaseAddress = config.BaseAddressHttpsUrl;
         _testHarness = factory.TestHarness;
-        var dbContextFactory = new DbContextFactory(msSqlContext, config);
-        _context = dbContextFactory.CreateDbContext();
+        _dbContextFactory = new DbContextFactory(msSqlContext, config);
     }
 
     [Fact]
@@ -60,7 +57,11 @@ public class DepartmentDeletedEventHandlerTests :
 
         // Assert database side effects
 
-        var coursesFoundInDb = await _context.Set<Course>().AnyAsync(x => x.DepartmentId == departmentId);
+        bool coursesFoundInDb;
+        using (var context = _dbContextFactory.CreateDbContext("Courses-RW"))
+        {
+            coursesFoundInDb = await context.Set<Course>().AnyAsync(x => x.DepartmentId == departmentId);
+        }
         coursesFoundInDb.Should().BeFalse();
     }
 
@@ -69,8 +70,11 @@ public class DepartmentDeletedEventHandlerTests :
     {
         // Arrange
         var course = Course.Create(1001, "Test Course 1", 3, Guid.NewGuid());
-        _context.Add(course);
-        await _context.SaveChangesAsync();
+        using (var context = _dbContextFactory.CreateDbContext("Courses-RW"))
+        {
+            context.Add(course);
+            await context.SaveChangesAsync();
+        }
 
         // Act
         await _testHarness.Bus.Publish(new DepartmentDeletedEvent(course.DepartmentId));
@@ -91,7 +95,11 @@ public class DepartmentDeletedEventHandlerTests :
 
         // Assert database side effects
 
-        var coursesFoundInDb = await _context.Set<Course>().AnyAsync(x => x.DepartmentId == course.DepartmentId);
+        bool coursesFoundInDb;
+        using (var context = _dbContextFactory.CreateDbContext("Courses-RW"))
+        {
+            coursesFoundInDb = await context.Set<Course>().AnyAsync(x => x.DepartmentId == course.DepartmentId);
+        }
         coursesFoundInDb.Should().BeFalse();
     }
 
@@ -103,8 +111,11 @@ public class DepartmentDeletedEventHandlerTests :
         var course1 = Course.Create(1001, "Test Course 1", 3, departmentId);
         var course2 = Course.Create(1002, "Test Course 2", 3, departmentId);
         var course3 = Course.Create(1003, "Test Course 3", 3, departmentId);
-        _context.AddRange(course1, course2, course3);
-        await _context.SaveChangesAsync();
+        using (var context = _dbContextFactory.CreateDbContext("Courses-RW"))
+        {
+            context.AddRange(course1, course2, course3);
+            await context.SaveChangesAsync();
+        }
 
         // Act
         await _testHarness.Bus.Publish(new DepartmentDeletedEvent(departmentId));
@@ -132,7 +143,11 @@ public class DepartmentDeletedEventHandlerTests :
 
         // Assert database side effects
 
-        var coursesFoundInDb = await _context.Set<Course>().AnyAsync(x => x.DepartmentId == departmentId);
+        bool coursesFoundInDb;
+        using (var context = _dbContextFactory.CreateDbContext("Courses-RW"))
+        {
+            coursesFoundInDb = await context.Set<Course>().AnyAsync(x => x.DepartmentId == departmentId);
+        }
         coursesFoundInDb.Should().BeFalse();
     }
 }

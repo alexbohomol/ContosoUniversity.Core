@@ -37,7 +37,7 @@ public class CourseDeletedEventHandlerTests :
     }
 
     [Fact]
-    public async Task NoAssignedInstructors_NoAssignedInstructors()
+    public async Task NoAssignedInstructors_NoDatabaseChanges()
     {
         // Arrange
         var courseId = Guid.NewGuid();

@@ -71,10 +71,10 @@ public class RabbitMqClient(string connectionString)
 
         return await tcs.Task;
     }
+}
 
-    internal class MessageEnvelope<TMessage>
-    {
-        [JsonPropertyName("message")]
-        public TMessage Message { get; set; }
-    }
+file class MessageEnvelope<TMessage>
+{
+    [JsonPropertyName("message")]
+    public required TMessage Message { get; init; }
 }

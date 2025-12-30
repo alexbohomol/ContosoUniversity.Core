@@ -39,7 +39,7 @@ public class CourseDeletedEventHandlerTests :
     }
 
     [Fact]
-    public async Task NoEnrolledStudents_NoEnrolledStudents()
+    public async Task NoEnrolledStudents_NoDatabaseChanges()
     {
         // Arrange
         var courseId = Guid.NewGuid();
@@ -58,12 +58,12 @@ public class CourseDeletedEventHandlerTests :
 
         // Assert database side effects
 
-        bool instructorsFoundInDb;
+        bool studentsFoundInDb;
         using (var context = _dbContextFactory.CreateDbContext("Students-RW"))
         {
-            instructorsFoundInDb = await context.Set<Student>().AnyAsync(x => x.Enrollments.Any(ca => ca.CourseId == courseId));
+            studentsFoundInDb = await context.Set<Student>().AnyAsync(x => x.Enrollments.Any(ca => ca.CourseId == courseId));
         }
-        instructorsFoundInDb.Should().BeFalse();
+        studentsFoundInDb.Should().BeFalse();
     }
 
     [Fact]
@@ -97,13 +97,13 @@ public class CourseDeletedEventHandlerTests :
 
         // Assert database side effects
 
-        Student studentFromDb;
+        Student studentsFoundInDb;
         using (var context = _dbContextFactory.CreateDbContext("Students-RW"))
         {
-            studentFromDb = await context.Set<Student>().SingleAsync(x => x.ExternalId == student.ExternalId);
+            studentsFoundInDb = await context.Set<Student>().SingleAsync(x => x.ExternalId == student.ExternalId);
         }
-        studentFromDb.Should().NotBeNull();
-        studentFromDb.Enrollments.Should().HaveCount(2);
-        studentFromDb.Enrollments.Should().NotContain(ca => ca.CourseId == courseId);
+        studentsFoundInDb.Should().NotBeNull();
+        studentsFoundInDb.Enrollments.Should().HaveCount(2);
+        studentsFoundInDb.Enrollments.Should().NotContain(ca => ca.CourseId == courseId);
     }
 }
