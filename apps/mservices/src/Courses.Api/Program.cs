@@ -24,7 +24,6 @@ builder.Services.AddCoursesSchemaWrites();
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(IAssemblyMarker).Assembly);
-    // cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
 });
 
 builder.Services.AddOptions<RabbitMqTransportOptions>();
