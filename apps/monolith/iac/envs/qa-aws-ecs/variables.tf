@@ -38,3 +38,27 @@ variable "local_ip" {
   type        = string
   sensitive   = true
 }
+
+variable "otel_exporter_otlp_endpoint" {
+  description = "Value for OTEL_EXPORTER_OTLP_ENDPOINT"
+  type        = string
+  default     = "https://otlp-gateway-prod-eu-west-2.grafana.net/otlp"
+}
+
+variable "otel_exporter_otlp_protocol" {
+  description = "Value for OTEL_EXPORTER_OTLP_PROTOCOL"
+  type        = string
+  default     = "http/protobuf"
+}
+
+variable "otel_exporter_otlp_headers" {
+  description = "Value for OTEL_EXPORTER_OTLP_HEADERS"
+  type        = string
+  sensitive   = true
+}
+
+variable "otel_metric_export_interval" {
+  description = "Value for OTEL_METRIC_EXPORT_INTERVAL"
+  type        = string
+  default     = 15000
+}

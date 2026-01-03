@@ -170,7 +170,11 @@ resource "aws_ecs_task_definition" "web_task" {
       environment = [
         { name = "ENVIRONMENT", value = var.environment },
         { name = "DOTNET_ENVIRONMENT", value = var.environment },
-        { name = "ASPNETCORE_ENVIRONMENT", value = var.environment }
+        { name = "ASPNETCORE_ENVIRONMENT", value = var.environment },
+        { name = "OTEL_EXPORTER_OTLP_ENDPOINT", value = var.otel_exporter_otlp_endpoint },
+        { name = "OTEL_EXPORTER_OTLP_PROTOCOL", value = var.otel_exporter_otlp_protocol },
+        { name = "OTEL_EXPORTER_OTLP_HEADERS", value = var.otel_exporter_otlp_headers },
+        { name = "OTEL_METRIC_EXPORT_INTERVAL", value = var.otel_metric_export_interval }
       ]
       healthCheck = {
         command = [
