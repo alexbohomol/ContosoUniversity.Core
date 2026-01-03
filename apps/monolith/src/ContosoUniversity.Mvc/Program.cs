@@ -100,6 +100,7 @@ builder.Services.AddOpenTelemetry()
                     context.Request.Path != "/health/readiness" &&
                     context.Request.Path != "/health/liveness";
             })
+            .AddSqlClientInstrumentation()
             .AddEntityFrameworkCoreInstrumentation()
             .AddOtlpExporter();
     })
@@ -107,6 +108,9 @@ builder.Services.AddOpenTelemetry()
     {
         metrics
             .AddAspNetCoreInstrumentation()
+            .AddSqlClientInstrumentation()
+            .AddProcessInstrumentation()
+            .AddRuntimeInstrumentation()
             .AddOtlpExporter();
     });
 
