@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
@@ -25,6 +26,10 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,7 +45,15 @@ if (!builder.Environment.IsDevelopment())
 
 builder.Host.UseSerilog((context, loggerConfiguration) =>
 {
-    loggerConfiguration.ReadFrom.Configuration(context.Configuration);
+    loggerConfiguration
+        .ReadFrom.Configuration(context.Configuration)
+        .WriteTo.OpenTelemetry(options =>
+        {
+            options.ResourceAttributes = new Dictionary<string, object>
+            {
+                ["service.name"] = "ContosoUniversity.Mvc"
+            };
+        });
 });
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
@@ -75,6 +88,31 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddExceptionHandler<EntityNotFoundExceptionHandler>();
 builder.Services.AddExceptionHandler<BadRequestExceptionHandler>();
 builder.Services.AddProblemDetails();
+
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(resource => resource.AddService("ContosoUniversity.Mvc"))
+    .WithTracing(tracing =>
+    {
+        tracing
+            .AddAspNetCoreInstrumentation(options =>
+            {
+                options.Filter = context =>
+                    context.Request.Path != "/health/readiness" &&
+                    context.Request.Path != "/health/liveness";
+            })
+            .AddSqlClientInstrumentation()
+            .AddEntityFrameworkCoreInstrumentation()
+            .AddOtlpExporter();
+    })
+    .WithMetrics(metrics =>
+    {
+        metrics
+            .AddAspNetCoreInstrumentation()
+            .AddSqlClientInstrumentation()
+            .AddProcessInstrumentation()
+            .AddRuntimeInstrumentation()
+            .AddOtlpExporter();
+    });
 
 var app = builder.Build();
 

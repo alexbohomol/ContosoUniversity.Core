@@ -44,6 +44,7 @@ jobs:
             -var="db_password=${{ secrets.DB_PASSWORD }}" \
             -var="db_init_script=db-init.sql" \
             -var="local_ip=NOT_USED" \
+            -var="otel_exporter_otlp_headers=${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}" \
             -out=tfplan
 
       - name: Terraform apply destroy

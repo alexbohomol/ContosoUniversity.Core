@@ -12,6 +12,8 @@ services:
         condition: service_healthy
       mssql-migrator:
         condition: service_completed_successfully
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://dashboard:18889
     healthcheck:
       test: curl --fail http://localhost:80/health/readiness || exit 1
       interval: 5s
@@ -20,6 +22,16 @@ services:
     build:
       context: .
       dockerfile: src/ContosoUniversity.Mvc/Dockerfile
+    networks:
+      - cunetwork
+
+  aspire-dashboard:
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:latest
+    container_name: dashboard
+    hostname: dashboard
+    ports:
+      - 18888:18888
+      - 18889:18889
     networks:
       - cunetwork
 
