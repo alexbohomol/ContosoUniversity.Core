@@ -59,6 +59,6 @@ variable "otel_exporter_otlp_headers" {
 
 variable "otel_metric_export_interval" {
   description = "Value for OTEL_METRIC_EXPORT_INTERVAL"
-  type        = string
+  type        = number
   default     = 15000
 }
