@@ -13,19 +13,17 @@ internal class EnrichMetricsWithMvcLabels : IMiddleware
         var tagsFeature = context.Features.Get<IHttpMetricsTagsFeature>();
         var routeValuesFeature = context.Features.Get<IRouteValuesFeature>();
 
-        if (tagsFeature is null || routeValuesFeature is null)
+        if (tagsFeature is not null && routeValuesFeature is not null)
         {
-            await next(context);
-        }
+            if (routeValuesFeature.RouteValues.TryGetValue("controller", out object controller))
+            {
+                tagsFeature.Tags.Add(new KeyValuePair<string, object>("mvc.controller", controller));
+            }
 
-        if (routeValuesFeature.RouteValues.TryGetValue("controller", out object controller))
-        {
-            tagsFeature.Tags.Add(new KeyValuePair<string, object>("mvc.controller", controller));
-        }
-
-        if (routeValuesFeature.RouteValues.TryGetValue("action", out object action))
-        {
-            tagsFeature.Tags.Add(new KeyValuePair<string, object>("mvc.action", action));
+            if (routeValuesFeature.RouteValues.TryGetValue("action", out object action))
+            {
+                tagsFeature.Tags.Add(new KeyValuePair<string, object>("mvc.action", action));
+            }
         }
 
         await next(context);
