@@ -10,8 +10,13 @@ internal class EnrichMetricsWithMvcLabels : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        var tagsFeature = context.Features.GetRequiredFeature<IHttpMetricsTagsFeature>();
-        var routeValuesFeature = context.Features.GetRequiredFeature<IRouteValuesFeature>();
+        var tagsFeature = context.Features.Get<IHttpMetricsTagsFeature>();
+        var routeValuesFeature = context.Features.Get<IRouteValuesFeature>();
+
+        if (tagsFeature is null || routeValuesFeature is null)
+        {
+            await next(context);
+        }
 
         if (routeValuesFeature.RouteValues.TryGetValue("controller", out object controller))
         {
