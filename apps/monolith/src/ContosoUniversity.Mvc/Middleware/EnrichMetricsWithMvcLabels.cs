@@ -5,27 +5,31 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Routing;
 
 internal class EnrichMetricsWithMvcLabels : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         var tagsFeature = context.Features.Get<IHttpMetricsTagsFeature>();
-        var routeValuesFeature = context.Features.Get<IRouteValuesFeature>();
-
-        if (tagsFeature is not null && routeValuesFeature is not null)
+        if (tagsFeature is not null)
         {
-            if (routeValuesFeature.RouteValues.TryGetValue("controller", out object controller))
-            {
-                tagsFeature.Tags.Add(new KeyValuePair<string, object>("mvc.controller", controller));
-            }
-
-            if (routeValuesFeature.RouteValues.TryGetValue("action", out object action))
-            {
-                tagsFeature.Tags.Add(new KeyValuePair<string, object>("mvc.action", action));
-            }
+            tagsFeature.TryAddRouteValue(context, "controller");
+            tagsFeature.TryAddRouteValue(context, "action");
         }
 
         await next(context);
+    }
+}
+
+static file class Extensions
+{
+    public static void TryAddRouteValue(this IHttpMetricsTagsFeature feature, HttpContext context, string name)
+    {
+        var value = context.GetRouteValue(name);
+        if (value is not null)
+        {
+            feature.Tags.Add(new KeyValuePair<string, object>($"mvc.{name}", value));
+        }
     }
 }
