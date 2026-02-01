@@ -85,6 +85,7 @@ builder.Services.AddMediatR(cfg =>
     cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
 });
 
+builder.Services.AddTransient<EnrichMetricsWithMvcLabels>();
 builder.Services.AddExceptionHandler<EntityNotFoundExceptionHandler>();
 builder.Services.AddExceptionHandler<BadRequestExceptionHandler>();
 builder.Services.AddProblemDetails();
@@ -145,7 +146,7 @@ app.UseRequestLocalization(new RequestLocalizationOptions
 });
 
 app.UseRouting();
-
+app.UseMiddleware<EnrichMetricsWithMvcLabels>();
 app.UseAuthorization();
 
 HealthCheckOptions checkOptions = new()
