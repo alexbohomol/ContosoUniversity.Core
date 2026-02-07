@@ -32,7 +32,6 @@ services:
     ports:
       - 18888:18888
       - 18889:18889
-      - 4318:4318
     networks:
       - cunetwork
 
