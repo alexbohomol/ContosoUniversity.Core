@@ -32,7 +32,7 @@ services:
     ports:
       - 18888:18888
       - 18889:18889
-      - 4318:4318
+      - 18890:18890
     networks:
       - cunetwork
 
@@ -51,6 +51,8 @@ services:
 
   otel-collector:
     image: otel/opentelemetry-collector
+    container_name: otel-collector
+    hostname: otel-collector
     volumes:
       - ./otel-collector-config.yaml:/etc/otelcol/config.yaml
     ports:
@@ -61,6 +63,8 @@ services:
       - 4317:4317 # OTLP gRPC receiver
       - 4318:4318 # OTLP http receiver
       - 55679:55679 # zpages extension
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://dashboard:18889
     networks:
       - cunetwork
 
