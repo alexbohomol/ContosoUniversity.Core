@@ -30,6 +30,8 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
+using Prometheus;
+
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -98,6 +100,7 @@ builder.Services.AddOpenTelemetry()
             .AddAspNetCoreInstrumentation(options =>
             {
                 options.Filter = context =>
+                    context.Request.Path != "/metrics" &&
                     context.Request.Path != "/health/readiness" &&
                     context.Request.Path != "/health/liveness";
             })
@@ -157,7 +160,8 @@ app.UseHealthChecks("/health/readiness", checkOptions);
 app.UseHealthChecks("/health/liveness", checkOptions);
 app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
-
+app.UseHttpMetrics();
+app.UseMetricServer();
 app.MapControllerRoute(
     "default",
     "{controller=Home}/{action=Index}/{id?}");
