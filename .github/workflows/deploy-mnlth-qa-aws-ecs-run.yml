@@ -120,7 +120,7 @@ jobs:
     needs: [run_mssql_migrator, get_image_tag]
     environment:
       name: qa-aws-ecs
-      url: http://${{ steps.get_dns_name.outputs.WEB_DNS_NAME }}
+      url: https://qa-aws-ecs.mnlth.university.contoso.name
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -153,17 +153,3 @@ jobs:
           cluster: contoso-mnlth-cluster
           desired-count: ${{ github.event.inputs.web_desired_count }}
           wait-for-service-stability: true
-
-      - name: ⚓️ Get DNS name of the ALB
-        id: get_dns_name
-        run: |
-          WEB_DNS_NAME=$(aws elbv2 describe-load-balancers \
-            --names contoso-mnlth-alb \
-            --region eu-central-1 \
-            --query 'LoadBalancers[0].DNSName' \
-            --output text)
-          echo "WEB_DNS_NAME=$WEB_DNS_NAME" >> $GITHUB_OUTPUT
-
-      - name: 🧁 Print deployed app DNS name
-        run: |
-          echo "Web URL: http://${{ steps.get_dns_name.outputs.WEB_DNS_NAME }}"
