@@ -5,6 +5,7 @@ environment = "Development"
 # 🌐 Domain configuration
 domain_name     = "qa-aws-ecs.mnlth.university.contoso.name"
 route53_zone_id = "Z0123456789ABCDEFGHIJ"  # REPLACE with your Route 53 Zone ID
+acm_certificate_arn = "arn:aws:acm:region:account:certificate/xxx-xxx-xxx"
 
 # 🔐 RDS credentials
 db_username = "REPLACE_ME"

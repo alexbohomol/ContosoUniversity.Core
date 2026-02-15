@@ -48,6 +48,7 @@ jobs:
             -var="db_init_script=db-init.sql" \
             -var="local_ip=NOT_USED" \
             -var="route53_zone_id=${{ secrets.AWS_HOSTED_ZONE_ID }}" \
+            -var="acm_certificate_arn=${{ secrets.AWS_ACM_CERT_ARN }}" \
             -var="otel_exporter_otlp_headers=${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}" \
             -out=tfplan
 

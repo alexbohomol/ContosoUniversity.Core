@@ -73,3 +73,8 @@ variable "route53_zone_id" {
   description = "Route 53 hosted zone ID for contoso.name domain"
   type        = string
 }
+
+variable "acm_certificate_arn" {
+  description = "ARN of ACM certificate for the HTTPS ALB listener"
+  type        = string
+}
