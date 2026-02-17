@@ -72,6 +72,16 @@ resource "aws_security_group_rule" "web_public" {
   security_group_id = module.networking.sg_id
 }
 
+resource "aws_security_group_rule" "web_public_https" {
+  description       = "Allow incoming HTTPS from the internet"
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.networking.sg_id
+}
+
 resource "aws_security_group_rule" "mssql_public" {
   description       = "Allow incoming MSSQL from the internet"
   type              = "ingress"
@@ -383,5 +393,54 @@ resource "aws_lb_listener" "web_listener" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.web_tg.arn
+  }
+}
+
+# HTTPS listener with ACM certificate
+
+resource "aws_lb_listener" "web_listener_https" {
+  load_balancer_arn = aws_lb.web_alb.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  certificate_arn   = var.acm_certificate_arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.web_tg.arn
+  }
+}
+
+resource "aws_lb_listener_rule" "redirect_http_to_https" {
+  listener_arn = aws_lb_listener.web_listener.arn
+  priority     = 1
+
+  action {
+    type = "redirect"
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["/*"]
+    }
+  }
+}
+
+# Route 53 DNS Configuration
+
+resource "aws_route53_record" "web_alb_alias" {
+  zone_id = var.route53_zone_id
+  name    = var.domain_name
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.web_alb.dns_name
+    zone_id                = aws_lb.web_alb.zone_id
+    evaluate_target_health = true
   }
 }

@@ -62,3 +62,19 @@ variable "otel_metric_export_interval" {
   type        = number
   default     = 15000
 }
+
+variable "domain_name" {
+  description = "Custom domain name for the application"
+  type        = string
+  default     = "qa-aws-ecs.mnlth.university.contoso.name"
+}
+
+variable "route53_zone_id" {
+  description = "Route 53 hosted zone ID for contoso.name domain"
+  type        = string
+}
+
+variable "acm_certificate_arn" {
+  description = "ARN of ACM certificate for the HTTPS ALB listener"
+  type        = string
+}
