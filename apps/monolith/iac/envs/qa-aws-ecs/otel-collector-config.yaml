@@ -13,10 +13,28 @@ receivers:
           metrics_path: /metrics
           scrape_interval: 15s
           static_configs:
-            - targets: ['localhost:10000']
+            - targets: ['localhost:80']
+
+processors:
+  # Batch telemetry to reduce API call volume
+  batch:
+    timeout: 10s
+    send_batch_size: 256
+
+  # Set memory limits - important for Fargate where memory is fixed
+  memory_limiter:
+    check_interval: 5s
+    limit_mib: 100
+    spike_limit_mib: 30
+
+  # Add ECS resource attributes automatically
+  resourcedetection:
+    detectors: [env, ecs]
+    timeout: 5s
+    override: false
 
 exporters:
-  otlp:
+  otlp/grafana:
     endpoint: ${env:OTEL_EXPORTER_OTLP_ENDPOINT}
     headers:
       Authorization: ${env:OTEL_EXPORTER_OTLP_HEADERS}
@@ -28,13 +46,15 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [otlp, logging]
+      processors: [resourcedetection, memory_limiter, batch]
+      exporters: [otlp/grafana, logging]
 
     metrics:
       receivers: [otlp, prometheus]
-      exporters: [otlp, logging]
+      processors: [resourcedetection, memory_limiter, batch]
+      exporters: [otlp/grafana, logging]
 
     logs:
       receivers: [otlp]
-      exporters: [otlp, logging]
-
+      processors: [resourcedetection, memory_limiter, batch]
+      exporters: [otlp/grafana, logging]
