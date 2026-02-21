@@ -17,6 +17,11 @@ resource "aws_cloudwatch_log_group" "cw_mssql_lg" {
   retention_in_days = 7
 }
 
+resource "aws_cloudwatch_log_group" "cw_otel_lg" {
+  name              = "/ecs/${var.app_name}-cw-otel-lg"
+  retention_in_days = 7
+}
+
 # IAM Role/Policy for CloudWatch logging
 
 resource "aws_iam_role" "task_execution" {
@@ -135,6 +140,22 @@ resource "aws_efs_access_point" "efs_ap" {
   }
 }
 
+resource "aws_efs_access_point" "efs_ap_otel" {
+  file_system_id = aws_efs_file_system.efs.id
+  posix_user {
+    uid = 0
+    gid = 0
+  }
+  root_directory {
+    path = "/otel-config"
+    creation_info {
+      owner_gid   = 0
+      owner_uid   = 0
+      permissions = "0755"
+    }
+  }
+}
+
 # ECS tasks definitions
 
 resource "aws_ecs_task_definition" "web_task" {
@@ -153,6 +174,19 @@ resource "aws_ecs_task_definition" "web_task" {
       transit_encryption = "ENABLED"
       authorization_config {
         access_point_id = aws_efs_access_point.efs_ap.id
+        iam             = "ENABLED"
+      }
+      root_directory = "/"
+    }
+  }
+
+  volume {
+    name = "otel-config"
+    efs_volume_configuration {
+      file_system_id     = aws_efs_file_system.efs.id
+      transit_encryption = "ENABLED"
+      authorization_config {
+        access_point_id = aws_efs_access_point.efs_ap_otel.id
         iam             = "ENABLED"
       }
       root_directory = "/"
@@ -181,9 +215,8 @@ resource "aws_ecs_task_definition" "web_task" {
         { name = "ENVIRONMENT", value = var.environment },
         { name = "DOTNET_ENVIRONMENT", value = var.environment },
         { name = "ASPNETCORE_ENVIRONMENT", value = var.environment },
-        { name = "OTEL_EXPORTER_OTLP_ENDPOINT", value = var.otel_exporter_otlp_endpoint },
-        { name = "OTEL_EXPORTER_OTLP_PROTOCOL", value = var.otel_exporter_otlp_protocol },
-        { name = "OTEL_EXPORTER_OTLP_HEADERS", value = var.otel_exporter_otlp_headers },
+        { name = "OTEL_EXPORTER_OTLP_ENDPOINT", value = "http://localhost:4318" },
+        { name = "OTEL_EXPORTER_OTLP_PROTOCOL", value = "http/protobuf" },
         { name = "OTEL_METRIC_EXPORT_INTERVAL", value = tostring(var.otel_metric_export_interval) }
       ]
       healthCheck = {
@@ -202,6 +235,40 @@ resource "aws_ecs_task_definition" "web_task" {
           awslogs-group         = aws_cloudwatch_log_group.cw_web_lg.name
           awslogs-region        = var.aws_region
           awslogs-stream-prefix = "web"
+        }
+      }
+    },
+    {
+      essential = false
+      name      = "otel-collector"
+      image     = "otel/opentelemetry-collector-contrib:latest"
+      command = [
+        "--config=/etc/otel-collector-config.yaml"
+      ]
+      portMappings = [
+        {
+          containerPort = 4318
+          hostPort      = 4318
+          protocol      = "tcp"
+        }
+      ]
+      mountPoints = [
+        {
+          sourceVolume  = "otel-config"
+          containerPath = "/etc"
+          readOnly      = true
+        }
+      ]
+      environment = [
+        { name = "OTEL_EXPORTER_OTLP_ENDPOINT", value = var.otel_exporter_otlp_endpoint },
+        { name = "OTEL_EXPORTER_OTLP_HEADERS", value = var.otel_exporter_otlp_headers }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.cw_otel_lg.name
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = "otel-collector"
         }
       }
     }
