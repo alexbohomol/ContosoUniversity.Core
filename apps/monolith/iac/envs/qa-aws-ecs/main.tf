@@ -243,7 +243,7 @@ resource "aws_ecs_task_definition" "web_task" {
       name      = "otel-collector"
       image     = "otel/opentelemetry-collector-contrib:latest"
       command = [
-        "--config=/etc/otel-collector-config.yaml"
+        "--config=/otel-config/otel-collector-config.yaml"
       ]
       portMappings = [
         {
@@ -255,7 +255,7 @@ resource "aws_ecs_task_definition" "web_task" {
       mountPoints = [
         {
           sourceVolume  = "otel-config"
-          containerPath = "/etc"
+          containerPath = "/otel-config"
           readOnly      = true
         }
       ]
