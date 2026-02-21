@@ -17,14 +17,14 @@ public class HomeController(IStudentsRoRepository repository, ILogger<HomeContro
 {
     public IActionResult Index()
     {
-        logger.LogInformation("User visited page {Action} at {Controller}", nameof(Index), nameof(HomeController));
+        logger.LogPageVisited(nameof(Index), nameof(HomeController));
 
         return View();
     }
 
     public async Task<ActionResult> About(CancellationToken cancellationToken)
     {
-        logger.LogInformation("User visited page {Action} at {Controller}", nameof(About), nameof(HomeController));
+        logger.LogPageVisited(nameof(About), nameof(HomeController));
 
         EnrollmentDateGroup[] groups = await repository.GetEnrollmentDateGroups(cancellationToken);
 

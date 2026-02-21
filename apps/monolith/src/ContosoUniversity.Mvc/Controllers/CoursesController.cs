@@ -25,7 +25,7 @@ public class CoursesController(IMediator mediator, ILogger<CoursesController> lo
 {
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        logger.LogInformation("User visited page {Action} at {Controller}", nameof(Index), nameof(CoursesController));
+        logger.LogPageVisited(nameof(Index), nameof(CoursesController));
 
         (Course[] courses, Dictionary<Guid, string> departmentsReference) = await mediator.Send(
             new GetCoursesIndexQuery(),

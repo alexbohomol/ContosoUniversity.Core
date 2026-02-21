@@ -33,7 +33,7 @@ public class InstructorsController(IMediator mediator, ILogger<InstructorsContro
         [FromServices] IStudentsRoRepository studentsRepository,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("User visited page {Action} at {Controller}", nameof(Index), nameof(InstructorsController));
+        logger.LogPageVisited(nameof(Index), nameof(InstructorsController));
 
         Instructor[] instructors = (await instructorsRepository.GetAll(cancellationToken))
             .OrderBy(x => x.LastName)

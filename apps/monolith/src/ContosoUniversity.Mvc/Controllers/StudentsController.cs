@@ -23,7 +23,7 @@ public class StudentsController(IMediator mediator, ILogger<StudentsController> 
 {
     public async Task<IActionResult> Index(GetStudentsIndexQuery request, CancellationToken cancellationToken)
     {
-        logger.LogInformation("User visited page {Action} at {Controller}", nameof(Index), nameof(StudentsController));
+        logger.LogPageVisited(nameof(Index), nameof(StudentsController));
 
         if (request.SearchString is not null)
         {

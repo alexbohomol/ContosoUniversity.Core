@@ -24,7 +24,7 @@ public class DepartmentsController(IMediator mediator, ILogger<DepartmentsContro
 {
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        logger.LogInformation("User visited page {Action} at {Controller}", nameof(Index), nameof(DepartmentsController));
+        logger.LogPageVisited(nameof(Index), nameof(DepartmentsController));
 
         Department[] departments = await mediator.Send(
             new GetDepartmentsIndexQuery(),
