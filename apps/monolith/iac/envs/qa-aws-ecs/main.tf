@@ -45,6 +45,30 @@ resource "aws_iam_role_policy_attachment" "task_execution_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+resource "aws_iam_policy" "ssm_access_policy" {
+  name        = "${var.app_name}-ssm-access-policy"
+  description = "Policy to allow access to all SSM parameters for ${var.app_name}"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = [
+          "ssm:GetParameters",
+          "ssm:GetParameter"
+        ],
+        Effect   = "Allow",
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_access_policy_attachment" {
+  role       = aws_iam_role.task_execution.name
+  policy_arn = aws_iam_policy.ssm_access_policy.arn
+}
+
 # Rules to attach to default VPC SG
 
 resource "aws_security_group_rule" "mssql_internal" {
