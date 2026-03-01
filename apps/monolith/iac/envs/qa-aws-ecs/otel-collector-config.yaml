@@ -34,27 +34,25 @@ processors:
     override: false
 
 exporters:
-  otlp/grafana:
+  otlphttp/grafana_cloud:
     endpoint: ${env:OTEL_EXPORTER_OTLP_ENDPOINT}
-    headers:
-      Authorization: ${env:OTEL_EXPORTER_OTLP_HEADERS}
+    headers: ${env:OTEL_EXPORTER_OTLP_HEADERS}
 
-  logging:
-    loglevel: info
+  debug:
 
 service:
   pipelines:
     traces:
       receivers: [otlp]
       processors: [resourcedetection, memory_limiter, batch]
-      exporters: [otlp/grafana, logging]
+      exporters: [otlphttp/grafana_cloud, debug]
 
     metrics:
       receivers: [otlp, prometheus]
       processors: [resourcedetection, memory_limiter, batch]
-      exporters: [otlp/grafana, logging]
+      exporters: [otlphttp/grafana_cloud, debug]
 
     logs:
       receivers: [otlp]
       processors: [resourcedetection, memory_limiter, batch]
-      exporters: [otlp/grafana, logging]
+      exporters: [otlphttp/grafana_cloud, debug]
