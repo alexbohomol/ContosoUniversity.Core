@@ -238,14 +238,20 @@ resource "aws_ecs_task_definition" "web_task" {
       name      = "otel-collector"
       image     = "public.ecr.aws/aws-observability/aws-otel-collector:v0.47.0"
       environment = [
-        { name = "OTEL_EXPORTER_OTLP_ENDPOINT", value = var.otel_exporter_otlp_endpoint },
-        { name = "OTEL_EXPORTER_OTLP_PROTOCOL", value = var.otel_exporter_otlp_protocol },
-        { name = "OTEL_EXPORTER_OTLP_HEADERS", value = var.otel_exporter_otlp_headers }
+        { name = "OTEL_EXPORTER_OTLP_PROTOCOL", value = var.otel_exporter_otlp_protocol }
       ],
       secrets = [
         {
           name      = "AOT_CONFIG_CONTENT"
           valueFrom = "arn:aws:ssm:eu-central-1:890304000684:parameter/otel-collector-config"
+        },
+        {
+          name      = "OTEL_EXPORTER_OTLP_ENDPOINT"
+          valueFrom = "arn:aws:ssm:eu-central-1:890304000684:parameter/otel-exporter-otlp-endpoint"
+        },
+        {
+          name      = "OTEL_EXPORTER_OTLP_HEADERS"
+          valueFrom = "arn:aws:ssm:eu-central-1:890304000684:parameter/otel-exporter-otlp-headers"
         }
       ],
       logConfiguration = {
