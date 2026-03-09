@@ -7,6 +7,11 @@ resource "aws_ecs_cluster" "cluster" {
   name = "${var.app_name}-cluster"
 }
 
+resource "aws_cloudwatch_log_group" "cw_otel_lg" {
+  name              = "/ecs/${var.app_name}-cw-otel-lg"
+  retention_in_days = 7
+}
+
 resource "aws_cloudwatch_log_group" "cw_web_lg" {
   name              = "/ecs/${var.app_name}-cw-web-lg"
   retention_in_days = 7
@@ -38,6 +43,30 @@ resource "aws_iam_role" "task_execution" {
 resource "aws_iam_role_policy_attachment" "task_execution_policy" {
   role       = aws_iam_role.task_execution.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_policy" "ssm_access_policy" {
+  name        = "${var.app_name}-ssm-access-policy"
+  description = "Policy to allow access to all SSM parameters for ${var.app_name}"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = [
+          "ssm:GetParameters",
+          "ssm:GetParameter"
+        ],
+        Effect   = "Allow",
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_access_policy_attachment" {
+  role       = aws_iam_role.task_execution.name
+  policy_arn = aws_iam_policy.ssm_access_policy.arn
 }
 
 # Rules to attach to default VPC SG
@@ -181,9 +210,8 @@ resource "aws_ecs_task_definition" "web_task" {
         { name = "ENVIRONMENT", value = var.environment },
         { name = "DOTNET_ENVIRONMENT", value = var.environment },
         { name = "ASPNETCORE_ENVIRONMENT", value = var.environment },
-        { name = "OTEL_EXPORTER_OTLP_ENDPOINT", value = var.otel_exporter_otlp_endpoint },
-        { name = "OTEL_EXPORTER_OTLP_PROTOCOL", value = var.otel_exporter_otlp_protocol },
-        { name = "OTEL_EXPORTER_OTLP_HEADERS", value = var.otel_exporter_otlp_headers },
+        { name = "OTEL_EXPORTER_OTLP_ENDPOINT", value = "http://localhost:4318" },
+        { name = "OTEL_EXPORTER_OTLP_PROTOCOL", value = "http/protobuf" },
         { name = "OTEL_METRIC_EXPORT_INTERVAL", value = tostring(var.otel_metric_export_interval) }
       ]
       healthCheck = {
@@ -202,6 +230,36 @@ resource "aws_ecs_task_definition" "web_task" {
           awslogs-group         = aws_cloudwatch_log_group.cw_web_lg.name
           awslogs-region        = var.aws_region
           awslogs-stream-prefix = "web"
+        }
+      }
+    },
+    {
+      essential = false
+      name      = "otel-collector"
+      image     = "public.ecr.aws/aws-observability/aws-otel-collector:v0.47.0"
+      environment = [
+        { name = "OTEL_EXPORTER_OTLP_PROTOCOL", value = var.otel_exporter_otlp_protocol }
+      ],
+      secrets = [
+        {
+          name      = "AOT_CONFIG_CONTENT"
+          valueFrom = "arn:aws:ssm:eu-central-1:890304000684:parameter/otel-collector-config"
+        },
+        {
+          name      = "OTEL_EXPORTER_OTLP_ENDPOINT"
+          valueFrom = "arn:aws:ssm:eu-central-1:890304000684:parameter/otel-exporter-otlp-endpoint"
+        },
+        {
+          name      = "OTEL_EXPORTER_OTLP_HEADERS"
+          valueFrom = "arn:aws:ssm:eu-central-1:890304000684:parameter/otel-exporter-otlp-headers"
+        }
+      ],
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.cw_otel_lg.name
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = "otel-collector"
         }
       }
     }

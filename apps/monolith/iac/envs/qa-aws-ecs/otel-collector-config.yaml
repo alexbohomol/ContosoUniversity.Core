@@ -1,0 +1,58 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+      grpc:
+        endpoint: 0.0.0.0:4317
+
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: 'prometheus-metrics'
+          metrics_path: /metrics
+          scrape_interval: 15s
+          static_configs:
+            - targets: ['localhost:80']
+
+processors:
+  # Batch telemetry to reduce API call volume
+  batch:
+    timeout: 10s
+    send_batch_size: 256
+
+  # Set memory limits - important for Fargate where memory is fixed
+  memory_limiter:
+    check_interval: 5s
+    limit_mib: 100
+    spike_limit_mib: 30
+
+  # Add ECS resource attributes automatically
+  resourcedetection:
+    detectors: [env, ecs]
+    timeout: 5s
+    override: false
+
+exporters:
+  otlphttp/grafana_cloud:
+    endpoint: ${env:OTEL_EXPORTER_OTLP_ENDPOINT}
+    headers: ${env:OTEL_EXPORTER_OTLP_HEADERS}
+
+  debug:
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [resourcedetection, memory_limiter, batch]
+      exporters: [otlphttp/grafana_cloud, debug]
+
+    metrics:
+      receivers: [otlp, prometheus]
+      processors: [resourcedetection, memory_limiter, batch]
+      exporters: [otlphttp/grafana_cloud, debug]
+
+    logs:
+      receivers: [otlp]
+      processors: [resourcedetection, memory_limiter, batch]
+      exporters: [otlphttp/grafana_cloud, debug]
