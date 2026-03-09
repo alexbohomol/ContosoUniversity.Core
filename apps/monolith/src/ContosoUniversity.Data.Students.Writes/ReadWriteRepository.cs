@@ -16,8 +16,10 @@ internal sealed class ReadWriteRepository(ReadWriteContext dbContext) : EfRwRepo
     public async Task<Student[]> GetStudentsEnrolledForCourses(Guid[] courseIds,
         CancellationToken cancellationToken = default)
     {
+        var ids = courseIds.ToList();
+
         return await DbQuery
-            .Where(x => x.Enrollments.Select(e => e.CourseId).Any(id => courseIds.Contains(id)))
+            .Where(x => x.Enrollments.Any(e => ids.Contains(e.CourseId)))
             .ToArrayAsync(cancellationToken);
     }
 }

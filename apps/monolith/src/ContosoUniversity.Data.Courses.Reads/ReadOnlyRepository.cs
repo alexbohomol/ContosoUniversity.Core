@@ -26,6 +26,8 @@ internal class ReadOnlyRepository(ReadOnlyContext dbContext) : EfRoRepository<Co
         Guid[] entityIds,
         CancellationToken cancellationToken = default)
     {
+        var ids = entityIds.ToList();
+
         return await DbQuery
             .AsNoTracking()
             .Select(x => new
@@ -33,7 +35,7 @@ internal class ReadOnlyRepository(ReadOnlyContext dbContext) : EfRoRepository<Co
                 x.ExternalId,
                 x.Title
             })
-            .Where(x => entityIds.Contains(x.ExternalId))
+            .Where(x => ids.Contains(x.ExternalId))
             .ToDictionaryAsync(
                 x => x.ExternalId,
                 x => x.Title,
