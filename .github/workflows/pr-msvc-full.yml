@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  DOTNET_VERSION: 9.0.x
+  DOTNET_VERSION: 10.0.x
 
 jobs:
 
@@ -308,7 +308,7 @@ jobs:
 
     - name: Ensure browsers are installed
       working-directory: ${{ env.TEST_PROJ_PATH }}
-      run: pwsh bin/Debug/net9.0/playwright.ps1 install --with-deps
+      run: pwsh bin/Debug/net10.0/playwright.ps1 install --with-deps
 
     - name: Run System Tests
       working-directory: ${{ env.TEST_PROJ_PATH }}
@@ -403,7 +403,7 @@ jobs:
 
     - name: Ensure browsers are installed
       working-directory: ${{ env.TEST_PROJ_PATH }}
-      run: pwsh bin/Debug/net9.0/playwright.ps1 install --with-deps
+      run: pwsh bin/Debug/net10.0/playwright.ps1 install --with-deps
 
     - name: Run Acceptance Tests
       working-directory: ${{ env.TEST_PROJ_PATH }}

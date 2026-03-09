@@ -17,8 +17,10 @@ internal class InstructorsReadWriteRepository(ReadWriteContext dbContext) : EfRw
         Guid[] courseIds,
         CancellationToken cancellationToken = default)
     {
+        var ids = courseIds.ToList();
+
         return await DbQuery
-            .Where(x => x.CourseAssignments.Select(e => e.CourseId).Any(id => courseIds.Contains(id)))
+            .Where(x => x.CourseAssignments.Any(e => ids.Contains(e.CourseId)))
             .ToArrayAsync(cancellationToken);
     }
 }

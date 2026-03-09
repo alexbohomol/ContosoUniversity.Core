@@ -32,7 +32,7 @@ public class InfrastructureContext : IAsyncLifetime
         .WithWaitStrategy(
             Wait
                 .ForUnixContainer()
-                .UntilPortIsAvailable(1433)
+                .UntilInternalTcpPortIsAvailable(1433)
                 .UntilCommandIsCompleted(
                 [
                     "/opt/mssql-tools18/bin/sqlcmd",
