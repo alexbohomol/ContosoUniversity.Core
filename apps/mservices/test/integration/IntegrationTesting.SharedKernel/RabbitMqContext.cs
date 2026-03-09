@@ -23,7 +23,7 @@ public class RabbitMqContext : IAsyncLifetime
         .WithWaitStrategy(
             Wait
                 .ForUnixContainer()
-                .UntilPortIsAvailable(5672)
+                .UntilInternalTcpPortIsAvailable(5672)
                 .UntilCommandIsCompleted("rabbitmq-diagnostics check_port_connectivity"))
         .Build();
 
