@@ -10,6 +10,7 @@ export const options = {
     http_req_failed: ['rate == 0'],
     checks: ['rate == 1'],
   },
+  noVUConnectionReuse: true,
 };
 
 function hitPages() {
