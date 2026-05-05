@@ -12,8 +12,7 @@ public class RabbitMqContext : IAsyncLifetime
     private const string RabbitmqConf = "../../../../../../../../rabbitmq.conf";
     private const string DefinitionsJson = "../../../../../../../../definitions.json";
 
-    private readonly RabbitMqContainer _rabbitMqContainer = new RabbitMqBuilder()
-        .WithImage("rabbitmq:management")
+    private readonly RabbitMqContainer _rabbitMqContainer = new RabbitMqBuilder("rabbitmq:management")
         .WithUsername("guest")
         .WithPassword("guest")
         .WithBindMount(RabbitmqConf.ToAbsolutePath(), "/etc/rabbitmq/rabbitmq.conf", AccessMode.ReadOnly)
