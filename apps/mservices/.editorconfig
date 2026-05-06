@@ -11,6 +11,9 @@ insert_final_newline = true
 indent_style = space
 indent_size = 4
 
+[*.json]
+indent_size = 2
+
 #########################################################################
 #   .NET Rules
 #########################################################################
@@ -66,5 +69,7 @@ dotnet_diagnostic.IDE0051.severity = error # Remove unused private members
 dotnet_diagnostic.IDE0052.severity = error # Remove unread private member
 dotnet_diagnostic.IDE0290.severity = error # Use primary constructor
 
-[*.json]
-indent_size = 2
+# Global suppressions
+
+# AnalysisMode: Default
+dotnet_diagnostic.CS1591.severity = none # Missing XML comment for publicly visible type or member
