@@ -10,7 +10,9 @@ public class Instructor : IIdentifiable<Guid>
     public const int LastNameMaxLength = 50;
     public const int LastNameMinLength = 1;
 
+#pragma warning disable IDE0052
     private OfficeAssignment _officeAssignment;
+#pragma warning restore IDE0052
 
     private Instructor(
         string firstName,
