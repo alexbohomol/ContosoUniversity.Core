@@ -1,7 +1,6 @@
 namespace ContosoUniversity.Application.Services.Students.Notifications;
 
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,7 +22,7 @@ internal class CourseDeletedNotificationHandler(IStudentsRwRepository studentsRe
         Student[] enrolledStudents = await studentsRepository
             .GetStudentsEnrolledForCourses(courseIds, cancellationToken);
 
-        if (enrolledStudents.Any())
+        if (enrolledStudents.Length != 0)
         {
             foreach (Student student in enrolledStudents)
             {

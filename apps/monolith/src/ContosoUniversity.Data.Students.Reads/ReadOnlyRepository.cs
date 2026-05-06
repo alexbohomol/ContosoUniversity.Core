@@ -25,9 +25,11 @@ internal sealed class ReadOnlyRepository(ReadOnlyContext dbContext) : EfRoReposi
             await conn.OpenAsync(cancellationToken);
             await using DbCommand command = conn.CreateCommand();
             command.CommandText =
-                @"SELECT EnrollmentDate, COUNT(*) AS StudentCount
-                      FROM [std].Student
-                      GROUP BY EnrollmentDate";
+"""
+SELECT EnrollmentDate, COUNT(*) AS StudentCount
+FROM [std].Student
+GROUP BY EnrollmentDate
+""";
             DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken);
 
             if (reader.HasRows)
@@ -82,7 +84,7 @@ internal sealed class ReadOnlyRepository(ReadOnlyContext dbContext) : EfRoReposi
             pageInfo);
     }
 
-    private IQueryable<Student> ApplySearch(IQueryable<Student> source, SearchRequest request)
+    private static IQueryable<Student> ApplySearch(IQueryable<Student> source, SearchRequest request)
     {
         return string.IsNullOrEmpty(request.SearchString)
             ? source
@@ -91,7 +93,7 @@ internal sealed class ReadOnlyRepository(ReadOnlyContext dbContext) : EfRoReposi
                      || s.FirstName.Contains(request.SearchString));
     }
 
-    private IQueryable<Student> ApplyOrder(IQueryable<Student> source, OrderRequest request)
+    private static IQueryable<Student> ApplyOrder(IQueryable<Student> source, OrderRequest request)
     {
         return request.SortOrder switch
         {

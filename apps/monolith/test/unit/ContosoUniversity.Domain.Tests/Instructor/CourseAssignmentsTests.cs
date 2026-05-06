@@ -78,12 +78,12 @@ public class CourseAssignmentsTests
         });
     }
 
-    private Instructor CreateUnassignedInstructor()
+    private static Instructor CreateUnassignedInstructor()
     {
         return Instructor.Create(string.Empty, string.Empty, DateTime.Now);
     }
 
-    private Instructor CreateAssignedInstructor(params Guid[] assignments)
+    private static Instructor CreateAssignedInstructor(params Guid[] assignments)
     {
         Instructor instructor = CreateUnassignedInstructor();
 
