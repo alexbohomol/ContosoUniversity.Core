@@ -67,7 +67,7 @@ public class Instructor : IIdentifiable<Guid>
 
     public void ResetCourseAssignments()
     {
-        if (CourseAssignments.Any())
+        if (CourseAssignments.Count != 0)
         {
             CourseAssignments.Clear();
         }

@@ -21,7 +21,7 @@ public static class CrossContextBoundariesValidator
         HashSet<Guid> referencedDepartmentIds = courses.Select(x => x.DepartmentId).ToHashSet();
         Guid[] notFoundDepartments = referencedDepartmentIds.Except(existingDepartmentIds).ToArray();
 
-        if (notFoundDepartments.Any())
+        if (notFoundDepartments.Length != 0)
         {
             throw new Exception(
                 $"Unbound contexts inconsistency. Departments not found: {notFoundDepartments.ToDisplayString()}.");
@@ -39,7 +39,7 @@ public static class CrossContextBoundariesValidator
         HashSet<Guid> existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();
         Guid[] notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
 
-        if (notFoundCourses.Any())
+        if (notFoundCourses.Length != 0)
         {
             throw new Exception(
                 $"Unbound contexts inconsistency. Course not found: {notFoundCourses.ToDisplayString()}.");
@@ -57,7 +57,7 @@ public static class CrossContextBoundariesValidator
         HashSet<Guid> existingCourseIds = courses.Select(x => x.ExternalId).ToHashSet();
         Guid[] notFoundCourses = referencedCourseIds.Except(existingCourseIds).ToArray();
 
-        if (notFoundCourses.Any())
+        if (notFoundCourses.Length != 0)
         {
             throw new Exception(
                 $"Unbound contexts inconsistency. Course not found: {notFoundCourses.ToDisplayString()}.");
