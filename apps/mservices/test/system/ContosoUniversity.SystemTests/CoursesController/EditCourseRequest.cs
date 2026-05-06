@@ -12,7 +12,7 @@ public record EditCourseRequest
     public int Credits { get; set; }
     public Guid DepartmentId { get; set; }
 
-    public static EditCourseRequest Valid = new()
+    public static readonly EditCourseRequest Valid = new()
     {
         Title = "Computers Algebra",
         Credits = 3,

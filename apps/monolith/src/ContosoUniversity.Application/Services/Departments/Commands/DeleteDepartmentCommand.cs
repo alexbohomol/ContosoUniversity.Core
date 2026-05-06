@@ -37,7 +37,7 @@ internal class DeleteDepartmentCommandHandler(
          * - withdraw enrolled students
          * - remove related assignments (restrain assigned instructors)
          */
-        if (relatedCoursesIds.Any())
+        if (relatedCoursesIds.Length != 0)
         {
             await mediator.Publish(
                 new DepartmentDeletedNotification(relatedCoursesIds),

@@ -42,7 +42,7 @@ internal class GetStudentDetailsQueryHandler(
             .GetCourseTitlesReference(coursesIds, cancellationToken);
 
         Guid[] notFoundCourseIds = coursesIds.Except(courseTitles.Keys).ToArray();
-        if (notFoundCourseIds.Any())
+        if (notFoundCourseIds.Length != 0)
         {
             throw new AggregateException(notFoundCourseIds
                 .Select(x => new EntityNotFoundException("course", x)));
