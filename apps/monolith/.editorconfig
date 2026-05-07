@@ -86,3 +86,11 @@ dotnet_diagnostic.CS1591.severity = none # Missing XML comment for publicly visi
 # AnalysisMode: Minimum
 dotnet_diagnostic.CA1859.severity = none # Use concrete types when possible for improved performance
 dotnet_diagnostic.CA1861.severity = none # Avoid constant arrays as arguments
+
+# AnalysisMode: Recommended
+dotnet_diagnostic.CA1051.severity = none # Do not declare visible instance fields
+dotnet_diagnostic.CA1305.severity = none # Specify IFormatProvider
+dotnet_diagnostic.CA1707.severity = none # Identifiers should not contain underscores
+dotnet_diagnostic.CA1716.severity = none # Identifiers should not match keywords
+dotnet_diagnostic.CA1852.severity = none # Seal internal types
+dotnet_diagnostic.CA2201.severity = none # Do not raise reserved exception types
