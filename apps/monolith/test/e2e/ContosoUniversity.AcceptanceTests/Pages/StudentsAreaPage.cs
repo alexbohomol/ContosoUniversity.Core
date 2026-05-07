@@ -19,7 +19,7 @@ public class StudentsAreaPage(IBrowser browser, IConfiguration configuration)
         public const string EnrollmentDate = "#Request_EnrollmentDate";
     }
 
-    protected override string PagePath => $"{PageBaseUrl}/Students";
+    protected override string PagePath => $"{HostRootPath}/Students";
 
     public async Task<StudentTableRowModel[]> ScrapRenderedStudentsList()
     {

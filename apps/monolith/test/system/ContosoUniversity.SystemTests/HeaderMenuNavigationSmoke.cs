@@ -22,10 +22,9 @@ public class HeaderMenuNavigationSmoke : PageTest
     [TestCase("/Courses", "Courses - Contoso University")]
     [TestCase("/Instructors", "Instructors - Contoso University")]
     [TestCase("/Departments", "Departments - Contoso University")]
-    public async Task Smoke_User_IsAbleTo_NavigateHeaderMenu(string pathUrl, string expectedTitle)
+    public async Task Smoke_User_IsAbleTo_NavigateHeaderMenu(string path, string expectedTitle)
     {
-        var pageUrl = $"{Urls.BaseAddress}{pathUrl}";
-        IResponse gotoAsync = await Page.GotoAsync(pageUrl);
+        IResponse gotoAsync = await Page.GotoAsync($"{Urls.BaseAddress}{path}");
         string title = await Page.TitleAsync();
 
         title.Should().Be(expectedTitle);
