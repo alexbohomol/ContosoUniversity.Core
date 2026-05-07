@@ -19,6 +19,7 @@ using ViewModels.Departments;
 
 public class DepartmentsController(IMediator mediator) : Controller
 {
+    [HttpGet]
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
         Department[] departments = await mediator.Send(
@@ -28,6 +29,7 @@ public class DepartmentsController(IMediator mediator) : Controller
         return View(departments.Select(x => new DepartmentListItemViewModel(x)));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
@@ -44,6 +46,7 @@ public class DepartmentsController(IMediator mediator) : Controller
             : NotFound();
     }
 
+    [HttpGet]
     public async Task<IActionResult> Create(
         [FromServices] IInstructorsApiClient client,
         CancellationToken cancellationToken)
@@ -80,6 +83,7 @@ public class DepartmentsController(IMediator mediator) : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Edit(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
@@ -131,6 +135,7 @@ public class DepartmentsController(IMediator mediator) : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)

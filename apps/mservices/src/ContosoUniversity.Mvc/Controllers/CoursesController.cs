@@ -21,6 +21,7 @@ using Department = Application.ApiClients.Department;
 
 public class CoursesController(IMediator mediator) : Controller
 {
+    [HttpGet]
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
         (Course[] courses, Dictionary<Guid, string> departmentsReference) = await mediator.Send(
@@ -37,6 +38,7 @@ public class CoursesController(IMediator mediator) : Controller
         }));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
@@ -53,6 +55,7 @@ public class CoursesController(IMediator mediator) : Controller
             : NotFound();
     }
 
+    [HttpGet]
     public async Task<IActionResult> Create(
         [FromServices] IDepartmentsApiClient client,
         CancellationToken cancellationToken)
@@ -90,6 +93,7 @@ public class CoursesController(IMediator mediator) : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Edit(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
@@ -140,6 +144,7 @@ public class CoursesController(IMediator mediator) : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
@@ -170,6 +175,7 @@ public class CoursesController(IMediator mediator) : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public IActionResult UpdateCourseCredits()
     {
         return View();

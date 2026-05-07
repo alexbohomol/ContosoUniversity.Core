@@ -13,11 +13,13 @@ using ViewModels;
 
 public class HomeController(IStudentsApiClient client) : Controller
 {
+    [HttpGet]
     public IActionResult Index()
     {
         return View();
     }
 
+    [HttpGet]
     public async Task<ActionResult> About(CancellationToken cancellationToken)
     {
         EnrollmentDateGroup[] groups = await client.GetEnrollmentDateGroups(cancellationToken);
@@ -31,11 +33,13 @@ public class HomeController(IStudentsApiClient client) : Controller
         return View(viewModels);
     }
 
+    [HttpGet]
     public IActionResult Privacy()
     {
         return View();
     }
 
+    [HttpGet]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

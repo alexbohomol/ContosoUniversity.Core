@@ -20,6 +20,7 @@ using ViewModels.Students;
 
 public class StudentsController(IMediator mediator) : Controller
 {
+    [HttpGet]
     public async Task<IActionResult> Index(GetStudentsIndexQuery request, CancellationToken cancellationToken)
     {
         if (request.SearchString is not null)
@@ -36,6 +37,7 @@ public class StudentsController(IMediator mediator) : Controller
         return View(new StudentIndexViewModel(request, pageInfo, students));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
@@ -52,6 +54,7 @@ public class StudentsController(IMediator mediator) : Controller
             : NotFound();
     }
 
+    [HttpGet]
     public IActionResult Create()
     {
         return View(new CreateStudentForm());
@@ -83,6 +86,7 @@ public class StudentsController(IMediator mediator) : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Edit(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
@@ -129,6 +133,7 @@ public class StudentsController(IMediator mediator) : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)

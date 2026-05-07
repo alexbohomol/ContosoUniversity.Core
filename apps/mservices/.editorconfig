@@ -103,4 +103,3 @@ dotnet_diagnostic.CA1815.severity = none # Override equals and operator equals o
 dotnet_diagnostic.CA1819.severity = none # Properties should not return arrays
 dotnet_diagnostic.CA1849.severity = none # Call async methods when in an async method
 dotnet_diagnostic.CA2007.severity = none # Do not directly await a Task
-dotnet_diagnostic.CA5395.severity = none # Miss HTTP verb attribute for action methods

@@ -21,6 +21,7 @@ using ViewModels.Instructors;
 
 public class InstructorsController(IMediator mediator) : Controller
 {
+    [HttpGet]
     public async Task<IActionResult> Index(
         Guid? id,
         Guid? courseExternalId,
@@ -109,6 +110,7 @@ public class InstructorsController(IMediator mediator) : Controller
         return View(viewModel);
     }
 
+    [HttpGet]
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
@@ -125,6 +127,7 @@ public class InstructorsController(IMediator mediator) : Controller
             : NotFound();
     }
 
+    [HttpGet]
     public async Task<IActionResult> Create(
         [FromServices] ICoursesApiClient coursesApiClient,
         CancellationToken cancellationToken)
@@ -165,6 +168,7 @@ public class InstructorsController(IMediator mediator) : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Edit(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
@@ -217,6 +221,7 @@ public class InstructorsController(IMediator mediator) : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
