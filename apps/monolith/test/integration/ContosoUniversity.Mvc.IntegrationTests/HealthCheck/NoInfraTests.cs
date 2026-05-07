@@ -1,5 +1,6 @@
 namespace ContosoUniversity.Mvc.IntegrationTests.HealthCheck;
 
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -32,7 +33,7 @@ public class NoInfraTests :
     [InlineData("/health/liveness")]
     public async Task Health_ReturnsUnhealthy(string healthUrl)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync(healthUrl);
+        HttpResponseMessage response = await _httpClient.GetAsync(new Uri(healthUrl));
 
         response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
         response.Content.Headers.ContentType?.ToString().Should().Be("application/json");

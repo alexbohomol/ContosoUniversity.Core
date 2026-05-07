@@ -113,6 +113,5 @@ dotnet_diagnostic.CA1851.severity = none # Possible multiple enumerations of IEn
 dotnet_diagnostic.CA2000.severity = none # Dispose objects before losing scope
 dotnet_diagnostic.CA2007.severity = none # Do not directly await a Task
 dotnet_diagnostic.CA2225.severity = none # Operator overloads have named alternates
-dotnet_diagnostic.CA2234.severity = none # Pass System.Uri objects instead of strings
 dotnet_diagnostic.CA5391.severity = none # Use antiforgery tokens in ASP.NET Core MVC controllers
 dotnet_diagnostic.CA5395.severity = none # Miss HTTP verb attribute for action methods

@@ -1,5 +1,6 @@
 namespace ContosoUniversity.Mvc.IntegrationTests.CoursesController;
 
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -28,7 +29,7 @@ public class CreateEndpointsTests :
     public async Task PostCreate_WhenInvalidRequest_ReturnsValidationError()
     {
         var response = await _httpClient.PostAsync(
-            "/Courses/Create",
+            new Uri("/Courses/Create"),
             new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 ["CourseCode"] = "1111",
