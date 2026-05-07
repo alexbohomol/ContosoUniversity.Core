@@ -22,6 +22,7 @@ using ViewModels.Departments;
 
 public class DepartmentsController(IMediator mediator, ILogger<DepartmentsController> logger) : Controller
 {
+    [HttpGet]
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
         logger.LogPageVisited(nameof(Index), nameof(DepartmentsController));
@@ -33,6 +34,7 @@ public class DepartmentsController(IMediator mediator, ILogger<DepartmentsContro
         return View(departments.Select(x => new DepartmentListItemViewModel(x)));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
@@ -49,6 +51,7 @@ public class DepartmentsController(IMediator mediator, ILogger<DepartmentsContro
             : NotFound();
     }
 
+    [HttpGet]
     public async Task<IActionResult> Create(
         [FromServices] IInstructorsRoRepository repository,
         CancellationToken cancellationToken)
@@ -86,6 +89,7 @@ public class DepartmentsController(IMediator mediator, ILogger<DepartmentsContro
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Edit(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
@@ -137,6 +141,7 @@ public class DepartmentsController(IMediator mediator, ILogger<DepartmentsContro
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)

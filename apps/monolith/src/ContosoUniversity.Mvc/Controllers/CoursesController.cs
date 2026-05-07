@@ -23,6 +23,7 @@ using ViewModels.Courses;
 
 public class CoursesController(IMediator mediator, ILogger<CoursesController> logger) : Controller
 {
+    [HttpGet]
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
         logger.LogPageVisited(nameof(Index), nameof(CoursesController));
@@ -41,6 +42,7 @@ public class CoursesController(IMediator mediator, ILogger<CoursesController> lo
         }));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Details(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
@@ -57,6 +59,7 @@ public class CoursesController(IMediator mediator, ILogger<CoursesController> lo
             : NotFound();
     }
 
+    [HttpGet]
     public async Task<IActionResult> Create(
         [FromServices] IDepartmentsRoRepository repository,
         CancellationToken cancellationToken)
@@ -93,6 +96,7 @@ public class CoursesController(IMediator mediator, ILogger<CoursesController> lo
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Edit(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
@@ -142,6 +146,7 @@ public class CoursesController(IMediator mediator, ILogger<CoursesController> lo
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Delete(Guid? id, CancellationToken cancellationToken)
     {
         if (id is null)
@@ -169,6 +174,7 @@ public class CoursesController(IMediator mediator, ILogger<CoursesController> lo
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public IActionResult UpdateCourseCredits()
     {
         return View();
