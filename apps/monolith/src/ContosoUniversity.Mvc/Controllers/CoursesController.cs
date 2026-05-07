@@ -175,6 +175,7 @@ public class CoursesController(IMediator mediator, ILogger<CoursesController> lo
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateCourseCredits(
         int? multiplier,
         [FromServices] ICoursesRwRepository coursesRepository,

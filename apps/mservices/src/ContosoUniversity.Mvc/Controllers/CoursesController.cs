@@ -176,6 +176,7 @@ public class CoursesController(IMediator mediator) : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateCourseCredits(
         int? multiplier,
         [FromServices] ICoursesApiClient coursesApiClient,
