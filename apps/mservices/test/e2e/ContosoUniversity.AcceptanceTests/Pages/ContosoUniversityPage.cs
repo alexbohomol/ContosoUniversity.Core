@@ -8,7 +8,7 @@ using Microsoft.Playwright;
 public class ContosoUniversityPage(IBrowser browser, IConfiguration configuration)
     : PageObject(browser, configuration)
 {
-    protected override string PagePath => PageBaseUrl;
+    protected override string PagePath => HostRootPath;
 
     public async Task ClickBrandLink()
     {

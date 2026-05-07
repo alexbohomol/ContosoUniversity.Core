@@ -32,9 +32,9 @@ public class NoInfraTests :
     [Theory(Skip = "Should elaborate later on how to perform and setup it")]
     [InlineData("/health/readiness")]
     [InlineData("/health/liveness")]
-    public async Task Health_ReturnsUnhealthy(string healthUrl)
+    public async Task Health_ReturnsUnhealthy(string path)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync(healthUrl);
+        HttpResponseMessage response = await _httpClient.GetAsync(new Uri(path));
 
         response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
         response.Content.Headers.ContentType?.ToString().Should().Be("application/json");

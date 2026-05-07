@@ -20,7 +20,7 @@ public class CoursesAreaPage(IBrowser browser, IConfiguration configuration)
         public const string DepartmentId = "#Request_DepartmentId";
     }
 
-    protected override string PagePath => $"{PageBaseUrl}/Courses";
+    protected override string PagePath => $"{HostRootPath}/Courses";
 
     public async Task<CourseTableRowModel[]> ScrapRenderedCoursesList()
     {

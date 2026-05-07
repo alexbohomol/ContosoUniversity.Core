@@ -20,7 +20,7 @@ public class DepartmentsAreaPage(IBrowser browser, IConfiguration configuration)
         public const string AdministratorId = "#Request_AdministratorId";
     }
 
-    protected override string PagePath => $"{PageBaseUrl}/Departments";
+    protected override string PagePath => $"{HostRootPath}/Departments";
 
     public async Task<DepartmentTableRowModel[]> ScrapRenderedDepartmentsList()
     {

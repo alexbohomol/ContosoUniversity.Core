@@ -8,7 +8,7 @@ using Microsoft.Playwright;
 
 public abstract class PageObject(IBrowser browser, IConfiguration configuration)
 {
-    protected string PageBaseUrl => configuration["PageBaseUrl:Http"];
+    protected string HostRootPath => configuration["PageBaseUrl:Http"];
     protected abstract string PagePath { get; }
     protected IPage Page { get; set; }
 

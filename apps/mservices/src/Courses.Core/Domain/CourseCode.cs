@@ -2,6 +2,9 @@ namespace Courses.Core.Domain;
 
 using System;
 
+/// <summary>
+///     https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/user-defined-conversion-operators
+/// </summary>
 public readonly struct CourseCode
 {
     public const int MinValue = 1000;
@@ -11,31 +14,17 @@ public readonly struct CourseCode
 
     private CourseCode(int code)
     {
-        if (code is < MinValue or > MaxValue)
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(code),
-                $"Provided value: {code}.");
-        }
+        ArgumentOutOfRangeException.ThrowIfLessThan(code, MinValue);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(code, MaxValue);
 
         _code = code;
     }
 
-    /// <summary>
-    ///     https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/user-defined-conversion-operators
-    /// </summary>
-    public static implicit operator CourseCode(int code)
-    {
-        return new CourseCode(code);
-    }
+    public static implicit operator CourseCode(int code) => ToCourseCode(code);
 
-    public static implicit operator int(CourseCode code)
-    {
-        return code._code;
-    }
+    public static implicit operator int(CourseCode code) => ToInt32(code);
 
-    public override string ToString()
-    {
-        return _code.ToString();
-    }
+    public static CourseCode ToCourseCode(int code) => new(code);
+
+    public static int ToInt32(CourseCode code) => code._code;
 }

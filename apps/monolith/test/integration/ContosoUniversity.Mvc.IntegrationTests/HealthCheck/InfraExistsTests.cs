@@ -1,5 +1,6 @@
 namespace ContosoUniversity.Mvc.IntegrationTests.HealthCheck;
 
+using System;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -30,9 +31,9 @@ public class InfraExistsTests :
     [Theory]
     [InlineData("/health/readiness")]
     [InlineData("/health/liveness")]
-    public async Task Health_ReturnsHealthy(string healthUrl)
+    public async Task Health_ReturnsHealthy(string path)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync(healthUrl);
+        HttpResponseMessage response = await _httpClient.GetAsync(new Uri(path));
 
         response.Should().BeSuccessful();
         response.Content.Headers.ContentType?.ToString().Should().Be("application/json");

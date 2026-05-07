@@ -11,23 +11,17 @@ public readonly struct Credits
 
     private Credits(int credits)
     {
-        if (credits is < MinValue or > MaxValue)
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(credits),
-                $"Provided value: {credits}.");
-        }
+        ArgumentOutOfRangeException.ThrowIfLessThan(credits, MinValue);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(credits, MaxValue);
 
         _credits = credits;
     }
 
-    public static implicit operator Credits(int credits)
-    {
-        return new Credits(credits);
-    }
+    public static implicit operator Credits(int credits) => ToCredits(credits);
 
-    public static implicit operator int(Credits credits)
-    {
-        return credits._credits;
-    }
+    public static implicit operator int(Credits credits) => ToInt32(credits);
+
+    public static Credits ToCredits(int credits) => new(credits);
+
+    public static int ToInt32(Credits credits) => credits._credits;
 }

@@ -15,6 +15,7 @@ using ViewModels;
 
 public class HomeController(IStudentsRoRepository repository, ILogger<HomeController> logger) : Controller
 {
+    [HttpGet]
     public IActionResult Index()
     {
         logger.LogPageVisited(nameof(Index), nameof(HomeController));
@@ -22,6 +23,7 @@ public class HomeController(IStudentsRoRepository repository, ILogger<HomeContro
         return View();
     }
 
+    [HttpGet]
     public async Task<ActionResult> About(CancellationToken cancellationToken)
     {
         logger.LogPageVisited(nameof(About), nameof(HomeController));
@@ -37,11 +39,13 @@ public class HomeController(IStudentsRoRepository repository, ILogger<HomeContro
         return View(viewModels);
     }
 
+    [HttpGet]
     public IActionResult Privacy()
     {
         return View();
     }
 
+    [HttpGet]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
