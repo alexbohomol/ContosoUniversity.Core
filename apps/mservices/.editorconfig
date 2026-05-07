@@ -102,7 +102,6 @@ dotnet_diagnostic.CA1812.severity = none # Avoid uninstantiated internal classes
 dotnet_diagnostic.CA1815.severity = none # Override equals and operator equals on value types
 dotnet_diagnostic.CA1819.severity = none # Properties should not return arrays
 dotnet_diagnostic.CA1849.severity = none # Call async methods when in an async method
-dotnet_diagnostic.CA1851.severity = none # Possible multiple enumerations of IEnumerable collection
 dotnet_diagnostic.CA2007.severity = none # Do not directly await a Task
 dotnet_diagnostic.CA2225.severity = none # Operator overloads have named alternates
 dotnet_diagnostic.CA2227.severity = none # Collection properties should be read only
