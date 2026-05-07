@@ -28,15 +28,15 @@ public class CreateEndpointsTests :
     [Fact]
     public async Task PostCreate_WhenInvalidRequest_ReturnsValidationError()
     {
-        var response = await _httpClient.PostAsync(
-            new Uri("/Courses/Create"),
-            new FormUrlEncodedContent(new Dictionary<string, string>
-            {
-                ["CourseCode"] = "1111",
-                ["Title"] = "Computers",
-                ["Credits"] = "10",
-                ["DepartmentId"] = "dab7e678-e3e7-4471-8282-96fe52e5c16f"
-            }));
+        using var postContent = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            ["CourseCode"] = "1111",
+            ["Title"] = "Computers",
+            ["Credits"] = "10",
+            ["DepartmentId"] = "dab7e678-e3e7-4471-8282-96fe52e5c16f"
+        });
+
+        var response = await _httpClient.PostAsync(new Uri("/Courses/Create"), postContent);
 
         response.EnsureSuccessStatusCode();
 
