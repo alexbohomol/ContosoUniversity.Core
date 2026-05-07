@@ -19,7 +19,7 @@ public class InstructorsAreaPage(IBrowser browser, IConfiguration configuration)
         public const string HireDate = "#Request_HireDate";
     }
 
-    protected override string PagePath => $"{PageBaseUrl}/Instructors";
+    protected override string PagePath => $"{HostRootPath}/Instructors";
 
     public async Task<InstructorTableRowModel[]> ScrapRenderedInstructorsList()
     {
