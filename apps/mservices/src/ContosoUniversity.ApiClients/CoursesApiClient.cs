@@ -44,7 +44,7 @@ internal class CoursesApiClient(HttpClient client) : ICoursesApiClient
         => await client.PutAsJsonAsync($"/api/courses/{model.Id}", model, cancellationToken);
 
     public async Task Delete(CourseDeleteModel model, CancellationToken cancellationToken)
-        => await client.DeleteAsync($"/api/courses/{model.Id}", cancellationToken);
+        => await client.DeleteAsync(new Uri($"/api/courses/{model.Id}"), cancellationToken);
 
     public async Task<int> UpdateCoursesCredits(int multiplier, CancellationToken cancellationToken)
     {

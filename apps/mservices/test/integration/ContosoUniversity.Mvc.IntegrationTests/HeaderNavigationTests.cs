@@ -1,5 +1,6 @@
 namespace ContosoUniversity.Mvc.IntegrationTests;
 
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -34,7 +35,7 @@ public class HeaderNavigationTests :
     [InlineData("/Departments")]
     public async Task HeaderMenu_Smoke_ReturnsOk(string url)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync(url);
+        HttpResponseMessage response = await _httpClient.GetAsync(new Uri(url));
 
         response.EnsureSuccessStatusCode();
         response.Content.Headers.ContentType?.ToString().Should().Be("text/html; charset=utf-8");

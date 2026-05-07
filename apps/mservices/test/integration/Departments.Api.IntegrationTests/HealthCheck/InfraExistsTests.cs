@@ -37,7 +37,7 @@ public class InfraExistsTests :
     public async Task Health_ReturnsHealthy(string healthUrl)
     {
         await Task.Delay(1000);
-        HttpResponseMessage response = await _httpClient.GetAsync(healthUrl);
+        HttpResponseMessage response = await _httpClient.GetAsync(new Uri(healthUrl));
 
         response.Should().BeSuccessful();
         response.Content.Headers.ContentType?.ToString().Should().Be("application/json");

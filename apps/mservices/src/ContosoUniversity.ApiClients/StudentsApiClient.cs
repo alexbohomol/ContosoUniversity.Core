@@ -64,7 +64,7 @@ internal class StudentsApiClient(HttpClient client) : IStudentsApiClient
         => await client.PutAsJsonAsync($"{ApiRoot}/{model.ExternalId}", model, cancellationToken);
 
     public async Task Delete(StudentDeleteModel model, CancellationToken cancellationToken)
-        => await client.DeleteAsync($"{ApiRoot}/{model.Id}", cancellationToken);
+        => await client.DeleteAsync(new Uri($"{ApiRoot}/{model.Id}"), cancellationToken);
 }
 
 file enum GradeDto
