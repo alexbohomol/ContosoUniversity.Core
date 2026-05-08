@@ -36,7 +36,7 @@ internal class DepartmentsApiClient(HttpClient client) : IDepartmentsApiClient
         => await client.PutAsJsonAsync($"{ApiRoot}/{model.ExternalId}", model, cancellationToken);
 
     public async Task Delete(DepartmentDeleteModel model, CancellationToken cancellationToken)
-        => await client.DeleteAsync(new Uri($"{ApiRoot}/{model.Id}"), cancellationToken);
+        => await client.DeleteAsync(new Uri($"{ApiRoot}/{model.Id}", UriKind.Relative), cancellationToken);
 }
 
 file record DepartmentDto(
