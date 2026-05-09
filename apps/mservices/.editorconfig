@@ -73,7 +73,6 @@ dotnet_diagnostic.IDE0290.severity = error # Use primary constructor
 dotnet_diagnostic.CS1591.severity = none # Missing XML comment for publicly visible type or member
 
 # AnalysisMode: Minimum
-dotnet_diagnostic.CA1869.severity = none # Cache and reuse 'JsonSerializerOptions' instances
 dotnet_diagnostic.CA1873.severity = none # Avoid potentially expensive logging
 
 # AnalysisMode: Recommended

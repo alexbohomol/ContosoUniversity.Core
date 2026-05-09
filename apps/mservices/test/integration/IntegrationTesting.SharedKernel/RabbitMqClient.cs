@@ -11,16 +11,23 @@ public class RabbitMqClient(string connectionString)
 {
     private readonly ConnectionFactory _factory = new() { Uri = new Uri(connectionString) };
 
+    private static readonly JsonSerializerOptions CamelCaseOptions = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
+    private static readonly JsonSerializerOptions PropertyCaseInsensitiveOptions = new JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     public async Task PublishAsync<TMessage>(string queueName, TMessage message) where TMessage : class
     {
         await using var connection = await _factory.CreateConnectionAsync();
         await using var channel = await connection.CreateChannelAsync();
 
         var envelope = new MessageEnvelope<TMessage> { Message = message };
-        var bodyJson = JsonSerializer.Serialize(envelope, new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        });
+        var bodyJson = JsonSerializer.Serialize(envelope, CamelCaseOptions);
         var body = Encoding.UTF8.GetBytes(bodyJson);
 
         await channel.BasicPublishAsync(
@@ -45,11 +52,7 @@ public class RabbitMqClient(string connectionString)
                 var bodyJson = Encoding.UTF8.GetString(body);
                 Console.WriteLine($"Received raw message: {bodyJson}");
 
-                var envelope = JsonSerializer.Deserialize<MessageEnvelope<TMessage>>(bodyJson, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
-
+                var envelope = JsonSerializer.Deserialize<MessageEnvelope<TMessage>>(bodyJson, PropertyCaseInsensitiveOptions);
                 if (envelope?.Message is { } message)
                 {
                     tcs.TrySetResult(message);
