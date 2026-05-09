@@ -14,7 +14,7 @@ public static class ServiceLocator
 
     private static readonly IServiceProvider ServiceProvider;
 
-    private static IServiceProvider BuildServiceProvider()
+    private static ServiceProvider BuildServiceProvider()
     {
         var services = new ServiceCollection();
 
