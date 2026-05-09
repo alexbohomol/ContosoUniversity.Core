@@ -13,4 +13,8 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <WarningsNotAsErrors>NU1902</WarningsNotAsErrors>
+    </PropertyGroup>
+
 </Project>
