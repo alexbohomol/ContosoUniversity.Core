@@ -5,7 +5,7 @@ using MassTransit;
 using Students.Core;
 using Students.Core.Domain;
 
-internal class CourseDeletedEventHandler(
+internal partial class CourseDeletedEventHandler(
     IStudentsRwRepository repository,
     ILogger<CourseDeletedEventHandler> logger)
     : IConsumer<CourseDeletedEvent>
@@ -14,15 +14,14 @@ internal class CourseDeletedEventHandler(
     {
         Guid courseId = context.Message.Id;
 
-        logger.LogInformation("Withdraw enrolled students for course: {Id}", courseId);
+        LogEntryPoint(courseId);
 
         Student[] students = await repository.GetStudentsEnrolledForCourses(
             [courseId],
             context.CancellationToken);
 
-        logger.LogInformation(
-            "Students to be withdrawn from course: {StudentIds}.",
-            string.Join(", ", students.Select(x => x.ExternalId)));
+        var ids = string.Join(", ", students.Select(x => x.ExternalId));
+        LogStudentsFound(ids);
 
         foreach (Student student in students)
         {
@@ -30,4 +29,14 @@ internal class CourseDeletedEventHandler(
             await repository.Save(student, context.CancellationToken);
         }
     }
+
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "Withdraw enrolled students for course: {Id}")]
+    private partial void LogEntryPoint(Guid id);
+
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "Students to be withdrawn from course: {Ids}")]
+    private partial void LogStudentsFound(string ids);
 }

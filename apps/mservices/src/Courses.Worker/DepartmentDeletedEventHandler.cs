@@ -8,7 +8,7 @@ using MassTransit;
 
 using MediatR;
 
-internal class DepartmentDeletedEventHandler(
+internal partial class DepartmentDeletedEventHandler(
     IMediator mediator,
     ICoursesRwRepository repository,
     ILogger<DepartmentDeletedEventHandler> logger)
@@ -16,9 +16,7 @@ internal class DepartmentDeletedEventHandler(
 {
     public async Task Consume(ConsumeContext<DepartmentDeletedEvent> context)
     {
-        logger.LogInformation(
-            "Removing courses for deleted department: {DepartmentId}",
-            context.Message.DepartmentId);
+        LogEntryPoint(context.Message.DepartmentId);
 
         Course[] courses = await repository.GetByDepartmentId(
             context.Message.DepartmentId,
@@ -36,4 +34,9 @@ internal class DepartmentDeletedEventHandler(
         // var tasks = commands.Select(x => mediator.Send(x, context.CancellationToken));
         // await Task.WhenAll(tasks);
     }
+
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "Removing courses for deleted department: {DepartmentId}")]
+    private partial void LogEntryPoint(Guid departmentId);
 }
