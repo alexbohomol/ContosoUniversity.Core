@@ -7,14 +7,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceLocator
 {
-    static ServiceLocator()
-    {
-        ServiceProvider = BuildServiceProvider();
-    }
+    static ServiceLocator() => _serviceProvider = BuildServiceProvider();
 
-    private static readonly IServiceProvider ServiceProvider;
+    private static readonly IServiceProvider _serviceProvider;
 
-    private static IServiceProvider BuildServiceProvider()
+    private static ServiceProvider BuildServiceProvider()
     {
         var services = new ServiceCollection();
 
@@ -27,8 +24,5 @@ public static class ServiceLocator
         return services.BuildServiceProvider();
     }
 
-    public static T GetRequiredService<T>()
-    {
-        return ServiceProvider.GetRequiredService<T>();
-    }
+    public static T GetRequiredService<T>() => _serviceProvider.GetRequiredService<T>();
 }

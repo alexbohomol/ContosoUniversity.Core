@@ -1,9 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <NoWarn>$(NoWarn);CS8981</NoWarn>
-    </PropertyGroup>
-
     <ItemGroup>
         <ProjectReference Include="..\ContosoUniversity.Data\ContosoUniversity.Data.csproj"/>
         <ProjectReference Include="..\Departments.Core\Departments.Core.csproj" />

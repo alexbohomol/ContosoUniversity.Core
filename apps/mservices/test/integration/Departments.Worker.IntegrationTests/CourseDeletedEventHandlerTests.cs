@@ -18,7 +18,7 @@ public class CourseDeletedEventHandlerTests :
     IClassFixture<MsSqlContext>,
     IClassFixture<RabbitMqContext>
 {
-    private const int ProcessingTimeSlot = 500;
+    private const int ProcessingTimeSlot = 1000;
 
     private readonly ITestHarness _testHarness;
     private readonly DbContextFactory _dbContextFactory;

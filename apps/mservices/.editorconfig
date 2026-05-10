@@ -70,15 +70,7 @@ dotnet_diagnostic.IDE0052.severity = error # Remove unread private member
 dotnet_diagnostic.IDE0290.severity = error # Use primary constructor
 
 # Global suppressions
-
-# AnalysisMode: Default
 dotnet_diagnostic.CS1591.severity = none # Missing XML comment for publicly visible type or member
-
-# AnalysisMode: Minimum
-dotnet_diagnostic.CA1859.severity = none # Use concrete types when possible for improved performance
-dotnet_diagnostic.CA1861.severity = none # Avoid constant arrays as arguments
-dotnet_diagnostic.CA1869.severity = none # Cache and reuse 'JsonSerializerOptions' instances
-dotnet_diagnostic.CA1873.severity = none # Avoid potentially expensive logging
 
 # AnalysisMode: Recommended
 dotnet_diagnostic.CA1051.severity = none # Do not declare visible instance fields

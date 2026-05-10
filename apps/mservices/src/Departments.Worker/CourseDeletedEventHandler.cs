@@ -5,7 +5,7 @@ using Departments.Core.Domain;
 
 using MassTransit;
 
-internal class CourseDeletedEventHandler(
+internal partial class CourseDeletedEventHandler(
     IInstructorsRwRepository repository,
     ILogger<CourseDeletedEventHandler> logger)
     : IConsumer<CourseDeletedEvent>
@@ -14,15 +14,14 @@ internal class CourseDeletedEventHandler(
     {
         Guid courseId = context.Message.Id;
 
-        logger.LogInformation("Reset instructor assignments for course: {Id}", courseId);
+        LogEntryPoint(courseId);
 
         Instructor[] instructors = await repository.GetAllAssignedToCourses(
             [courseId],
             context.CancellationToken);
 
-        logger.LogInformation(
-            "Instructors to have assignment reset: {InstructorIds}.",
-            string.Join(", ", instructors.Select(x => x.ExternalId)));
+        var ids = string.Join(", ", instructors.Select(x => x.ExternalId));
+        LogInstructorsFound(ids);
 
         foreach (Instructor instructor in instructors)
         {
@@ -30,4 +29,14 @@ internal class CourseDeletedEventHandler(
             await repository.Save(instructor, context.CancellationToken);
         }
     }
+
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "Reset instructor assignments for course: {Id}")]
+    private partial void LogEntryPoint(Guid id);
+
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "Instructors having assignments to reset: {Ids}")]
+    private partial void LogInstructorsFound(string ids);
 }
