@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: 🛠️ Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: 🎖️ Resolve image tag
         id: resolve-image-tag
@@ -49,10 +49,10 @@ jobs:
 
     steps:
       - name: 🛠️ Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: 🔐 Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -86,10 +86,10 @@ jobs:
 
     steps:
       - name: 🛠️ Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: 🔐 Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -128,10 +128,10 @@ jobs:
 
     steps:
       - name: 🛠️ Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: 🔐 Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

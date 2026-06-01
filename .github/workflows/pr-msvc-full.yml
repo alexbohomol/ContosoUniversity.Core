@@ -42,10 +42,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Developer Cert
         if: ${{ matrix.image_name == 'cuweb' }}
@@ -56,7 +56,7 @@ jobs:
 
       - name: Build Docker image locally
         id: push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ${{ vars.MSERVICES_SLN_PATH }}
           file: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.proj_path }}/Dockerfile
@@ -64,7 +64,7 @@ jobs:
           outputs: type=docker,dest=${{ runner.temp }}/${{ matrix.image_name }}.tar
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.image_name }}
           path: ${{ runner.temp }}/${{ matrix.image_name }}.tar
@@ -79,46 +79,46 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Download artifact | cuweb
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
           name: cuweb
           path: ${{ runner.temp }}
 
     - name: Download artifact | courses-api
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
           name: courses-api
           path: ${{ runner.temp }}
 
     - name: Download artifact | courses-worker
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
           name: courses-worker
           path: ${{ runner.temp }}
 
     - name: Download artifact | departments-api
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
           name: departments-api
           path: ${{ runner.temp }}
 
     - name: Download artifact | departments-worker
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
           name: departments-worker
           path: ${{ runner.temp }}
 
     - name: Download artifact | students-api
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
           name: students-api
           path: ${{ runner.temp }}
 
     - name: Download artifact | students-worker
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
           name: students-worker
           path: ${{ runner.temp }}
@@ -228,7 +228,7 @@ jobs:
       TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/system/ContosoUniversity.SystemTests
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Install Docker Compose
       run: sudo curl -L "https://github.com/docker/compose/releases/download/v2.11.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -243,43 +243,43 @@ jobs:
         ls -lah
 
     - name: Download artifact | cuweb
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: cuweb
         path: ${{ runner.temp }}
 
     - name: Download artifact | courses-api
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: courses-api
         path: ${{ runner.temp }}
 
     - name: Download artifact | courses-worker
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: courses-worker
         path: ${{ runner.temp }}
 
     - name: Download artifact | departments-api
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: departments-api
         path: ${{ runner.temp }}
 
     - name: Download artifact | departments-worker
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: departments-worker
         path: ${{ runner.temp }}
 
     - name: Download artifact | students-api
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: students-api
         path: ${{ runner.temp }}
 
     - name: Download artifact | students-worker
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: students-worker
         path: ${{ runner.temp }}
@@ -296,7 +296,7 @@ jobs:
         docker image ls -a
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -323,7 +323,7 @@ jobs:
       TEST_PROJ_PATH: ${{ vars.MSERVICES_SLN_PATH }}/test/e2e/ContosoUniversity.AcceptanceTests
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Install Docker Compose
       run: sudo curl -L "https://github.com/docker/compose/releases/download/v2.11.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -338,43 +338,43 @@ jobs:
         ls -lah
 
     - name: Download artifact | cuweb
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: cuweb
         path: ${{ runner.temp }}
 
     - name: Download artifact | courses-api
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: courses-api
         path: ${{ runner.temp }}
 
     - name: Download artifact | courses-worker
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: courses-worker
         path: ${{ runner.temp }}
 
     - name: Download artifact | departments-api
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: departments-api
         path: ${{ runner.temp }}
 
     - name: Download artifact | departments-worker
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: departments-worker
         path: ${{ runner.temp }}
 
     - name: Download artifact | students-api
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: students-api
         path: ${{ runner.temp }}
 
     - name: Download artifact | students-worker
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: students-worker
         path: ${{ runner.temp }}
@@ -391,7 +391,7 @@ jobs:
         docker image ls -a
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 

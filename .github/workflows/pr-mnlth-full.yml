@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Developer Cert
         run: |
@@ -27,11 +27,11 @@ jobs:
           ls -lah
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Build Docker image locally
         id: push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ${{ vars.MONOLITH_SLN_PATH }}
           file: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc/Dockerfile
@@ -39,7 +39,7 @@ jobs:
           outputs: type=docker,dest=${{ runner.temp }}/cuweb.tar
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cuweb
           path: ${{ runner.temp }}/cuweb.tar
@@ -54,10 +54,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: cuweb
           path: ${{ runner.temp }}
@@ -107,7 +107,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Install Docker Compose
       run: sudo curl -L "https://github.com/docker/compose/releases/download/v2.11.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -122,7 +122,7 @@ jobs:
         ls -lah
 
     - name: Download artifact
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: cuweb
         path: ${{ runner.temp }}
@@ -133,7 +133,7 @@ jobs:
         docker image ls -a
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -161,7 +161,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Install Docker Compose
       run: sudo curl -L "https://github.com/docker/compose/releases/download/v2.11.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -176,7 +176,7 @@ jobs:
         ls -lah
 
     - name: Download artifact
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: cuweb
         path: ${{ runner.temp }}
@@ -187,7 +187,7 @@ jobs:
         docker image ls -a
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 

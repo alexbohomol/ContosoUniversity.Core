@@ -22,10 +22,10 @@ jobs:
         working-directory: ${{ vars.MONOLITH_SLN_PATH }}
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
         
@@ -46,10 +46,10 @@ jobs:
         working-directory: ${{ vars.MONOLITH_SLN_PATH }}
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
         
@@ -87,7 +87,7 @@ jobs:
       TEST_PROJ_PATH: ${{ vars.MONOLITH_SLN_PATH }}/test/integration/ContosoUniversity.Mvc.IntegrationTests
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Developer Cert
       working-directory: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc
@@ -101,7 +101,7 @@ jobs:
         docker pull mcr.microsoft.com/mssql-tools
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
       
