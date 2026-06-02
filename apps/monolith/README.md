@@ -12,6 +12,7 @@ apps/monolith
 ├── docker-compose.yml
 ├── docker-compose.override.yml
 ├── iac
+│   ├── bootstrap
 │   ├── envs
 │   │   ├── qa-aws-ebt
 │   │   └── qa-aws-ecs
