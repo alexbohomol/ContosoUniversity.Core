@@ -73,5 +73,5 @@ Do not document real secrets, real passwords, real tokens, or real credentials.
 When commands require sensitive values, use placeholders:
 
 ```bash
-dotnet dev-certs https -ep cert.pfx -p <local-dev-certificate-password>
+dotnet dev-certs https -ep cert.pfx -p Test1234!
 ```

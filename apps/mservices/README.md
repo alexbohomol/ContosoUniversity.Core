@@ -200,7 +200,9 @@ Generate it with `dotnet dev-certs` from the MVC project directory. Use the same
 
 ```bash
 cd apps/mservices/src/ContosoUniversity.Mvc
-dotnet dev-certs https -ep cert.pfx -p <local-dev-certificate-password>
+```
+```bash
+dotnet dev-certs https -ep cert.pfx -p Test1234!
 ```
 
 ### Start the local environment
@@ -214,7 +216,7 @@ docker compose up --build --wait
 The compose override maps the main services to the host:
 
 ```text
-web                  http://localhost:10000, https://localhost:10001
+web                   http://localhost:10000, https://localhost:10001
 courses-api           http://localhost:5006
 departments-api       http://localhost:5079
 students-api          http://localhost:5110
