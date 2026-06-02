@@ -12,7 +12,9 @@ apps/monolith
 ├── docker-compose.yml
 ├── docker-compose.override.yml
 ├── iac
-│   ├── envs/qa-aws-ecs
+│   ├── envs
+│   │   ├── qa-aws-ebt
+│   │   └── qa-aws-ecs
 │   └── modules/networking
 ├── src
 │   ├── ContosoUniversity.Mvc
@@ -100,7 +102,9 @@ Generate it with `dotnet dev-certs` from the MVC project directory. Use the same
 
 ```bash
 cd apps/monolith/src/ContosoUniversity.Mvc
-dotnet dev-certs https -ep cert.pfx -p <local-dev-certificate-password>
+```
+```bash
+dotnet dev-certs https -ep cert.pfx -p Test1234!
 ```
 
 ### Start the local environment

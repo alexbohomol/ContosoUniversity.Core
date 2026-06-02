@@ -106,7 +106,7 @@ Do not hardcode real secrets or certificate passwords in documentation or exampl
 Use placeholders where possible:
 
 ```bash
-dotnet dev-certs https -ep cert.pfx -p <local-dev-certificate-password>
+dotnet dev-certs https -ep cert.pfx -p Test1234!
 ```
 
 ## Dockerfile changes
