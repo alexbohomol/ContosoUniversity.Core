@@ -41,6 +41,8 @@ apps/mservices
     ├── e2e
     └── system
 ```
+> [!IMPORTANT]
+> This diagram should be updated in case any changes in directory structure take place
 
 ## Architecture overview
 
