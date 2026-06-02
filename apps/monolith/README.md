@@ -16,7 +16,10 @@ apps/monolith
 │   ├── envs
 │   │   ├── qa-aws-ebt
 │   │   └── qa-aws-ecs
-│   └── modules/networking
+│   └── modules
+│       ├── beanstalk
+│       ├── networking
+│       └── rds--mssql
 ├── src
 │   ├── ContosoUniversity.Mvc
 │   ├── ContosoUniversity.Application
