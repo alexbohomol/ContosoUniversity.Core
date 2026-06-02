@@ -19,7 +19,7 @@ apps/monolith
 │   └── modules
 │       ├── beanstalk
 │       ├── networking
-│       └── rds--mssql
+│       └── rds-mssql
 ├── src
 │   ├── ContosoUniversity.Mvc
 │   ├── ContosoUniversity.Application
@@ -37,6 +37,8 @@ apps/monolith
     ├── e2e
     └── system
 ```
+> [!IMPORTANT]
+> This diagram should be updated in case any changes in directory structure take place
 
 ## Architecture overview
 
