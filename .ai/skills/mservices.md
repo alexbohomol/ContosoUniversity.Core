@@ -108,8 +108,8 @@ The local Docker Compose environment is the canonical local runtime.
 
 Typical startup:
 
+Navigate to `apps/mservices` folder and run
 ```bash
-cd apps/mservices
 docker compose up --build --wait
 ```
 
