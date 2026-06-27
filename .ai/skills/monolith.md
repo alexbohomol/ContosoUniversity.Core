@@ -116,8 +116,8 @@ The SQL Server deployment is container-based and runs in ECS/Fargate. Do not des
 
 Typical local startup:
 
+Navigate to `apps/monolith` folder and run
 ```bash
-cd apps/monolith
 docker compose up --build --wait
 ```
 
