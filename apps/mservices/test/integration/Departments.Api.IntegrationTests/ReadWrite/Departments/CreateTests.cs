@@ -1,6 +1,7 @@
 namespace Departments.Api.IntegrationTests.ReadWrite.Departments;
 
 using System.Net;
+using System.Net.Http.Json;
 
 using FluentAssertions;
 

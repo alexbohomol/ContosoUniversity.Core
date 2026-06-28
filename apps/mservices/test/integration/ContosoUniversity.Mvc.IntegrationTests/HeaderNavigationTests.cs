@@ -35,7 +35,7 @@ public class HeaderNavigationTests :
     [InlineData("/Departments")]
     public async Task HeaderMenu_Smoke_ReturnsOk(string path)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync(new Uri(path));
+        HttpResponseMessage response = await _httpClient.GetAsync(new Uri(path, UriKind.Relative));
 
         response.EnsureSuccessStatusCode();
         response.Content.Headers.ContentType?.ToString().Should().Be("text/html; charset=utf-8");

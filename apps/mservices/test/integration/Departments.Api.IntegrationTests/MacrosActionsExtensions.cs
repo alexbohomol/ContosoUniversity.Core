@@ -1,5 +1,7 @@
 namespace Departments.Api.IntegrationTests;
 
+using System.Net.Http.Json;
+
 using Models;
 
 static class MacrosActionsExtensions

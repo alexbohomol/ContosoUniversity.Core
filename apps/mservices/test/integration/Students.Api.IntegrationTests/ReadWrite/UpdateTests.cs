@@ -1,6 +1,7 @@
 namespace Students.Api.IntegrationTests.ReadWrite;
 
 using System.Net;
+using System.Net.Http.Json;
 
 using FluentAssertions;
 

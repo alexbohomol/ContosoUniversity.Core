@@ -1,6 +1,7 @@
 namespace Courses.Api.IntegrationTests.HealthCheck;
 
 using System.Net;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 using Api;
@@ -34,7 +35,7 @@ public class NoInfraTests :
     [InlineData("/health/liveness")]
     public async Task Health_ReturnsUnhealthy(string path)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync(new Uri(path));
+        HttpResponseMessage response = await _httpClient.GetAsync(new Uri(path, UriKind.Relative));
 
         response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
         response.Content.Headers.ContentType?.ToString().Should().Be("application/json");

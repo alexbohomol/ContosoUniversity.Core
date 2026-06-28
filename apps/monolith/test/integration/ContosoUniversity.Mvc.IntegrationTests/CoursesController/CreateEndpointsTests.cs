@@ -36,7 +36,7 @@ public class CreateEndpointsTests :
             ["DepartmentId"] = "dab7e678-e3e7-4471-8282-96fe52e5c16f"
         });
 
-        var response = await _httpClient.PostAsync(new Uri("/Courses/Create"), postContent);
+        var response = await _httpClient.PostAsync(new Uri("/Courses/Create", UriKind.Relative), postContent);
 
         response.EnsureSuccessStatusCode();
 
