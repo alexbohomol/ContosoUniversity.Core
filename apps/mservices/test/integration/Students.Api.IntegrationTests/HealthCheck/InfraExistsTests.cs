@@ -1,6 +1,7 @@
 namespace Students.Api.IntegrationTests.HealthCheck;
 
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 using FluentAssertions;
@@ -33,7 +34,7 @@ public class InfraExistsTests :
     [InlineData("/health/liveness")]
     public async Task Health_ReturnsHealthy(string path)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync(new Uri(path));
+        HttpResponseMessage response = await _httpClient.GetAsync(new Uri(path, UriKind.Relative));
 
         response.Should().BeSuccessful();
         response.Content.Headers.ContentType?.ToString().Should().Be("application/json");

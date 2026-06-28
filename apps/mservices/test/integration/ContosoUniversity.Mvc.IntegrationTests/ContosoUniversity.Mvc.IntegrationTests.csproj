@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
         <PackageReference Include="FluentAssertions" />
@@ -12,6 +12,12 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\src\ContosoUniversity.Mvc\ContosoUniversity.Mvc.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="testsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>
