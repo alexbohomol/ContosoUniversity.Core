@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 public class DefaultApplicationFactory : WebApplicationFactory<IAssemblyMarker>
 {
-    public Func<string> DataSourceSetterFunction = () => string.Empty;
+    public Func<string> DataSourceSetterFunction { get; set; } = () => string.Empty;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
