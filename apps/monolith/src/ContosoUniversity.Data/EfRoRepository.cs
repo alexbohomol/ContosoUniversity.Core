@@ -14,9 +14,9 @@ using Microsoft.EntityFrameworkCore;
 public abstract class EfRoRepository<TProjection> : IRoRepository<TProjection>
     where TProjection : class, IIdentifiable<Guid>
 {
-    protected DbContext DbContext { get; set; }
-    protected IQueryable<TProjection> DbQuery { get; set; }
-    protected DbSet<TProjection> DbSet { get; set; }
+    protected DbContext DbContext { get; }
+    protected IQueryable<TProjection> DbQuery { get; }
+    protected DbSet<TProjection> DbSet { get; }
 
     protected EfRoRepository(DbContext dbContext)
     {

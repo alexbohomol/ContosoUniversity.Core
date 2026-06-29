@@ -14,9 +14,9 @@ using Microsoft.EntityFrameworkCore;
 public abstract class EfRwRepository<TDomainEntity> : IRwRepository<TDomainEntity>
     where TDomainEntity : class, IIdentifiable<Guid>
 {
-    protected DbContext DbContext { get; set; }
-    protected IQueryable<TDomainEntity> DbQuery { get; set; }
-    protected DbSet<TDomainEntity> DbSet { get; set; }
+    protected DbContext DbContext { get; }
+    protected IQueryable<TDomainEntity> DbQuery { get; }
+    protected DbSet<TDomainEntity> DbSet { get; }
 
     protected EfRwRepository(DbContext dbContext)
     {
