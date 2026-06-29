@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Contracts.Repositories.ReadOnly;
+using Contracts.Repositories.Reads;
 
 using Courses.Validators;
 

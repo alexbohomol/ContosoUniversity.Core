@@ -1,10 +1,10 @@
-namespace ContosoUniversity.Application.Contracts.Repositories.ReadOnly;
+namespace ContosoUniversity.Application.Contracts.Repositories.Reads;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Domain;
+using ContosoUniversity.Domain;
 
 public interface IRoRepository<TProjection> where TProjection : IIdentifiable<Guid>
 {

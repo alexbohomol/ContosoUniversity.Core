@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Contracts.Repositories.ReadWrite;
+using Contracts.Repositories.Writes;
 
 using Domain.Course;
 

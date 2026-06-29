@@ -1,10 +1,10 @@
-namespace ContosoUniversity.Application.Contracts.Repositories.ReadWrite;
+namespace ContosoUniversity.Application.Contracts.Repositories.Writes;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Domain.Instructor;
+using ContosoUniversity.Domain.Instructor;
 
 public interface IInstructorsRwRepository : IRwRepository<Instructor>
 {

@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Application.Contracts.Repositories.ReadOnly;
+namespace ContosoUniversity.Application.Contracts.Repositories.Reads;
 
 using System;
 using System.Threading;

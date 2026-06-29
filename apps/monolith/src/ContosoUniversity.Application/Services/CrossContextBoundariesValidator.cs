@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Contracts.Repositories.ReadOnly.Projections;
+using Contracts.Repositories.Reads.Projections;
 
 using Domain;
 using Domain.Student;

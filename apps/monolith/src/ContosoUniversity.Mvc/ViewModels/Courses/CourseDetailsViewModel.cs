@@ -3,7 +3,7 @@ namespace ContosoUniversity.Mvc.ViewModels.Courses;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-using Application.Contracts.Repositories.ReadOnly.Projections;
+using Application.Contracts.Repositories.Reads.Projections;
 
 public class CourseDetailsViewModel
 {

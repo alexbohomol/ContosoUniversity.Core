@@ -5,7 +5,7 @@ using Domain.Student;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using Student = Application.Contracts.Repositories.ReadOnly.Projections.Student;
+using Student = Application.Contracts.Repositories.Reads.Projections.Student;
 
 internal class EntityTypeConfigurations :
     IEntityTypeConfiguration<Enrollment>,

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.ReadWrite;
+using Application.Contracts.Repositories.Writes;
 using Application.Exceptions;
 
 using Domain.Course;

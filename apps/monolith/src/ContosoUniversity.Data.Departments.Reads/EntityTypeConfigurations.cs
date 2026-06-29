@@ -2,14 +2,14 @@ namespace ContosoUniversity.Data.Departments.Reads;
 
 using System;
 
-using Application.Contracts.Repositories.ReadOnly.Projections;
+using Application.Contracts.Repositories.Reads.Projections;
 
 using Domain.Instructor;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using Instructor = Application.Contracts.Repositories.ReadOnly.Projections.Instructor;
+using Instructor = Application.Contracts.Repositories.Reads.Projections.Instructor;
 
 internal class EntityTypeConfigurations :
     IEntityTypeConfiguration<Instructor>,

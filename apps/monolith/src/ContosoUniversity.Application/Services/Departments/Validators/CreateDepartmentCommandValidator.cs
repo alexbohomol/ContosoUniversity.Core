@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Commands;
 
-using Contracts.Repositories.ReadOnly;
+using Contracts.Repositories.Reads;
 
 using FluentValidation;
 

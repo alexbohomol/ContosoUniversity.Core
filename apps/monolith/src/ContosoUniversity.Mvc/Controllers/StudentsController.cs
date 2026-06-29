@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.ReadOnly.Paging;
-using Application.Contracts.Repositories.ReadOnly.Projections;
+using Application.Contracts.Repositories.Reads.Paging;
+using Application.Contracts.Repositories.Reads.Projections;
 using Application.Services.Students.Commands;
 using Application.Services.Students.Queries;
 

@@ -82,7 +82,6 @@ dotnet_diagnostic.CS1591.severity = none # Missing XML comment for publicly visi
 
 # AnalysisMode: Recommended
 dotnet_diagnostic.CA1305.severity = none # Specify IFormatProvider
-dotnet_diagnostic.CA1716.severity = none # Identifiers should not match keywords
 dotnet_diagnostic.CA1852.severity = none # Seal internal types
 
 # AnalysisMode: All

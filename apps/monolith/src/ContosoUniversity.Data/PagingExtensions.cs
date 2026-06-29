@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.ReadOnly.Paging;
+using Application.Contracts.Repositories.Reads.Paging;
 
 using Microsoft.EntityFrameworkCore;
 
