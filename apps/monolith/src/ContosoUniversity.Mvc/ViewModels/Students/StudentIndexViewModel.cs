@@ -3,8 +3,8 @@ namespace ContosoUniversity.Mvc.ViewModels.Students;
 using System;
 using System.Linq;
 
-using Application.Contracts.Repositories.ReadOnly.Paging;
-using Application.Contracts.Repositories.ReadOnly.Projections;
+using Application.Contracts.Repositories.Reads.Paging;
+using Application.Contracts.Repositories.Reads.Projections;
 using Application.Services.Students.Queries;
 
 public class StudentIndexViewModel

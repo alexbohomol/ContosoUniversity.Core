@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.ReadOnly;
-using Application.Contracts.Repositories.ReadOnly.Projections;
+using Application.Contracts.Repositories.Reads;
+using Application.Contracts.Repositories.Reads.Projections;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

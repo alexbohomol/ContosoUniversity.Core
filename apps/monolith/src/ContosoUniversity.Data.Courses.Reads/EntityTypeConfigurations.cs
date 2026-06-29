@@ -1,6 +1,6 @@
 namespace ContosoUniversity.Data.Courses.Reads;
 
-using Application.Contracts.Repositories.ReadOnly.Projections;
+using Application.Contracts.Repositories.Reads.Projections;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

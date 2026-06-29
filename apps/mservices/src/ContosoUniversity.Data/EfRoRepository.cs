@@ -12,9 +12,9 @@ using SharedKernel;
 public abstract class EfRoRepository<TProjection> : IRoRepository<TProjection>
     where TProjection : class, IIdentifiable<Guid>
 {
-    protected readonly DbContext DbContext;
-    protected readonly IQueryable<TProjection> DbQuery;
-    protected readonly DbSet<TProjection> DbSet;
+    protected DbContext DbContext { get; }
+    protected IQueryable<TProjection> DbQuery { get; }
+    protected DbSet<TProjection> DbSet { get; }
 
     protected EfRoRepository(DbContext dbContext)
     {

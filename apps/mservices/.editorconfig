@@ -69,17 +69,12 @@ dotnet_diagnostic.IDE0051.severity = error # Remove unused private members
 dotnet_diagnostic.IDE0052.severity = error # Remove unread private member
 dotnet_diagnostic.IDE0290.severity = error # Use primary constructor
 
-# Global suppressions
+# Global compiler suppressions
 dotnet_diagnostic.CS1591.severity = none # Missing XML comment for publicly visible type or member
 
-# AnalysisMode: Recommended
-dotnet_diagnostic.CA1051.severity = none # Do not declare visible instance fields
-dotnet_diagnostic.CA1305.severity = none # Specify IFormatProvider
-dotnet_diagnostic.CA1707.severity = none # Identifiers should not contain underscores
-dotnet_diagnostic.CA1711.severity = none # Identifiers should not have incorrect suffix
-dotnet_diagnostic.CA1848.severity = none # Use the LoggerMessage delegates
-dotnet_diagnostic.CA1852.severity = none # Seal internal types
-dotnet_diagnostic.CA2201.severity = none # Do not raise reserved exception types
+# Global analyser suppressions
+dotnet_diagnostic.CA1305.severity = none # Recommended - Specify IFormatProvider
+dotnet_diagnostic.CA1852.severity = none # Recommended - Seal internal types
 
 # AnalysisMode: All
 dotnet_diagnostic.CA1002.severity = none # Do not expose generic lists

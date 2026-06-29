@@ -6,8 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Contracts.Repositories.ReadOnly;
-using Contracts.Repositories.ReadOnly.Projections;
+using Contracts.Repositories.Reads;
+using Contracts.Repositories.Reads.Projections;
 
 using Exceptions;
 

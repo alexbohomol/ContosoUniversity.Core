@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 using Xunit;
 
-[Collection(nameof(SharedTestCollection))]
+[Collection(nameof(SharedTestFixture))]
 public class HeaderNavigationTests :
     IClassFixture<TestsConfiguration>,
     IClassFixture<WebApplicationFactory<IAssemblyMarker>>

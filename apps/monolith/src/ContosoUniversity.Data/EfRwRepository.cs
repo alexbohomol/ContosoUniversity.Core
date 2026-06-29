@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.ReadWrite;
+using Application.Contracts.Repositories.Writes;
 
 using Domain;
 
@@ -14,9 +14,9 @@ using Microsoft.EntityFrameworkCore;
 public abstract class EfRwRepository<TDomainEntity> : IRwRepository<TDomainEntity>
     where TDomainEntity : class, IIdentifiable<Guid>
 {
-    protected readonly DbContext DbContext;
-    protected readonly IQueryable<TDomainEntity> DbQuery;
-    protected readonly DbSet<TDomainEntity> DbSet;
+    protected DbContext DbContext { get; }
+    protected IQueryable<TDomainEntity> DbQuery { get; }
+    protected DbSet<TDomainEntity> DbSet { get; }
 
     protected EfRwRepository(DbContext dbContext)
     {

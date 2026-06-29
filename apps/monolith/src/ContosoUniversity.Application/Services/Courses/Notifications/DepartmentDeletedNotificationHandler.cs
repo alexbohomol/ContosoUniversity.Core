@@ -3,7 +3,7 @@ namespace ContosoUniversity.Application.Services.Courses.Notifications;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Contracts.Repositories.ReadWrite;
+using Contracts.Repositories.Writes;
 
 using Departments.Notifications;
 

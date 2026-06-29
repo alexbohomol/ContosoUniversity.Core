@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Contracts.Repositories.ReadOnly;
-using Contracts.Repositories.ReadWrite;
+using Contracts.Repositories.Reads;
+using Contracts.Repositories.Writes;
 
 using MediatR;
 

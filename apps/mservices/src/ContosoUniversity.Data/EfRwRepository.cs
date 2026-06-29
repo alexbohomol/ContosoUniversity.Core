@@ -12,9 +12,9 @@ using SharedKernel;
 public abstract class EfRwRepository<TDomainEntity> : IRwRepository<TDomainEntity>
     where TDomainEntity : class, IIdentifiable<Guid>
 {
-    protected readonly DbContext DbContext;
-    protected readonly IQueryable<TDomainEntity> DbQuery;
-    protected readonly DbSet<TDomainEntity> DbSet;
+    protected DbContext DbContext { get; }
+    protected IQueryable<TDomainEntity> DbQuery { get; }
+    protected DbSet<TDomainEntity> DbSet { get; }
 
     protected EfRwRepository(DbContext dbContext)
     {

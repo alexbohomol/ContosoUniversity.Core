@@ -1,10 +1,10 @@
-namespace ContosoUniversity.Application.Contracts.Repositories.ReadOnly.Projections;
+namespace ContosoUniversity.Application.Contracts.Repositories.Reads.Projections;
 
 using System;
 using System.Collections.Generic;
 
-using Domain;
-using Domain.Student;
+using ContosoUniversity.Domain;
+using ContosoUniversity.Domain.Student;
 
 public record Student(
     string LastName,

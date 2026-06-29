@@ -1,10 +1,10 @@
-namespace ContosoUniversity.Application.Contracts.Repositories.ReadWrite;
+namespace ContosoUniversity.Application.Contracts.Repositories.Writes;
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Domain;
+using ContosoUniversity.Domain;
 
 public interface IRwRepository<TEntity> where TEntity : IIdentifiable<Guid>
 {

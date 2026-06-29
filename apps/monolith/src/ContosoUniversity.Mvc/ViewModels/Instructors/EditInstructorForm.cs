@@ -2,7 +2,7 @@ namespace ContosoUniversity.Mvc.ViewModels.Instructors;
 
 using System.ComponentModel.DataAnnotations;
 
-using Application.Contracts.Repositories.ReadOnly.Projections;
+using Application.Contracts.Repositories.Reads.Projections;
 
 public record EditInstructorForm(Instructor Instructor, Course[] Courses)
 {
