@@ -12,8 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 public class DefaultApplicationFactory<TAssemblyMarker>
     : WebApplicationFactory<TAssemblyMarker> where TAssemblyMarker : class
 {
-    public Func<string> DataSourceSetterFunction = () => string.Empty;
-    public Func<string> RabbitMqConnectionSetterFunction;
+    public Func<string> DataSourceSetterFunction { get; set; } = () => string.Empty;
+    public Func<string> RabbitMqConnectionSetterFunction { get; set; }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {

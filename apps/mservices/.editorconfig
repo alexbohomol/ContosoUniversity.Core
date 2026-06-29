@@ -73,7 +73,6 @@ dotnet_diagnostic.IDE0290.severity = error # Use primary constructor
 dotnet_diagnostic.CS1591.severity = none # Missing XML comment for publicly visible type or member
 
 # AnalysisMode: Recommended
-dotnet_diagnostic.CA1051.severity = none # Do not declare visible instance fields
 dotnet_diagnostic.CA1305.severity = none # Specify IFormatProvider
 dotnet_diagnostic.CA1707.severity = none # Identifiers should not contain underscores
 dotnet_diagnostic.CA1711.severity = none # Identifiers should not have incorrect suffix
