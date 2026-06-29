@@ -74,7 +74,6 @@ dotnet_diagnostic.CS1591.severity = none # Missing XML comment for publicly visi
 
 # AnalysisMode: Recommended
 dotnet_diagnostic.CA1305.severity = none # Specify IFormatProvider
-dotnet_diagnostic.CA1707.severity = none # Identifiers should not contain underscores
 dotnet_diagnostic.CA1711.severity = none # Identifiers should not have incorrect suffix
 dotnet_diagnostic.CA1848.severity = none # Use the LoggerMessage delegates
 dotnet_diagnostic.CA1852.severity = none # Seal internal types
