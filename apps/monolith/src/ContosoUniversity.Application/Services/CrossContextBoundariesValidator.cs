@@ -26,7 +26,7 @@ public static class CrossContextBoundariesValidator
 
         if (notFoundDepartments.Length != 0)
         {
-            throw new Exception(
+            throw new InvalidOperationException(
                 $"Unbound contexts inconsistency. Departments not found: {notFoundDepartments.ToDisplayString()}.");
         }
     }
@@ -44,7 +44,7 @@ public static class CrossContextBoundariesValidator
 
         if (notFoundCourses.Length != 0)
         {
-            throw new Exception(
+            throw new InvalidOperationException(
                 $"Unbound contexts inconsistency. Course not found: {notFoundCourses.ToDisplayString()}.");
         }
     }
@@ -62,7 +62,7 @@ public static class CrossContextBoundariesValidator
 
         if (notFoundCourses.Length != 0)
         {
-            throw new Exception(
+            throw new InvalidOperationException(
                 $"Unbound contexts inconsistency. Course not found: {notFoundCourses.ToDisplayString()}.");
         }
     }

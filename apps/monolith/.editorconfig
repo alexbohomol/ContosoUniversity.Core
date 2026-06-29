@@ -86,7 +86,6 @@ dotnet_diagnostic.CA1305.severity = none # Specify IFormatProvider
 dotnet_diagnostic.CA1707.severity = none # Identifiers should not contain underscores
 dotnet_diagnostic.CA1716.severity = none # Identifiers should not match keywords
 dotnet_diagnostic.CA1852.severity = none # Seal internal types
-dotnet_diagnostic.CA2201.severity = none # Do not raise reserved exception types
 
 # AnalysisMode: All
 dotnet_diagnostic.CA1002.severity = none # Do not expose generic lists
