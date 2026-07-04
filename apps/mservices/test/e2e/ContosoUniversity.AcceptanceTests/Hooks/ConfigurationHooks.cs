@@ -3,11 +3,10 @@ namespace ContosoUniversity.AcceptanceTests.Hooks;
 using System;
 using System.IO;
 
-using BoDi;
-
 using Microsoft.Extensions.Configuration;
 
-using TechTalk.SpecFlow;
+using Reqnroll;
+using Reqnroll.BoDi;
 
 [Binding]
 public class ConfigurationHooks

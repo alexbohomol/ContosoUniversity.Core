@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 
 using NUnit.Framework;
 
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 [Binding]
 public class DockerHooks
