@@ -8,8 +8,7 @@ using Models;
 
 using Pages;
 
-using TechTalk.SpecFlow;
-using TechTalk.SpecFlow.Assist;
+using Reqnroll;
 
 [Binding]
 public class InstructorsSmoke(InstructorsAreaPage page, ScenarioContext scenarioContext)

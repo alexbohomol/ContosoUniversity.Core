@@ -2,11 +2,10 @@ namespace ContosoUniversity.AcceptanceTests.Hooks;
 
 using System.Threading.Tasks;
 
-using BoDi;
-
 using Microsoft.Playwright;
 
-using TechTalk.SpecFlow;
+using Reqnroll;
+using Reqnroll.BoDi;
 
 [Binding]
 public class PlaywrightHooks

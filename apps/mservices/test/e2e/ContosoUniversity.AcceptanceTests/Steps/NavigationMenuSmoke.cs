@@ -6,7 +6,7 @@ using FluentAssertions;
 
 using Pages;
 
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 [Binding]
 public class NavigationMenuSmoke(ContosoUniversityPage page)
