@@ -163,7 +163,7 @@ resource "aws_ecs_task_definition" "web_task" {
     {
       essential = true
       name      = "web"
-      image     = "ghcr.io/alexbohomol/cuweb"
+      image     = "ghcr.io/alexbohomol/web-monolith"
       portMappings = [
         {
           containerPort = 80,

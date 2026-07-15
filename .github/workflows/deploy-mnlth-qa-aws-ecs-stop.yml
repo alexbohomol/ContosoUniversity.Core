@@ -26,7 +26,7 @@ jobs:
         with:
           task-definition-family: contoso-mnlth-web-tasks
           container-name: web
-          image: ghcr.io/alexbohomol/cuweb
+          image: ghcr.io/alexbohomol/web-monolith
 
       - name: 🛑 Stop application
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2

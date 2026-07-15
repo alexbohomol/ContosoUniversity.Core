@@ -9,8 +9,8 @@ on:
 
 jobs:
 
-  build-push-cuweb:
-    name: Build & Push cuweb
+  build-push-web-monolith:
+    name: Build & Push web-monolith
     runs-on: ubuntu-latest
 
     steps:
@@ -41,14 +41,14 @@ jobs:
         id: metadata
         uses: docker/metadata-action@v6
         with:
-          images: ghcr.io/alexbohomol/cuweb
+          images: ghcr.io/alexbohomol/web-monolith
           tags: |
             # Use short SHA from PR head or latest commit on default branch
             type=raw,value=${{ steps.extract-sha.outputs.SHORT_SHA }}
             # Set 'latest' tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Build and push cuweb image
+      - name: Build and push web-monolith image
         uses: docker/build-push-action@v7
         with:
           context: ${{ vars.MONOLITH_SLN_PATH }}
