@@ -26,14 +26,15 @@ public class RabbitMqContext : IAsyncLifetime
                 .UntilCommandIsCompleted("rabbitmq-diagnostics check_port_connectivity"))
         .Build();
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await _rabbitMqContainer.StartAsync();
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         await _rabbitMqContainer.DisposeAsync();
+        GC.SuppressFinalize(this);
     }
 
     public string ConnectionString => _rabbitMqContainer.GetConnectionString();

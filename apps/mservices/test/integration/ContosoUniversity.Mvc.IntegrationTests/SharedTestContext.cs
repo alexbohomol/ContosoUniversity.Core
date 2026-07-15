@@ -1,5 +1,6 @@
 namespace ContosoUniversity.Mvc.IntegrationTests;
 
+using System;
 using System.Threading.Tasks;
 
 using WireMock.RequestBuilders;
@@ -14,7 +15,7 @@ public class SharedTestContext : IAsyncLifetime
     private WireMockServer _departmentsApi;
     private WireMockServer _studentsApi;
 
-    public Task InitializeAsync()
+    public ValueTask InitializeAsync()
     {
         _coursesApi = WireMockServer.Start(5006);
         _departmentsApi = WireMockServer.Start(5079);
@@ -65,10 +66,10 @@ public class SharedTestContext : IAsyncLifetime
                 .WithHeader("content-type", "application/json; charset=utf-8")
                 .WithStatusCode(200));
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
-    public Task DisposeAsync()
+    public ValueTask DisposeAsync()
     {
         _coursesApi.Stop();
         _coursesApi.Dispose();
@@ -79,6 +80,8 @@ public class SharedTestContext : IAsyncLifetime
         _studentsApi.Stop();
         _studentsApi.Dispose();
 
-        return Task.CompletedTask;
+        GC.SuppressFinalize(this);
+
+        return ValueTask.CompletedTask;
     }
 }
