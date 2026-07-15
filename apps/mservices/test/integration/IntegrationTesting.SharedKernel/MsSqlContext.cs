@@ -36,7 +36,7 @@ public class MsSqlContext : IAsyncLifetime
                 ]))
         .Build();
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await _msSqlContainer.StartAsync();
 
@@ -54,9 +54,10 @@ public class MsSqlContext : IAsyncLifetime
         }
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         await _msSqlContainer.DisposeAsync();
+        GC.SuppressFinalize(this);
     }
 
     public string MsSqlDataSource
