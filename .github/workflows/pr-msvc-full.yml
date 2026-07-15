@@ -19,7 +19,7 @@ jobs:
       matrix:
         include:
         - title: ContosoUniversity.Mvc
-          image_name: cuweb
+          image_name: web-mservices
           proj_path: src/ContosoUniversity.Mvc
         - title: Courses.Api
           image_name: courses-api
@@ -48,7 +48,7 @@ jobs:
         uses: docker/setup-buildx-action@v4
 
       - name: Developer Cert
-        if: ${{ matrix.image_name == 'cuweb' }}
+        if: ${{ matrix.image_name == 'web-mservices' }}
         working-directory: ${{ vars.MSERVICES_SLN_PATH }}/${{ matrix.proj_path }}
         run: |
           dotnet dev-certs https -ep cert.pfx -p Test1234!
@@ -81,10 +81,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v6
 
-    - name: Download artifact | cuweb
+    - name: Download artifact | web-mservices
       uses: actions/download-artifact@v8
       with:
-          name: cuweb
+          name: web-mservices
           path: ${{ runner.temp }}
 
     - name: Download artifact | courses-api
@@ -125,7 +125,7 @@ jobs:
 
     - name: Load images
       run: |
-        docker load --input ${{ runner.temp }}/cuweb.tar
+        docker load --input ${{ runner.temp }}/web-mservices.tar
         docker load --input ${{ runner.temp }}/courses-api.tar
         docker load --input ${{ runner.temp }}/courses-worker.tar
         docker load --input ${{ runner.temp }}/departments-api.tar
@@ -149,11 +149,11 @@ jobs:
       if: always()
       run: docker inspect students-api
 
-    - name: Inspect container | cuweb
+    - name: Inspect container | web-mservices
       if: always()
-      run: docker inspect cuweb
+      run: docker inspect web-mservices
 
-    - name: Curl to cuweb
+    - name: Curl to web-mservices
       if: always()
       run: curl http://localhost:10000/Courses
 
@@ -181,9 +181,9 @@ jobs:
       if: always()
       run: curl http://localhost:5037/health/readiness | jq .
 
-    - name: Grab container logs | cuweb
+    - name: Grab container logs | web-mservices
       if: always()
-      run: docker logs cuweb
+      run: docker logs web-mservices
 
     - name: Grab container logs | mssql
       if: always()
@@ -242,10 +242,10 @@ jobs:
         docker-compose version
         ls -lah
 
-    - name: Download artifact | cuweb
+    - name: Download artifact | web-mservices
       uses: actions/download-artifact@v8
       with:
-        name: cuweb
+        name: web-mservices
         path: ${{ runner.temp }}
 
     - name: Download artifact | courses-api
@@ -286,7 +286,7 @@ jobs:
 
     - name: Load images
       run: |
-        docker load --input ${{ runner.temp }}/cuweb.tar
+        docker load --input ${{ runner.temp }}/web-mservices.tar
         docker load --input ${{ runner.temp }}/courses-api.tar
         docker load --input ${{ runner.temp }}/courses-worker.tar
         docker load --input ${{ runner.temp }}/departments-api.tar
@@ -337,10 +337,10 @@ jobs:
         docker-compose version
         ls -lah
 
-    - name: Download artifact | cuweb
+    - name: Download artifact | web-mservices
       uses: actions/download-artifact@v8
       with:
-        name: cuweb
+        name: web-mservices
         path: ${{ runner.temp }}
 
     - name: Download artifact | courses-api
@@ -381,7 +381,7 @@ jobs:
 
     - name: Load images
       run: |
-        docker load --input ${{ runner.temp }}/cuweb.tar
+        docker load --input ${{ runner.temp }}/web-mservices.tar
         docker load --input ${{ runner.temp }}/courses-api.tar
         docker load --input ${{ runner.temp }}/courses-worker.tar
         docker load --input ${{ runner.temp }}/departments-api.tar

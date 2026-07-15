@@ -4,8 +4,8 @@ networks:
 
 services:
   web:
-    image: cuweb
-    container_name: cuweb
+    image: web-mservices
+    container_name: web-mservices
     hostname: web
     depends_on:
       courses-api:
