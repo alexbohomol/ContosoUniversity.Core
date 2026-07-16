@@ -4,8 +4,8 @@ networks:
 
 services:
   web:
-    image: cuweb
-    container_name: cuweb
+    image: web-monolith
+    container_name: web-monolith
     hostname: web
     depends_on:
       mssql:

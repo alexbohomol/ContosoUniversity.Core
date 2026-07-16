@@ -35,14 +35,14 @@ jobs:
         with:
           context: ${{ vars.MONOLITH_SLN_PATH }}
           file: ${{ vars.MONOLITH_SLN_PATH }}/src/ContosoUniversity.Mvc/Dockerfile
-          tags: cuweb:latest
-          outputs: type=docker,dest=${{ runner.temp }}/cuweb.tar
+          tags: web-monolith:latest
+          outputs: type=docker,dest=${{ runner.temp }}/web-monolith.tar
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
-          name: cuweb
-          path: ${{ runner.temp }}/cuweb.tar
+          name: web-monolith
+          path: ${{ runner.temp }}/web-monolith.tar
 
   check_system_health:
     name: Check System Health
@@ -59,12 +59,12 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v8
         with:
-          name: cuweb
+          name: web-monolith
           path: ${{ runner.temp }}
 
       - name: Load image
         run: |
-          docker load --input ${{ runner.temp }}/cuweb.tar
+          docker load --input ${{ runner.temp }}/web-monolith.tar
           docker image ls -a
 
       - name: Run Docker Compose Up
@@ -77,15 +77,15 @@ jobs:
       - name: List Docker containers
         run: docker container ls --all
 
-      - name: Inspect container | cuweb
-        run: docker inspect cuweb
+      - name: Inspect container | web-monolith
+        run: docker inspect web-monolith
 
-      - name: Curl to cuweb
+      - name: Curl to web-monolith
         run: curl http://localhost:10000/Courses
 
-      - name: Grab container logs | cuweb
+      - name: Grab container logs | web-monolith
         if: always()
-        run: docker logs cuweb
+        run: docker logs web-monolith
 
       - name: Grab container logs | mssql
         if: always()
@@ -124,12 +124,12 @@ jobs:
     - name: Download artifact
       uses: actions/download-artifact@v8
       with:
-        name: cuweb
+        name: web-monolith
         path: ${{ runner.temp }}
 
     - name: Load image
       run: |
-        docker load --input ${{ runner.temp }}/cuweb.tar
+        docker load --input ${{ runner.temp }}/web-monolith.tar
         docker image ls -a
 
     - name: Setup .NET
@@ -178,12 +178,12 @@ jobs:
     - name: Download artifact
       uses: actions/download-artifact@v8
       with:
-        name: cuweb
+        name: web-monolith
         path: ${{ runner.temp }}
 
     - name: Load image
       run: |
-        docker load --input ${{ runner.temp }}/cuweb.tar
+        docker load --input ${{ runner.temp }}/web-monolith.tar
         docker image ls -a
 
     - name: Setup .NET

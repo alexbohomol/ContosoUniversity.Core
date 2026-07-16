@@ -143,7 +143,7 @@ jobs:
         with:
           task-definition-family: contoso-mnlth-web-tasks
           container-name: web
-          image: ghcr.io/alexbohomol/cuweb:${{ needs.get_image_tag.outputs.IMAGE_TAG }}
+          image: ghcr.io/alexbohomol/web-monolith:${{ needs.get_image_tag.outputs.IMAGE_TAG }}
 
       - name: 🚀 Kick off application instances
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
