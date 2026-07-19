@@ -1,0 +1,51 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ContosoUniversity.ApiClients/ContosoUniversity.ApiClients.csproj" />
+    <Project Path="src/ContosoUniversity.Application/ContosoUniversity.Application.csproj" />
+    <Project Path="src/ContosoUniversity.Data/ContosoUniversity.Data.csproj" />
+    <Project Path="src/ContosoUniversity.Messaging.Contracts/ContosoUniversity.Messaging.Contracts.csproj" />
+    <Project Path="src/ContosoUniversity.Mvc/ContosoUniversity.Mvc.csproj" />
+    <Project Path="src/ContosoUniversity.SharedKernel/ContosoUniversity.SharedKernel.csproj" />
+  </Folder>
+  <Folder Name="/src/courses/">
+    <Project Path="src/Courses.Api/Courses.Api.csproj" />
+    <Project Path="src/Courses.Core/Courses.Core.csproj" />
+    <Project Path="src/Courses.Data.Reads/Courses.Data.Reads.csproj" />
+    <Project Path="src/Courses.Data.Writes/Courses.Data.Writes.csproj" />
+    <Project Path="src/Courses.Worker/Courses.Worker.csproj" />
+  </Folder>
+  <Folder Name="/src/departments/">
+    <Project Path="src/Departments.Api/Departments.Api.csproj" />
+    <Project Path="src/Departments.Core/Departments.Core.csproj" />
+    <Project Path="src/Departments.Data.Reads/Departments.Data.Reads.csproj" />
+    <Project Path="src/Departments.Data.Writes/Departments.Data.Writes.csproj" />
+    <Project Path="src/Departments.Worker/Departments.Worker.csproj" />
+  </Folder>
+  <Folder Name="/src/students/">
+    <Project Path="src/Students.Api/Students.Api.csproj" />
+    <Project Path="src/Students.Core/Students.Core.csproj" />
+    <Project Path="src/Students.Data.Reads/Students.Data.Reads.csproj" />
+    <Project Path="src/Students.Data.Writes/Students.Data.Writes.csproj" />
+    <Project Path="src/Students.Worker/Students.Worker.csproj" />
+  </Folder>
+  <Folder Name="/test/" />
+  <Folder Name="/test/e2e/">
+    <Project Path="test/e2e/ContosoUniversity.AcceptanceTests/ContosoUniversity.AcceptanceTests.csproj" />
+  </Folder>
+  <Folder Name="/test/integration/">
+    <Project Path="test/integration/ContosoUniversity.Mvc.IntegrationTests/ContosoUniversity.Mvc.IntegrationTests.csproj" />
+    <Project Path="test/integration/Courses.Api.IntegrationTests/Courses.Api.IntegrationTests.csproj" />
+    <Project Path="test/integration/Courses.Worker.IntegrationTests/Courses.Worker.IntegrationTests.csproj" />
+    <Project Path="test/integration/Departments.Api.IntegrationTests/Departments.Api.IntegrationTests.csproj" />
+    <Project Path="test/integration/Departments.Worker.IntegrationTests/Departments.Worker.IntegrationTests.csproj" />
+    <Project Path="test/integration/IntegrationTesting.SharedKernel/IntegrationTesting.SharedKernel.csproj" />
+    <Project Path="test/integration/Students.Api.IntegrationTests/Students.Api.IntegrationTests.csproj" />
+    <Project Path="test/integration/Students.Worker.IntegrationTests/Students.Worker.IntegrationTests.csproj" />
+  </Folder>
+  <Folder Name="/test/system/">
+    <Project Path="test/system/ContosoUniversity.SystemTests/ContosoUniversity.SystemTests.csproj" />
+  </Folder>
+  <Folder Name="/test/unit/">
+    <Project Path="test/unit/Departments.Core.Tests/Departments.Core.Tests.csproj" />
+  </Folder>
+</Solution>
