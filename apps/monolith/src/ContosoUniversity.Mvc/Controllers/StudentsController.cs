@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.Reads.Paging;
 using Application.Contracts.Repositories.Reads.Projections;
 using Application.Services.Students.Commands;
 using Application.Services.Students.Queries;
@@ -16,6 +15,8 @@ using MediatR;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
+using SharedKernel.Paging;
 
 using ViewModels.Students;
 

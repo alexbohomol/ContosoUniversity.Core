@@ -4,11 +4,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Paging;
-
 using Projections;
 
 using SharedKernel;
+using SharedKernel.Paging;
 
 public interface IStudentsRoRepository : IRoRepository<Student>
 {
