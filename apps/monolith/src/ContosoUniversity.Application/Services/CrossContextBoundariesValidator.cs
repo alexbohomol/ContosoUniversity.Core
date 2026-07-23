@@ -6,7 +6,6 @@ using System.Linq;
 
 using Contracts.Repositories.Reads.Projections;
 
-using Domain;
 using Domain.Student;
 
 /// <summary>
@@ -66,4 +65,9 @@ public static class CrossContextBoundariesValidator
                 $"Unbound contexts inconsistency. Course not found: {notFoundCourses.ToDisplayString()}.");
         }
     }
+}
+
+static file class Extensions
+{
+    public static string ToDisplayString(this IEnumerable<Guid> guids) => string.Join(", ", guids);
 }
