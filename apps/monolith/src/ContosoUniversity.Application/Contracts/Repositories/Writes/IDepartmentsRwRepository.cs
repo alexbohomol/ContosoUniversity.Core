@@ -4,7 +4,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ContosoUniversity.Domain.Department;
+using Domain.Department;
+
+using SharedKernel;
 
 public interface IDepartmentsRwRepository : IRwRepository<Department>
 {

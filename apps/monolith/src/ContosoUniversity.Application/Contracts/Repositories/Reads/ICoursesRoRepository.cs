@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 using Projections;
 
+using SharedKernel;
+
 public interface ICoursesRoRepository : IRoRepository<Course>
 {
     Task<Course[]> GetByDepartmentId(Guid departmentId, CancellationToken cancellationToken = default);

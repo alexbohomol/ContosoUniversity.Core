@@ -5,8 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Application.Contracts.Repositories.Writes;
-
 using Microsoft.EntityFrameworkCore;
 
 using SharedKernel;

@@ -8,6 +8,8 @@ using Paging;
 
 using Projections;
 
+using SharedKernel;
+
 public interface IStudentsRoRepository : IRoRepository<Student>
 {
     Task<Student[]> GetStudentsEnrolledForCourses(
