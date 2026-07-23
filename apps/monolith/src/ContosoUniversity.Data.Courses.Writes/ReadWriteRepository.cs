@@ -6,13 +6,14 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Application.Contracts.Repositories.Writes;
-using Application.Exceptions;
 
 using Domain.Course;
 
 using Extensions;
 
 using Microsoft.EntityFrameworkCore;
+
+using SharedKernel.Exceptions;
 
 internal class ReadWriteRepository(ReadWriteContext dbContext) : EfRwRepository<Course>(dbContext), ICoursesRwRepository
 {

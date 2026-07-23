@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 using Contracts.Repositories.Reads;
 using Contracts.Repositories.Reads.Projections;
 
-using Exceptions;
-
 using MediatR;
+
+using SharedKernel.Exceptions;
 
 public record GetStudentDetailsQuery(Guid Id) : IRequest<GetStudentDetailsQueryResult>;
 

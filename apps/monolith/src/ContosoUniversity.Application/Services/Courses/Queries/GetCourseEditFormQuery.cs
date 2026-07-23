@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using Contracts.Repositories.Reads;
 using Contracts.Repositories.Reads.Projections;
 
-using Exceptions;
-
 using MediatR;
+
+using SharedKernel.Exceptions;
 
 public record GetCourseEditFormQuery(Guid Id) : IRequest<GetCourseEditFormQueryResult>;
 
