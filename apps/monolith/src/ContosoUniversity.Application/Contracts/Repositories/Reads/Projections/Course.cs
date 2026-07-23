@@ -2,7 +2,7 @@ namespace ContosoUniversity.Application.Contracts.Repositories.Reads.Projections
 
 using System;
 
-using ContosoUniversity.Domain;
+using SharedKernel;
 
 public record Course(
     int Code,

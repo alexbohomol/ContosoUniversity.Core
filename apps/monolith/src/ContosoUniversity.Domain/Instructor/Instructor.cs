@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using SharedKernel;
+
 public class Instructor : IIdentifiable<Guid>
 {
     public const int FirstNameMaxLength = 50;

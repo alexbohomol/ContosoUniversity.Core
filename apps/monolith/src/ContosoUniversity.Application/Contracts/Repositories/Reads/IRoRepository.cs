@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ContosoUniversity.Domain;
+using SharedKernel;
 
 public interface IRoRepository<TProjection> where TProjection : IIdentifiable<Guid>
 {

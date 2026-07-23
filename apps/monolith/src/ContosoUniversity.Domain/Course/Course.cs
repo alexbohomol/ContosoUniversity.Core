@@ -2,6 +2,8 @@ namespace ContosoUniversity.Domain.Course;
 
 using System;
 
+using SharedKernel;
+
 public class Course : IIdentifiable<Guid>
 {
     public const int TitleMinLength = 3;

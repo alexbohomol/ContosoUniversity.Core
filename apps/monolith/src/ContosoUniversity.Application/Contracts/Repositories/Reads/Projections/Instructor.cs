@@ -4,8 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ContosoUniversity.Domain;
 using ContosoUniversity.Domain.Instructor;
+
+using SharedKernel;
 
 public record Instructor(
     string FirstName,
