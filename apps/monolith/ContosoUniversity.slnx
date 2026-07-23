@@ -10,6 +10,7 @@
     <Project Path="src/ContosoUniversity.Data/ContosoUniversity.Data.csproj" />
     <Project Path="src/ContosoUniversity.Domain/ContosoUniversity.Domain.csproj" />
     <Project Path="src/ContosoUniversity.Mvc/ContosoUniversity.Mvc.csproj" />
+    <Project Path="src/ContosoUniversity.SharedKernel/ContosoUniversity.SharedKernel.csproj" Id="150c48f6-0e04-4492-a305-1bacef848cbb" />
   </Folder>
   <Folder Name="/test/" />
   <Folder Name="/test/e2e/">
