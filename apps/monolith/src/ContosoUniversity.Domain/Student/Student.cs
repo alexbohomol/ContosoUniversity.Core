@@ -2,7 +2,8 @@ namespace ContosoUniversity.Domain.Student;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+
+using SharedKernel;
 
 public class Student : IIdentifiable<Guid>
 {

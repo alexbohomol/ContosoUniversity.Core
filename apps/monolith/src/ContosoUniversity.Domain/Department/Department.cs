@@ -2,6 +2,8 @@ namespace ContosoUniversity.Domain.Department;
 
 using System;
 
+using SharedKernel;
+
 public class Department : IIdentifiable<Guid>
 {
     public const int NameMinLength = 3;

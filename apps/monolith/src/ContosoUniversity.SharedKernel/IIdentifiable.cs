@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Domain;
+namespace ContosoUniversity.SharedKernel;
 
 public interface IIdentifiable<T> where T : struct
 {

@@ -4,7 +4,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ContosoUniversity.Domain.Instructor;
+using Domain.Instructor;
+
+using SharedKernel;
 
 public interface IInstructorsRwRepository : IRwRepository<Instructor>
 {

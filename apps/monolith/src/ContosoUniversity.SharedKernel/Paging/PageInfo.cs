@@ -1,4 +1,4 @@
-namespace ContosoUniversity.Application.Contracts.Repositories.Reads.Paging;
+namespace ContosoUniversity.SharedKernel.Paging;
 
 using System;
 

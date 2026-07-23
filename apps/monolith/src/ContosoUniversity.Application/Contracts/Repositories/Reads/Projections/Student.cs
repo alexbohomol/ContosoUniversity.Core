@@ -3,8 +3,9 @@ namespace ContosoUniversity.Application.Contracts.Repositories.Reads.Projections
 using System;
 using System.Collections.Generic;
 
-using ContosoUniversity.Domain;
 using ContosoUniversity.Domain.Student;
+
+using SharedKernel;
 
 public record Student(
     string LastName,
