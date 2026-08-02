@@ -2,7 +2,6 @@ namespace ContosoUniversity.Data;
 
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -23,27 +22,11 @@ public static class StartupExtensions
         services.AddDbContext<TDbContext>((provider, options) =>
         {
             var connectionString = provider
-                .GetRequiredService<IConfiguration>()
-                .GetConnectionString(connectionStringName);
-
-            var defaults = provider
-                .GetRequiredService<IOptions<SqlConnectionStringBuilder>>()
-                .Value;
-
-            connectionString = connectionString.WrapWithDefaults(defaults);
+                .GetRequiredService<IOptionsMonitor<SqlConnectionStringBuilder>>()
+                .Get(connectionStringName)
+                .ConnectionString;
 
             options.UseSqlServer(connectionString);
         });
     }
-
-    private static string WrapWithDefaults(
-        this string connectionString,
-        SqlConnectionStringBuilder defaults)
-        => new SqlConnectionStringBuilder(connectionString)
-        {
-            DataSource = defaults.DataSource,
-            InitialCatalog = defaults.InitialCatalog,
-            MultipleActiveResultSets = defaults.MultipleActiveResultSets,
-            TrustServerCertificate = defaults.TrustServerCertificate
-        }.ConnectionString;
 }

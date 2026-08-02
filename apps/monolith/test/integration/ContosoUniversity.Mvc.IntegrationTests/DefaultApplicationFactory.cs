@@ -20,7 +20,7 @@ public class DefaultApplicationFactory : WebApplicationFactory<IAssemblyMarker>
     {
         builder.ConfigureTestServices(services =>
         {
-            services.Configure<SqlConnectionStringBuilder>(options =>
+            services.ConfigureAll<SqlConnectionStringBuilder>(options =>
             {
                 options.DataSource = DataSourceSetterFunction();
             });
