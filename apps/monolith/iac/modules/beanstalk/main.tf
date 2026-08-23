@@ -36,7 +36,7 @@ resource "aws_elastic_beanstalk_environment" "app_env" {
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "SqlConnectionStringBuilder__DataSource"
+    name      = "SqlConnectionStringBuilder__Defaults__DataSource"
     value     = "${var.contoso_db_data_source},1433"
   }
 
