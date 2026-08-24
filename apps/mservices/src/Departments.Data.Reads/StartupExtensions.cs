@@ -1,16 +1,22 @@
 namespace Departments.Data.Reads;
 
-using ContosoUniversity.Data;
-
 using Core;
 
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 public static class StartupExtensions
 {
     public static void AddDepartmentsSchemaReads(this IServiceCollection services)
     {
-        services.AddDbContext<ReadOnlyContext>("Departments-RO");
+        services.AddDbContext<ReadOnlyContext>((provider, options) =>
+        {
+            var config = provider.GetService<IOptionsMonitor<SqlConnectionStringBuilder>>();
+            SqlConnectionStringBuilder builder = config.Get("Departments-RO");
+            options.UseSqlServer(builder.ConnectionString);
+        });
 
         services.AddScoped<IDepartmentsRoRepository, DepartmentsReadOnlyRepository>();
         services.AddScoped<IInstructorsRoRepository, InstructorsReadOnlyRepository>();
