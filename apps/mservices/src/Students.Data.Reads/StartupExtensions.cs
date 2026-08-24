@@ -1,16 +1,22 @@
 namespace Students.Data.Reads;
 
-using ContosoUniversity.Data;
-
 using Core;
 
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 public static class StartupExtensions
 {
     public static void AddStudentsSchemaReads(this IServiceCollection services)
     {
-        services.AddDbContext<ReadOnlyContext>("Students-RO");
+        services.AddDbContext<ReadOnlyContext>((provider, options) =>
+        {
+            var config = provider.GetService<IOptionsMonitor<SqlConnectionStringBuilder>>();
+            SqlConnectionStringBuilder builder = config.Get("Students-RO");
+            options.UseSqlServer(builder.ConnectionString);
+        });
 
         services.AddScoped<IStudentsRoRepository, ReadOnlyRepository>();
 
