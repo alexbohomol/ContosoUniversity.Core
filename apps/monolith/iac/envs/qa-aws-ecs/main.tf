@@ -210,8 +210,8 @@ resource "aws_ecs_task_definition" "web_task" {
 
 resource "aws_ecs_task_definition" "mssql_task" {
   family                   = "${var.app_name}-mssql-tasks"
-  cpu                      = "512"
-  memory                   = "2048"
+  cpu                      = "2048"
+  memory                   = "6144"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   execution_role_arn       = aws_iam_role.task_execution.arn
