@@ -5,10 +5,10 @@ export const options = {
 
   scenarios: {
     explore: {
-    executor: 'ramping-vus',
-    startVUs: 1,
+      executor: 'ramping-vus',
+      startVUs: 1,
 
-    stages: [
+      stages: [
         { duration: '30s', target: 20 },
         { duration: '5m', target: 20 },
 
