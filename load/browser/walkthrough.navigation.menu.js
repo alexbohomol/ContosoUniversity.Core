@@ -1,5 +1,5 @@
 import { browser } from "k6/browser";
-import { fail } from "k6";
+import { fail, sleep } from "k6";
 import { expect } from "https://jslib.k6.io/k6-testing/0.6.1/index.js";
 import configs from "../configs.js";
 
@@ -57,6 +57,8 @@ async function uiWalkthrough() {
   } finally {
     await page.close();
   }
+
+  sleep(1);
 }
 
 export { uiWalkthrough };

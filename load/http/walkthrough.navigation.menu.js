@@ -1,5 +1,5 @@
 import http from 'k6/http';
-import { check } from 'k6';
+import { check, sleep } from 'k6';
 import { parseHTML } from 'k6/html';
 import configs from '../configs.js';
 
@@ -20,6 +20,7 @@ function hitPages() {
   hitCourses();
   hitInstructors();
   hitDepartments();
+  sleep(1);
 }
 
 function hitHome() {
