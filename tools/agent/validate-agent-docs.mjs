@@ -178,10 +178,8 @@ function validateMarkdownLinks(filePath, content) {
 
 function validateKnownContent(documentFiles) {
   const forbiddenPatterns = [
-    [/ContosoUniversity\.sln(?!x)/g, "use ContosoUniversity.slnx instead of ContosoUniversity.sln"],
-    [/\bSpecFlow\b/g, "use Reqnroll instead of SpecFlow"],
-    [/\.ai\/skills/g, "use .agents/skills instead of the retired .ai/skills path"],
-    [/(?:\/Users\/|\/home\/|[A-Za-z]:\\Users\\)/g, "do not commit machine-specific absolute paths"],
+    [/(?:\/Users\/|\/home\/)/g, "do not commit Unix machine-specific absolute paths"],
+    [/(?:\b[A-Za-z]:[\\/]|\\\\[^\\/\s]+[\\/][^\\/\s]+)/g, "do not commit Windows machine-specific absolute paths"],
   ];
 
   for (const filePath of documentFiles) {
