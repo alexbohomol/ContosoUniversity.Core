@@ -9,7 +9,7 @@ Use this skill when working under `apps/mservices`.
 The main solution is:
 
 ```text
-apps/mservices/ContosoUniversity.sln
+apps/mservices/ContosoUniversity.slnx
 ```
 
 This implementation keeps an MVC frontend but moves backend responsibilities into separate APIs and workers.

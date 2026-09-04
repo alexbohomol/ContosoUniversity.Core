@@ -49,7 +49,7 @@ The repository uses several testing tools depending on the implementation and te
 
 - xUnit
 - NUnit
-- SpecFlow
+- Reqnroll
 - Playwright
 - Testcontainers.MsSql
 - Testcontainers.RabbitMq
@@ -68,7 +68,7 @@ The repository uses several testing tools depending on the implementation and te
 
 Integration tests cover the MVC application and database-dependent behavior.
 
-Acceptance tests use Playwright, NUnit, SpecFlow, and Docker-based infrastructure.
+Acceptance tests use Playwright, NUnit, Reqnroll, and Docker-based infrastructure.
 
 ## Microservices testing
 

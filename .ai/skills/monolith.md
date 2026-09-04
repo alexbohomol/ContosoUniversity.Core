@@ -9,7 +9,7 @@ Use this skill when working under `apps/monolith`.
 The main solution is:
 
 ```text
-apps/monolith/ContosoUniversity.sln
+apps/monolith/ContosoUniversity.slnx
 ```
 
 The main executable application is:

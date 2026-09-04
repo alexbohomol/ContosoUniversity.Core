@@ -8,7 +8,7 @@ It is a single deployable ASP.NET Core MVC application, but the code is split in
 
 ```text
 apps/monolith
-├── ContosoUniversity.sln
+├── ContosoUniversity.slnx
 ├── docker-compose.yml
 ├── docker-compose.override.yml
 ├── iac
@@ -156,7 +156,7 @@ dotnet build --no-restore
 dotnet test --no-build
 ```
 
-The solution contains unit, integration, e2e, and system test projects. Integration tests use ASP.NET Core test infrastructure and SQL Server test containers. Acceptance tests use Playwright, NUnit, SpecFlow, and Docker-based infrastructure.
+The solution contains unit, integration, e2e, and system test projects. Integration tests use ASP.NET Core test infrastructure and SQL Server test containers. Acceptance tests use Playwright, NUnit, Reqnroll, and Docker-based infrastructure.
 
 ## CI
 

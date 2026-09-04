@@ -10,7 +10,7 @@ This implementation is useful for practicing service boundaries, HTTP service-to
 
 ```text
 apps/mservices
-├── ContosoUniversity.sln
+├── ContosoUniversity.slnx
 ├── docker-compose.yml
 ├── docker-compose.override.yml
 ├── src
