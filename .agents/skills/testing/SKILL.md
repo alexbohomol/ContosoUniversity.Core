@@ -14,7 +14,7 @@ Use the lowest level that proves the behavior:
 - acceptance/e2e tests for browser-visible workflows that are not adequately proven below;
 - system tests for assembled Compose runtime health and cross-process behavior.
 
-The repository uses xUnit and NUnit depending on the project, plus Reqnroll, Playwright, Testcontainers, WireMock.Net, FluentDocker, and ASP.NET Core test hosting. Match the framework and conventions of the existing test project. Do not edit generated `*.feature.cs` files.
+Derive the test framework and dependencies from the selected test project and match its existing conventions. Do not edit generated `*.feature.cs` files; change the source `.feature` file or bindings.
 
 Run focused tests first, for example from an implementation directory:
 
@@ -25,4 +25,3 @@ dotnet test path/to/TestProject.csproj
 Build the owning solution when shared contracts, project references, or production compilation may be affected. Run broader suites only when their additional coverage is relevant and required dependencies are available.
 
 Before finishing, state which tests ran, their outcomes, and why the selected scope is sufficient. If Docker or another dependency prevents a test, report the exact limitation instead of claiming full verification.
-

@@ -19,8 +19,6 @@ const requiredFiles = [
   "apps/mservices/README.md",
   "apps/monolith/ContosoUniversity.slnx",
   "apps/mservices/ContosoUniversity.slnx",
-  "apps/monolith/test/unit/ContosoUniversity.Domain.Tests",
-  "apps/mservices/test/unit/Departments.Core.Tests",
   "apps/monolith/iac/envs/qa-aws-ecs",
 ];
 

@@ -14,17 +14,8 @@ Read before changing deployment behavior:
 - relevant modules under `apps/monolith/iac/modules`;
 - `.github/workflows/deploy-mnlth-*.yml`.
 
-Current invariants to verify against code:
-
-- web and SQL Server run as ECS/Fargate services;
-- the migrator runs as a one-off task;
-- SQL Server is container-based, not RDS;
-- Cloud Map supplies internal database discovery;
-- the web target uses `/health/readiness`;
-- EFS stores ASP.NET Core Data Protection keys;
-- application and migrator images are published to GHCR.
+Treat `apps/monolith/README.md` as the maintained human-readable deployment overview, but verify every affected claim against Terraform, workflows, application configuration, and Compose before relying on or updating it.
 
 Start with non-mutating checks such as `terraform fmt -check` and `terraform validate` in the environment directory when tooling and initialization are available. Review image tags, task families, container names, cluster/service names, desired counts, health checks, DNS, certificates, security groups, and secrets as one connected deployment contract.
 
 Do not provision, deploy, scale, stop, dispose, or otherwise mutate AWS or GitHub state without explicit user authorization. Distinguish current implementation from proposed production improvements.
-

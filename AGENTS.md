@@ -12,16 +12,26 @@ These instructions apply to the whole repository. User instructions take precede
 
 The two applications implement similar domain behavior but are separate solutions. Do not change both implementations unless the task requires parity or the user explicitly requests it.
 
+## Documentation ownership
+
+- Code and configuration are the source of truth for implemented behavior.
+- The root `README.md` owns repository-level orientation and links to implementation details.
+- Implementation README files own current topology, setup, endpoints, CI, and deployment details.
+- `AGENTS.md` files own durable repository rules and architectural constraints.
+- Skills own repeatable task workflows, not copies of project inventories.
+- `CLAUDE.md` and `.github/copilot-instructions.md` are compatibility adapters to the canonical `AGENTS.md` guidance.
+
+When documentation and implementation disagree, verify the implementation and update the owning document rather than copying the correction into several files.
+
 ## Working agreements
 
 1. Inspect the relevant implementation, tests, configuration, and infrastructure before making claims or edits.
 2. Preserve existing architectural boundaries and naming. Treat intended architecture and current implementation as different things.
 3. Keep changes focused. Preserve unrelated user changes in the worktree.
-4. Add or update tests at the lowest level that proves the changed behavior. Run targeted checks before broader suites.
-5. Do not edit generated `*.feature.cs` files; change the source `.feature` files or bindings.
-6. Do not hardcode secrets, credentials, tokens, certificate material, or machine-specific absolute paths.
-7. Write committed documentation in English unless explicitly requested otherwise.
-8. Before finishing, report the checks run, their results, and any checks that could not be run.
+4. Use the matching repository skill for detailed testing, container, CI, deployment, analysis, or documentation workflows.
+5. Do not hardcode secrets, credentials, tokens, certificate material, or machine-specific absolute paths.
+6. Write committed documentation in English unless explicitly requested otherwise.
+7. Before finishing, report the checks run, their results, and any checks that could not be run.
 
 ## Build entry points
 
@@ -39,25 +49,14 @@ dotnet restore
 dotnet build --no-restore
 ```
 
-Use the relevant test project for focused verification. A solution-wide `dotnet test --no-build` includes integration, system, and acceptance projects and may require Docker or other runtime dependencies; consult the testing skill before running it.
+Consult the testing skill to select focused verification and determine whether broader suites and their runtime dependencies are relevant.
 
-## Verification routing
+## Agent-documentation verification
 
-- Domain behavior or validation: relevant unit tests.
-- MVC, API, EF Core, HTTP client, worker, or messaging behavior: relevant integration tests.
-- Browser-visible workflow: acceptance/e2e tests when lower-level coverage is insufficient.
-- Docker or Compose: validate Compose configuration and build the affected service.
-- GitHub Actions: inspect triggers, variables, working directories, permissions, and affected commands.
-- Terraform or deployment: run non-destructive formatting and validation first; do not provision, deploy, stop, or destroy infrastructure without explicit authorization.
-- Documentation or agent guidance: run `node tools/agent/validate-agent-docs.mjs` to verify skill structure, imports, local links, terminology, and selected architecture invariants against the repository.
+After changing agent guidance, compatibility adapters, implementation README files, or repository skills, run:
 
-## Repository skills
+```bash
+node tools/agent/validate-agent-docs.mjs
+```
 
-Use the matching skill from `.agents/skills` for detailed workflows:
-
-- `code-analysis` — repository-backed architecture and implementation analysis.
-- `testing` — select and run proportionate tests.
-- `docker-compose` — change or validate local container orchestration.
-- `github-actions` — create, change, or review workflows.
-- `aws-ecs-deployment` — work with the monolith QA ECS/Fargate deployment.
-- `documentation` — create or update repository documentation.
+Detailed task workflows are discovered from `.agents/skills`; use the matching skill instead of duplicating its instructions here.
