@@ -1,6 +1,6 @@
 # GitHub Copilot guidance
 
-@AGENTS.md
+@../AGENTS.md
 
 The imported `AGENTS.md` is the canonical repository-wide instruction source. When working under `apps/monolith` or `apps/mservices`, also follow the closest implementation `AGENTS.md` and consult its `README.md`.
 

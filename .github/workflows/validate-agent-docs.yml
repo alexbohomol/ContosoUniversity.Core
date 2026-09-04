@@ -1,0 +1,48 @@
+name: Agent Documentation
+
+on:
+  pull_request:
+    paths:
+      - "AGENTS.md"
+      - "CLAUDE.md"
+      - ".agents/**"
+      - ".github/copilot-instructions.md"
+      - "apps/**/AGENTS.md"
+      - "README.md"
+      - "apps/**/README.md"
+      - "tools/agent/**"
+      - ".github/workflows/validate-agent-docs.yml"
+  push:
+    branches:
+      - "main"
+    paths:
+      - "AGENTS.md"
+      - "CLAUDE.md"
+      - ".agents/**"
+      - ".github/copilot-instructions.md"
+      - "apps/**/AGENTS.md"
+      - "README.md"
+      - "apps/**/README.md"
+      - "tools/agent/**"
+      - ".github/workflows/validate-agent-docs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate agent documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Validate agent documentation
+        run: node tools/agent/validate-agent-docs.mjs

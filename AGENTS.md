@@ -49,7 +49,7 @@ Use the relevant test project for focused verification. A solution-wide `dotnet 
 - Docker or Compose: validate Compose configuration and build the affected service.
 - GitHub Actions: inspect triggers, variables, working directories, permissions, and affected commands.
 - Terraform or deployment: run non-destructive formatting and validation first; do not provision, deploy, stop, or destroy infrastructure without explicit authorization.
-- Documentation or agent guidance: verify referenced paths, commands, terminology, and links against the repository.
+- Documentation or agent guidance: run `node tools/agent/validate-agent-docs.mjs` to verify skill structure, imports, local links, terminology, and selected architecture invariants against the repository.
 
 ## Repository skills
 
@@ -61,4 +61,3 @@ Use the matching skill from `.agents/skills` for detailed workflows:
 - `github-actions` — create, change, or review workflows.
 - `aws-ecs-deployment` — work with the monolith QA ECS/Fargate deployment.
 - `documentation` — create or update repository documentation.
-
