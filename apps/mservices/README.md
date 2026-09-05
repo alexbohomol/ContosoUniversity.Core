@@ -209,6 +209,8 @@ dotnet dev-certs https -ep cert.pfx -p Test1234!
 
 ### Start the local environment
 
+Before building the `web-mservices` image, verify that `src/ContosoUniversity.Mvc/cert.pfx` exists. If it is missing, generate it with the command in [Prepare a development certificate](#prepare-a-development-certificate).
+
 From `apps/mservices`:
 
 ```bash
