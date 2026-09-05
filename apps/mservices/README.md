@@ -245,7 +245,7 @@ docker compose down -v
 
 ## Running tests
 
-Unit tests need only the project-scoped commands below. Before each integration, acceptance/e2e, or system test project, follow the cleanup, Docker availability, certificate, image-build, and final-cleanup procedure in the [testing skill](../../.agents/skills/testing/SKILL.md#non-unit-test-lifecycle).
+All tests use the project-scoped commands below. Before running a test project, select its [test infrastructure profile](../../.agents/skills/testing/SKILL.md#test-infrastructure-profiles): unit tests need no Docker, Testcontainers-based integration tests need the Docker daemon but not Compose preparation, and Compose-owning acceptance/e2e or system tests require the full cleanup, certificate, image-build, test, and final-cleanup lifecycle.
 
 From `apps/mservices`, enter the directory that contains the selected test project's `.csproj` and run the complete project-scoped sequence:
 

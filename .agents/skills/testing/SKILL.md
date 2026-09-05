@@ -16,18 +16,35 @@ Use the lowest level that proves the behavior:
 
 Derive the test framework and dependencies from the selected test project and match its existing conventions. Do not edit generated `*.feature.cs` files; change the source `.feature` file or bindings.
 
-## Non-unit test lifecycle
+## Test infrastructure profiles
 
-Before running an integration, acceptance/e2e, or system test project:
+Inspect the selected test project's dependencies and fixtures before preparing infrastructure. Choose the profile from evidence in that project, not only from whether it is under `unit`, `integration`, `e2e`, or `system`.
+
+### No container infrastructure
+
+For unit tests and other projects that do not use containers, run only the project-scoped restore, build, and test sequence below. Docker is not required.
+
+### Testcontainers
+
+For integration tests that create their dependencies with Testcontainers:
+
+1. Verify that the Docker daemon is available. Start it if it is not running, then confirm that Docker commands succeed.
+2. Run the project-scoped restore, build, and test sequence below.
+
+Do not run `docker compose build` or `docker compose down --volumes` for a Testcontainers-only project. Its test fixtures own the lifecycle of their containers.
+
+### Docker Compose
+
+For acceptance/e2e, system, or any other test project whose fixtures explicitly manage the implementation's Docker Compose environment:
 
 1. Verify that the Docker daemon is available. Start it if it is not running, then confirm that Docker commands succeed.
 2. From the affected implementation directory, run `docker compose down --volumes` to remove containers, networks, and disposable test volumes left by earlier runs. This deletes data stored in that implementation's local Compose volumes.
-3. Before building the Compose images, verify that `src/ContosoUniversity.Mvc/cert.pfx` exists. If it is missing, generate it with the command documented in the respective implementation's `README.md`.
+3. Verify that `src/ContosoUniversity.Mvc/cert.pfx` exists. If it is missing, generate it with the command documented in the implementation's `README.md`.
 4. Run `docker compose build` from the implementation directory so image creation does not consume the test fixture's startup timeout. The build may be skipped only when the existing images were built from the current code and none of their Docker build inputs have changed.
 5. Enter the selected test project's directory and run the project-scoped restore, build, and test sequence below.
 6. After the test finishes or fails, return to the implementation directory and run `docker compose down --volumes` again so the next test starts from a clean environment.
 
-Run multiple non-unit test projects sequentially and complete this lifecycle for each project. Do not allow two test projects to manage the same Compose environment concurrently.
+Run Compose-owning test projects sequentially and complete this lifecycle for each project. Do not allow two test projects to manage the same Compose environment concurrently.
 
 ## Project-scoped test command
 
