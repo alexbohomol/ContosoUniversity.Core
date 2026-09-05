@@ -245,6 +245,8 @@ docker compose down -v
 
 ## Running tests
 
+Unit tests need only the project-scoped commands below. Before each integration, acceptance/e2e, or system test project, follow the cleanup, Docker availability, certificate, image-build, and final-cleanup procedure in the [testing skill](../../.agents/skills/testing/SKILL.md#non-unit-test-lifecycle).
+
 From `apps/mservices`, enter the directory that contains the selected test project's `.csproj` and run the complete project-scoped sequence:
 
 ```bash
