@@ -53,6 +53,8 @@ Consult the testing skill to select focused verification and determine whether b
 
 ## Agent-documentation verification
 
+Use Node.js 24 for local validation, matching the GitHub Actions workflow.
+
 After changing agent guidance, compatibility adapters, implementation README files, or repository skills, run:
 
 ```bash
