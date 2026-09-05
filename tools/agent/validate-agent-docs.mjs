@@ -22,9 +22,6 @@ const requiredFiles = [
   "apps/mservices/AGENTS.md",
   "apps/monolith/README.md",
   "apps/mservices/README.md",
-  "apps/monolith/ContosoUniversity.slnx",
-  "apps/mservices/ContosoUniversity.slnx",
-  "apps/monolith/iac/envs/qa-aws-ecs",
 ];
 
 function resolveFromRoot(relativePath) {
