@@ -48,3 +48,20 @@ test("frontmatter does not consume a heading slug", (t) => {
 test("renaming a target heading invalidates the link on the next run", (t) => {
   assert.deepEqual(fixture(t, "[profile](guide.md#test-infrastructure-profiles)", { "guide.md": "## Renamed profiles" }), ["links to missing anchor guide.md#test-infrastructure-profiles."]);
 });
+
+test("ignores queries while still validating paths and fragments", (t) => {
+  assert.deepEqual(fixture(t, "# Setup\n[guide](guide.md?view=1#setup) [local](?view=1#setup) [path](guide.md?view=1) [missing](absent.md?view=1#setup) [bad](guide.md?view=1#gone) [local bad](?view=1#gone)", {
+    "guide.md": "# Setup",
+  }), [
+    "links to missing path absent.md?view=1#setup.",
+    "links to missing anchor guide.md?view=1#gone.",
+    "links to missing anchor ?view=1#gone.",
+  ]);
+});
+
+test("preserves encoded filename question marks and question marks in fragments", (t) => {
+  assert.deepEqual(fixture(t, '[file](guide%3Fone.md?view=1#setup) [anchor](guide.md?view=1#custom?part)', {
+    "guide?one.md": "# Setup",
+    "guide.md": '<a id="custom?part"></a>',
+  }), []);
+});

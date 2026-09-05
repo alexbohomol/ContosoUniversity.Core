@@ -65,6 +65,8 @@ export function createMarkdownLinkValidator() {
       const separator = target.indexOf("#");
       let pathname = separator < 0 ? target : target.slice(0, separator);
       let fragment = separator < 0 ? "" : target.slice(separator + 1);
+      // Strip the URL query before decoding so %3F remains part of a filename.
+      pathname = pathname.split("?", 1)[0];
       try {
         pathname = decodeURIComponent(pathname);
         fragment = decodeURIComponent(fragment);
