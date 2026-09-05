@@ -10,6 +10,10 @@ on:
       - "apps/**/AGENTS.md"
       - "README.md"
       - "apps/**/README.md"
+      - "apps/monolith/src/**/*.cs"
+      - "apps/mservices/src/**/*.cs"
+      - "apps/mservices/src/**/*.csproj"
+      - "apps/monolith/src/**/*.csproj"
       - "tools/agent/**"
       - ".github/workflows/validate-agent-docs.yml"
   push:
@@ -23,6 +27,10 @@ on:
       - "apps/**/AGENTS.md"
       - "README.md"
       - "apps/**/README.md"
+      - "apps/monolith/src/**/*.cs"
+      - "apps/mservices/src/**/*.cs"
+      - "apps/mservices/src/**/*.csproj"
+      - "apps/monolith/src/**/*.csproj"
       - "tools/agent/**"
       - ".github/workflows/validate-agent-docs.yml"
   workflow_dispatch:
