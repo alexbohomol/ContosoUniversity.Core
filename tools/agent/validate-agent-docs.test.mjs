@@ -35,6 +35,7 @@ function fixture(t) {
   fs.symlinkSync(path.join(toolingDirectory, "node_modules"), path.join(root, "tools/agent/node_modules"), "junction");
   return {
     write,
+    symlink: (target, relativePath) => fs.symlinkSync(target, path.join(root, relativePath), "file"),
     remove: (relativePath) => fs.rmSync(path.join(root, relativePath)),
     run: () => {
       const result = spawnSync(process.execPath, [path.join(root, "tools/agent/validate-agent-docs.mjs")], {
@@ -126,6 +127,24 @@ for (const importedPath of ["../outside.md", "../repo-other/guidance.md"]) {
 test("validator allows normalized parent segments inside the checkout", (t) => {
   const repo = fixture(t);
   repo.write("CLAUDE.md", "@apps/monolith/../../AGENTS.md\n");
+  const result = repo.run();
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stderr, "");
+  assert.match(result.stdout, /Agent documentation validation passed/);
+});
+
+test("validator rejects an import through a symlink to an external file", (t) => {
+  const repo = fixture(t);
+  repo.write("../outside.md", "# External guidance\n");
+  repo.symlink("../outside.md", "external.md");
+  repo.write("CLAUDE.md", "@external.md\n");
+  assertFailure(repo.run(), "CLAUDE.md imports a path outside the repository through a symlink: external.md.");
+});
+
+test("validator accepts an import through a symlink to an internal file", (t) => {
+  const repo = fixture(t);
+  repo.symlink("AGENTS.md", "internal.md");
+  repo.write("CLAUDE.md", "@internal.md\n");
   const result = repo.run();
   assert.equal(result.status, 0, result.stderr);
   assert.equal(result.stderr, "");

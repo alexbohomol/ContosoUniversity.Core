@@ -147,6 +147,12 @@ function validateImports(filePath, content) {
 
     if (!fs.existsSync(resolvedPath)) {
       fail(`${relativeToRoot(filePath)} imports missing file ${match[1]}.`);
+      continue;
+    }
+
+    const realRelativePath = path.relative(fs.realpathSync(repositoryRoot), fs.realpathSync(resolvedPath));
+    if (realRelativePath === ".." || realRelativePath.startsWith(`..${path.sep}`) || path.isAbsolute(realRelativePath)) {
+      fail(`${relativeToRoot(filePath)} imports a path outside the repository through a symlink: ${match[1]}.`);
     }
   }
 }
