@@ -30,7 +30,8 @@ apps/monolith
 │   ├── ContosoUniversity.Data.Departments.Reads
 │   ├── ContosoUniversity.Data.Departments.Writes
 │   ├── ContosoUniversity.Data.Students.Reads
-│   └── ContosoUniversity.Data.Students.Writes
+│   ├── ContosoUniversity.Data.Students.Writes
+│   └── ContosoUniversity.SharedKernel
 └── test
     ├── unit
     ├── integration
