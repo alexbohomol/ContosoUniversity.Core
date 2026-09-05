@@ -13,6 +13,7 @@ const requiredFiles = [
   "AGENTS.md",
   "CLAUDE.md",
   ".github/copilot-instructions.md",
+  "README.md",
   "apps/monolith/AGENTS.md",
   "apps/mservices/AGENTS.md",
   "apps/monolith/README.md",
