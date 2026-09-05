@@ -16,12 +16,17 @@ Use the lowest level that proves the behavior:
 
 Derive the test framework and dependencies from the selected test project and match its existing conventions. Do not edit generated `*.feature.cs` files; change the source `.feature` file or bindings.
 
-Run focused tests first, for example from an implementation directory:
+Run tests at test-project scope, not solution scope. Change to the directory that contains the selected test project's `.csproj`, then run:
 
 ```bash
-dotnet test path/to/TestProject.csproj
+cd path/to/TestProject
+dotnet restore
+dotnet build --no-restore
+dotnet test --no-build
 ```
 
-Build the owning solution when shared contracts, project references, or production compilation may be affected. Run broader suites only when their additional coverage is relevant and required dependencies are available.
+Do not use `dotnet test` on the `.slnx`: it can start multiple test projects in parallel, including projects that compete for the same Docker Compose resources. To run several test projects, invoke them one at a time from their respective directories.
+
+This project-scoped sequence is self-contained and builds the test project together with its referenced production projects. Build the owning solution separately only when the task requires verification that projects outside that dependency graph still compile. Run additional test projects only when their coverage is relevant and required dependencies are available.
 
 Before finishing, state which tests ran, their outcomes, and why the selected scope is sufficient. If Docker or another dependency prevents a test, report the exact limitation instead of claiming full verification.

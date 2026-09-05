@@ -243,15 +243,18 @@ docker compose down -v
 
 ## Running tests
 
-From `apps/mservices`:
+From `apps/mservices`, enter the directory that contains the selected test project's `.csproj` and run the complete project-scoped sequence:
 
 ```bash
+cd path/to/TestProject
 dotnet restore
 dotnet build --no-restore
 dotnet test --no-build
 ```
 
-The solution contains unit, integration, e2e, and system test projects. Integration coverage includes the MVC frontend, APIs, and workers. The test dependencies include SQL Server and RabbitMQ test containers, plus WireMock for HTTP boundary testing where needed.
+Do not run `dotnet test` at solution scope. Test projects can execute in parallel and compete for the same Docker Compose resources. When broader verification is needed, run the relevant unit, integration, e2e, and system projects sequentially from their respective directories.
+
+Integration coverage includes the MVC frontend, APIs, and workers. The test dependencies include SQL Server and RabbitMQ test containers, plus WireMock for HTTP boundary testing where needed.
 
 ## CI
 
