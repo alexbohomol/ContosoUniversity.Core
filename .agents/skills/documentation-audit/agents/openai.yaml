@@ -1,0 +1,4 @@
+interface:
+  display_name: "Documentation Audit"
+  short_description: "Find and remediate repository documentation drift"
+  default_prompt: "Use $documentation-audit to audit this repository for documentation drift."

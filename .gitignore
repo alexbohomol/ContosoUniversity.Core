@@ -216,3 +216,6 @@ crash.log
 # Ignore app artifacts
 artifacts/
 app.zip
+
+# Local agent handoff reports
+.agent-reports/
