@@ -195,7 +195,7 @@ The monolith includes an AWS ECS/Fargate QA deployment path.
 The GitHub Actions workflow `MNLTH / Deploy / Artifacts` builds and pushes Docker images to GitHub Container Registry:
 
 ```text
-ghcr.io/alexbohomol/cuweb
+ghcr.io/alexbohomol/web-monolith
 ghcr.io/alexbohomol/mssql-migrator
 ```
 
