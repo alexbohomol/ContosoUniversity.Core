@@ -18,7 +18,7 @@ For valid selected findings:
 
 Use the applicable repository skills for files being changed. Run validation proportionate to the selected findings, including as relevant:
 
-- `node tools/agent/validate-agent-docs.mjs`;
+- `npm ci --prefix tools/agent`, then `node tools/agent/validate-agent-docs.mjs`;
 - `git diff --check`;
 - Markdown link, anchor, and referenced-path checks;
 - configuration validation;

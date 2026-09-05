@@ -52,5 +52,11 @@ jobs:
         with:
           node-version: 24
 
+      - name: Install validator dependencies
+        run: npm ci --prefix tools/agent
+
+      - name: Test Markdown link validation
+        run: npm test --prefix tools/agent
+
       - name: Validate agent documentation
         run: node tools/agent/validate-agent-docs.mjs

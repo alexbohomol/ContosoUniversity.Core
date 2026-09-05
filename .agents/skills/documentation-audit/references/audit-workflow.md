@@ -19,7 +19,7 @@ For `audit --changed <base>`, start with the Git diff against `<base>`. Expand b
 
 ## Evidence collection
 
-Run `node tools/agent/validate-agent-docs.mjs` as the deterministic baseline. Use additional read-only or non-destructive commands to verify claims where useful. Do not run full test suites, delete Docker volumes, deploy, or perform other expensive or state-changing operations without separate authorization.
+Prepare validator dependencies with `npm ci --prefix tools/agent`, then run `node tools/agent/validate-agent-docs.mjs` as the deterministic baseline. Use additional read-only or non-destructive commands to verify claims where useful. Do not run full test suites, delete Docker volumes, deploy, or perform other expensive or state-changing operations without separate authorization.
 
 Check at least:
 

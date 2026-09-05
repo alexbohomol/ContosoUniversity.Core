@@ -56,6 +56,7 @@ Consult the testing skill to select focused verification and determine whether b
 After changing agent guidance, compatibility adapters, implementation README files, or repository skills, run:
 
 ```bash
+npm ci --prefix tools/agent
 node tools/agent/validate-agent-docs.mjs
 ```
 

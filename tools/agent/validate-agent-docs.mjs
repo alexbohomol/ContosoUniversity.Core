@@ -5,6 +5,10 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
+import { createMarkdownLinkValidator } from "./markdown-links.mjs";
+
+const checkMarkdownLinks = createMarkdownLinkValidator();
+
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = path.resolve(scriptDirectory, "../..");
 const errors = [];
@@ -144,37 +148,6 @@ function validateImports(filePath, content) {
   }
 }
 
-function validateMarkdownLinks(filePath, content) {
-  for (const match of content.matchAll(/!?\[[^\]]*\]\(([^)]+)\)/g)) {
-    let target = match[1].trim();
-
-    if (target.startsWith("<") && target.endsWith(">")) {
-      target = target.slice(1, -1);
-    }
-
-    if (/^(?:https?:|mailto:|data:|#)/i.test(target)) {
-      continue;
-    }
-
-    target = target.split("#", 1)[0];
-    if (!target) {
-      continue;
-    }
-
-    try {
-      target = decodeURIComponent(target);
-    } catch {
-      fail(`${relativeToRoot(filePath)} contains an invalid encoded link: ${match[1]}.`);
-      continue;
-    }
-
-    const resolvedPath = path.resolve(path.dirname(filePath), target);
-    if (!fs.existsSync(resolvedPath)) {
-      fail(`${relativeToRoot(filePath)} links to missing path ${match[1]}.`);
-    }
-  }
-}
-
 function validateKnownContent(documentFiles) {
   const forbiddenPatterns = [
     [/(?:\/Users\/|\/home\/)/g, "do not commit Unix machine-specific absolute paths"],
@@ -185,7 +158,9 @@ function validateKnownContent(documentFiles) {
     const content = fs.readFileSync(filePath, "utf8");
 
     validateImports(filePath, content);
-    validateMarkdownLinks(filePath, content);
+    for (const error of checkMarkdownLinks(filePath, content)) {
+      fail(`${relativeToRoot(filePath)} ${error}`);
+    }
 
     for (const [pattern, guidance] of forbiddenPatterns) {
       if (pattern.test(content)) {
