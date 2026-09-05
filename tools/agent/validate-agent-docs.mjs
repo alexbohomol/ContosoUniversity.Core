@@ -246,6 +246,9 @@ if (exists(".ai") && walk(resolveFromRoot(".ai")).length > 0) {
 }
 
 const skillFiles = validateSkills();
+const skillDocumentationFiles = exists(".agents/skills")
+  ? walk(resolveFromRoot(".agents/skills"), (file) => file.endsWith(".md"))
+  : [];
 const documentationFiles = [
   resolveFromRoot("AGENTS.md"),
   resolveFromRoot("CLAUDE.md"),
@@ -255,7 +258,7 @@ const documentationFiles = [
   resolveFromRoot("apps/monolith/README.md"),
   resolveFromRoot("apps/mservices/AGENTS.md"),
   resolveFromRoot("apps/mservices/README.md"),
-  ...skillFiles,
+  ...skillDocumentationFiles,
 ].filter(fs.existsSync);
 
 validateKnownContent(documentationFiles);
