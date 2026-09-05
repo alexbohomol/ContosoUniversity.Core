@@ -41,8 +41,10 @@ For acceptance/e2e, system, or any other test project whose fixtures explicitly 
 2. From the affected implementation directory, run `docker compose down --volumes` to remove containers, networks, and disposable test volumes left by earlier runs. This deletes data stored in that implementation's local Compose volumes.
 3. Verify that `src/ContosoUniversity.Mvc/cert.pfx` exists. If it is missing, generate it with the command documented in the implementation's `README.md`.
 4. Run `docker compose build` from the implementation directory so image creation does not consume the test fixture's startup timeout. The build may be skipped only when the existing images were built from the current code and none of their Docker build inputs have changed.
-5. Enter the selected test project's directory and run the project-scoped restore, build, and test sequence below.
-6. After the test finishes or fails, return to the implementation directory and run `docker compose down --volumes` again so the next test starts from a clean environment.
+5. Enter the selected test project's directory and run `dotnet restore` followed by `dotnet build --no-restore`.
+6. If the selected project references `Microsoft.Playwright`, run `pwsh bin/Debug/net10.0/playwright.ps1 install --with-deps` from that directory.
+7. Run `dotnet test --no-build`.
+8. After the test finishes or fails, return to the implementation directory and run `docker compose down --volumes` again so the next test starts from a clean environment.
 
 Run Compose-owning test projects sequentially and complete this lifecycle for each project. Do not allow two test projects to manage the same Compose environment concurrently.
 
