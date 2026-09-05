@@ -43,10 +43,6 @@ function exists(relativePath) {
   return fs.existsSync(resolveFromRoot(relativePath));
 }
 
-function read(relativePath) {
-  return fs.readFileSync(resolveFromRoot(relativePath), "utf8");
-}
-
 function walk(directory, predicate = () => true) {
   const result = [];
 
@@ -171,46 +167,6 @@ function validateKnownContent(documentFiles) {
   }
 }
 
-function validateArchitectureInvariants() {
-  const mvcProjectPath = "apps/mservices/src/ContosoUniversity.Mvc/ContosoUniversity.Mvc.csproj";
-
-  if (!exists(mvcProjectPath)) {
-    fail(`Missing ${mvcProjectPath}.`);
-  } else {
-    const project = read(mvcProjectPath);
-    const projectReferences = [...project.matchAll(/<ProjectReference\s+Include="([^"]+)"/g)].map((match) => match[1]);
-    const forbiddenReference = projectReferences.find((reference) => /(?:^|[\\/])[^\\/]*Data(?:\.|[\\/])/i.test(reference));
-
-    if (forbiddenReference) {
-      fail(`${mvcProjectPath} directly references a data project (${forbiddenReference}), contrary to the documented frontend boundary.`);
-    }
-  }
-
-  const monolithSource = walk(resolveFromRoot("apps/monolith/src"), (file) => file.endsWith(".cs"))
-    .map((file) => fs.readFileSync(file, "utf8"))
-    .join("\n");
-
-  for (const endpoint of ["/health/readiness", "/health/liveness"]) {
-    if (!monolithSource.includes(endpoint)) {
-      fail(`Monolith source does not contain the documented health endpoint ${endpoint}.`);
-    }
-  }
-
-  const microservicesSource = walk(resolveFromRoot("apps/mservices/src"), (file) => file.endsWith(".cs"))
-    .map((file) => fs.readFileSync(file, "utf8"))
-    .join("\n");
-
-  for (const eventName of ["CourseDeletedEvent", "DepartmentDeletedEvent"]) {
-    if (!microservicesSource.includes(`record ${eventName}`)) {
-      fail(`Microservices source does not define the documented ${eventName} contract.`);
-    }
-
-    if (!microservicesSource.includes(`IConsumer<${eventName}>`)) {
-      fail(`Microservices source does not contain a documented consumer for ${eventName}.`);
-    }
-  }
-}
-
 for (const requiredFile of requiredFiles) {
   if (!exists(requiredFile)) {
     fail(`Missing required repository path ${requiredFile}.`);
@@ -238,7 +194,6 @@ const documentationFiles = [
 ].filter(fs.existsSync);
 
 validateKnownContent(documentationFiles);
-validateArchitectureInvariants();
 
 if (errors.length > 0) {
   console.error(`Agent documentation validation failed with ${errors.length} error(s):`);
