@@ -62,6 +62,57 @@ At a high level, the expected prerequisites are:
 - Docker with Docker Compose support.
 - A developer HTTPS certificate when running the MVC application in containers.
 
+## Troubleshooting
+
+Use the affected implementation directory for the commands below:
+
+- `apps/monolith`
+- `apps/mservices`
+
+### Docker is unavailable
+
+Run `docker info`. If it cannot connect to the daemon, start Docker Desktop or the Docker Engine for the current platform, wait until `docker info` succeeds, and retry. For Compose test failures caused by stale disposable state, run `docker compose down --volumes` from the affected implementation directory before rebuilding; this deletes data in the local Compose volumes.
+
+### The web image cannot find `cert.pfx`
+
+Verify that `src/ContosoUniversity.Mvc/cert.pfx` exists under the affected implementation directory and regenerate it with the relevant development-certificate instructions when needed:
+
+- [Monolith development certificate](apps/monolith/README.md#prepare-a-development-certificate)
+- [Microservices development certificate](apps/mservices/README.md#prepare-a-development-certificate)
+
+The file is intentionally ignored by Git and must exist before `docker compose build` or `docker compose up --build` copies it into the image. If `dotnet dev-certs` reports a certificate-store or keychain error, repair or unlock the current user's certificate store and rerun the documented command.
+
+### SQL Server does not become healthy
+
+Inspect the service and its health-check output:
+
+```bash
+docker compose ps
+docker compose logs mssql
+```
+
+Confirm that Docker has sufficient memory and that host port `1477` is available. If the failure is caused by stale disposable state, run `docker compose down --volumes`, then rebuild and start the environment again.
+
+### A cold Compose build times out in an e2e or system test
+
+Build the images from the affected implementation directory before starting the test project:
+
+```bash
+docker compose build
+```
+
+The test fixture then starts existing images without spending its startup timeout on a cold build.
+
+### Playwright cannot find a browser executable
+
+Build the selected e2e or system test project, then run its generated Playwright installer from that test project's directory:
+
+```bash
+pwsh bin/Debug/net10.0/playwright.ps1 install
+```
+
+Rerun the project-scoped test after the browser installation completes.
+
 ## CI and quality gates
 
 The repository contains separate GitHub Actions workflows for the two implementations:

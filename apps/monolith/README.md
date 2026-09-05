@@ -96,6 +96,8 @@ The application exposes health endpoints:
 - Docker with Docker Compose support.
 - Local developer HTTPS certificate tooling if HTTPS container access is needed.
 
+Implementation-wide settings are defined in [.editorconfig](.editorconfig) and [Directory.Build.props](Directory.Build.props). The former owns formatting and analyzer conventions; the latter sets the target framework and enforces code style and analyzer warnings during builds.
+
 ### Prepare a development certificate
 
 The Dockerfile expects a certificate file at:
@@ -112,6 +114,8 @@ cd apps/monolith/src/ContosoUniversity.Mvc
 ```bash
 dotnet dev-certs https -ep cert.pfx -p Test1234!
 ```
+
+`Test1234!` is an intentionally public, disposable password for this repository's local development certificate and isolated CI/test environments. It is committed so the generated PFX matches the password in `docker-compose.override.yml`; it is not a secret or a credential for shared infrastructure. It may be used as shown for this local/CI fixture, but must never be reused for QA, production, personal certificates, or external services.
 
 ### Start the local environment
 
@@ -164,6 +168,10 @@ dotnet test --no-build
 Do not run `dotnet test` at solution scope. Test projects can execute in parallel and compete for the same Docker Compose resources. When broader verification is needed, run the relevant unit, integration, e2e, and system projects sequentially from their respective directories.
 
 Integration tests use ASP.NET Core test infrastructure and SQL Server test containers. Acceptance tests use Playwright, NUnit, Reqnroll, and Docker-based infrastructure.
+
+## Troubleshooting
+
+See the shared [Docker, HTTPS certificate, SQL Server, and Playwright troubleshooting guide](../../README.md#troubleshooting).
 
 ## CI
 

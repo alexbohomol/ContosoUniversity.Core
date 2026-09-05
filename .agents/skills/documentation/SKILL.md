@@ -15,9 +15,8 @@ Verify statements against current code and configuration. In particular, check:
 - test frameworks and package names;
 - local versus cloud deployment capabilities.
 
-Do not describe planned behavior as implemented or use unsupported claims such as "production-ready". Use placeholders for credentials, tokens, passwords, and certificate material.
+Do not describe planned behavior as implemented or use unsupported claims such as "production-ready". Use placeholders for real credentials, tokens, passwords, and certificate material. A literal credential is acceptable only when it is an intentionally public, disposable local/CI test value and the owning documentation explicitly states that it is not a secret, defines its limited scope, and forbids reuse for shared or persistent environments.
 
 Keep each fact in one maintained source when possible. Root documentation should orient readers and link to implementation details; implementation READMEs should own their topology and setup; `AGENTS.md` should own durable agent rules; skills should own repeatable workflows. Avoid copying large inventories between them.
 
 After editing, check Markdown syntax, relative links, referenced paths, commands, and terminology. Update directory trees when structure changes.
-
