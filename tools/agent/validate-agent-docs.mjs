@@ -133,7 +133,17 @@ function validateSkills() {
 function validateImports(filePath, content) {
   for (const match of content.matchAll(/^\s*@([^\s]+)\s*$/gm)) {
     const importedPath = match[1].split("#", 1)[0];
+    if (path.posix.isAbsolute(importedPath) || path.win32.isAbsolute(importedPath)) {
+      fail(`${relativeToRoot(filePath)} imports an absolute path: ${match[1]}.`);
+      continue;
+    }
+
     const resolvedPath = path.resolve(path.dirname(filePath), importedPath);
+    const relativePath = path.relative(repositoryRoot, resolvedPath);
+    if (relativePath === ".." || relativePath.startsWith(`..${path.sep}`) || path.isAbsolute(relativePath)) {
+      fail(`${relativeToRoot(filePath)} imports a path outside the repository: ${match[1]}.`);
+      continue;
+    }
 
     if (!fs.existsSync(resolvedPath)) {
       fail(`${relativeToRoot(filePath)} imports missing file ${match[1]}.`);

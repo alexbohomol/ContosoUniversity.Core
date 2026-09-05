@@ -11,8 +11,9 @@ const skillPath = ".agents/skills/example/SKILL.md";
 const validSkill = "---\nname: example\ndescription: Example workflow.\n---\n# Example\n";
 
 function fixture(t) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "agent-docs-"));
-  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const temporaryDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "agent-docs-"));
+  const root = path.join(temporaryDirectory, "repo");
+  t.after(() => fs.rmSync(temporaryDirectory, { recursive: true, force: true }));
   function write(relativePath, content) {
     const target = path.join(root, relativePath);
     fs.mkdirSync(path.dirname(target), { recursive: true });
@@ -99,4 +100,34 @@ test("validator propagates Markdown link failures to its exit status", (t) => {
   const repo = fixture(t);
   repo.write("README.md", "# Setup\n[broken](#missing)\n");
   assertFailure(repo.run(), "README.md links to missing anchor #missing.");
+});
+
+for (const [kind, importedPath] of [
+  ["Unix", "/tmp/guidance.md"],
+  ["Windows drive", "C:\\guidance.md"],
+  ["UNC", "\\\\server\\share\\guidance.md"],
+]) {
+  test(`validator rejects absolute ${kind} imports`, (t) => {
+    const repo = fixture(t);
+    repo.write("CLAUDE.md", `@${importedPath}\n`);
+    assertFailure(repo.run(), `CLAUDE.md imports an absolute path: ${importedPath}.`);
+  });
+}
+
+for (const importedPath of ["../outside.md", "../repo-other/guidance.md"]) {
+  test(`validator rejects an existing import outside the checkout: ${importedPath}`, (t) => {
+    const repo = fixture(t);
+    repo.write(importedPath, "# External guidance\n");
+    repo.write("CLAUDE.md", `@${importedPath}\n`);
+    assertFailure(repo.run(), `CLAUDE.md imports a path outside the repository: ${importedPath}.`);
+  });
+}
+
+test("validator allows normalized parent segments inside the checkout", (t) => {
+  const repo = fixture(t);
+  repo.write("CLAUDE.md", "@apps/monolith/../../AGENTS.md\n");
+  const result = repo.run();
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stderr, "");
+  assert.match(result.stdout, /Agent documentation validation passed/);
 });
