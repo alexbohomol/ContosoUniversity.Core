@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using Xunit;
 
+[Collection(nameof(SqlServerTestGroup))]
 public class CreateEndpointsTests :
     IClassFixture<TestsConfiguration>,
     IClassFixture<DefaultApplicationFactory>,

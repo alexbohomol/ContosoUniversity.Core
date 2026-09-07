@@ -8,6 +8,7 @@ using FluentAssertions;
 
 using Xunit;
 
+[Collection(nameof(SqlServerTestGroup))]
 public class HeaderNavigationTests :
     IClassFixture<TestsConfiguration>,
     IClassFixture<DefaultApplicationFactory>,
