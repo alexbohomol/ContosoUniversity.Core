@@ -11,6 +11,7 @@ using HealthChecks.UI.Core;
 
 using Xunit;
 
+[Collection(nameof(SqlServerTestGroup))]
 public class InfraExistsTests :
     IClassFixture<TestsConfiguration>,
     IClassFixture<DefaultApplicationFactory>,
