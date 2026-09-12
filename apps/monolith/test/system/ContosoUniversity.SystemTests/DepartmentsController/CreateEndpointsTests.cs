@@ -1,6 +1,5 @@
 namespace ContosoUniversity.SystemTests.DepartmentsController;
 
-using System;
 using System.Globalization;
 using System.Threading.Tasks;
 
@@ -11,7 +10,6 @@ using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 
 using NUnit.Framework;
-using NUnit.Framework.Interfaces;
 
 public class CreateEndpointsTests : PageTest
 {
@@ -22,32 +20,31 @@ public class CreateEndpointsTests : PageTest
     [TestCase("Zheng, Roger", TestName = "PostCreate_WhenValidRequestWithAdministrator_CreatesDepartment")]
     public async Task PostCreate_WhenValidRequest_CreatesDepartment(string administratorName)
     {
-        string token = Guid.NewGuid().ToString("N");
-        string name = $"{CreateDepartmentRequest.Valid.Name}-{token}";
+        // Arrange
+        string name = CreateDepartmentRequest.Valid.Name;
         CreateDepartmentRequest request = CreateDepartmentRequest.Valid with
         {
             Name = name,
             AdministratorName = administratorName
         };
 
-        try
-        {
-            await Page.GotoAsync(Urls.DepartmentsCreatePage);
-            await Page.FillFormWith(request);
-            await Page.ClickAsync("input[type=submit]");
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        await Page.GotoAsync(Urls.DepartmentsCreatePage);
+        await Page.FillFormWith(request);
 
-            await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
-            await AssertDepartmentRow(request);
-            await Page.ClickLinkByRow("Edit", name);
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-            Page.Url.Should().StartWith(Urls.DepartmentsEditPage);
-            await AssertAdministratorSelection(request.AdministratorName);
-        }
-        finally
-        {
-            await CleanupDepartment(name);
-        }
+        // Act
+        await Page.ClickAsync("input[type=submit]");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        // Assert
+        await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
+        await AssertDepartmentRow(request);
+        await Page.ClickLinkByRow("Edit", name);
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        Page.Url.Should().StartWith(Urls.DepartmentsEditPage);
+        await AssertAdministratorSelection(request.AdministratorName);
+
+        // Cleanup
+        await Page.RemoveDepartment(name);
     }
 
     [TestCaseSource(typeof(CreateDepartmentRequest), nameof(CreateDepartmentRequest.Invalids))]
@@ -55,38 +52,21 @@ public class CreateEndpointsTests : PageTest
         CreateDepartmentRequest request,
         string errorMessage)
     {
-        try
-        {
-            await Page.GotoAsync(Urls.DepartmentsCreatePage);
-            await Page.FillFormWith(request);
-            await Page.ClickAsync("input[type=submit]");
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        // Arrange
+        await Page.GotoAsync(Urls.DepartmentsCreatePage);
+        await Page.FillFormWith(request);
 
-            await Expect(Page).ToHaveURLAsync(Urls.DepartmentsCreatePage);
-            await Expect(Page.GetByText(errorMessage, new() { Exact = true })).ToBeVisibleAsync();
-            await Expect(Page.DepartmentRow(request.Name)).ToHaveCountAsync(0);
-        }
-        finally
-        {
-            await CleanupDepartment(request.Name);
-        }
-    }
+        // Act
+        await Page.ClickAsync("input[type=submit]");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-    private async Task CleanupDepartment(string name)
-    {
-        try
-        {
-            await Page.RemoveDepartment(name);
-        }
-        catch (PlaywrightException exception)
-        {
-            if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Passed)
-            {
-                Assert.Fail($"Department cleanup failed for '{name}': {exception}");
-            }
+        // Assert
+        await Expect(Page).ToHaveURLAsync(Urls.DepartmentsCreatePage);
+        await Expect(Page.GetByText(errorMessage, new() { Exact = true })).ToBeVisibleAsync();
+        await Expect(Page.DepartmentRow(request.Name)).ToHaveCountAsync(0);
 
-            await TestContext.Progress.WriteLineAsync($"Department cleanup failed for '{name}': {exception}");
-        }
+        // Cleanup
+        await Page.RemoveDepartment(request.Name);
     }
 
     private async Task AssertDepartmentRow(CreateDepartmentRequest request)

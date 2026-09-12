@@ -1,6 +1,5 @@
 namespace ContosoUniversity.SystemTests.DepartmentsController;
 
-using System;
 using System.Globalization;
 using System.Threading.Tasks;
 
@@ -11,7 +10,6 @@ using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 
 using NUnit.Framework;
-using NUnit.Framework.Interfaces;
 
 public class EditEndpointsTests : PageTest
 {
@@ -23,9 +21,9 @@ public class EditEndpointsTests : PageTest
         string initialAdministratorName,
         string updatedAdministratorName)
     {
-        string token = Guid.NewGuid().ToString("N");
-        string initialName = $"Informatics-{token}";
-        string updatedName = $"Computers-{token}";
+        // Arrange
+        string initialName = "Informatics";
+        string updatedName = "Computers";
         CreateDepartmentRequest initialRequest = CreateDepartmentRequest.Valid with
         {
             Name = initialName,
@@ -36,41 +34,36 @@ public class EditEndpointsTests : PageTest
             Name = updatedName,
             AdministratorName = updatedAdministratorName
         };
-        string editUrl = null;
+        await Page.CreateDepartment(initialRequest);
+        await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
+        await AssertDepartmentRow(initialRequest);
 
-        try
-        {
-            await Page.CreateDepartment(initialRequest);
-            await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
-            await AssertDepartmentRow(initialRequest);
+        string editUrl = await Page.GetByRole(AriaRole.Row, new() { Name = initialName })
+            .GetByRole(AriaRole.Link, new() { Name = "Edit" })
+            .GetAttributeAsync("href");
+        editUrl.Should().NotBeNullOrEmpty();
+        await Page.ClickLinkByRow("Edit", initialName);
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        Page.Url.Should().EndWith(editUrl);
+        Page.Url.Should().StartWith(Urls.DepartmentsEditPage);
+        await AssertEditForm(initialRequest);
 
-            editUrl = await Page.GetByRole(AriaRole.Row, new() { Name = initialName })
-                .GetByRole(AriaRole.Link, new() { Name = "Edit" })
-                .GetAttributeAsync("href");
-            editUrl.Should().NotBeNullOrEmpty();
-            await Page.ClickLinkByRow("Edit", initialName);
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-            Page.Url.Should().EndWith(editUrl);
-            Page.Url.Should().StartWith(Urls.DepartmentsEditPage);
-            await AssertEditForm(initialRequest);
+        // Act
+        await Page.FillFormWith(updatedRequest);
+        await Page.ClickAsync("input[type=submit]");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-            await Page.FillFormWith(updatedRequest);
-            await Page.ClickAsync("input[type=submit]");
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        // Assert
+        await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
+        await AssertDepartmentRow(updatedRequest);
+        await Expect(Page.DepartmentRow(initialName)).ToHaveCountAsync(0);
 
-            await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
-            await AssertDepartmentRow(updatedRequest);
-            await Expect(Page.DepartmentRow(initialName)).ToHaveCountAsync(0);
+        await Page.ClickLinkByRow("Edit", updatedName);
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        await AssertAdministratorSelection(updatedAdministratorName);
 
-            await Page.ClickLinkByRow("Edit", updatedName);
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-            await AssertAdministratorSelection(updatedAdministratorName);
-        }
-        finally
-        {
-            await CleanupDepartment(updatedName);
-            await CleanupDepartment(initialName);
-        }
+        // Cleanup
+        await Page.RemoveDepartment(updatedName);
     }
 
     [TestCaseSource(typeof(EditDepartmentRequest), nameof(EditDepartmentRequest.Invalids))]
@@ -78,10 +71,10 @@ public class EditEndpointsTests : PageTest
         EditDepartmentRequest request,
         string errorMessage)
     {
-        string token = Guid.NewGuid().ToString("N");
+        // Arrange
         CreateDepartmentRequest initialRequest = CreateDepartmentRequest.Valid with
         {
-            Name = $"Informatics-{token}"
+            Name = "Informatics"
         };
         EditDepartmentRequest invalidRequest = request with
         {
@@ -89,30 +82,27 @@ public class EditEndpointsTests : PageTest
             StartDate = initialRequest.StartDate,
             AdministratorName = initialRequest.AdministratorName
         };
-        string editUrl = null;
+        await Page.CreateDepartment(initialRequest);
+        await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
+        await AssertDepartmentRow(initialRequest);
+        await Page.ClickLinkByRow("Edit", initialRequest.Name);
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        string editUrl = Page.Url;
+        Page.Url.Should().StartWith(Urls.DepartmentsEditPage);
+        await Page.FillFormWith(invalidRequest);
 
-        try
-        {
-            await Page.CreateDepartment(initialRequest);
-            await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
-            await AssertDepartmentRow(initialRequest);
-            await Page.ClickLinkByRow("Edit", initialRequest.Name);
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-            editUrl = Page.Url;
-            Page.Url.Should().StartWith(Urls.DepartmentsEditPage);
-            await Page.FillFormWith(invalidRequest);
-            await Page.ClickAsync("input[type=submit]");
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        // Act
+        await Page.ClickAsync("input[type=submit]");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-            Page.Url.Should().EndWith(editUrl);
-            await Expect(Page.GetByText(errorMessage, new() { Exact = true })).ToBeVisibleAsync();
-            await Page.GotoAsync(Urls.DepartmentsListPage);
-            await AssertDepartmentRow(initialRequest);
-        }
-        finally
-        {
-            await CleanupDepartment(initialRequest.Name);
-        }
+        // Assert
+        Page.Url.Should().Be(editUrl);
+        await Expect(Page.GetByText(errorMessage, new() { Exact = true })).ToBeVisibleAsync();
+        await Page.GotoAsync(Urls.DepartmentsListPage);
+        await AssertDepartmentRow(initialRequest);
+
+        // Cleanup
+        await Page.RemoveDepartment(initialRequest.Name);
     }
 
     private async Task AssertDepartmentRow(CreateDepartmentRequest request)
@@ -155,20 +145,4 @@ public class EditEndpointsTests : PageTest
             .ToHaveTextAsync(administratorName);
     }
 
-    private async Task CleanupDepartment(string name)
-    {
-        try
-        {
-            await Page.RemoveDepartment(name);
-        }
-        catch (PlaywrightException exception)
-        {
-            if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Passed)
-            {
-                Assert.Fail($"Department cleanup failed for '{name}': {exception}");
-            }
-
-            await TestContext.Progress.WriteLineAsync($"Department cleanup failed for '{name}': {exception}");
-        }
-    }
 }
