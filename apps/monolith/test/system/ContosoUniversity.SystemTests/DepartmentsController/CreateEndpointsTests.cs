@@ -21,10 +21,8 @@ public class CreateEndpointsTests : PageTest
     public async Task PostCreate_WhenValidRequest_CreatesDepartment(string administratorName)
     {
         // Arrange
-        string name = CreateDepartmentRequest.Valid.Name;
         CreateDepartmentRequest request = CreateDepartmentRequest.Valid with
         {
-            Name = name,
             AdministratorName = administratorName
         };
 
@@ -38,13 +36,13 @@ public class CreateEndpointsTests : PageTest
         // Assert
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
         await AssertDepartmentRow(request);
-        await Page.ClickLinkByRow("Edit", name);
+        await Page.ClickLinkByRow("Edit", CreateDepartmentRequest.Valid.Name);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         Page.Url.Should().StartWith(Urls.DepartmentsEditPage);
         await AssertAdministratorSelection(request.AdministratorName);
 
         // Cleanup
-        await Page.RemoveDepartment(name);
+        await Page.RemoveDepartment(CreateDepartmentRequest.Valid.Name);
     }
 
     [TestCaseSource(typeof(CreateDepartmentRequest), nameof(CreateDepartmentRequest.Invalids))]

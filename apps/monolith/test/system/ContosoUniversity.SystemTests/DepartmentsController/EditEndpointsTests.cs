@@ -22,27 +22,23 @@ public class EditEndpointsTests : PageTest
         string updatedAdministratorName)
     {
         // Arrange
-        string initialName = "Informatics";
-        string updatedName = "Computers";
         CreateDepartmentRequest initialRequest = CreateDepartmentRequest.Valid with
         {
-            Name = initialName,
             AdministratorName = initialAdministratorName
         };
         EditDepartmentRequest updatedRequest = EditDepartmentRequest.Valid with
         {
-            Name = updatedName,
             AdministratorName = updatedAdministratorName
         };
         await Page.CreateDepartment(initialRequest);
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
         await AssertDepartmentRow(initialRequest);
 
-        string editUrl = await Page.GetByRole(AriaRole.Row, new() { Name = initialName })
+        string editUrl = await Page.GetByRole(AriaRole.Row, new() { Name = CreateDepartmentRequest.Valid.Name })
             .GetByRole(AriaRole.Link, new() { Name = "Edit" })
             .GetAttributeAsync("href");
         editUrl.Should().NotBeNullOrEmpty();
-        await Page.ClickLinkByRow("Edit", initialName);
+        await Page.ClickLinkByRow("Edit", CreateDepartmentRequest.Valid.Name);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         Page.Url.Should().EndWith(editUrl);
         Page.Url.Should().StartWith(Urls.DepartmentsEditPage);
@@ -56,14 +52,14 @@ public class EditEndpointsTests : PageTest
         // Assert
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
         await AssertDepartmentRow(updatedRequest);
-        await Expect(Page.DepartmentRow(initialName)).ToHaveCountAsync(0);
+        await Expect(Page.DepartmentRow(CreateDepartmentRequest.Valid.Name)).ToHaveCountAsync(0);
 
-        await Page.ClickLinkByRow("Edit", updatedName);
+        await Page.ClickLinkByRow("Edit", EditDepartmentRequest.Valid.Name);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         await AssertAdministratorSelection(updatedAdministratorName);
 
         // Cleanup
-        await Page.RemoveDepartment(updatedName);
+        await Page.RemoveDepartment(EditDepartmentRequest.Valid.Name);
     }
 
     [TestCaseSource(typeof(EditDepartmentRequest), nameof(EditDepartmentRequest.Invalids))]
@@ -72,10 +68,7 @@ public class EditEndpointsTests : PageTest
         string errorMessage)
     {
         // Arrange
-        CreateDepartmentRequest initialRequest = CreateDepartmentRequest.Valid with
-        {
-            Name = "Informatics"
-        };
+        CreateDepartmentRequest initialRequest = CreateDepartmentRequest.Valid;
         EditDepartmentRequest invalidRequest = request with
         {
             Budget = initialRequest.Budget,

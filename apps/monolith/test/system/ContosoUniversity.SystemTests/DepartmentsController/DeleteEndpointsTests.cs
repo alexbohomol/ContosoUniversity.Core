@@ -19,17 +19,14 @@ public class DeleteEndpointsTests : PageTest
     public async Task PostDelete_RemovesExistingDepartment()
     {
         // Arrange
-        string name = "Informatics";
-        CreateDepartmentRequest request = CreateDepartmentRequest.Valid with { Name = name };
-
-        await Page.CreateDepartment(request);
+        await Page.CreateDepartment(CreateDepartmentRequest.Valid);
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
-        ILocator row = Page.DepartmentRow(name);
+        ILocator row = Page.DepartmentRow(CreateDepartmentRequest.Valid.Name);
         await Expect(row).ToHaveCountAsync(1);
         string deleteUrl = await row.GetByRole(AriaRole.Link, new() { Name = "Delete" })
             .GetAttributeAsync("href");
         deleteUrl.Should().NotBeNullOrEmpty();
-        await Page.ClickLinkByRow("Delete", name);
+        await Page.ClickLinkByRow("Delete", CreateDepartmentRequest.Valid.Name);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         Page.Url.Should().EndWith(deleteUrl);
         Page.Url.Should().StartWith(Urls.DepartmentsDeletePage);
@@ -40,9 +37,9 @@ public class DeleteEndpointsTests : PageTest
 
         // Assert
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
-        await Expect(Page.DepartmentRow(name)).ToHaveCountAsync(0);
+        await Expect(Page.DepartmentRow(CreateDepartmentRequest.Valid.Name)).ToHaveCountAsync(0);
 
         // Cleanup
-        await Page.RemoveDepartment(name);
+        await Page.RemoveDepartment(CreateDepartmentRequest.Valid.Name);
     }
 }
