@@ -1,0 +1,40 @@
+namespace ContosoUniversity.SystemTests.DepartmentsController;
+
+using System;
+using System.Collections.Generic;
+
+using NUnit.Framework;
+
+public record EditDepartmentRequest
+{
+    public string Name { get; init; }
+    public decimal Budget { get; init; }
+    public DateTime StartDate { get; init; }
+    public string AdministratorName { get; init; }
+
+    public static readonly EditDepartmentRequest Valid = new()
+    {
+        Name = "Computers",
+        Budget = 1100000.00m,
+        StartDate = new DateTime(2022, 9, 1),
+        AdministratorName = "Harui, Roger"
+    };
+
+    public static IEnumerable<TestCaseData> Invalids =>
+    [
+        new TestCaseData(
+            Valid with { Name = "XY" },
+            "'Name' must be between 3 and 50 characters. You entered 2 characters."),
+        new TestCaseData(
+            Valid with { Name = new string('X', 51) },
+            "'Name' must be between 3 and 50 characters. You entered 51 characters.")
+    ];
+
+    public static IEnumerable<TestCaseData> AdministratorTransitions =>
+    [
+        new TestCaseData(null, "Zheng, Roger").SetName("Unset_to_Zheng_Roger"),
+        new TestCaseData("Zheng, Roger", "Harui, Roger").SetName("Zheng_Roger_to_Harui_Roger"),
+        new TestCaseData("Zheng, Roger", null).SetName("Zheng_Roger_to_Unset"),
+        new TestCaseData(null, null).SetName("Unset_to_Unset")
+    ];
+}
