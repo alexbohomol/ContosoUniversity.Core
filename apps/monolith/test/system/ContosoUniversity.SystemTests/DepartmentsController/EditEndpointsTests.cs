@@ -26,9 +26,9 @@ public class EditEndpointsTests : PageTest
         await Page.AssertDepartmentRow(initialRequest);
         await Page.ClickLinkByRow("Edit", initialRequest.Name);
         await Page.AssertEditForm(initialRequest);
+        await Page.FillFormWith(updateRequest);
 
         // Act
-        await Page.FillFormWith(updateRequest);
         await Page.ClickAsync("input[type=submit]");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
