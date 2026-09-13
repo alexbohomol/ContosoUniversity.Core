@@ -55,6 +55,46 @@ public static class PageMacrosActions
         await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
+    public static async Task AssertDepartmentRow(this IPage page, CreateDepartmentRequest request)
+    {
+        ILocator row = page.DepartmentRow(request.Name);
+        await Assertions.Expect(row).ToHaveCountAsync(1);
+        await Assertions.Expect(row.Locator("td").Nth(0)).ToHaveTextAsync(request.Name);
+        await Assertions.Expect(row.Locator("td").Nth(1)).ToHaveTextAsync(request.Budget.ToString("0.00", CultureInfo.InvariantCulture));
+        await Assertions.Expect(row.Locator("td").Nth(2)).ToHaveTextAsync(request.StartDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+        await Assertions.Expect(row.Locator("td").Nth(3)).ToHaveTextAsync(request.AdministratorName ?? string.Empty);
+    }
+
+    public static async Task AssertDepartmentRow(this IPage page, EditDepartmentRequest request)
+    {
+        ILocator row = page.DepartmentRow(request.Name);
+        await Assertions.Expect(row).ToHaveCountAsync(1);
+        await Assertions.Expect(row.Locator("td").Nth(0)).ToHaveTextAsync(request.Name);
+        await Assertions.Expect(row.Locator("td").Nth(1)).ToHaveTextAsync(request.Budget.ToString("0.00", CultureInfo.InvariantCulture));
+        await Assertions.Expect(row.Locator("td").Nth(2)).ToHaveTextAsync(request.StartDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+        await Assertions.Expect(row.Locator("td").Nth(3)).ToHaveTextAsync(request.AdministratorName ?? string.Empty);
+    }
+
+    public static async Task AssertEditForm(this IPage page, CreateDepartmentRequest request)
+    {
+        await Assertions.Expect(page.Locator("#Request_Name")).ToHaveValueAsync(request.Name);
+        await Assertions.Expect(page.Locator("#Request_Budget")).ToHaveValueAsync(request.Budget.ToString("0.00", CultureInfo.InvariantCulture));
+        await Assertions.Expect(page.Locator("#Request_StartDate")).ToHaveValueAsync(request.StartDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+        await page.AssertAdministratorSelection(request.AdministratorName);
+    }
+
+    public static async Task AssertAdministratorSelection(this IPage page, string administratorName)
+    {
+        if (administratorName is null)
+        {
+            await Assertions.Expect(page.Locator("#Request_AdministratorId")).ToHaveValueAsync(string.Empty);
+            return;
+        }
+
+        await Assertions.Expect(page.Locator("#Request_AdministratorId").Locator("option:checked"))
+            .ToHaveTextAsync(administratorName);
+    }
+
     private static async Task SelectAdministrator(IPage page, string administratorName)
     {
         if (administratorName is null)

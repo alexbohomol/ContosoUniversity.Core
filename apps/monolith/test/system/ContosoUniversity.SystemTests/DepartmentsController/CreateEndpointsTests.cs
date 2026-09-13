@@ -1,6 +1,5 @@
 namespace ContosoUniversity.SystemTests.DepartmentsController;
 
-using System.Globalization;
 using System.Threading.Tasks;
 
 using FluentAssertions;
@@ -35,11 +34,11 @@ public class CreateEndpointsTests : PageTest
 
         // Assert
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
-        await AssertDepartmentRow(request);
+        await Page.AssertDepartmentRow(request);
         await Page.ClickLinkByRow("Edit", CreateDepartmentRequest.Valid.Name);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         Page.Url.Should().StartWith(Urls.DepartmentsEditPage);
-        await AssertAdministratorSelection(request.AdministratorName);
+        await Page.AssertAdministratorSelection(request.AdministratorName);
 
         // Cleanup
         await Page.RemoveDepartment(CreateDepartmentRequest.Valid.Name);
@@ -65,27 +64,5 @@ public class CreateEndpointsTests : PageTest
 
         // Cleanup
         await Page.RemoveDepartment(request.Name);
-    }
-
-    private async Task AssertDepartmentRow(CreateDepartmentRequest request)
-    {
-        ILocator row = Page.DepartmentRow(request.Name);
-        await Expect(row).ToHaveCountAsync(1);
-        await Expect(row.Locator("td").Nth(0)).ToHaveTextAsync(request.Name);
-        await Expect(row.Locator("td").Nth(1)).ToHaveTextAsync(request.Budget.ToString("0.00", CultureInfo.InvariantCulture));
-        await Expect(row.Locator("td").Nth(2)).ToHaveTextAsync(request.StartDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-        await Expect(row.Locator("td").Nth(3)).ToHaveTextAsync(request.AdministratorName ?? string.Empty);
-    }
-
-    private async Task AssertAdministratorSelection(string administratorName)
-    {
-        if (administratorName is null)
-        {
-            await Expect(Page.Locator("#Request_AdministratorId")).ToHaveValueAsync(string.Empty);
-            return;
-        }
-
-        await Expect(Page.Locator("#Request_AdministratorId").Locator("option:checked"))
-            .ToHaveTextAsync(administratorName);
     }
 }
