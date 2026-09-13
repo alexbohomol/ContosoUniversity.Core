@@ -49,8 +49,5 @@ public class CreateEndpointsTests : PageTest
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsCreatePage);
         await Expect(Page.GetByText(errorMessage, new() { Exact = true })).ToBeVisibleAsync();
         await Expect(Page.DepartmentRow(request.Name)).ToHaveCountAsync(0);
-
-        // Cleanup
-        await Page.RemoveDepartment(request.Name);
     }
 }

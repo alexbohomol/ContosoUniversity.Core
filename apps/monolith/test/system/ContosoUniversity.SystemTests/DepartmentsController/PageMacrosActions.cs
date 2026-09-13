@@ -44,12 +44,6 @@ public static class PageMacrosActions
     public static async Task RemoveDepartment(this IPage page, string name)
     {
         await page.GotoAsync(Urls.DepartmentsListPage);
-        ILocator row = page.DepartmentRow(name);
-        if (await row.CountAsync() == 0)
-        {
-            return;
-        }
-
         await page.ClickLinkByRow("Delete", name);
         await page.ClickButton("Delete");
         await page.WaitForLoadStateAsync(LoadState.NetworkIdle);

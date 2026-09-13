@@ -38,8 +38,5 @@ public class DeleteEndpointsTests : PageTest
         // Assert
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
         await Expect(Page.DepartmentRow(CreateDepartmentRequest.Valid.Name)).ToHaveCountAsync(0);
-
-        // Cleanup
-        await Page.RemoveDepartment(CreateDepartmentRequest.Valid.Name);
     }
 }
