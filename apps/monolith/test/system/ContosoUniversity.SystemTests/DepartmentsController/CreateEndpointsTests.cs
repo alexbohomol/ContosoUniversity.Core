@@ -29,7 +29,7 @@ public class CreateEndpointsTests : PageTest
         await Page.AssertDepartmentRow(request);
 
         // Cleanup
-        await Page.RemoveDepartment(CreateDepartmentRequest.Valid.Name);
+        await Page.RemoveDepartment(request.Name);
     }
 
     [TestCaseSource(typeof(CreateDepartmentRequest), nameof(CreateDepartmentRequest.Invalids))]
