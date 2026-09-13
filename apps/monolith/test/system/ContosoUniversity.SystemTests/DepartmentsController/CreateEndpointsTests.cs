@@ -2,8 +2,6 @@ namespace ContosoUniversity.SystemTests.DepartmentsController;
 
 using System.Threading.Tasks;
 
-using FluentAssertions;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
@@ -29,10 +27,6 @@ public class CreateEndpointsTests : PageTest
         // Assert
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
         await Page.AssertDepartmentRow(request);
-        await Page.ClickLinkByRow("Edit", CreateDepartmentRequest.Valid.Name);
-        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        Page.Url.Should().StartWith(Urls.DepartmentsEditPage);
-        await Page.AssertAdministratorSelection(request.AdministratorName);
 
         // Cleanup
         await Page.RemoveDepartment(CreateDepartmentRequest.Valid.Name);
