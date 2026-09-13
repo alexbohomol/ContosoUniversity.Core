@@ -20,6 +20,14 @@ public record CreateDepartmentRequest
         AdministratorName = "Zheng, Roger"
     };
 
+    public static IEnumerable<TestCaseData> ValidInstructorInvariants =>
+    [
+        new TestCaseData(Valid with { AdministratorName = null })
+            .SetName("PostCreate_WhenValidRequestWithoutAdministrator_CreatesDepartment"),
+        new TestCaseData(Valid)
+            .SetName("PostCreate_WhenValidRequestWithAdministrator_CreatesDepartment")
+    ];
+
     public static IEnumerable<TestCaseData> Invalids =>
     [
         new TestCaseData(

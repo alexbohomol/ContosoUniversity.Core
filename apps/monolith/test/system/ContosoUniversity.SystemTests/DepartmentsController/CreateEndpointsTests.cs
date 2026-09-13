@@ -15,16 +15,10 @@ public class CreateEndpointsTests : PageTest
     private static readonly SutUrls Urls =
         new(ServiceLocator.GetRequiredService<IConfiguration>());
 
-    [TestCase(null, TestName = "PostCreate_WhenValidRequestWithoutAdministrator_CreatesDepartment")]
-    [TestCase("Zheng, Roger", TestName = "PostCreate_WhenValidRequestWithAdministrator_CreatesDepartment")]
-    public async Task PostCreate_WhenValidRequest_CreatesDepartment(string administratorName)
+    [TestCaseSource(typeof(CreateDepartmentRequest), nameof(CreateDepartmentRequest.ValidInstructorInvariants))]
+    public async Task PostCreate_WhenValidRequest_CreatesDepartment(CreateDepartmentRequest request)
     {
         // Arrange
-        CreateDepartmentRequest request = CreateDepartmentRequest.Valid with
-        {
-            AdministratorName = administratorName
-        };
-
         await Page.GotoAsync(Urls.DepartmentsCreatePage);
         await Page.FillFormWith(request);
 
