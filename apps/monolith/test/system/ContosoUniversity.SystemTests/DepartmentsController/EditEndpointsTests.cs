@@ -55,6 +55,7 @@ public class EditEndpointsTests : PageTest
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
         await Page.AssertDepartmentRow(initialRequest);
         await Page.ClickLinkByRow("Edit", initialRequest.Name);
+        await Page.AssertEditForm(initialRequest);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         string editUrl = Page.Url;
         Page.Url.Should().StartWith(Urls.DepartmentsEditPage);
