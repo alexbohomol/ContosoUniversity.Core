@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
+
 using static Microsoft.Playwright.Assertions;
 
 public static class PageMacrosActions
