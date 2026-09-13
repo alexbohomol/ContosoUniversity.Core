@@ -51,12 +51,6 @@ public class EditEndpointsTests : PageTest
     {
         // Arrange
         CreateDepartmentRequest initialRequest = CreateDepartmentRequest.Valid;
-        EditDepartmentRequest invalidRequest = request with
-        {
-            Budget = initialRequest.Budget,
-            StartDate = initialRequest.StartDate,
-            AdministratorName = initialRequest.AdministratorName
-        };
         await Page.CreateDepartment(initialRequest);
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
         await Page.AssertDepartmentRow(initialRequest);
@@ -64,7 +58,7 @@ public class EditEndpointsTests : PageTest
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         string editUrl = Page.Url;
         Page.Url.Should().StartWith(Urls.DepartmentsEditPage);
-        await Page.FillFormWith(invalidRequest);
+        await Page.FillFormWith(request);
 
         // Act
         await Page.ClickAsync("input[type=submit]");
