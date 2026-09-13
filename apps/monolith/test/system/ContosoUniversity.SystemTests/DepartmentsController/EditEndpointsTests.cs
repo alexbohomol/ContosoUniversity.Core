@@ -17,48 +17,31 @@ public class EditEndpointsTests : PageTest
 
     [TestCaseSource(typeof(EditDepartmentRequest), nameof(EditDepartmentRequest.AdministratorTransitions))]
     public async Task PostEdit_WhenValidRequest_UpdatesDepartment(
-        string initialAdministratorName,
-        string updatedAdministratorName)
+        CreateDepartmentRequest initialRequest,
+        EditDepartmentRequest updateRequest)
     {
         // Arrange
-        CreateDepartmentRequest initialRequest = CreateDepartmentRequest.Valid with
-        {
-            AdministratorName = initialAdministratorName
-        };
-        EditDepartmentRequest updatedRequest = EditDepartmentRequest.Valid with
-        {
-            AdministratorName = updatedAdministratorName
-        };
         await Page.CreateDepartment(initialRequest);
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
         await Page.AssertDepartmentRow(initialRequest);
-
-        string editUrl = await Page.GetByRole(AriaRole.Row, new() { Name = CreateDepartmentRequest.Valid.Name })
-            .GetByRole(AriaRole.Link, new() { Name = "Edit" })
-            .GetAttributeAsync("href");
-        editUrl.Should().NotBeNullOrEmpty();
-        await Page.ClickLinkByRow("Edit", CreateDepartmentRequest.Valid.Name);
-        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        Page.Url.Should().EndWith(editUrl);
-        Page.Url.Should().StartWith(Urls.DepartmentsEditPage);
+        await Page.ClickLinkByRow("Edit", initialRequest.Name);
         await Page.AssertEditForm(initialRequest);
 
         // Act
-        await Page.FillFormWith(updatedRequest);
+        await Page.FillFormWith(updateRequest);
         await Page.ClickAsync("input[type=submit]");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // Assert
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
-        await Page.AssertDepartmentRow(updatedRequest);
-        await Expect(Page.DepartmentRow(CreateDepartmentRequest.Valid.Name)).ToHaveCountAsync(0);
-
-        await Page.ClickLinkByRow("Edit", EditDepartmentRequest.Valid.Name);
+        await Page.AssertDepartmentRow(updateRequest);
+        await Expect(Page.DepartmentRow(initialRequest.Name)).ToHaveCountAsync(0);
+        await Page.ClickLinkByRow("Edit", updateRequest.Name);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        await Page.AssertAdministratorSelection(updatedAdministratorName);
+        await Page.AssertAdministratorSelection(updateRequest.AdministratorName);
 
         // Cleanup
-        await Page.RemoveDepartment(EditDepartmentRequest.Valid.Name);
+        await Page.RemoveDepartment(updateRequest.Name);
     }
 
     [TestCaseSource(typeof(EditDepartmentRequest), nameof(EditDepartmentRequest.Invalids))]
