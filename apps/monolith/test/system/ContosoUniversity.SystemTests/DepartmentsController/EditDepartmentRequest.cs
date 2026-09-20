@@ -24,10 +24,12 @@ public record EditDepartmentRequest
     [
         new TestCaseData(
             Valid with { Name = "XY" },
-            "'Name' must be between 3 and 50 characters. You entered 2 characters."),
+            "'Name' must be between 3 and 50 characters. You entered 2 characters.")
+            .SetName("Name_is_too_short"),
         new TestCaseData(
             Valid with { Name = new string('X', 51) },
             "'Name' must be between 3 and 50 characters. You entered 51 characters.")
+            .SetName("Name_is_too_long")
     ];
 
     public static IEnumerable<TestCaseData> AdministratorTransitions =>

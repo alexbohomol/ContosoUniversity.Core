@@ -1,5 +1,6 @@
 namespace ContosoUniversity.SystemTests.DepartmentsController;
 
+using System;
 using System.Globalization;
 using System.Threading.Tasks;
 
@@ -51,24 +52,18 @@ public static class PageMacrosActions
         await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
-    public static async Task AssertDepartmentRow(this IPage page, CreateDepartmentRequest request)
+    public static async Task AssertDepartmentRow(this IPage page,
+        string name,
+        decimal budget,
+        DateTime startDate,
+        string administratorName)
     {
-        ILocator row = page.DepartmentRow(request.Name);
+        ILocator row = page.DepartmentRow(name);
         await Expect(row).ToHaveCountAsync(1);
-        await Expect(row.Locator("td").Nth(0)).ToHaveTextAsync(request.Name);
-        await Expect(row.Locator("td").Nth(1)).ToHaveTextAsync(request.Budget.ToString("0.00", CultureInfo.InvariantCulture));
-        await Expect(row.Locator("td").Nth(2)).ToHaveTextAsync(request.StartDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-        await Expect(row.Locator("td").Nth(3)).ToHaveTextAsync(request.AdministratorName ?? string.Empty);
-    }
-
-    public static async Task AssertDepartmentRow(this IPage page, EditDepartmentRequest request)
-    {
-        ILocator row = page.DepartmentRow(request.Name);
-        await Expect(row).ToHaveCountAsync(1);
-        await Expect(row.Locator("td").Nth(0)).ToHaveTextAsync(request.Name);
-        await Expect(row.Locator("td").Nth(1)).ToHaveTextAsync(request.Budget.ToString("0.00", CultureInfo.InvariantCulture));
-        await Expect(row.Locator("td").Nth(2)).ToHaveTextAsync(request.StartDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-        await Expect(row.Locator("td").Nth(3)).ToHaveTextAsync(request.AdministratorName ?? string.Empty);
+        await Expect(row.Locator("td").Nth(0)).ToHaveTextAsync(name);
+        await Expect(row.Locator("td").Nth(1)).ToHaveTextAsync(budget.ToString("0.00", CultureInfo.InvariantCulture));
+        await Expect(row.Locator("td").Nth(2)).ToHaveTextAsync(startDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+        await Expect(row.Locator("td").Nth(3)).ToHaveTextAsync(administratorName ?? string.Empty);
     }
 
     public static async Task AssertEditForm(this IPage page, CreateDepartmentRequest request)

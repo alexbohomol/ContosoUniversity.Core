@@ -13,7 +13,7 @@ public class CreateEndpointsTests : PageTest
     private static readonly SutUrls Urls =
         new(ServiceLocator.GetRequiredService<IConfiguration>());
 
-    [TestCaseSource(typeof(CreateDepartmentRequest), nameof(CreateDepartmentRequest.ValidInstructorInvariants))]
+    [TestCaseSource(typeof(CreateDepartmentRequest), nameof(CreateDepartmentRequest.ValidInstructorVariants))]
     public async Task PostCreate_WhenValidRequest_CreatesDepartment(CreateDepartmentRequest request)
     {
         // Arrange
@@ -26,7 +26,7 @@ public class CreateEndpointsTests : PageTest
 
         // Assert
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
-        await Page.AssertDepartmentRow(request);
+        await Page.AssertDepartmentRow(request.Name, request.Budget, request.StartDate, request.AdministratorName);
 
         // Cleanup
         await Page.RemoveDepartment(request.Name);

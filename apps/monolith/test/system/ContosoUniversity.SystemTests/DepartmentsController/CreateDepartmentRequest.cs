@@ -20,21 +20,23 @@ public record CreateDepartmentRequest
         AdministratorName = "Zheng, Roger"
     };
 
-    public static IEnumerable<TestCaseData> ValidInstructorInvariants =>
+    public static IEnumerable<TestCaseData> ValidInstructorVariants =>
     [
         new TestCaseData(Valid with { AdministratorName = null })
-            .SetName("PostCreate_WhenValidRequestWithoutAdministrator_CreatesDepartment"),
+            .SetName("Without_Administrator"),
         new TestCaseData(Valid)
-            .SetName("PostCreate_WhenValidRequestWithAdministrator_CreatesDepartment")
+            .SetName("With_Administrator")
     ];
 
     public static IEnumerable<TestCaseData> Invalids =>
     [
         new TestCaseData(
             Valid with { Name = "XY" },
-            "'Name' must be between 3 and 50 characters. You entered 2 characters."),
+            "'Name' must be between 3 and 50 characters. You entered 2 characters.")
+            .SetName("Name_is_too_short"),
         new TestCaseData(
             Valid with { Name = new string('X', 51) },
             "'Name' must be between 3 and 50 characters. You entered 51 characters.")
+            .SetName("Name_is_too_long"),
     ];
 }
