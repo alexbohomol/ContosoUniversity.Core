@@ -26,6 +26,7 @@ public class CreateEndpointsTests : PageTest
 
         // Assert
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
+        await Expect(Page.DepartmentRow(request.Name)).ToBeVisibleAsync();
         await Page.AssertDepartmentRow(request.Name, request.Budget, request.StartDate, request.AdministratorName);
 
         // Cleanup

@@ -21,7 +21,7 @@ public class DeleteEndpointsTests : PageTest
         // Arrange
         await Page.CreateDepartment(CreateDepartmentRequest.Valid);
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
-        await Expect(Page.GetByRole(AriaRole.Row, new() { Name = CreateDepartmentRequest.Valid.Name })).ToBeVisibleAsync();
+        await Expect(Page.DepartmentRow(CreateDepartmentRequest.Valid.Name)).ToBeVisibleAsync();
         await Page.ClickLinkByRow("Delete", CreateDepartmentRequest.Valid.Name);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         Page.Url.Should().StartWith(Urls.DepartmentsDeletePage);
@@ -32,6 +32,6 @@ public class DeleteEndpointsTests : PageTest
 
         // Assert
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
-        await Expect(Page.GetByRole(AriaRole.Row, new() { Name = CreateDepartmentRequest.Valid.Name })).ToBeHiddenAsync();
+        await Expect(Page.DepartmentRow(CreateDepartmentRequest.Valid.Name)).ToBeHiddenAsync();
     }
 }
