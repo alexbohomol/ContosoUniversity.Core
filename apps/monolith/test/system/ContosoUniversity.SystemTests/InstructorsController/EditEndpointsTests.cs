@@ -17,7 +17,7 @@ public class EditEndpointsTests : PageTest
 
     [TestCaseSource(typeof(EditDepartmentRequest), nameof(EditDepartmentRequest.AdministratorTransitions))]
     public async Task PostEdit_WhenValidRequest_UpdatesDepartment(
-        CreateDepartmentRequest createRequest,
+        CreateInstructorRequest createRequest,
         EditDepartmentRequest editRequest)
     {
         // Arrange
@@ -53,7 +53,7 @@ public class EditEndpointsTests : PageTest
         string errorMessage)
     {
         // Arrange
-        CreateDepartmentRequest request = CreateDepartmentRequest.Valid;
+        CreateInstructorRequest request = CreateInstructorRequest.Valid;
         await Page.CreateDepartment(request);
         await Page.GotoAsync(Urls.DepartmentsListPage);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);

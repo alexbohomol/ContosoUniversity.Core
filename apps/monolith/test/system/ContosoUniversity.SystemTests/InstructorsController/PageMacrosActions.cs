@@ -20,7 +20,7 @@ public static class PageMacrosActions
             Has = page.GetByRole(AriaRole.Cell, new() { Name = name, Exact = true })
         });
 
-    public static async Task FillFormWith(this IPage page, CreateDepartmentRequest request)
+    public static async Task FillFormWith(this IPage page, CreateInstructorRequest request)
     {
         await page.FillAsync("#Request_Name", request.Name);
         await page.FillAsync("#Request_Budget", request.Budget.ToString("0.00", CultureInfo.InvariantCulture));
@@ -36,7 +36,7 @@ public static class PageMacrosActions
         await SelectAdministrator(page, request.AdministratorName);
     }
 
-    public static async Task CreateDepartment(this IPage page, CreateDepartmentRequest request)
+    public static async Task CreateDepartment(this IPage page, CreateInstructorRequest request)
     {
         await page.GotoAsync(Urls.DepartmentsCreatePage);
         await page.FillFormWith(request);
@@ -66,7 +66,7 @@ public static class PageMacrosActions
         await Expect(row.Locator("td").Nth(3)).ToHaveTextAsync(administratorName ?? string.Empty);
     }
 
-    public static async Task AssertEditForm(this IPage page, CreateDepartmentRequest request)
+    public static async Task AssertEditForm(this IPage page, CreateInstructorRequest request)
     {
         await Expect(page.Locator("#Request_Name")).ToHaveValueAsync(request.Name);
         await Expect(page.Locator("#Request_Budget")).ToHaveValueAsync(request.Budget.ToString("0.00", CultureInfo.InvariantCulture));

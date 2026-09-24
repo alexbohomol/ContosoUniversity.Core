@@ -19,10 +19,10 @@ public class DeleteEndpointsTests : PageTest
     public async Task PostDelete_RemovesExistingDepartment()
     {
         // Arrange
-        await Page.CreateDepartment(CreateDepartmentRequest.Valid);
+        await Page.CreateDepartment(CreateInstructorRequest.Valid);
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
-        await Expect(Page.DepartmentRow(CreateDepartmentRequest.Valid.Name)).ToBeVisibleAsync();
-        await Page.ClickLinkByRow("Delete", CreateDepartmentRequest.Valid.Name);
+        await Expect(Page.DepartmentRow(CreateInstructorRequest.Valid.Name)).ToBeVisibleAsync();
+        await Page.ClickLinkByRow("Delete", CreateInstructorRequest.Valid.Name);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         Page.Url.Should().StartWith(Urls.DepartmentsDeletePage);
 
@@ -32,6 +32,6 @@ public class DeleteEndpointsTests : PageTest
 
         // Assert
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
-        await Expect(Page.DepartmentRow(CreateDepartmentRequest.Valid.Name)).ToBeHiddenAsync();
+        await Expect(Page.DepartmentRow(CreateInstructorRequest.Valid.Name)).ToBeHiddenAsync();
     }
 }

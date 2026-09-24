@@ -5,14 +5,14 @@ using System.Collections.Generic;
 
 using NUnit.Framework;
 
-public record CreateDepartmentRequest
+public record CreateInstructorRequest
 {
     public string Name { get; init; }
     public decimal Budget { get; init; }
     public DateTime StartDate { get; init; }
     public string AdministratorName { get; init; }
 
-    public static readonly CreateDepartmentRequest Valid = new()
+    public static readonly CreateInstructorRequest Valid = new()
     {
         Name = "Informatics",
         Budget = 1000000.00m,
