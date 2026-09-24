@@ -20,18 +20,18 @@ public class DeleteEndpointsTests : PageTest
     {
         // Arrange
         await Page.CreateDepartment(CreateInstructorRequest.Valid);
-        await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
-        await Expect(Page.DepartmentRow(CreateInstructorRequest.Valid.Name)).ToBeVisibleAsync();
-        await Page.ClickLinkByRow("Delete", CreateInstructorRequest.Valid.Name);
+        await Expect(Page).ToHaveURLAsync(Urls.InstructorsListPage);
+        await Expect(Page.InstructorRow(CreateInstructorRequest.Valid.LastName)).ToBeVisibleAsync();
+        await Page.ClickLinkByRow("Delete", CreateInstructorRequest.Valid.LastName);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        Page.Url.Should().StartWith(Urls.DepartmentsDeletePage);
+        Page.Url.Should().StartWith(Urls.InstructorsDeletePage);
 
         // Act
         await Page.ClickButton("Delete");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // Assert
-        await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
-        await Expect(Page.DepartmentRow(CreateInstructorRequest.Valid.Name)).ToBeHiddenAsync();
+        await Expect(Page).ToHaveURLAsync(Urls.InstructorsListPage);
+        await Expect(Page.InstructorRow(CreateInstructorRequest.Valid.LastName)).ToBeHiddenAsync();
     }
 }

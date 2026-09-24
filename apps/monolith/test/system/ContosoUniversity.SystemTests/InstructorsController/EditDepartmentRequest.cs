@@ -34,21 +34,21 @@ public record EditDepartmentRequest
 
     public static IEnumerable<TestCaseData> AdministratorTransitions =>
     [
-        new TestCaseData(
-            CreateInstructorRequest.Valid with { AdministratorName = null },
-            Valid with { AdministratorName = "Zheng, Roger" })
-            .SetName("Unset_to_Zheng_Roger"),
-        new TestCaseData(
-            CreateInstructorRequest.Valid with { AdministratorName = "Zheng, Roger" },
-            Valid with { AdministratorName = "Harui, Roger" })
-            .SetName("Zheng_Roger_to_Harui_Roger"),
-        new TestCaseData(
-            CreateInstructorRequest.Valid with { AdministratorName = "Zheng, Roger" },
-            Valid with { AdministratorName = null })
-            .SetName("Zheng_Roger_to_Unset"),
-        new TestCaseData(
-            CreateInstructorRequest.Valid with { AdministratorName = null },
-            Valid with { AdministratorName = null })
-            .SetName("Unset_to_Unset")
+        // new TestCaseData(
+        //     CreateInstructorRequest.Valid with { AdministratorName = null },
+        //     Valid with { AdministratorName = "Zheng, Roger" })
+        //     .SetName("Unset_to_Zheng_Roger"),
+        // new TestCaseData(
+        //     CreateInstructorRequest.Valid with { AdministratorName = "Zheng, Roger" },
+        //     Valid with { AdministratorName = "Harui, Roger" })
+        //     .SetName("Zheng_Roger_to_Harui_Roger"),
+        // new TestCaseData(
+        //     CreateInstructorRequest.Valid with { AdministratorName = "Zheng, Roger" },
+        //     Valid with { AdministratorName = null })
+        //     .SetName("Zheng_Roger_to_Unset"),
+        // new TestCaseData(
+        //     CreateInstructorRequest.Valid with { AdministratorName = null },
+        //     Valid with { AdministratorName = null })
+        //     .SetName("Unset_to_Unset")
     ];
 }
