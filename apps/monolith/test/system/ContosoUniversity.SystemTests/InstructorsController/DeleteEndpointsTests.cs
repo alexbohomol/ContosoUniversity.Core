@@ -16,10 +16,10 @@ public class DeleteEndpointsTests : PageTest
         new(ServiceLocator.GetRequiredService<IConfiguration>());
 
     [Test]
-    public async Task PostDelete_RemovesExistingDepartment()
+    public async Task PostDelete_RemovesExistingInstructor()
     {
         // Arrange
-        await Page.CreateDepartment(CreateInstructorRequest.Valid);
+        await Page.CreateInstructor(CreateInstructorRequest.Valid);
         await Expect(Page).ToHaveURLAsync(Urls.InstructorsListPage);
         await Expect(Page.InstructorRow(CreateInstructorRequest.Valid.LastName)).ToBeVisibleAsync();
         await Page.ClickLinkByRow("Delete", CreateInstructorRequest.Valid.LastName);

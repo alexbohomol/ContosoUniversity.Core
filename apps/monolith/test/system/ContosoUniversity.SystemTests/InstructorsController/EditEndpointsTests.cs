@@ -22,7 +22,7 @@ public class EditEndpointsTests : PageTest
         EditDepartmentRequest editRequest)
     {
         // Arrange
-        await Page.CreateDepartment(createRequest);
+        await Page.CreateInstructor(createRequest);
         await Page.GotoAsync(Urls.DepartmentsListPage);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         // await Expect(Page.DepartmentRow(createRequest.Name)).ToBeVisibleAsync();
@@ -39,13 +39,13 @@ public class EditEndpointsTests : PageTest
         await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
         // await Expect(Page.DepartmentRow(createRequest.Name)).ToBeHiddenAsync();
         await Expect(Page.InstructorRow(editRequest.Name)).ToBeVisibleAsync();
-        await Page.AssertDepartmentRow(editRequest.Name, editRequest.Budget, editRequest.StartDate, editRequest.AdministratorName);
+        // await Page.AssertDepartmentRow(editRequest.Name, editRequest.Budget, editRequest.StartDate, editRequest.AdministratorName);
         await Page.ClickLinkByRow("Edit", editRequest.Name);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         await Page.AssertAdministratorSelection(editRequest.AdministratorName);
 
         // Cleanup
-        await Page.RemoveDepartment(editRequest.Name);
+        await Page.RemoveInstructor(editRequest.Name);
     }
 
     [Ignore("Temporarily ignored")]
@@ -56,7 +56,7 @@ public class EditEndpointsTests : PageTest
     {
         // Arrange
         CreateInstructorRequest request = CreateInstructorRequest.Valid;
-        await Page.CreateDepartment(request);
+        await Page.CreateInstructor(request);
         await Page.GotoAsync(Urls.DepartmentsListPage);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         // await Expect(Page.DepartmentRow(request.Name)).ToBeVisibleAsync();

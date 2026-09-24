@@ -36,7 +36,7 @@ public static class PageMacrosActions
         await SelectAdministrator(page, request.AdministratorName);
     }
 
-    public static async Task CreateDepartment(this IPage page, CreateInstructorRequest request)
+    public static async Task CreateInstructor(this IPage page, CreateInstructorRequest request)
     {
         await page.GotoAsync(Urls.InstructorsCreatePage);
         await page.FillFormWith(request);
@@ -44,26 +44,26 @@ public static class PageMacrosActions
         await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
-    public static async Task RemoveDepartment(this IPage page, string name)
+    public static async Task RemoveInstructor(this IPage page, string name)
     {
-        await page.GotoAsync(Urls.DepartmentsListPage);
+        await page.GotoAsync(Urls.InstructorsListPage);
         await page.ClickLinkByRow("Delete", name);
         await page.ClickButton("Delete");
         await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
-    public static async Task AssertDepartmentRow(this IPage page,
-        string name,
-        decimal budget,
-        DateTime startDate,
-        string administratorName)
+    public static async Task AssertInstructorRow(this IPage page,
+        string lastName,
+        string firstName,
+        DateTime hireDate,
+        string location)
     {
-        ILocator row = page.InstructorRow(name);
+        ILocator row = page.InstructorRow(lastName);
         await Expect(row).ToHaveCountAsync(1);
-        await Expect(row.Locator("td").Nth(0)).ToHaveTextAsync(name);
-        await Expect(row.Locator("td").Nth(1)).ToHaveTextAsync(budget.ToString("0.00", CultureInfo.InvariantCulture));
-        await Expect(row.Locator("td").Nth(2)).ToHaveTextAsync(startDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-        await Expect(row.Locator("td").Nth(3)).ToHaveTextAsync(administratorName ?? string.Empty);
+        await Expect(row.Locator("td").Nth(0)).ToHaveTextAsync(lastName);
+        await Expect(row.Locator("td").Nth(1)).ToHaveTextAsync(firstName);
+        await Expect(row.Locator("td").Nth(2)).ToHaveTextAsync(hireDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+        await Expect(row.Locator("td").Nth(3)).ToHaveTextAsync(location ?? string.Empty);
     }
 
     public static async Task AssertEditForm(this IPage page, CreateInstructorRequest request)

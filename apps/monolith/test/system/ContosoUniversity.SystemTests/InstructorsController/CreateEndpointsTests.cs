@@ -13,12 +13,12 @@ public class CreateEndpointsTests : PageTest
     private static readonly SutUrls Urls =
         new(ServiceLocator.GetRequiredService<IConfiguration>());
 
-    [Ignore("Temporarily ignored")]
-    [TestCaseSource(typeof(CreateInstructorRequest), nameof(CreateInstructorRequest.ValidInstructorVariants))]
-    public async Task PostCreate_WhenValidRequest_CreatesDepartment(CreateInstructorRequest request)
+    [Test]
+    public async Task PostCreate_WhenValidRequest_CreatesInstructor()
     {
         // Arrange
-        await Page.GotoAsync(Urls.DepartmentsCreatePage);
+        var request = CreateInstructorRequest.Valid;
+        await Page.GotoAsync(Urls.InstructorsCreatePage);
         await Page.FillFormWith(request);
 
         // Act
@@ -26,22 +26,21 @@ public class CreateEndpointsTests : PageTest
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // Assert
-        await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
-        // await Expect(Page.DepartmentRow(request.Name)).ToBeVisibleAsync();
-        // await Page.AssertDepartmentRow(request.Name, request.Budget, request.StartDate, request.AdministratorName);
+        await Expect(Page).ToHaveURLAsync(Urls.InstructorsListPage);
+        await Expect(Page.InstructorRow(request.LastName)).ToBeVisibleAsync();
+        await Page.AssertInstructorRow(request.LastName, request.FirstName, request.HireDate, request.Location);
 
         // Cleanup
-        // await Page.RemoveDepartment(request.Name);
+        await Page.RemoveInstructor(request.LastName);
     }
 
-    [Ignore("Temporarily ignored")]
     [TestCaseSource(typeof(CreateInstructorRequest), nameof(CreateInstructorRequest.Invalids))]
     public async Task PostCreate_WhenInvalidRequest_ReturnsValidationErrorView(
         CreateInstructorRequest request,
         string errorMessage)
     {
         // Arrange
-        await Page.GotoAsync(Urls.DepartmentsCreatePage);
+        await Page.GotoAsync(Urls.InstructorsCreatePage);
         await Page.FillFormWith(request);
 
         // Act
@@ -49,8 +48,8 @@ public class CreateEndpointsTests : PageTest
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // Assert
-        await Expect(Page).ToHaveURLAsync(Urls.DepartmentsCreatePage);
+        await Expect(Page).ToHaveURLAsync(Urls.InstructorsCreatePage);
         await Expect(Page.GetByText(errorMessage, new() { Exact = true })).ToBeVisibleAsync();
-        // await Expect(Page.DepartmentRow(request.Name)).ToHaveCountAsync(0);
+        await Expect(Page.InstructorRow(request.LastName)).ToBeHiddenAsync();
     }
 }

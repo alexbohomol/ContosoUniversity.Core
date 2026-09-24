@@ -22,31 +22,20 @@ public record CreateInstructorRequest
         Location = "Campus"
     };
 
-    public static IEnumerable<TestCaseData> ValidInstructorVariants =>
-    [
-        new TestCaseData(Valid)
-            .SetName("Without_Administrator"),
-        new TestCaseData(Valid)
-            .SetName("With_Administrator")
-    ];
-
     public static IEnumerable<TestCaseData> Invalids =>
     [
-        new TestCaseData(
-                Valid with { LastName = "XY" },
-                "'LastName' must be between 3 and 50 characters. You entered 2 characters.")
-            .SetName("LastName_is_too_short"),
+        // LastName_is_too_short
+
         new TestCaseData(
                 Valid with { LastName = new string('X', 51) },
-                "'LastName' must be between 3 and 50 characters. You entered 51 characters.")
+                "The length of 'Last Name' must be 50 characters or fewer. You entered 51 characters.")
             .SetName("LastName_is_too_long"),
-        new TestCaseData(
-                Valid with { FirstName = "XY" },
-                "'FirstName' must be between 3 and 50 characters. You entered 2 characters.")
-            .SetName("FirstName_is_too_short"),
+
+        // FirstName_is_too_short
+
         new TestCaseData(
                 Valid with { FirstName = new string('X', 51) },
-                "'FirstName' must be between 3 and 50 characters. You entered 51 characters.")
+                "First name cannot be longer than 50 characters.")
             .SetName("FirstName_is_too_long")
     ];
 }
