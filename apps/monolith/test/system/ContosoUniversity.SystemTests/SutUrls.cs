@@ -13,6 +13,10 @@ public class SutUrls(IConfiguration configuration)
     public string DepartmentsDeletePage => $"{BaseAddress}/Departments/Delete";
     public string DepartmentsEditPage => $"{BaseAddress}/Departments/Edit";
     public string DepartmentsListPage => $"{BaseAddress}/Departments";
+    public string InstructorsCreatePage => $"{BaseAddress}/Instructors/Create";
+    public string InstructorsDeletePage => $"{BaseAddress}/Instructors/Delete";
+    public string InstructorsEditPage => $"{BaseAddress}/Instructors/Edit";
+    public string InstructorsListPage => $"{BaseAddress}/Instructors";
     public string StudentsCreatePage => $"{BaseAddress}/Students/Create";
     public string StudentsDeletePage => $"{BaseAddress}/Students/Delete";
     public string StudentsEditPage => $"{BaseAddress}/Students/Edit";
