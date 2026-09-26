@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 using NUnit.Framework;
 
-public record CreateInstructorRequest
+public record EditInstructorRequest
 {
     public string LastName { get; init; }
     public string FirstName { get; init; }
@@ -13,13 +13,13 @@ public record CreateInstructorRequest
     public Guid[] SelectedCourses { get; init; }
     public string Location { get; init; }
 
-    public static readonly CreateInstructorRequest Valid = new()
+    public static readonly EditInstructorRequest Valid = new()
     {
-        LastName = "Bogomol",
-        FirstName = "Alex",
-        HireDate = new DateTime(2021, 12, 31),
+        LastName = "Bohomol",
+        FirstName = "Oleksandr",
+        HireDate = new DateTime(2022, 01, 31),
         SelectedCourses = [],
-        Location = "Campus"
+        Location = "Kyiv"
     };
 
     public static IEnumerable<TestCaseData> Invalids =>

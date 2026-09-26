@@ -28,12 +28,12 @@ public static class PageMacrosActions
         await page.FillAsync("#Request_Location", request.Location);
     }
 
-    public static async Task FillFormWith(this IPage page, EditDepartmentRequest request)
+    public static async Task FillFormWith(this IPage page, EditInstructorRequest request)
     {
-        await page.FillAsync("#Request_Name", request.Name);
-        await page.FillAsync("#Request_Budget", request.Budget.ToString("0.00", CultureInfo.InvariantCulture));
-        await page.FillAsync("#Request_StartDate", request.StartDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-        await SelectAdministrator(page, request.AdministratorName);
+        await page.FillAsync("#Request_LastName", request.LastName);
+        await page.FillAsync("#Request_FirstName", request.FirstName);
+        await page.FillAsync("#Request_HireDate", request.HireDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+        await page.FillAsync("#Request_Location", request.Location);
     }
 
     public static async Task CreateInstructor(this IPage page, CreateInstructorRequest request)
@@ -68,32 +68,9 @@ public static class PageMacrosActions
 
     public static async Task AssertEditForm(this IPage page, CreateInstructorRequest request)
     {
-        // await Expect(page.Locator("#Request_Name")).ToHaveValueAsync(request.Name);
-        // await Expect(page.Locator("#Request_Budget")).ToHaveValueAsync(request.Budget.ToString("0.00", CultureInfo.InvariantCulture));
-        // await Expect(page.Locator("#Request_StartDate")).ToHaveValueAsync(request.StartDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-        // await page.AssertAdministratorSelection(request.AdministratorName);
-    }
-
-    public static async Task AssertAdministratorSelection(this IPage page, string administratorName)
-    {
-        if (administratorName is null)
-        {
-            await Expect(page.Locator("#Request_AdministratorId")).ToHaveValueAsync(string.Empty);
-            return;
-        }
-
-        await Expect(page.Locator("#Request_AdministratorId").Locator("option:checked"))
-            .ToHaveTextAsync(administratorName);
-    }
-
-    private static async Task SelectAdministrator(IPage page, string administratorName)
-    {
-        if (administratorName is null)
-        {
-            await page.SelectOptionAsync("#Request_AdministratorId", new SelectOptionValue { Value = string.Empty });
-            return;
-        }
-
-        await page.SelectOptionAsync("#Request_AdministratorId", new SelectOptionValue { Label = administratorName });
+        await Expect(page.Locator("#Request_LastName")).ToHaveValueAsync(request.LastName);
+        await Expect(page.Locator("#Request_FirstName")).ToHaveValueAsync(request.FirstName);
+        await Expect(page.Locator("#Request_HireDate")).ToHaveValueAsync(request.HireDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+        await Expect(page.Locator("#Request_Location")).ToHaveValueAsync(request.Location);
     }
 }

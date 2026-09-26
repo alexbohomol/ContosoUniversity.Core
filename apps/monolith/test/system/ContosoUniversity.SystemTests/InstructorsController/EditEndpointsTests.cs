@@ -15,19 +15,18 @@ public class EditEndpointsTests : PageTest
     private static readonly SutUrls Urls =
         new(ServiceLocator.GetRequiredService<IConfiguration>());
 
-    [Ignore("Temporarily ignored")]
-    [TestCaseSource(typeof(EditDepartmentRequest), nameof(EditDepartmentRequest.AdministratorTransitions))]
-    public async Task PostEdit_WhenValidRequest_UpdatesDepartment(
-        CreateInstructorRequest createRequest,
-        EditDepartmentRequest editRequest)
+    [Test]
+    public async Task PostEdit_WhenValidRequest_UpdatesInstructor()
     {
         // Arrange
+        var createRequest = CreateInstructorRequest.Valid;
+        var editRequest = EditInstructorRequest.Valid;
         await Page.CreateInstructor(createRequest);
-        await Page.GotoAsync(Urls.DepartmentsListPage);
+        await Page.GotoAsync(Urls.InstructorsListPage);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        // await Expect(Page.DepartmentRow(createRequest.Name)).ToBeVisibleAsync();
-        // await Page.AssertDepartmentRow(createRequest.Name, createRequest.Budget, createRequest.StartDate, createRequest.AdministratorName);
-        // await Page.ClickLinkByRow("Edit", createRequest.Name);
+        await Expect(Page.InstructorRow(createRequest.LastName)).ToBeVisibleAsync();
+        await Page.AssertInstructorRow(createRequest.LastName, createRequest.FirstName, createRequest.HireDate, createRequest.Location);
+        await Page.ClickLinkByRow("Edit", createRequest.LastName);
         await Page.AssertEditForm(createRequest);
         await Page.FillFormWith(editRequest);
 
@@ -36,36 +35,34 @@ public class EditEndpointsTests : PageTest
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // Assert
-        await Expect(Page).ToHaveURLAsync(Urls.DepartmentsListPage);
-        // await Expect(Page.DepartmentRow(createRequest.Name)).ToBeHiddenAsync();
-        await Expect(Page.InstructorRow(editRequest.Name)).ToBeVisibleAsync();
-        // await Page.AssertDepartmentRow(editRequest.Name, editRequest.Budget, editRequest.StartDate, editRequest.AdministratorName);
-        await Page.ClickLinkByRow("Edit", editRequest.Name);
+        await Expect(Page).ToHaveURLAsync(Urls.InstructorsListPage);
+        await Expect(Page.InstructorRow(createRequest.LastName)).ToBeHiddenAsync();
+        await Expect(Page.InstructorRow(editRequest.LastName)).ToBeVisibleAsync();
+        await Page.AssertInstructorRow(editRequest.LastName, editRequest.FirstName, editRequest.HireDate, editRequest.Location);
+        await Page.ClickLinkByRow("Edit", editRequest.LastName);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        await Page.AssertAdministratorSelection(editRequest.AdministratorName);
 
         // Cleanup
-        await Page.RemoveInstructor(editRequest.Name);
+        await Page.RemoveInstructor(editRequest.LastName);
     }
 
-    [Ignore("Temporarily ignored")]
-    [TestCaseSource(typeof(EditDepartmentRequest), nameof(EditDepartmentRequest.Invalids))]
+    [TestCaseSource(typeof(EditInstructorRequest), nameof(EditInstructorRequest.Invalids))]
     public async Task PostEdit_WhenInvalidRequest_ReturnsValidationErrorView(
-        EditDepartmentRequest editRequest,
+        EditInstructorRequest editRequest,
         string errorMessage)
     {
         // Arrange
         CreateInstructorRequest request = CreateInstructorRequest.Valid;
         await Page.CreateInstructor(request);
-        await Page.GotoAsync(Urls.DepartmentsListPage);
+        await Page.GotoAsync(Urls.InstructorsListPage);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        // await Expect(Page.DepartmentRow(request.Name)).ToBeVisibleAsync();
-        // await Page.AssertDepartmentRow(request.Name, request.Budget, request.StartDate, request.AdministratorName);
-        // await Page.ClickLinkByRow("Edit", request.Name);
+        await Expect(Page.InstructorRow(request.LastName)).ToBeVisibleAsync();
+        await Page.AssertInstructorRow(request.LastName, request.FirstName, request.HireDate, request.Location);
+        await Page.ClickLinkByRow("Edit", request.LastName);
         await Page.AssertEditForm(request);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         string editUrl = Page.Url;
-        editUrl.Should().StartWith(Urls.DepartmentsEditPage);
+        editUrl.Should().StartWith(Urls.InstructorsEditPage);
         await Page.FillFormWith(editRequest);
 
         // Act
@@ -75,12 +72,12 @@ public class EditEndpointsTests : PageTest
         // Assert
         Page.Url.Should().Be(editUrl);
         await Expect(Page.GetByText(errorMessage, new() { Exact = true })).ToBeVisibleAsync();
-        await Page.GotoAsync(Urls.DepartmentsListPage);
-        await Expect(Page.InstructorRow(editRequest.Name)).ToBeHiddenAsync();
-        // await Expect(Page.DepartmentRow(request.Name)).ToBeVisibleAsync();
-        // await Page.AssertDepartmentRow(request.Name, request.Budget, request.StartDate, request.AdministratorName);
+        await Page.GotoAsync(Urls.InstructorsListPage);
+        await Expect(Page.InstructorRow(editRequest.LastName)).ToBeHiddenAsync();
+        await Expect(Page.InstructorRow(request.LastName)).ToBeVisibleAsync();
+        await Page.AssertInstructorRow(request.LastName, request.FirstName, request.HireDate, request.Location);
 
         // Cleanup
-        // await Page.RemoveDepartment(request.Name);
+        await Page.RemoveInstructor(request.LastName);
     }
 }
