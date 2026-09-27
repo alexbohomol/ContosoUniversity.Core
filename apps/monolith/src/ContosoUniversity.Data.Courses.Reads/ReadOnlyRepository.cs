@@ -11,7 +11,7 @@ using Application.Contracts.Repositories.Reads.Projections;
 
 using Microsoft.EntityFrameworkCore;
 
-internal class ReadOnlyRepository(ReadOnlyContext dbContext) : EfRoRepository<Course>(dbContext), ICoursesRoRepository
+public class ReadOnlyRepository(ReadOnlyContext dbContext) : EfRoRepository<Course>(dbContext), ICoursesRoRepository
 {
     public async Task<Course[]> GetByDepartmentId(Guid departmentId,
         CancellationToken cancellationToken = default)

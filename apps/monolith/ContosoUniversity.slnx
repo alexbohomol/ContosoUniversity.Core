@@ -10,7 +10,7 @@
     <Project Path="src/ContosoUniversity.Data/ContosoUniversity.Data.csproj" />
     <Project Path="src/ContosoUniversity.Domain/ContosoUniversity.Domain.csproj" />
     <Project Path="src/ContosoUniversity.Mvc/ContosoUniversity.Mvc.csproj" />
-    <Project Path="src/ContosoUniversity.SharedKernel/ContosoUniversity.SharedKernel.csproj" Id="150c48f6-0e04-4492-a305-1bacef848cbb" />
+    <Project Path="src/ContosoUniversity.SharedKernel/ContosoUniversity.SharedKernel.csproj" />
   </Folder>
   <Folder Name="/test/" />
   <Folder Name="/test/e2e/">
@@ -18,6 +18,9 @@
   </Folder>
   <Folder Name="/test/integration/">
     <Project Path="test/integration/ContosoUniversity.Mvc.IntegrationTests/ContosoUniversity.Mvc.IntegrationTests.csproj" />
+  </Folder>
+  <Folder Name="/test/perform/">
+    <Project Path="test/perform/ContosoUniversity.Benchmarking/ContosoUniversity.Benchmarking.csproj" />
   </Folder>
   <Folder Name="/test/system/">
     <Project Path="test/system/ContosoUniversity.SystemTests/ContosoUniversity.SystemTests.csproj" />
