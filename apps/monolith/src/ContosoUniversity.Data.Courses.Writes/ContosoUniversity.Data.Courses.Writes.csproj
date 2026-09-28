@@ -4,4 +4,8 @@
         <ProjectReference Include="..\ContosoUniversity.Data\ContosoUniversity.Data.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="ContosoUniversity.Benchmarking" />
+    </ItemGroup>
+
 </Project>
