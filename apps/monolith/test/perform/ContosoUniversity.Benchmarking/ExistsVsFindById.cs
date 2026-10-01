@@ -9,8 +9,6 @@ using BenchmarkDotNet.Attributes;
 
 using Data.Courses.Reads;
 
-using Microsoft.EntityFrameworkCore;
-
 [MemoryDiagnoser]
 public class ExistsVsFindById
 {
@@ -22,10 +20,7 @@ public class ExistsVsFindById
     [GlobalSetup]
     public void Setup()
     {
-        var optionsBuilder = new DbContextOptionsBuilder<ReadOnlyContext>();
-        optionsBuilder.UseSqlServer("Data Source=127.0.0.1,1477;Initial Catalog=ContosoUniversity;User ID=courses_ro;Password=coursesRO-P@$$w0rd;Multiple Active Result Sets=True;Trust Server Certificate=True");
-        _context = new ReadOnlyContext(optionsBuilder.Options);
-        _repository = new ReadOnlyRepository(_context);
+        (_repository, _context) = RepositoryFactory.CreateCoursesRo();
         _ids =
         [
             new("51f60b7d-fb0c-40eb-a74b-b2d90157afa0"),

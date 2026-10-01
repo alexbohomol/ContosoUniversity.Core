@@ -10,8 +10,6 @@ using Data.Courses.Writes;
 
 using Domain.Course;
 
-using Microsoft.EntityFrameworkCore;
-
 [MemoryDiagnoser]
 public class RepositorySaveVsContextSave
 {
@@ -24,10 +22,7 @@ public class RepositorySaveVsContextSave
     [GlobalSetup]
     public void Setup()
     {
-        var optionsBuilder = new DbContextOptionsBuilder<ReadWriteContext>();
-        optionsBuilder.UseSqlServer("Data Source=127.0.0.1,1477;Initial Catalog=ContosoUniversity;User ID=courses_rw;Password=coursesRW-P@$$w0rd;Multiple Active Result Sets=True;Trust Server Certificate=True");
-        _context = new ReadWriteContext(optionsBuilder.Options);
-        _repository = new ReadWriteRepository(_context);
+        (_repository, _context) = RepositoryFactory.CreateCoursesRw();
         _departments =
         [
             new("31a130fe-b396-4bb8-88d3-26fa8778b4c6"),
