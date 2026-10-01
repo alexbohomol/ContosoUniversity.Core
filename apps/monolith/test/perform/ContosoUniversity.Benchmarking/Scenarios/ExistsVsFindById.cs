@@ -1,4 +1,6 @@
-namespace ContosoUniversity.Benchmarking;
+#pragma warning disable CA1001
+#pragma warning disable CA5394
+namespace ContosoUniversity.Benchmarking.Scenarios;
 
 using System;
 using System.Threading.Tasks;
@@ -6,23 +8,21 @@ using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 
 using Data.Courses.Reads;
-using Data.Courses.Writes;
+
+using Factories;
 
 [MemoryDiagnoser]
-public class GetByIdReadOnlyVsReadWrite
+public class ExistsVsFindById
 {
-    private ReadOnlyRepository _roRepository;
-    private ReadOnlyContext _roContext;
-    private ReadWriteRepository _rwRepository;
-    private ReadWriteContext _rwContext;
+    private ReadOnlyRepository _repository;
+    private ReadOnlyContext _context;
     private Guid[] _courseIds;
     private int _iteration;
 
     [GlobalSetup]
     public void Setup()
     {
-        (_roRepository, _roContext) = RepositoryFactory.CreateCoursesRo();
-        (_rwRepository, _rwContext) = RepositoryFactory.CreateCoursesRw();
+        (_repository, _context) = RepositoryFactory.CoursesReadOnly();
         _courseIds =
         [
             new("51f60b7d-fb0c-40eb-a74b-b2d90157afa0"),
@@ -37,23 +37,19 @@ public class GetByIdReadOnlyVsReadWrite
     }
 
     [GlobalCleanup]
-    public void Cleanup()
-    {
-        _roContext.Dispose();
-        _rwContext.Dispose();
-    }
+    public void Cleanup() => _context.Dispose();
 
     [Benchmark(Baseline = true)]
-    public async Task<bool> GetByIdReadOnly()
+    public async Task<bool> ExistsById()
     {
         _iteration++;
-        return await _roRepository.GetById(_courseIds[_iteration % 7]) == null;
+        return await _repository.Exists(_courseIds[_iteration % 7]);
     }
 
     [Benchmark]
-    public async Task<bool> GetByIdReadWrite()
+    public async Task<bool> GetById()
     {
         _iteration++;
-        return await _rwRepository.GetById(_courseIds[_iteration % 7]) == null;
+        return await _repository.GetById(_courseIds[_iteration % 7]) == null;
     }
 }

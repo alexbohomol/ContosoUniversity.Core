@@ -1,5 +1,5 @@
 #pragma warning disable CA1001
-namespace ContosoUniversity.Benchmarking;
+namespace ContosoUniversity.Benchmarking.Scenarios;
 
 using System;
 using System.Threading.Tasks;
@@ -9,6 +9,8 @@ using BenchmarkDotNet.Attributes;
 using Data.Courses.Writes;
 
 using Domain.Course;
+
+using Factories;
 
 [MemoryDiagnoser]
 public class RepositorySaveVsContextSave
@@ -22,7 +24,7 @@ public class RepositorySaveVsContextSave
     [GlobalSetup]
     public void Setup()
     {
-        (_repository, _context) = RepositoryFactory.CreateCoursesRw();
+        (_repository, _context) = RepositoryFactory.CoursesReadWrite();
         _departments =
         [
             new("31a130fe-b396-4bb8-88d3-26fa8778b4c6"),
