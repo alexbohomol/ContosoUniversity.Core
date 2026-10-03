@@ -2,7 +2,6 @@
 #pragma warning disable CA5394
 namespace ContosoUniversity.Benchmarking.Scenarios;
 
-using System;
 using System.Threading.Tasks;
 
 using BenchmarkDotNet.Attributes;
@@ -16,23 +15,12 @@ public class ExistsVsFindById
 {
     private ReadOnlyRepository _repository;
     private ReadOnlyContext _context;
-    private Guid[] _courseIds;
     private int _iteration;
 
     [GlobalSetup]
     public void Setup()
     {
         (_repository, _context) = RepositoryFactory.CoursesReadOnly();
-        _courseIds =
-        [
-            new("51f60b7d-fb0c-40eb-a74b-b2d90157afa0"),
-            new("7f4a2bf3-8623-4d4b-a555-7e1c18da1d31"),
-            new("42153736-0a08-49ef-84a1-7718189945ca"),
-            new("f3e9966c-467b-4b99-90ca-a29bae85ca94"),
-            new("8ebb5543-371a-4c5b-a72b-09bc9f615e36"),
-            new("d53ffc3d-aa4e-41cf-8f0e-435c73889dcf"),
-            new("1a95b2f1-7f2c-41b4-befb-b0f9c6d991e4")
-        ];
         _iteration = 0;
     }
 
@@ -43,13 +31,15 @@ public class ExistsVsFindById
     public async Task<bool> ExistsById()
     {
         _iteration++;
-        return await _repository.Exists(_courseIds[_iteration % 7]);
+        var id = IdsFactory.SelectCourseIdForIteration(_iteration);
+        return await _repository.Exists(id);
     }
 
     [Benchmark]
     public async Task<bool> GetById()
     {
         _iteration++;
-        return await _repository.GetById(_courseIds[_iteration % 7]) == null;
+        var id = IdsFactory.SelectCourseIdForIteration(_iteration);
+        return await _repository.GetById(id) == null;
     }
 }
