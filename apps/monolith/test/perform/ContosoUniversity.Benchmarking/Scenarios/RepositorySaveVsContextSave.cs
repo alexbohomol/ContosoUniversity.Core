@@ -1,6 +1,7 @@
 #pragma warning disable CA1001
 namespace ContosoUniversity.Benchmarking.Scenarios;
 
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,17 +23,23 @@ public class RepositorySaveVsContextSave
     private int _iteration;
 
     [GlobalSetup]
-    public void Setup()
+    public async Task Setup()
     {
         (_repository, _context) = RepositoryFactory.CoursesReadWrite();
+        const int batchCount = 10;
+        const int batchSize = 10_000;
+        await _context.Populate(batchCount, batchSize,
+            CoursesFactory.CreateCourse,
+            i => Console.WriteLine($"Batch #{i}/{batchCount} inserted. {i * batchSize} records. {DateTime.Now:T}"));
+        _context.ChangeTracker.Clear();
         _iteration = 0;
     }
 
     [GlobalCleanup]
-    public void Cleanup()
+    public async Task Cleanup()
     {
-        _context.Set<Course>().Where(x => x.Code == 1234).ExecuteDelete();
-        _context.Dispose();
+        await _context.Set<Course>().Where(x => x.Code == 1234).ExecuteDeleteAsync();
+        await _context.DisposeAsync();
     }
 
     [Benchmark(Baseline = true)]
@@ -41,6 +48,7 @@ public class RepositorySaveVsContextSave
         _iteration++;
         var course = CoursesFactory.CreateCourse(_iteration);
         await _repository.Save(course);
+        _context.ChangeTracker.Clear();
     }
 
     [Benchmark]
@@ -50,5 +58,6 @@ public class RepositorySaveVsContextSave
         var course = CoursesFactory.CreateCourse(_iteration);
         await _context.AddAsync(course);
         await _context.SaveChangesAsync();
+        _context.ChangeTracker.Clear();
     }
 }
