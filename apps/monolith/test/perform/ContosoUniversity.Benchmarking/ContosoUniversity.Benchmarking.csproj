@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <Optimize>true</Optimize>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BenchmarkDotNet" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\src\ContosoUniversity.Data.Courses.Reads\ContosoUniversity.Data.Courses.Reads.csproj" />
+        <ProjectReference Include="..\..\..\src\ContosoUniversity.Data.Courses.Writes\ContosoUniversity.Data.Courses.Writes.csproj" />
+        <ProjectReference Include="..\..\..\src\ContosoUniversity.Data.Departments.Reads\ContosoUniversity.Data.Departments.Reads.csproj" />
+        <ProjectReference Include="..\..\..\src\ContosoUniversity.Data.Departments.Writes\ContosoUniversity.Data.Departments.Writes.csproj" />
+        <ProjectReference Include="..\..\..\src\ContosoUniversity.Data.Students.Reads\ContosoUniversity.Data.Students.Reads.csproj" />
+        <ProjectReference Include="..\..\..\src\ContosoUniversity.Data.Students.Writes\ContosoUniversity.Data.Students.Writes.csproj" />
+    </ItemGroup>
+
+</Project>

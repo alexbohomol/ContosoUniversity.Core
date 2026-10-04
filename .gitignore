@@ -219,3 +219,6 @@ app.zip
 
 # Local agent handoff reports
 .agent-reports/
+
+# BenchmarkDotNet artifacts
+BenchmarkDotNet.Artifacts/
