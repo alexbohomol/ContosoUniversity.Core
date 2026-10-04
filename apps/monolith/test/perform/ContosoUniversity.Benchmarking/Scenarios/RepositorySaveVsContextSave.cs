@@ -13,6 +13,7 @@ using Domain.Course;
 using Factories;
 
 [MemoryDiagnoser]
+[ThreadingDiagnoser]
 public class RepositorySaveVsContextSave
 {
     private ReadWriteRepository _repository;
