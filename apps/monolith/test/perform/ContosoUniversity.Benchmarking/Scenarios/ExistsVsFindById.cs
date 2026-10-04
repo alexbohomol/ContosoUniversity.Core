@@ -2,44 +2,64 @@
 #pragma warning disable CA5394
 namespace ContosoUniversity.Benchmarking.Scenarios;
 
+using System;
 using System.Threading.Tasks;
 
 using BenchmarkDotNet.Attributes;
 
 using Data.Courses.Reads;
+using Data.Courses.Writes;
+
+using Domain.Course;
 
 using Factories;
 
 [MemoryDiagnoser]
+[ThreadingDiagnoser]
 public class ExistsVsFindById
 {
-    private ReadOnlyRepository _repository;
-    private ReadOnlyContext _context;
-    private int _iteration;
+    private ReadOnlyRepository _roRepository;
+    private ReadOnlyContext _roContext;
+    private ReadWriteContext _rwContext;
+    private Guid[] _coursesExternalIds;
 
     [GlobalSetup]
-    public void Setup()
+    public async Task Setup()
     {
-        (_repository, _context) = RepositoryFactory.CoursesReadOnly();
-        _iteration = 0;
+        (_roRepository, _roContext) = RepositoryFactory.CoursesReadOnly();
+        (_, _rwContext) = RepositoryFactory.CoursesReadWrite();
+
+        const int batchCount = 10;
+        const int batchSize = 10_000;
+
+        _coursesExternalIds = await _rwContext.PopulateAsync(
+            batchCount,
+            batchSize,
+            CoursesFactory.CreateCourse,
+            i => Console.WriteLine($"Batch #{i}/{batchCount} inserted. {i * batchSize} records. {DateTime.Now:T}"));
     }
 
     [GlobalCleanup]
-    public void Cleanup() => _context.Dispose();
+    public async Task Cleanup()
+    {
+        await _rwContext.CleanupAsync<Course>(x => x.Code == 1234);
+        await _rwContext.DisposeAsync();
+        await _roContext.DisposeAsync();
+    }
 
     [Benchmark(Baseline = true)]
     public async Task<bool> ExistsById()
     {
-        _iteration++;
-        var id = IdsFactory.SelectCourseIdForIteration(_iteration);
-        return await _repository.Exists(id);
+        var index = Random.Shared.Next(_coursesExternalIds.Length);
+        var id = _coursesExternalIds[index];
+        return await _roRepository.Exists(id);
     }
 
     [Benchmark]
     public async Task<bool> GetById()
     {
-        _iteration++;
-        var id = IdsFactory.SelectCourseIdForIteration(_iteration);
-        return await _repository.GetById(id) == null;
+        var index = Random.Shared.Next(_coursesExternalIds.Length);
+        var id = _coursesExternalIds[index];
+        return await _roRepository.GetById(id) == null;
     }
 }

@@ -24,11 +24,16 @@ public class RepositorySaveVsContextSave
     public async Task Setup()
     {
         (_repository, _context) = RepositoryFactory.CoursesReadWrite();
+
         const int batchCount = 10;
         const int batchSize = 10_000;
-        await _context.PopulateAsync(batchCount, batchSize,
+
+        await _context.PopulateAsync(
+            batchCount,
+            batchSize,
             CoursesFactory.CreateCourse,
             i => Console.WriteLine($"Batch #{i}/{batchCount} inserted. {i * batchSize} records. {DateTime.Now:T}"));
+
         _iteration = 0;
     }
 
