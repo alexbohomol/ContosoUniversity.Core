@@ -8,29 +8,27 @@ using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 
-using SharedKernel;
-
 internal static class ContextExtensions
 {
     extension(DbContext context)
     {
-        public async Task<Guid[]> PopulateAsync<TEntity>(
+        public async Task<TEntity[]> PopulateAsync<TEntity>(
             int batchCount,
             int batchSize,
             Func<int, TEntity> entityFactory,
-            Action<int> printBatchStatus) where TEntity : class, IIdentifiable<Guid>
+            Action<int> printBatchStatus) where TEntity : class
         {
-            var ids = new List<Guid>();
+            var entities = new List<TEntity>();
             foreach (int i in Enumerable.Range(1, batchCount))
             {
-                var entities = Enumerable.Range(1, batchSize).Select(entityFactory).ToArray();
-                await context.Set<TEntity>().AddRangeAsync(entities);
+                var batch = Enumerable.Range(1, batchSize).Select(entityFactory).ToArray();
+                await context.Set<TEntity>().AddRangeAsync(batch);
                 await context.SaveChangesAsync();
-                ids.AddRange(entities.Select(x => x.ExternalId));
+                entities.AddRange(batch);
                 context.ChangeTracker.Clear();
                 printBatchStatus(i);
             }
-            return [.. ids];
+            return [.. entities];
         }
 
         public async Task<int> CleanupAsync<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : class

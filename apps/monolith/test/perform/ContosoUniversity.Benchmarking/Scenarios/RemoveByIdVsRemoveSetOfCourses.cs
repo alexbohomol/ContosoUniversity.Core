@@ -4,6 +4,7 @@ namespace ContosoUniversity.Benchmarking.Scenarios;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using BenchmarkDotNet.Attributes;
@@ -30,13 +31,13 @@ public class RemoveByIdVsRemoveSetOfCourses
         const int batchCount = 10;
         const int batchSize = 10_000;
 
-        var ids = await _context.PopulateAsync(
+        var courses = await _context.PopulateAsync(
             batchCount,
             batchSize,
             CoursesFactory.CreateCourse,
             i => Console.WriteLine($"Batch #{i}/{batchCount} inserted. {i * batchSize} records. {DateTime.Now:T}"));
 
-        _coursesExternalIds = new Queue<Guid>(ids);
+        _coursesExternalIds = new Queue<Guid>(courses.Select(x => x.ExternalId));
 
         Console.WriteLine($"Setup: inserted {_coursesExternalIds.Count} courses.");
     }

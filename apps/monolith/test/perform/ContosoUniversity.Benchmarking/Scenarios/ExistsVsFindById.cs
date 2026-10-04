@@ -3,6 +3,7 @@
 namespace ContosoUniversity.Benchmarking.Scenarios;
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using BenchmarkDotNet.Attributes;
@@ -32,11 +33,13 @@ public class ExistsVsFindById
         const int batchCount = 10;
         const int batchSize = 10_000;
 
-        _coursesExternalIds = await _rwContext.PopulateAsync(
+        var courses = await _rwContext.PopulateAsync(
             batchCount,
             batchSize,
             CoursesFactory.CreateCourse,
             i => Console.WriteLine($"Batch #{i}/{batchCount} inserted. {i * batchSize} records. {DateTime.Now:T}"));
+
+        _coursesExternalIds = [.. courses.Select(x => x.ExternalId)];
     }
 
     [GlobalCleanup]
