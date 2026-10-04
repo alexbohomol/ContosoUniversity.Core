@@ -1,5 +1,7 @@
+#pragma warning disable CA5394
 namespace ContosoUniversity.Benchmarking.Scenarios;
 
+using System;
 using System.Threading.Tasks;
 
 using BenchmarkDotNet.Attributes;
@@ -7,45 +9,59 @@ using BenchmarkDotNet.Attributes;
 using Data.Courses.Reads;
 using Data.Courses.Writes;
 
+using Domain.Course;
+
 using Factories;
 
 [MemoryDiagnoser]
+[ThreadingDiagnoser]
 public class GetByIdReadOnlyVsReadWrite
 {
     private ReadOnlyRepository _roRepository;
     private ReadOnlyContext _roContext;
     private ReadWriteRepository _rwRepository;
     private ReadWriteContext _rwContext;
-    private int _iteration;
+    private Guid[] _coursesExternalIds;
 
     [GlobalSetup]
-    public void Setup()
+    public async Task Setup()
     {
         (_roRepository, _roContext) = RepositoryFactory.CoursesReadOnly();
         (_rwRepository, _rwContext) = RepositoryFactory.CoursesReadWrite();
-        _iteration = 0;
+
+        const int batchCount = 10;
+        const int batchSize = 10_000;
+
+        _coursesExternalIds = await _rwContext.PopulateAsync(
+            batchCount,
+            batchSize,
+            CoursesFactory.CreateCourse,
+            i => Console.WriteLine($"Batch #{i}/{batchCount} inserted. {i * batchSize} records. {DateTime.Now:T}"));
     }
 
     [GlobalCleanup]
-    public void Cleanup()
+    public async Task Cleanup()
     {
-        _roContext.Dispose();
-        _rwContext.Dispose();
+        await _rwContext.CleanupAsync<Course>(x => x.Code == 1234);
+        await _rwContext.DisposeAsync();
+        await _roContext.DisposeAsync();
     }
 
     [Benchmark(Baseline = true)]
-    public async Task<bool> GetByIdReadOnly()
+    public async Task GetByIdWithReadOnlyRepo()
     {
-        _iteration++;
-        var id = IdsFactory.SelectCourseIdForIteration(_iteration);
-        return await _roRepository.GetById(id) == null;
+        var index = Random.Shared.Next(_coursesExternalIds.Length);
+        var id = _coursesExternalIds[index];
+        await _roRepository.GetById(id);
+        _roContext.ChangeTracker.Clear();
     }
 
     [Benchmark]
-    public async Task<bool> GetByIdReadWrite()
+    public async Task GetByIdWithReadWriteRepo()
     {
-        _iteration++;
-        var id = IdsFactory.SelectCourseIdForIteration(_iteration);
-        return await _rwRepository.GetById(id) == null;
+        var index = Random.Shared.Next(_coursesExternalIds.Length);
+        var id = _coursesExternalIds[index];
+        await _rwRepository.GetById(id);
+        _rwContext.ChangeTracker.Clear();
     }
 }
