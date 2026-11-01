@@ -215,6 +215,7 @@ It defines:
 - ECS cluster.
 - ECS/Fargate task definitions for `web`, `mssql`, and `mssql-migrator`.
 - ECS services for the web application and SQL Server container.
+- Web service autoscaling through Application Auto Scaling.
 - CloudWatch log groups.
 - EFS storage for ASP.NET Core Data Protection keys.
 - Cloud Map service discovery for SQL Server.
@@ -229,6 +230,19 @@ The default domain configured in Terraform is:
 qa-aws-ecs.mnlth.university.contoso.name
 ```
 
+### Web autoscaling
+
+Terraform defines web scaling settings in [autoscaling.tf](iac/envs/qa-aws-ecs/autoscaling.tf). The web service starts with 2 tasks and its desired count scales between 2 and 10 while running. Rolling deployments can temporarily run additional tasks above that desired count. Only the web service is autoscaled; SQL Server and the one-off migrator are excluded.
+
+Two target tracking policies use average load across web tasks:
+
+- ALB requests per target: 50 requests per second, expressed as 3,000 requests per target per minute.
+- ECS CPU utilization: 60%.
+
+Either policy can trigger scale-out. Scale-in requires both policies to allow it. Scale-out and scale-in cooldowns are 60 and 300 seconds respectively. These are utilization targets, not hard request limits or immediate scaling guarantees. Terraform ignores subsequent changes to the web service's desired count so it does not overwrite autoscaling decisions.
+
+Provisioning now creates initial web capacity; SQL Server still starts through the Run workflow, so web availability requires completing that workflow. Applying Terraform to an existing service preserves its current desired count; registering the scaling target can bring capacity within its bounds. Avoid provisioning while intentionally keeping QA stopped.
+
 ### Run workflow
 
 The workflow `MNLTH / qa-aws-ecs / Run` is manually triggered and can:
@@ -237,9 +251,12 @@ The workflow `MNLTH / qa-aws-ecs / Run` is manually triggered and can:
 - start the SQL Server ECS service;
 - run the database migrator as a one-off ECS task;
 - start or update the web ECS service;
-- scale the web service through the `web_desired_count` input.
+- start the web service at the Terraform-defined minimum when stopped, or preserve its current desired count within the Terraform-defined bounds during updates;
+- suspend web autoscaling during deployment and resume it after the service becomes stable.
 
 It also supports an `update_web_only` mode for updating only the web service.
+
+Run requires the Terraform autoscaling target to exist. If deployment fails after scaling is suspended, scaling stays suspended; rerun Run successfully to resume it. The workflow AWS identity needs Application Auto Scaling permissions to describe and register scalable targets in addition to its existing deployment permissions. The provisioner also needs permissions to manage scaling targets and policies, and to create the ECS Application Auto Scaling service-linked role if it does not already exist.
 
 ### Stop workflow
 
@@ -251,6 +268,8 @@ contoso-mnlth-mssql-service -> desired-count 0
 ```
 
 This makes the QA environment suitable for temporary use and cost control.
+
+Stop suspends web autoscaling before setting the web count to zero, so the policies cannot restart it. Run and Stop share a workflow concurrency group to prevent overlapping runtime operations.
 
 ## Notes
 
