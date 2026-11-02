@@ -343,8 +343,13 @@ resource "aws_ecs_service" "web_service" {
   name            = "${var.app_name}-web-service"
   cluster         = aws_ecs_cluster.cluster.id
   task_definition = aws_ecs_task_definition.web_task.arn
-  # desired_count defaults to 0 to prevent service from starting
-  launch_type = "FARGATE"
+  desired_count   = local.web_scaling.min_capacity
+  launch_type     = "FARGATE"
+
+  lifecycle {
+    # Application Auto Scaling owns the count after service creation.
+    ignore_changes = [desired_count]
+  }
 
   network_configuration {
     subnets          = module.networking.subnet_ids
