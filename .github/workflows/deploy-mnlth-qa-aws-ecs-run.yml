@@ -11,11 +11,10 @@ on:
         type: boolean
         default: false
         description: "Update 'web-service' only"
-      web_desired_count:
-        type: number
-        default: 2
-        description: "Scale 'web-service' instances"
-        required: true
+
+concurrency:
+  group: monolith-qa-aws-ecs-runtime
+  cancel-in-progress: false
 
 jobs:
 
@@ -115,7 +114,7 @@ jobs:
           wait-for-task-stopped: true
 
   run_web:
-    if: ${{ github.event.inputs.update_web_only == 'false' && success() || always() }}
+    if: ${{ always() && needs.get_image_tag.result == 'success' && (inputs.update_web_only || needs.run_mssql_migrator.result == 'success') }}
     name: Run web-service
     needs: [run_mssql_migrator, get_image_tag]
     environment:
@@ -137,6 +136,27 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
+      - name: Prepare web autoscaling
+        id: web-scaling
+        shell: bash
+        run: |
+          set -euo pipefail
+          RESOURCE_ID="service/contoso-mnlth-cluster/contoso-mnlth-web-service"
+          TARGET=$(aws application-autoscaling describe-scalable-targets \
+            --service-namespace ecs --scalable-dimension ecs:service:DesiredCount \
+            --resource-ids "$RESOURCE_ID" --query 'ScalableTargets[0]' --output json)
+          MIN=$(jq -er '.MinCapacity' <<< "$TARGET")
+          MAX=$(jq -er '.MaxCapacity' <<< "$TARGET")
+          aws application-autoscaling register-scalable-target \
+            --service-namespace ecs --scalable-dimension ecs:service:DesiredCount \
+            --resource-id "$RESOURCE_ID" \
+            --suspended-state DynamicScalingInSuspended=true,DynamicScalingOutSuspended=true,ScheduledScalingSuspended=true
+          CURRENT=$(aws ecs describe-services --cluster contoso-mnlth-cluster \
+            --services contoso-mnlth-web-service --query 'services[0].desiredCount' --output text)
+          DESIRED=$(jq -n --argjson current "$CURRENT" --argjson min "$MIN" --argjson max "$MAX" \
+            '[$current, $min] | max | [., $max] | min')
+          echo "desired_count=$DESIRED" >> "$GITHUB_OUTPUT"
+
       - name: 📝 Render task definition
         id: render-web
         uses: aws-actions/amazon-ecs-render-task-definition@v1
@@ -151,5 +171,13 @@ jobs:
           task-definition: ${{ steps.render-web.outputs.task-definition }}
           service: contoso-mnlth-web-service
           cluster: contoso-mnlth-cluster
-          desired-count: ${{ github.event.inputs.web_desired_count }}
+          desired-count: ${{ steps.web-scaling.outputs.desired_count }}
           wait-for-service-stability: true
+
+      - name: Resume web autoscaling
+        shell: bash
+        run: |
+          aws application-autoscaling register-scalable-target \
+            --service-namespace ecs --scalable-dimension ecs:service:DesiredCount \
+            --resource-id service/contoso-mnlth-cluster/contoso-mnlth-web-service \
+            --suspended-state DynamicScalingInSuspended=false,DynamicScalingOutSuspended=false,ScheduledScalingSuspended=false
