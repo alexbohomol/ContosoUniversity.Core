@@ -20,7 +20,7 @@ internal class ReadWriteRepository(ReadWriteContext dbContext) : EfRwRepository<
     public Task<int> UpdateCourseCredits(int multiplier, CancellationToken cancellationToken = default)
     {
         return DbContext.Database
-            .ExecuteSqlInterpolatedAsync(
+            .ExecuteSqlAsync(
                 $"UPDATE [crs].[Course] SET Credits = Credits * {multiplier}", cancellationToken);
     }
 
