@@ -93,8 +93,9 @@ The application exposes health endpoints:
 
 ### Prerequisites
 
-- .NET SDK compatible with the solution target framework.
+- .NET 11 SDK (11.0.100 or later in the 11.0 SDK series).
 - Docker with Docker Compose support.
+- PowerShell (`pwsh`) for Playwright browser installation in the acceptance and system test projects.
 - Local developer HTTPS certificate tooling if HTTPS container access is needed.
 
 Implementation-wide settings are defined in [.editorconfig](.editorconfig) and [Directory.Build.props](Directory.Build.props). The former owns formatting and analyzer conventions; the latter sets the target framework and enforces code style and analyzer warnings during builds.
@@ -163,6 +164,17 @@ From `apps/monolith`, enter the directory that contains the selected test projec
 cd path/to/TestProject
 dotnet restore
 dotnet build --no-restore
+```
+
+For the acceptance and system test projects, install Playwright browsers after building. Run this command from the test project directory.
+
+```bash
+pwsh bin/Debug/net11.0/playwright.ps1 install --with-deps
+```
+
+Run the selected test project from the same directory.
+
+```bash
 dotnet test --no-build
 ```
 
